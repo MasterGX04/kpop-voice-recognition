@@ -1,0 +1,50 @@
+{
+    "group": "IVE",
+    "type": "harmony",
+    "member": null,
+    "members": [
+        "Gaeul",
+        "Leeseo",
+        "Yujin"
+    ],
+    "sampleRate": 22050,
+    "chunkDurationMs": 40,
+    "segments": [
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 176680,
+            "endMs": 176720,
+            "members": [
+                "Yujin",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 176720,
+            "endMs": 176760,
+            "members": [
+                "Yujin",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 176760,
+            "endMs": 176800,
+            "members": [
+                "Yujin",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        }
+    ]
+}

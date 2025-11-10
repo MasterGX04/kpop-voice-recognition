@@ -1,0 +1,326 @@
+{
+    "group": "IVE",
+    "type": "harmony",
+    "member": null,
+    "members": [
+        "Liz",
+        "Rei",
+        "Yujin"
+    ],
+    "sampleRate": 22050,
+    "chunkDurationMs": 40,
+    "segments": [
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162160,
+            "endMs": 162200,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162200,
+            "endMs": 162240,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162240,
+            "endMs": 162280,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162280,
+            "endMs": 162320,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162320,
+            "endMs": 162360,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162360,
+            "endMs": 162400,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162400,
+            "endMs": 162440,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162440,
+            "endMs": 162480,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162480,
+            "endMs": 162520,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162520,
+            "endMs": 162560,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162560,
+            "endMs": 162600,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162600,
+            "endMs": 162640,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162640,
+            "endMs": 162680,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162680,
+            "endMs": 162720,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162720,
+            "endMs": 162760,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162760,
+            "endMs": 162800,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162800,
+            "endMs": 162840,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162840,
+            "endMs": 162880,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162880,
+            "endMs": 162920,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162920,
+            "endMs": 162960,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162960,
+            "endMs": 163000,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 163000,
+            "endMs": 163040,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 163040,
+            "endMs": 163080,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 163080,
+            "endMs": 163120,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 163120,
+            "endMs": 163160,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 163160,
+            "endMs": 163200,
+            "members": [
+                "Rei",
+                "Liz",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        }
+    ]
+}

@@ -1,0 +1,5766 @@
+{
+    "group": "IVE",
+    "type": "harmony",
+    "member": null,
+    "members": [
+        "Gaeul",
+        "Liz"
+    ],
+    "sampleRate": 22050,
+    "chunkDurationMs": 40,
+    "segments": [
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 176920,
+            "endMs": 176960,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 176960,
+            "endMs": 177000,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 177000,
+            "endMs": 177040,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 177040,
+            "endMs": 177080,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 177080,
+            "endMs": 177120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 177120,
+            "endMs": 177160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 177160,
+            "endMs": 177200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 177200,
+            "endMs": 177240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 177240,
+            "endMs": 177280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 177280,
+            "endMs": 177320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 177320,
+            "endMs": 177360,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 177360,
+            "endMs": 177400,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 177400,
+            "endMs": 177440,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178080,
+            "endMs": 178120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178120,
+            "endMs": 178160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178160,
+            "endMs": 178200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178200,
+            "endMs": 178240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178240,
+            "endMs": 178280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178280,
+            "endMs": 178320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178320,
+            "endMs": 178360,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178360,
+            "endMs": 178400,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178400,
+            "endMs": 178440,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178440,
+            "endMs": 178480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178480,
+            "endMs": 178520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178520,
+            "endMs": 178560,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178560,
+            "endMs": 178600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178600,
+            "endMs": 178640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178640,
+            "endMs": 178680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178680,
+            "endMs": 178720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178720,
+            "endMs": 178760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178760,
+            "endMs": 178800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178800,
+            "endMs": 178840,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178840,
+            "endMs": 178880,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178880,
+            "endMs": 178920,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178920,
+            "endMs": 178960,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 178960,
+            "endMs": 179000,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179000,
+            "endMs": 179040,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179040,
+            "endMs": 179080,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179080,
+            "endMs": 179120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179120,
+            "endMs": 179160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179160,
+            "endMs": 179200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179200,
+            "endMs": 179240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179240,
+            "endMs": 179280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179280,
+            "endMs": 179320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179320,
+            "endMs": 179360,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179360,
+            "endMs": 179400,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179400,
+            "endMs": 179440,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179440,
+            "endMs": 179480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179480,
+            "endMs": 179520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179520,
+            "endMs": 179560,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179560,
+            "endMs": 179600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179600,
+            "endMs": 179640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179640,
+            "endMs": 179680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179680,
+            "endMs": 179720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179720,
+            "endMs": 179760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179760,
+            "endMs": 179800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179800,
+            "endMs": 179840,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179840,
+            "endMs": 179880,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179880,
+            "endMs": 179920,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179920,
+            "endMs": 179960,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 179960,
+            "endMs": 180000,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180000,
+            "endMs": 180040,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180040,
+            "endMs": 180080,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180080,
+            "endMs": 180120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180120,
+            "endMs": 180160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180160,
+            "endMs": 180200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180200,
+            "endMs": 180240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180240,
+            "endMs": 180280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180280,
+            "endMs": 180320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180320,
+            "endMs": 180360,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180360,
+            "endMs": 180400,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180400,
+            "endMs": 180440,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180440,
+            "endMs": 180480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180480,
+            "endMs": 180520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180520,
+            "endMs": 180560,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180560,
+            "endMs": 180600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180600,
+            "endMs": 180640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180640,
+            "endMs": 180680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180680,
+            "endMs": 180720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180720,
+            "endMs": 180760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180760,
+            "endMs": 180800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180800,
+            "endMs": 180840,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180840,
+            "endMs": 180880,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180880,
+            "endMs": 180920,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180920,
+            "endMs": 180960,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 180960,
+            "endMs": 181000,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181000,
+            "endMs": 181040,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181040,
+            "endMs": 181080,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181080,
+            "endMs": 181120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181120,
+            "endMs": 181160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181160,
+            "endMs": 181200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181200,
+            "endMs": 181240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181240,
+            "endMs": 181280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181280,
+            "endMs": 181320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181320,
+            "endMs": 181360,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181360,
+            "endMs": 181400,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181400,
+            "endMs": 181440,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181440,
+            "endMs": 181480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181480,
+            "endMs": 181520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181520,
+            "endMs": 181560,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181560,
+            "endMs": 181600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181600,
+            "endMs": 181640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181640,
+            "endMs": 181680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181680,
+            "endMs": 181720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181720,
+            "endMs": 181760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181760,
+            "endMs": 181800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181800,
+            "endMs": 181840,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181840,
+            "endMs": 181880,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181880,
+            "endMs": 181920,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181920,
+            "endMs": 181960,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 181960,
+            "endMs": 182000,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182000,
+            "endMs": 182040,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182040,
+            "endMs": 182080,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182080,
+            "endMs": 182120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182120,
+            "endMs": 182160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182160,
+            "endMs": 182200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182200,
+            "endMs": 182240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182240,
+            "endMs": 182280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182280,
+            "endMs": 182320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182320,
+            "endMs": 182360,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182360,
+            "endMs": 182400,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182400,
+            "endMs": 182440,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182440,
+            "endMs": 182480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182480,
+            "endMs": 182520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182520,
+            "endMs": 182560,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182560,
+            "endMs": 182600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182600,
+            "endMs": 182640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182640,
+            "endMs": 182680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182680,
+            "endMs": 182720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182720,
+            "endMs": 182760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182760,
+            "endMs": 182800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182800,
+            "endMs": 182840,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182840,
+            "endMs": 182880,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182880,
+            "endMs": 182920,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182920,
+            "endMs": 182960,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 182960,
+            "endMs": 183000,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 183000,
+            "endMs": 183040,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 183040,
+            "endMs": 183080,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 183080,
+            "endMs": 183120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 183120,
+            "endMs": 183160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 183160,
+            "endMs": 183200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 183200,
+            "endMs": 183240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 183240,
+            "endMs": 183280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 183280,
+            "endMs": 183320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 183320,
+            "endMs": 183360,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 183360,
+            "endMs": 183400,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 183400,
+            "endMs": 183440,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 144680,
+            "endMs": 144720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 144720,
+            "endMs": 144760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 145240,
+            "endMs": 145280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 145280,
+            "endMs": 145320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 145320,
+            "endMs": 145360,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 145880,
+            "endMs": 145920,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 145920,
+            "endMs": 145960,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 145960,
+            "endMs": 146000,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 146000,
+            "endMs": 146040,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 146040,
+            "endMs": 146080,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 146440,
+            "endMs": 146480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 149480,
+            "endMs": 149520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 149520,
+            "endMs": 149560,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 149560,
+            "endMs": 149600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 149600,
+            "endMs": 149640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 149640,
+            "endMs": 149680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 150120,
+            "endMs": 150160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 150160,
+            "endMs": 150200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 150720,
+            "endMs": 150760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 150760,
+            "endMs": 150800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 150800,
+            "endMs": 150840,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 150840,
+            "endMs": 150880,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 150880,
+            "endMs": 150920,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 150920,
+            "endMs": 150960,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 150960,
+            "endMs": 151000,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 151000,
+            "endMs": 151040,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 151040,
+            "endMs": 151080,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 151080,
+            "endMs": 151120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 180240,
+            "endMs": 180280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 180280,
+            "endMs": 180320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 180320,
+            "endMs": 180360,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 180360,
+            "endMs": 180400,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 180400,
+            "endMs": 180440,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 180440,
+            "endMs": 180480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 180480,
+            "endMs": 180520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 180520,
+            "endMs": 180560,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 180560,
+            "endMs": 180600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 180600,
+            "endMs": 180640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 180640,
+            "endMs": 180680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 180680,
+            "endMs": 180720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 180720,
+            "endMs": 180760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 180760,
+            "endMs": 180800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 180800,
+            "endMs": 180840,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 180840,
+            "endMs": 180880,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 150960,
+            "endMs": 151000,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 22560,
+            "endMs": 22600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 22600,
+            "endMs": 22640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 22640,
+            "endMs": 22680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 22680,
+            "endMs": 22720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 22720,
+            "endMs": 22760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 22760,
+            "endMs": 22800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 22800,
+            "endMs": 22840,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 22840,
+            "endMs": 22880,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 53080,
+            "endMs": 53120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 53120,
+            "endMs": 53160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 53160,
+            "endMs": 53200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 53200,
+            "endMs": 53240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 56080,
+            "endMs": 56120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 56120,
+            "endMs": 56160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 56160,
+            "endMs": 56200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 56200,
+            "endMs": 56240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 56240,
+            "endMs": 56280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 56280,
+            "endMs": 56320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 56920,
+            "endMs": 56960,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 56960,
+            "endMs": 57000,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 57000,
+            "endMs": 57040,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 57040,
+            "endMs": 57080,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 57080,
+            "endMs": 57120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 57120,
+            "endMs": 57160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 57160,
+            "endMs": 57200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 57200,
+            "endMs": 57240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 57240,
+            "endMs": 57280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 57280,
+            "endMs": 57320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 117360,
+            "endMs": 117400,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 117400,
+            "endMs": 117440,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 117440,
+            "endMs": 117480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 117480,
+            "endMs": 117520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 120440,
+            "endMs": 120480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 121120,
+            "endMs": 121160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 121160,
+            "endMs": 121200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 121200,
+            "endMs": 121240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 121240,
+            "endMs": 121280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 121280,
+            "endMs": 121320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 162760,
+            "endMs": 162800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 165760,
+            "endMs": 165800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 165800,
+            "endMs": 165840,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 165840,
+            "endMs": 165880,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 165880,
+            "endMs": 165920,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 166480,
+            "endMs": 166520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 166520,
+            "endMs": 166560,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 166560,
+            "endMs": 166600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 166600,
+            "endMs": 166640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 166640,
+            "endMs": 166680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 166680,
+            "endMs": 166720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 166720,
+            "endMs": 166760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 133840,
+            "endMs": 133880,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 133880,
+            "endMs": 133920,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 133920,
+            "endMs": 133960,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 133960,
+            "endMs": 134000,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 134000,
+            "endMs": 134040,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 134040,
+            "endMs": 134080,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 134080,
+            "endMs": 134120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 134120,
+            "endMs": 134160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 134160,
+            "endMs": 134200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 134200,
+            "endMs": 134240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 134240,
+            "endMs": 134280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 134600,
+            "endMs": 134640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 134640,
+            "endMs": 134680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 82760,
+            "endMs": 82800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 82800,
+            "endMs": 82840,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 82840,
+            "endMs": 82880,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 82880,
+            "endMs": 82920,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 82920,
+            "endMs": 82960,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 82960,
+            "endMs": 83000,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 83000,
+            "endMs": 83040,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 83040,
+            "endMs": 83080,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 83080,
+            "endMs": 83120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 83120,
+            "endMs": 83160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 83160,
+            "endMs": 83200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 83200,
+            "endMs": 83240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 128640,
+            "endMs": 128680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 128680,
+            "endMs": 128720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 128720,
+            "endMs": 128760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 132360,
+            "endMs": 132400,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 132400,
+            "endMs": 132440,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 132440,
+            "endMs": 132480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 132480,
+            "endMs": 132520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 132520,
+            "endMs": 132560,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 132560,
+            "endMs": 132600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 132600,
+            "endMs": 132640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 132640,
+            "endMs": 132680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 132680,
+            "endMs": 132720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 133000,
+            "endMs": 133040,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 133040,
+            "endMs": 133080,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 133080,
+            "endMs": 133120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 133120,
+            "endMs": 133160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 133160,
+            "endMs": 133200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 133200,
+            "endMs": 133240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 133240,
+            "endMs": 133280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 133280,
+            "endMs": 133320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 133560,
+            "endMs": 133600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 133600,
+            "endMs": 133640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 133640,
+            "endMs": 133680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 50240,
+            "endMs": 50280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 50280,
+            "endMs": 50320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 106320,
+            "endMs": 106360,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 106360,
+            "endMs": 106400,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 64440,
+            "endMs": 64480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 170320,
+            "endMs": 170360,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 170360,
+            "endMs": 170400,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 170400,
+            "endMs": 170440,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 170440,
+            "endMs": 170480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 170480,
+            "endMs": 170520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 170520,
+            "endMs": 170560,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 170560,
+            "endMs": 170600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 170600,
+            "endMs": 170640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 170640,
+            "endMs": 170680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 170680,
+            "endMs": 170720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 170720,
+            "endMs": 170760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 170760,
+            "endMs": 170800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 170800,
+            "endMs": 170840,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 170840,
+            "endMs": 170880,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 170880,
+            "endMs": 170920,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 170920,
+            "endMs": 170960,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 170960,
+            "endMs": 171000,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171000,
+            "endMs": 171040,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171040,
+            "endMs": 171080,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171080,
+            "endMs": 171120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171120,
+            "endMs": 171160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171160,
+            "endMs": 171200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171200,
+            "endMs": 171240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171240,
+            "endMs": 171280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171280,
+            "endMs": 171320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171320,
+            "endMs": 171360,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171360,
+            "endMs": 171400,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171400,
+            "endMs": 171440,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171440,
+            "endMs": 171480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171480,
+            "endMs": 171520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171520,
+            "endMs": 171560,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171560,
+            "endMs": 171600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171600,
+            "endMs": 171640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171640,
+            "endMs": 171680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171680,
+            "endMs": 171720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171720,
+            "endMs": 171760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171760,
+            "endMs": 171800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171800,
+            "endMs": 171840,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171840,
+            "endMs": 171880,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171880,
+            "endMs": 171920,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 171920,
+            "endMs": 171960,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 172400,
+            "endMs": 172440,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 172440,
+            "endMs": 172480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 172480,
+            "endMs": 172520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 73680,
+            "endMs": 73720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 73720,
+            "endMs": 73760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 73760,
+            "endMs": 73800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 73800,
+            "endMs": 73840,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 73840,
+            "endMs": 73880,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 73880,
+            "endMs": 73920,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 73920,
+            "endMs": 73960,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 73960,
+            "endMs": 74000,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 74000,
+            "endMs": 74040,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 74040,
+            "endMs": 74080,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 74080,
+            "endMs": 74120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 74120,
+            "endMs": 74160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 74160,
+            "endMs": 74200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 74200,
+            "endMs": 74240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 74240,
+            "endMs": 74280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 74280,
+            "endMs": 74320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 74320,
+            "endMs": 74360,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 74360,
+            "endMs": 74400,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 74400,
+            "endMs": 74440,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 74440,
+            "endMs": 74480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 74480,
+            "endMs": 74520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 74520,
+            "endMs": 74560,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 74560,
+            "endMs": 74600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 114480,
+            "endMs": 114520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 114520,
+            "endMs": 114560,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 114560,
+            "endMs": 114600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 114600,
+            "endMs": 114640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 114640,
+            "endMs": 114680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 114680,
+            "endMs": 114720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 114720,
+            "endMs": 114760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 114760,
+            "endMs": 114800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115000,
+            "endMs": 115040,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115040,
+            "endMs": 115080,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115080,
+            "endMs": 115120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115120,
+            "endMs": 115160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115160,
+            "endMs": 115200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115200,
+            "endMs": 115240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115240,
+            "endMs": 115280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115280,
+            "endMs": 115320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115320,
+            "endMs": 115360,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115360,
+            "endMs": 115400,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115400,
+            "endMs": 115440,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115440,
+            "endMs": 115480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115480,
+            "endMs": 115520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115520,
+            "endMs": 115560,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115560,
+            "endMs": 115600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115600,
+            "endMs": 115640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115640,
+            "endMs": 115680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115680,
+            "endMs": 115720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115720,
+            "endMs": 115760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115760,
+            "endMs": 115800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115800,
+            "endMs": 115840,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115840,
+            "endMs": 115880,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115880,
+            "endMs": 115920,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115920,
+            "endMs": 115960,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 115960,
+            "endMs": 116000,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 116000,
+            "endMs": 116040,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 116040,
+            "endMs": 116080,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 116080,
+            "endMs": 116120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 116120,
+            "endMs": 116160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 116160,
+            "endMs": 116200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 116200,
+            "endMs": 116240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 116240,
+            "endMs": 116280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 116280,
+            "endMs": 116320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 116320,
+            "endMs": 116360,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 116360,
+            "endMs": 116400,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 116400,
+            "endMs": 116440,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 116440,
+            "endMs": 116480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 116480,
+            "endMs": 116520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 116520,
+            "endMs": 116560,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 116560,
+            "endMs": 116600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 116600,
+            "endMs": 116640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 116640,
+            "endMs": 116680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 116680,
+            "endMs": 116720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 116720,
+            "endMs": 116760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 116760,
+            "endMs": 116800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 117680,
+            "endMs": 117720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 117720,
+            "endMs": 117760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 117760,
+            "endMs": 117800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 117800,
+            "endMs": 117840,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118080,
+            "endMs": 118120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118120,
+            "endMs": 118160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118160,
+            "endMs": 118200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118200,
+            "endMs": 118240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118240,
+            "endMs": 118280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118280,
+            "endMs": 118320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118320,
+            "endMs": 118360,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118360,
+            "endMs": 118400,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118400,
+            "endMs": 118440,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118440,
+            "endMs": 118480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118480,
+            "endMs": 118520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118520,
+            "endMs": 118560,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118560,
+            "endMs": 118600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118600,
+            "endMs": 118640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118640,
+            "endMs": 118680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118680,
+            "endMs": 118720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118720,
+            "endMs": 118760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118760,
+            "endMs": 118800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118800,
+            "endMs": 118840,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118840,
+            "endMs": 118880,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118880,
+            "endMs": 118920,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118920,
+            "endMs": 118960,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 118960,
+            "endMs": 119000,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 119000,
+            "endMs": 119040,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 119040,
+            "endMs": 119080,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 119080,
+            "endMs": 119120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 119120,
+            "endMs": 119160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 119160,
+            "endMs": 119200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 119200,
+            "endMs": 119240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 119240,
+            "endMs": 119280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 119280,
+            "endMs": 119320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 119320,
+            "endMs": 119360,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 119360,
+            "endMs": 119400,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 119400,
+            "endMs": 119440,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 119440,
+            "endMs": 119480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 119480,
+            "endMs": 119520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 119520,
+            "endMs": 119560,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 119560,
+            "endMs": 119600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 119600,
+            "endMs": 119640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 119640,
+            "endMs": 119680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 119680,
+            "endMs": 119720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 126440,
+            "endMs": 126480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 126480,
+            "endMs": 126520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 126520,
+            "endMs": 126560,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 126560,
+            "endMs": 126600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 126600,
+            "endMs": 126640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 126640,
+            "endMs": 126680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 126680,
+            "endMs": 126720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 126720,
+            "endMs": 126760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 126760,
+            "endMs": 126800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 126800,
+            "endMs": 126840,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 126840,
+            "endMs": 126880,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 126880,
+            "endMs": 126920,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 126920,
+            "endMs": 126960,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 126960,
+            "endMs": 127000,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 127000,
+            "endMs": 127040,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 127920,
+            "endMs": 127960,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 134640,
+            "endMs": 134680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 134680,
+            "endMs": 134720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 134720,
+            "endMs": 134760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 134760,
+            "endMs": 134800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 134800,
+            "endMs": 134840,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 134840,
+            "endMs": 134880,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 134880,
+            "endMs": 134920,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 134920,
+            "endMs": 134960,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 134960,
+            "endMs": 135000,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 135000,
+            "endMs": 135040,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 135040,
+            "endMs": 135080,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 135080,
+            "endMs": 135120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 135120,
+            "endMs": 135160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 135160,
+            "endMs": 135200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "You Wanna Cry",
+            "startMs": 135200,
+            "endMs": 135240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 117280,
+            "endMs": 117320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 117320,
+            "endMs": 117360,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 117360,
+            "endMs": 117400,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 117400,
+            "endMs": 117440,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 173800,
+            "endMs": 173840,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 173840,
+            "endMs": 173880,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 173880,
+            "endMs": 173920,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 173920,
+            "endMs": 173960,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 173960,
+            "endMs": 174000,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174000,
+            "endMs": 174040,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174040,
+            "endMs": 174080,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174080,
+            "endMs": 174120,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174120,
+            "endMs": 174160,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174160,
+            "endMs": 174200,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174200,
+            "endMs": 174240,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174240,
+            "endMs": 174280,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174280,
+            "endMs": 174320,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174320,
+            "endMs": 174360,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174360,
+            "endMs": 174400,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174400,
+            "endMs": 174440,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174440,
+            "endMs": 174480,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174480,
+            "endMs": 174520,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174520,
+            "endMs": 174560,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174560,
+            "endMs": 174600,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174600,
+            "endMs": 174640,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174640,
+            "endMs": 174680,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174680,
+            "endMs": 174720,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174720,
+            "endMs": 174760,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174760,
+            "endMs": 174800,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174800,
+            "endMs": 174840,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174840,
+            "endMs": 174880,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174880,
+            "endMs": 174920,
+            "members": [
+                "Liz",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        }
+    ]
+}

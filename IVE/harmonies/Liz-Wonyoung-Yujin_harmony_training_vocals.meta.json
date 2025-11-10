@@ -1,0 +1,74 @@
+{
+    "group": "IVE",
+    "type": "harmony",
+    "member": null,
+    "members": [
+        "Liz",
+        "Wonyoung",
+        "Yujin"
+    ],
+    "sampleRate": 22050,
+    "chunkDurationMs": 40,
+    "segments": [
+        {
+            "origSong": "Flu",
+            "startMs": 154320,
+            "endMs": 154360,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 154360,
+            "endMs": 154400,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 154400,
+            "endMs": 154440,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 129760,
+            "endMs": 129800,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 129800,
+            "endMs": 129840,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        }
+    ]
+}

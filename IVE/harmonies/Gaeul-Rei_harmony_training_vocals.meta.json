@@ -1,0 +1,629 @@
+{
+    "group": "IVE",
+    "type": "harmony",
+    "member": null,
+    "members": [
+        "Gaeul",
+        "Rei"
+    ],
+    "sampleRate": 22050,
+    "chunkDurationMs": 40,
+    "segments": [
+        {
+            "origSong": "Blue Blood",
+            "startMs": 47640,
+            "endMs": 47680,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 48280,
+            "endMs": 48320,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 48320,
+            "endMs": 48360,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 81040,
+            "endMs": 81080,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 81080,
+            "endMs": 81120,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 81120,
+            "endMs": 81160,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 81160,
+            "endMs": 81200,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 81200,
+            "endMs": 81240,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 81240,
+            "endMs": 81280,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 81360,
+            "endMs": 81400,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 81400,
+            "endMs": 81440,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 81440,
+            "endMs": 81480,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 102800,
+            "endMs": 102840,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 102840,
+            "endMs": 102880,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 102880,
+            "endMs": 102920,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 79800,
+            "endMs": 79840,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 79840,
+            "endMs": 79880,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 79880,
+            "endMs": 79920,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 79920,
+            "endMs": 79960,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 79960,
+            "endMs": 80000,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 80000,
+            "endMs": 80040,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 80040,
+            "endMs": 80080,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 80080,
+            "endMs": 80120,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 80120,
+            "endMs": 80160,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84080,
+            "endMs": 84120,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84120,
+            "endMs": 84160,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84160,
+            "endMs": 84200,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84200,
+            "endMs": 84240,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84240,
+            "endMs": 84280,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84280,
+            "endMs": 84320,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84320,
+            "endMs": 84360,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84360,
+            "endMs": 84400,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84400,
+            "endMs": 84440,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84440,
+            "endMs": 84480,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 177760,
+            "endMs": 177800,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 177800,
+            "endMs": 177840,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 177840,
+            "endMs": 177880,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 177880,
+            "endMs": 177920,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 177920,
+            "endMs": 177960,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 140400,
+            "endMs": 140440,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 140440,
+            "endMs": 140480,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Rebel Heart",
+            "startMs": 71040,
+            "endMs": 71080,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Rebel Heart",
+            "startMs": 71080,
+            "endMs": 71120,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 73240,
+            "endMs": 73280,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 73280,
+            "endMs": 73320,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 77760,
+            "endMs": 77800,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 77800,
+            "endMs": 77840,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 77840,
+            "endMs": 77880,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 77280,
+            "endMs": 77320,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 77320,
+            "endMs": 77360,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 77360,
+            "endMs": 77400,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 77400,
+            "endMs": 77440,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 77440,
+            "endMs": 77480,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 77480,
+            "endMs": 77520,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 77520,
+            "endMs": 77560,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 77560,
+            "endMs": 77600,
+            "members": [
+                "Rei",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        }
+    ]
+}

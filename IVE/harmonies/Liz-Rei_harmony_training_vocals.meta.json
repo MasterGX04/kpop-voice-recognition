@@ -1,0 +1,2983 @@
+{
+    "group": "IVE",
+    "type": "harmony",
+    "member": null,
+    "members": [
+        "Liz",
+        "Rei"
+    ],
+    "sampleRate": 22050,
+    "chunkDurationMs": 40,
+    "segments": [
+        {
+            "origSong": "Baddie",
+            "startMs": 141080,
+            "endMs": 141120,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141120,
+            "endMs": 141160,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141160,
+            "endMs": 141200,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141200,
+            "endMs": 141240,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141240,
+            "endMs": 141280,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141280,
+            "endMs": 141320,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141320,
+            "endMs": 141360,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141360,
+            "endMs": 141400,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141400,
+            "endMs": 141440,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141440,
+            "endMs": 141480,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141480,
+            "endMs": 141520,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141520,
+            "endMs": 141560,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141560,
+            "endMs": 141600,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141600,
+            "endMs": 141640,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141640,
+            "endMs": 141680,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141680,
+            "endMs": 141720,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141720,
+            "endMs": 141760,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141760,
+            "endMs": 141800,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141800,
+            "endMs": 141840,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141840,
+            "endMs": 141880,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141880,
+            "endMs": 141920,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141920,
+            "endMs": 141960,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 141960,
+            "endMs": 142000,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142000,
+            "endMs": 142040,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142040,
+            "endMs": 142080,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142080,
+            "endMs": 142120,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142120,
+            "endMs": 142160,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142160,
+            "endMs": 142200,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142200,
+            "endMs": 142240,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142240,
+            "endMs": 142280,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142280,
+            "endMs": 142320,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142320,
+            "endMs": 142360,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142360,
+            "endMs": 142400,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142400,
+            "endMs": 142440,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142440,
+            "endMs": 142480,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142480,
+            "endMs": 142520,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142520,
+            "endMs": 142560,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142560,
+            "endMs": 142600,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142600,
+            "endMs": 142640,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142640,
+            "endMs": 142680,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142680,
+            "endMs": 142720,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142720,
+            "endMs": 142760,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142760,
+            "endMs": 142800,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142800,
+            "endMs": 142840,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142840,
+            "endMs": 142880,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142880,
+            "endMs": 142920,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142920,
+            "endMs": 142960,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 142960,
+            "endMs": 143000,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 143000,
+            "endMs": 143040,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 143040,
+            "endMs": 143080,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 143080,
+            "endMs": 143120,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 143120,
+            "endMs": 143160,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 143160,
+            "endMs": 143200,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 143200,
+            "endMs": 143240,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 143240,
+            "endMs": 143280,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 143280,
+            "endMs": 143320,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 143320,
+            "endMs": 143360,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 143360,
+            "endMs": 143400,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 143400,
+            "endMs": 143440,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 143440,
+            "endMs": 143480,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 143480,
+            "endMs": 143520,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144080,
+            "endMs": 144120,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144120,
+            "endMs": 144160,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144160,
+            "endMs": 144200,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144200,
+            "endMs": 144240,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144240,
+            "endMs": 144280,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144280,
+            "endMs": 144320,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144320,
+            "endMs": 144360,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144360,
+            "endMs": 144400,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144400,
+            "endMs": 144440,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144440,
+            "endMs": 144480,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144480,
+            "endMs": 144520,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144520,
+            "endMs": 144560,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144560,
+            "endMs": 144600,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144600,
+            "endMs": 144640,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144640,
+            "endMs": 144680,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144680,
+            "endMs": 144720,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144720,
+            "endMs": 144760,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144760,
+            "endMs": 144800,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144800,
+            "endMs": 144840,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144840,
+            "endMs": 144880,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144880,
+            "endMs": 144920,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144920,
+            "endMs": 144960,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 144960,
+            "endMs": 145000,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145000,
+            "endMs": 145040,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145040,
+            "endMs": 145080,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145080,
+            "endMs": 145120,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145120,
+            "endMs": 145160,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145160,
+            "endMs": 145200,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145200,
+            "endMs": 145240,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145240,
+            "endMs": 145280,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145280,
+            "endMs": 145320,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145320,
+            "endMs": 145360,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145360,
+            "endMs": 145400,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145400,
+            "endMs": 145440,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145440,
+            "endMs": 145480,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145480,
+            "endMs": 145520,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145520,
+            "endMs": 145560,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145560,
+            "endMs": 145600,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145600,
+            "endMs": 145640,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145640,
+            "endMs": 145680,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145680,
+            "endMs": 145720,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145720,
+            "endMs": 145760,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145760,
+            "endMs": 145800,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145800,
+            "endMs": 145840,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145840,
+            "endMs": 145880,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145880,
+            "endMs": 145920,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 145920,
+            "endMs": 145960,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179080,
+            "endMs": 179120,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179120,
+            "endMs": 179160,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179160,
+            "endMs": 179200,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179200,
+            "endMs": 179240,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179240,
+            "endMs": 179280,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179280,
+            "endMs": 179320,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179320,
+            "endMs": 179360,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179360,
+            "endMs": 179400,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179400,
+            "endMs": 179440,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179440,
+            "endMs": 179480,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179480,
+            "endMs": 179520,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179520,
+            "endMs": 179560,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179560,
+            "endMs": 179600,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179600,
+            "endMs": 179640,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179640,
+            "endMs": 179680,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179680,
+            "endMs": 179720,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179720,
+            "endMs": 179760,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179760,
+            "endMs": 179800,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179800,
+            "endMs": 179840,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179840,
+            "endMs": 179880,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 179880,
+            "endMs": 179920,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 183440,
+            "endMs": 183480,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 183480,
+            "endMs": 183520,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 183520,
+            "endMs": 183560,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 183560,
+            "endMs": 183600,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 183600,
+            "endMs": 183640,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 183640,
+            "endMs": 183680,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 183680,
+            "endMs": 183720,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 183720,
+            "endMs": 183760,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 133400,
+            "endMs": 133440,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 80320,
+            "endMs": 80360,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 80360,
+            "endMs": 80400,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 80400,
+            "endMs": 80440,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 80440,
+            "endMs": 80480,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 80480,
+            "endMs": 80520,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 80520,
+            "endMs": 80560,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 80560,
+            "endMs": 80600,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 80600,
+            "endMs": 80640,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 80640,
+            "endMs": 80680,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 80680,
+            "endMs": 80720,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 80720,
+            "endMs": 80760,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 81240,
+            "endMs": 81280,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 81280,
+            "endMs": 81320,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 81320,
+            "endMs": 81360,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 81360,
+            "endMs": 81400,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 81400,
+            "endMs": 81440,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Mine",
+            "startMs": 37840,
+            "endMs": 37880,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 56440,
+            "endMs": 56480,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 56480,
+            "endMs": 56520,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 56520,
+            "endMs": 56560,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 56560,
+            "endMs": 56600,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 56600,
+            "endMs": 56640,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 56640,
+            "endMs": 56680,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 56680,
+            "endMs": 56720,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 56720,
+            "endMs": 56760,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 56760,
+            "endMs": 56800,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 56800,
+            "endMs": 56840,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 56840,
+            "endMs": 56880,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 56880,
+            "endMs": 56920,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 112440,
+            "endMs": 112480,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 112480,
+            "endMs": 112520,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 112520,
+            "endMs": 112560,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 112560,
+            "endMs": 112600,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 112600,
+            "endMs": 112640,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 112640,
+            "endMs": 112680,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 112680,
+            "endMs": 112720,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 112720,
+            "endMs": 112760,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 112760,
+            "endMs": 112800,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 112800,
+            "endMs": 112840,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 112840,
+            "endMs": 112880,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 112880,
+            "endMs": 112920,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 112920,
+            "endMs": 112960,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 112960,
+            "endMs": 113000,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 136400,
+            "endMs": 136440,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 136440,
+            "endMs": 136480,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 159280,
+            "endMs": 159320,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 159320,
+            "endMs": 159360,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 159360,
+            "endMs": 159400,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 159400,
+            "endMs": 159440,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 159440,
+            "endMs": 159480,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 159480,
+            "endMs": 159520,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 159520,
+            "endMs": 159560,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 159560,
+            "endMs": 159600,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 159600,
+            "endMs": 159640,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 159640,
+            "endMs": 159680,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 159680,
+            "endMs": 159720,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 159720,
+            "endMs": 159760,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 159760,
+            "endMs": 159800,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 160320,
+            "endMs": 160360,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 160360,
+            "endMs": 160400,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 160400,
+            "endMs": 160440,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 160440,
+            "endMs": 160480,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 160480,
+            "endMs": 160520,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 160520,
+            "endMs": 160560,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 160560,
+            "endMs": 160600,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 160600,
+            "endMs": 160640,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 160640,
+            "endMs": 160680,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 160680,
+            "endMs": 160720,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 160720,
+            "endMs": 160760,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 160760,
+            "endMs": 160800,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 160800,
+            "endMs": 160840,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 160840,
+            "endMs": 160880,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 160880,
+            "endMs": 160920,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 160920,
+            "endMs": 160960,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 160960,
+            "endMs": 161000,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161000,
+            "endMs": 161040,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161040,
+            "endMs": 161080,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161080,
+            "endMs": 161120,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161120,
+            "endMs": 161160,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161160,
+            "endMs": 161200,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161200,
+            "endMs": 161240,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161240,
+            "endMs": 161280,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161280,
+            "endMs": 161320,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161320,
+            "endMs": 161360,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161360,
+            "endMs": 161400,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161400,
+            "endMs": 161440,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161440,
+            "endMs": 161480,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161480,
+            "endMs": 161520,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161520,
+            "endMs": 161560,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161560,
+            "endMs": 161600,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161600,
+            "endMs": 161640,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161640,
+            "endMs": 161680,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161680,
+            "endMs": 161720,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161720,
+            "endMs": 161760,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161760,
+            "endMs": 161800,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161800,
+            "endMs": 161840,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161840,
+            "endMs": 161880,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161880,
+            "endMs": 161920,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161920,
+            "endMs": 161960,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 161960,
+            "endMs": 162000,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162000,
+            "endMs": 162040,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162040,
+            "endMs": 162080,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162080,
+            "endMs": 162120,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 162120,
+            "endMs": 162160,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 75400,
+            "endMs": 75440,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 75440,
+            "endMs": 75480,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 75480,
+            "endMs": 75520,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93160,
+            "endMs": 93200,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93200,
+            "endMs": 93240,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93240,
+            "endMs": 93280,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93280,
+            "endMs": 93320,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93320,
+            "endMs": 93360,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93360,
+            "endMs": 93400,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93400,
+            "endMs": 93440,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93440,
+            "endMs": 93480,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93480,
+            "endMs": 93520,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93520,
+            "endMs": 93560,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93560,
+            "endMs": 93600,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93600,
+            "endMs": 93640,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93640,
+            "endMs": 93680,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93680,
+            "endMs": 93720,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93720,
+            "endMs": 93760,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93760,
+            "endMs": 93800,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93800,
+            "endMs": 93840,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93840,
+            "endMs": 93880,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93880,
+            "endMs": 93920,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93920,
+            "endMs": 93960,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93960,
+            "endMs": 94000,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 137960,
+            "endMs": 138000,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 138000,
+            "endMs": 138040,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 138040,
+            "endMs": 138080,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 138080,
+            "endMs": 138120,
+            "members": [
+                "Rei",
+                "Liz"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        }
+    ]
+}

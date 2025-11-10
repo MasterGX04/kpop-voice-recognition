@@ -1,0 +1,2059 @@
+{
+    "group": "IVE",
+    "type": "harmony",
+    "member": null,
+    "members": [
+        "Gaeul",
+        "Leeseo"
+    ],
+    "sampleRate": 22050,
+    "chunkDurationMs": 40,
+    "segments": [
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 25720,
+            "endMs": 25760,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 25760,
+            "endMs": 25800,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 8000,
+            "endMs": 8040,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 8040,
+            "endMs": 8080,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 8080,
+            "endMs": 8120,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 96160,
+            "endMs": 96200,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 96720,
+            "endMs": 96760,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 96760,
+            "endMs": 96800,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 96800,
+            "endMs": 96840,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 97400,
+            "endMs": 97440,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 97440,
+            "endMs": 97480,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 97480,
+            "endMs": 97520,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 97520,
+            "endMs": 97560,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 97560,
+            "endMs": 97600,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 97600,
+            "endMs": 97640,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 97640,
+            "endMs": 97680,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 97920,
+            "endMs": 97960,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 97960,
+            "endMs": 98000,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 98000,
+            "endMs": 98040,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 98040,
+            "endMs": 98080,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 101000,
+            "endMs": 101040,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 101040,
+            "endMs": 101080,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 101520,
+            "endMs": 101560,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 101560,
+            "endMs": 101600,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 101600,
+            "endMs": 101640,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 101640,
+            "endMs": 101680,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 101680,
+            "endMs": 101720,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 102240,
+            "endMs": 102280,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 102280,
+            "endMs": 102320,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 102320,
+            "endMs": 102360,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 102360,
+            "endMs": 102400,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 121240,
+            "endMs": 121280,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 121280,
+            "endMs": 121320,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 121320,
+            "endMs": 121360,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 121360,
+            "endMs": 121400,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 121400,
+            "endMs": 121440,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 121440,
+            "endMs": 121480,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 121480,
+            "endMs": 121520,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 121520,
+            "endMs": 121560,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 121560,
+            "endMs": 121600,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 121600,
+            "endMs": 121640,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 121640,
+            "endMs": 121680,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 121680,
+            "endMs": 121720,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 121720,
+            "endMs": 121760,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 121760,
+            "endMs": 121800,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 121800,
+            "endMs": 121840,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 121840,
+            "endMs": 121880,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 121880,
+            "endMs": 121920,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 121920,
+            "endMs": 121960,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 121960,
+            "endMs": 122000,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122000,
+            "endMs": 122040,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122040,
+            "endMs": 122080,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122080,
+            "endMs": 122120,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122120,
+            "endMs": 122160,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122160,
+            "endMs": 122200,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122200,
+            "endMs": 122240,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122240,
+            "endMs": 122280,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122280,
+            "endMs": 122320,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122320,
+            "endMs": 122360,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122360,
+            "endMs": 122400,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122400,
+            "endMs": 122440,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122440,
+            "endMs": 122480,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122480,
+            "endMs": 122520,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122520,
+            "endMs": 122560,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122560,
+            "endMs": 122600,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122600,
+            "endMs": 122640,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122640,
+            "endMs": 122680,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122680,
+            "endMs": 122720,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122720,
+            "endMs": 122760,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122760,
+            "endMs": 122800,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122800,
+            "endMs": 122840,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 122840,
+            "endMs": 122880,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 124760,
+            "endMs": 124800,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 124800,
+            "endMs": 124840,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 124840,
+            "endMs": 124880,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 124880,
+            "endMs": 124920,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 154400,
+            "endMs": 154440,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 78160,
+            "endMs": 78200,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 78200,
+            "endMs": 78240,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 78240,
+            "endMs": 78280,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 86800,
+            "endMs": 86840,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 86840,
+            "endMs": 86880,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 86880,
+            "endMs": 86920,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 86920,
+            "endMs": 86960,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 86960,
+            "endMs": 87000,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 87000,
+            "endMs": 87040,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 87040,
+            "endMs": 87080,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 87080,
+            "endMs": 87120,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 87120,
+            "endMs": 87160,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 87160,
+            "endMs": 87200,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 87200,
+            "endMs": 87240,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 87240,
+            "endMs": 87280,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 87280,
+            "endMs": 87320,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 87320,
+            "endMs": 87360,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 36480,
+            "endMs": 36520,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 36520,
+            "endMs": 36560,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 95280,
+            "endMs": 95320,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 126440,
+            "endMs": 126480,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "My Satisfaction",
+            "startMs": 126480,
+            "endMs": 126520,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 108880,
+            "endMs": 108920,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 108920,
+            "endMs": 108960,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 108960,
+            "endMs": 109000,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 109000,
+            "endMs": 109040,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 109040,
+            "endMs": 109080,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 109080,
+            "endMs": 109120,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 109120,
+            "endMs": 109160,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 109160,
+            "endMs": 109200,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 109200,
+            "endMs": 109240,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 109240,
+            "endMs": 109280,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 109280,
+            "endMs": 109320,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 109320,
+            "endMs": 109360,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 109360,
+            "endMs": 109400,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183040,
+            "endMs": 183080,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183080,
+            "endMs": 183120,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183120,
+            "endMs": 183160,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183160,
+            "endMs": 183200,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183200,
+            "endMs": 183240,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183240,
+            "endMs": 183280,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183280,
+            "endMs": 183320,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183320,
+            "endMs": 183360,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183360,
+            "endMs": 183400,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183400,
+            "endMs": 183440,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183440,
+            "endMs": 183480,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183480,
+            "endMs": 183520,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183520,
+            "endMs": 183560,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183560,
+            "endMs": 183600,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183600,
+            "endMs": 183640,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183640,
+            "endMs": 183680,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183680,
+            "endMs": 183720,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183720,
+            "endMs": 183760,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183760,
+            "endMs": 183800,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183800,
+            "endMs": 183840,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183840,
+            "endMs": 183880,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183880,
+            "endMs": 183920,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183920,
+            "endMs": 183960,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 183960,
+            "endMs": 184000,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 184000,
+            "endMs": 184040,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 184040,
+            "endMs": 184080,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 184080,
+            "endMs": 184120,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 184120,
+            "endMs": 184160,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 184160,
+            "endMs": 184200,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 184200,
+            "endMs": 184240,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 184240,
+            "endMs": 184280,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 143840,
+            "endMs": 143880,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 143880,
+            "endMs": 143920,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 143920,
+            "endMs": 143960,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 144960,
+            "endMs": 145000,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 145000,
+            "endMs": 145040,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 145040,
+            "endMs": 145080,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 145080,
+            "endMs": 145120,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 145120,
+            "endMs": 145160,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 145160,
+            "endMs": 145200,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 146080,
+            "endMs": 146120,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 146120,
+            "endMs": 146160,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 147280,
+            "endMs": 147320,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 147320,
+            "endMs": 147360,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 147360,
+            "endMs": 147400,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 147400,
+            "endMs": 147440,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 147440,
+            "endMs": 147480,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 149240,
+            "endMs": 149280,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 149280,
+            "endMs": 149320,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 149320,
+            "endMs": 149360,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 149360,
+            "endMs": 149400,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 149400,
+            "endMs": 149440,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 149440,
+            "endMs": 149480,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 149480,
+            "endMs": 149520,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 149520,
+            "endMs": 149560,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 149560,
+            "endMs": 149600,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 149600,
+            "endMs": 149640,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 149640,
+            "endMs": 149680,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 149680,
+            "endMs": 149720,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 149720,
+            "endMs": 149760,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 149760,
+            "endMs": 149800,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 149800,
+            "endMs": 149840,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 149840,
+            "endMs": 149880,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 149880,
+            "endMs": 149920,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 149920,
+            "endMs": 149960,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 149960,
+            "endMs": 150000,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 150000,
+            "endMs": 150040,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 150040,
+            "endMs": 150080,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 150080,
+            "endMs": 150120,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 150120,
+            "endMs": 150160,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 150160,
+            "endMs": 150200,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 88000,
+            "endMs": 88040,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 88040,
+            "endMs": 88080,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 88080,
+            "endMs": 88120,
+            "members": [
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        }
+    ]
+}

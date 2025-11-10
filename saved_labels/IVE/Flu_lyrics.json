@@ -1,0 +1,322 @@
+[
+    {
+        "language": "Korean",
+        "memberName": [
+            "Yujin"
+        ],
+        "korean": "넌 좀 해로운 flu\n간질간질해\n이 느낌은 설렘보다는 왠지 toxic",
+        "romanization": "neon jom haeroun flu\nganjilganjilhae\ni neukkimeun seollembodaneun waenji toxic",
+        "english": "You’re a harmful flu\nIt’s itchy\nThis is not a feeling of excitement It’s rather toxic",
+        "startChunk": 101
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Liz"
+        ],
+        "korean": "Something’s not okay\n알아갈수록 무거운 내 feeling\n내가 네게 걸린 거야 Oh my god",
+        "romanization": "Something’s not okay\naragalsurok mugeoun nae feeling\nnaega nege geollin geoya",
+        "english": "Something’s not okay\nThe more I know you, the more I feel heavy-hearted\nI’m caught by you, Oh my god",
+        "startChunk": 348
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Gaeul"
+        ],
+        "korean": "숨길 생각 없는 your lie",
+        "romanization": "sumgil saenggak eomneun your lie",
+        "english": "You have to no intention of hiding your lie",
+        "startChunk": 555
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Rei"
+        ],
+        "korean": "뻔히 보는 내 눈엔 cry",
+        "romanization": "ppeonhi boneun nae nunen cry",
+        "english": "You can clearly see me cry",
+        "startChunk": 651
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Leeseo"
+        ],
+        "korean": "미열이 자꾸 올라 멀쩡한 그 애보다\n널 앓고 있는 게 더 사랑 같아 난",
+        "romanization": "miyeoli jakku olla meoljjeonghan geu aeboda\nneol alko inneun ge deo sarang gata nan",
+        "english": "I keep having a slight fever\nI’m in pain because of you, I guess this is love",
+        "startChunk": 716
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Yujin"
+        ],
+        "korean": "Don’t you let me down 넌 좀 해로운 flu\n다정하지만 네 말투는 so cool",
+        "romanization": "Don’t you let me down neon jom haeroun flu\ndajeonghajiman ne maltuneun so cool",
+        "english": "Don’t you let me down, You’re quite a harmful flu\nYou’re sweet, but your tone is so cool",
+        "startChunk": 916
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Wonyoung"
+        ],
+        "korean": "넌 나에게 분 바람 falling for you\n낫게 하지 마 넌 좀 해로운 flu",
+        "romanization": "neon naege bun baram falling for you\nnatge haji ma neon jom haeroun flu",
+        "english": "You came to me like a wind, falling for you\nDon’t make me get well, You’re a harmful flu",
+        "startChunk": 1106
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Liz"
+        ],
+        "korean": "콜록대면서도 난 한밤중\n너를 꿈꾸고 있어 all night long",
+        "romanization": "kollokdaemyeonseodo nan hanbamjung\nneoreul kkumkkugo isseo all night long",
+        "english": "I keep coughing in the middle of the night\nBut I still dream about you all night long",
+        "startChunk": 1318
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Yujin"
+        ],
+        "korean": "따끔대면서도 날 못 멈출\nOh 넌 좀 해로운 flu",
+        "romanization": "ttakkeumdaemyeonseodo nal mot meomchul\nOh neon jom haeroun flu",
+        "english": "It tingles, but you can’t stop me\nOh You’re a harmful flu",
+        "startChunk": 1507
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Wonyoung"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Wanna be your love fool",
+        "startChunk": 1708
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Leeseo"
+        ],
+        "korean": "어지러운데",
+        "romanization": "eojireounde",
+        "english": "I feel dizzy",
+        "startChunk": 1766
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Rei"
+        ],
+        "korean": "나른한 기분이 꽤\n가눌 수 없는 게 싫지 않네",
+        "romanization": "nareunhan gibuni kkwae\nganul su eomneun ge shilchi anne",
+        "english": "And I get drowsy\nIt’s not bad to hold no more",
+        "startChunk": 1802
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Leeseo"
+        ],
+        "korean": "내가 좀 왠지 너에겐 취약해",
+        "romanization": "naega jom waenji neoegen chwiyakhae",
+        "english": "I’m somewhat vulnerable to you",
+        "startChunk": 1886
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Gaeul"
+        ],
+        "korean": "(이런 애가 아닌데)",
+        "romanization": "(ireon aega aninde)",
+        "english": "(This is not like me)",
+        "startChunk": 1945
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Rei"
+        ],
+        "korean": "Yeah yeah 약을 툭 털어\n꾹 삼켜봐도 안 나을 거야 난 아마",
+        "romanization": "Yeah yeah yageul tuk teoreo\nkkuk samkyeobwado an naeul geoya nan ama",
+        "english": "Yeah yeah I pop pills\nStill, I don’t think I’ll get better",
+        "startChunk": 1986
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Gaeul"
+        ],
+        "korean": "(백신이 없는 virus)",
+        "romanization": "(baekshini eomneun virus)",
+        "english": "(A virus with no vaccine)",
+        "startChunk": 2076
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Leeseo"
+        ],
+        "korean": "단단히 난 걸린 거야 Oh my god",
+        "romanization": "dandanhi nan geollin geoya Oh my god",
+        "english": "I caught a really bad flu, Oh my god",
+        "startChunk": 2103
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Gaeul"
+        ],
+        "korean": "숨길 생각 없는 your lie",
+        "romanization": "sumgil saenggak eomneun your lie",
+        "english": "You have to no intention of hiding your lie",
+        "startChunk": 2161
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Rei"
+        ],
+        "korean": "뻔히 보는 내 눈엔 cry",
+        "romanization": "ppeonhi boneun nae nunen cry",
+        "english": "You can clearly see me cry",
+        "startChunk": 2258
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Leeseo"
+        ],
+        "korean": "정상은 아닐 거야 견디기 아프지만\n널 앓고 있는 게 더 사랑 같아 난",
+        "romanization": "jeongsangeun anil geoya gyeondigi apeujiman\nneol alhgo inneun ge deo sarang gata nan",
+        "english": "It’s hard to bear this\nI’m in pain because of you, I guess this is love",
+        "startChunk": 2327
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Yujin"
+        ],
+        "korean": "Don’t you let me down 넌 좀 해로운 flu\n다정하지만 네 말투는 so cool",
+        "romanization": "Don’t you let me down neon jom haeroun flu\ndajeonghajiman ne maltuneun so cool",
+        "english": "Don’t you let me down, You’re quite a harmful flu\nYou’re sweet, but your tone is so cool",
+        "startChunk": 2523
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Wonyoung"
+        ],
+        "korean": "넌 나에게 분 바람 falling for you\n낫게 하지 마 넌 좀 해로운 flu",
+        "romanization": "neon naege bun baram falling for you\nnatge haji ma neon jom haeroun flu",
+        "english": "You came to me like a wind, falling for you\nDon’t make me get well, You’re a harmful flu",
+        "startChunk": 2713
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Liz"
+        ],
+        "korean": "콜록대면서도 난 한밤중\n너를 꿈꾸고 있어 all night long",
+        "romanization": "kollokdaemyeonseodo nan hanbamjung\nneoreul kkumkkugo isseo all night long",
+        "english": "I keep coughing in the middle of the night\nBut I still dream about you all night long",
+        "startChunk": 2925
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Yujin"
+        ],
+        "korean": "따끔대면서도 날 못 멈출\nOh 넌 좀 해로운 flu",
+        "romanization": "ttakkeumdaemyeonseodo nal mot meomchul\nOh neon jom haeroun flu",
+        "english": "It tingles, but you can’t stop me\nOh You’re a harmful flu",
+        "startChunk": 3113
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Gaeul"
+        ],
+        "korean": "계속 빠져가 for you\n내 온몸이 알아 넌 wrong way",
+        "romanization": "gyesok ppajyeoga for you\nnae onmomi ara neon wrong way",
+        "english": "I keep falling for you\nMy whole body knows you’re wrong way",
+        "startChunk": 3313
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Leeseo"
+        ],
+        "korean": "짧은 열병 끝에\n오래 울게 돼도 one more shot",
+        "romanization": "jjalbeun yeolbyeong kkeute\norae ulge dwaedo one more shot",
+        "english": "After a short fever\nEven after a long cry, one more shot",
+        "startChunk": 3517
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Yujin"
+        ],
+        "korean": "Don’t you let me down 넌 좀 해로운 flu\n다정하지만 네 말투는 so cool",
+        "romanization": "Don’t you let me down neon jom haeroun flu\ndajeonghajiman ne maltuneun so cool",
+        "english": "Don’t you let me down, You’re quite a harmful flu\nYou’re sweet, but your tone is so cool",
+        "startChunk": 3652
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Wonyoung"
+        ],
+        "korean": "넌 나에게 분 바람 falling for you\n낫게 하지 마 넌 좀 해로운 flu",
+        "romanization": "neon naege bun baram falling for you\nnatge haji ma neon jom haeroun flu",
+        "english": "You came to me like a wind, falling for you\nDon’t make me get well, You’re a harmful flu",
+        "startChunk": 3849
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Liz"
+        ],
+        "korean": "콜록대면서도 난 한밤중\n너를 꿈꾸고 있어 all night long",
+        "romanization": "kollokdaemyeonseodo nan hanbamjung\nneoreul kkumkkugo isseo all night long",
+        "english": "I keep coughing in the middle of the night\nBut I still dream about you all night long",
+        "startChunk": 4059
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Yujin"
+        ],
+        "korean": "따끔대면서도 날 못 멈출\nOh 넌 좀 해로운 flu",
+        "romanization": "ttakkeumdaemyeonseodo nal mot meomchul\nOh neon jom haeroun flu",
+        "english": "It tingles, but you can’t stop me\nOh You’re a harmful flu",
+        "startChunk": 4247
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Rei"
+        ],
+        "korean": "Oh 너는 나에게 분\nOh 아주 지독한 flu",
+        "romanization": "Oh neoneun naege bun\nOh aju jidokhan flu",
+        "english": "Oh you came to me like a wind\nOh You’re a very nasty flu",
+        "startChunk": 4435
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Wonyoung"
+        ],
+        "korean": "Oh 넌 좀 해로운 flu",
+        "romanization": "Oh neon jom haeroun flu",
+        "english": "Oh You’re a harmful flu",
+        "startChunk": 4626
+    }
+]

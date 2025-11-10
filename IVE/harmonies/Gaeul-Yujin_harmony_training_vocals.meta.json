@@ -1,0 +1,2026 @@
+{
+    "group": "IVE",
+    "type": "harmony",
+    "member": null,
+    "members": [
+        "Gaeul",
+        "Yujin"
+    ],
+    "sampleRate": 22050,
+    "chunkDurationMs": 40,
+    "segments": [
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 128160,
+            "endMs": 128200,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 128200,
+            "endMs": 128240,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 128240,
+            "endMs": 128280,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 128280,
+            "endMs": 128320,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 128320,
+            "endMs": 128360,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 128360,
+            "endMs": 128400,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 129280,
+            "endMs": 129320,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 129320,
+            "endMs": 129360,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 129360,
+            "endMs": 129400,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 129400,
+            "endMs": 129440,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 129440,
+            "endMs": 129480,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 40160,
+            "endMs": 40200,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 151320,
+            "endMs": 151360,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 151360,
+            "endMs": 151400,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 50040,
+            "endMs": 50080,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 50080,
+            "endMs": 50120,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 66600,
+            "endMs": 66640,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 130840,
+            "endMs": 130880,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 130880,
+            "endMs": 130920,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161200,
+            "endMs": 161240,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161240,
+            "endMs": 161280,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161280,
+            "endMs": 161320,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161320,
+            "endMs": 161360,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161360,
+            "endMs": 161400,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161400,
+            "endMs": 161440,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161440,
+            "endMs": 161480,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161480,
+            "endMs": 161520,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161520,
+            "endMs": 161560,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161560,
+            "endMs": 161600,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161600,
+            "endMs": 161640,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161640,
+            "endMs": 161680,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161680,
+            "endMs": 161720,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161720,
+            "endMs": 161760,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161760,
+            "endMs": 161800,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161800,
+            "endMs": 161840,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161840,
+            "endMs": 161880,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161880,
+            "endMs": 161920,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161920,
+            "endMs": 161960,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161960,
+            "endMs": 162000,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 162000,
+            "endMs": 162040,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 162040,
+            "endMs": 162080,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 162080,
+            "endMs": 162120,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 162120,
+            "endMs": 162160,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 162160,
+            "endMs": 162200,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 162200,
+            "endMs": 162240,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 162240,
+            "endMs": 162280,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 162280,
+            "endMs": 162320,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 162320,
+            "endMs": 162360,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 162360,
+            "endMs": 162400,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 162400,
+            "endMs": 162440,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 162440,
+            "endMs": 162480,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 162480,
+            "endMs": 162520,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 162520,
+            "endMs": 162560,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 162560,
+            "endMs": 162600,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 162600,
+            "endMs": 162640,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 162640,
+            "endMs": 162680,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 162680,
+            "endMs": 162720,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 176200,
+            "endMs": 176240,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 135120,
+            "endMs": 135160,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Mine",
+            "startMs": 52720,
+            "endMs": 52760,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Mine",
+            "startMs": 116200,
+            "endMs": 116240,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Mine",
+            "startMs": 177840,
+            "endMs": 177880,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Rebel Heart",
+            "startMs": 50680,
+            "endMs": 50720,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Rebel Heart",
+            "startMs": 50720,
+            "endMs": 50760,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Rebel Heart",
+            "startMs": 50760,
+            "endMs": 50800,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 165320,
+            "endMs": 165360,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 165360,
+            "endMs": 165400,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 165400,
+            "endMs": 165440,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 165440,
+            "endMs": 165480,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 165480,
+            "endMs": 165520,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 165520,
+            "endMs": 165560,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 165560,
+            "endMs": 165600,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 165600,
+            "endMs": 165640,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 165640,
+            "endMs": 165680,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 165680,
+            "endMs": 165720,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 165720,
+            "endMs": 165760,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 165760,
+            "endMs": 165800,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 165800,
+            "endMs": 165840,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 165840,
+            "endMs": 165880,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 165880,
+            "endMs": 165920,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 165920,
+            "endMs": 165960,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 165960,
+            "endMs": 166000,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 166000,
+            "endMs": 166040,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 166040,
+            "endMs": 166080,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 166080,
+            "endMs": 166120,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 166120,
+            "endMs": 166160,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 166160,
+            "endMs": 166200,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 166200,
+            "endMs": 166240,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 166240,
+            "endMs": 166280,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 166280,
+            "endMs": 166320,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 170240,
+            "endMs": 170280,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 170280,
+            "endMs": 170320,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 170320,
+            "endMs": 170360,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 170360,
+            "endMs": 170400,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 170400,
+            "endMs": 170440,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 170440,
+            "endMs": 170480,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 170480,
+            "endMs": 170520,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 170520,
+            "endMs": 170560,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 170560,
+            "endMs": 170600,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 170600,
+            "endMs": 170640,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 170640,
+            "endMs": 170680,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 170680,
+            "endMs": 170720,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 170720,
+            "endMs": 170760,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 170760,
+            "endMs": 170800,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 170800,
+            "endMs": 170840,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 170840,
+            "endMs": 170880,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 170880,
+            "endMs": 170920,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 170920,
+            "endMs": 170960,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 170960,
+            "endMs": 171000,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171000,
+            "endMs": 171040,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171040,
+            "endMs": 171080,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171080,
+            "endMs": 171120,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171120,
+            "endMs": 171160,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171160,
+            "endMs": 171200,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171200,
+            "endMs": 171240,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171240,
+            "endMs": 171280,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171280,
+            "endMs": 171320,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171320,
+            "endMs": 171360,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171360,
+            "endMs": 171400,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171400,
+            "endMs": 171440,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171440,
+            "endMs": 171480,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171480,
+            "endMs": 171520,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171520,
+            "endMs": 171560,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171560,
+            "endMs": 171600,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171600,
+            "endMs": 171640,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171640,
+            "endMs": 171680,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171680,
+            "endMs": 171720,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171720,
+            "endMs": 171760,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171760,
+            "endMs": 171800,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171800,
+            "endMs": 171840,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171840,
+            "endMs": 171880,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171880,
+            "endMs": 171920,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171920,
+            "endMs": 171960,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 171960,
+            "endMs": 172000,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 172000,
+            "endMs": 172040,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 172040,
+            "endMs": 172080,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 172080,
+            "endMs": 172120,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 172120,
+            "endMs": 172160,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 172160,
+            "endMs": 172200,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 172200,
+            "endMs": 172240,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 174960,
+            "endMs": 175000,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175000,
+            "endMs": 175040,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175040,
+            "endMs": 175080,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175080,
+            "endMs": 175120,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175120,
+            "endMs": 175160,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175160,
+            "endMs": 175200,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175200,
+            "endMs": 175240,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175240,
+            "endMs": 175280,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175280,
+            "endMs": 175320,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175320,
+            "endMs": 175360,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175360,
+            "endMs": 175400,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175400,
+            "endMs": 175440,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175440,
+            "endMs": 175480,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175480,
+            "endMs": 175520,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175520,
+            "endMs": 175560,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175560,
+            "endMs": 175600,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175600,
+            "endMs": 175640,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175640,
+            "endMs": 175680,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175680,
+            "endMs": 175720,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175720,
+            "endMs": 175760,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175760,
+            "endMs": 175800,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175800,
+            "endMs": 175840,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175840,
+            "endMs": 175880,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175880,
+            "endMs": 175920,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175920,
+            "endMs": 175960,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 175960,
+            "endMs": 176000,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 176000,
+            "endMs": 176040,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 176040,
+            "endMs": 176080,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 176080,
+            "endMs": 176120,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 176120,
+            "endMs": 176160,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 176160,
+            "endMs": 176200,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 176200,
+            "endMs": 176240,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 176240,
+            "endMs": 176280,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 176280,
+            "endMs": 176320,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 176320,
+            "endMs": 176360,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 176360,
+            "endMs": 176400,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 176400,
+            "endMs": 176440,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 176440,
+            "endMs": 176480,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 176480,
+            "endMs": 176520,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 176520,
+            "endMs": 176560,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 176560,
+            "endMs": 176600,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 176600,
+            "endMs": 176640,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 176640,
+            "endMs": 176680,
+            "members": [
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        }
+    ]
+}

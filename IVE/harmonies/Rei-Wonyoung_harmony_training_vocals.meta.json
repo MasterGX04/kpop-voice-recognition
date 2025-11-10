@@ -1,0 +1,618 @@
+{
+    "group": "IVE",
+    "type": "harmony",
+    "member": null,
+    "members": [
+        "Rei",
+        "Wonyoung"
+    ],
+    "sampleRate": 22050,
+    "chunkDurationMs": 40,
+    "segments": [
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 9720,
+            "endMs": 9760,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 9760,
+            "endMs": 9800,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 9800,
+            "endMs": 9840,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 9840,
+            "endMs": 9880,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 9880,
+            "endMs": 9920,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 9920,
+            "endMs": 9960,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 13280,
+            "endMs": 13320,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 13800,
+            "endMs": 13840,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 13840,
+            "endMs": 13880,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 13880,
+            "endMs": 13920,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 13920,
+            "endMs": 13960,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 13960,
+            "endMs": 14000,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 14000,
+            "endMs": 14040,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 14040,
+            "endMs": 14080,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 14080,
+            "endMs": 14120,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 146000,
+            "endMs": 146040,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 146040,
+            "endMs": 146080,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 52560,
+            "endMs": 52600,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 52600,
+            "endMs": 52640,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 52640,
+            "endMs": 52680,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 52680,
+            "endMs": 52720,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 52720,
+            "endMs": 52760,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 52760,
+            "endMs": 52800,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 52800,
+            "endMs": 52840,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 53760,
+            "endMs": 53800,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 53800,
+            "endMs": 53840,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 53840,
+            "endMs": 53880,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 53880,
+            "endMs": 53920,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 53920,
+            "endMs": 53960,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 53960,
+            "endMs": 54000,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 54000,
+            "endMs": 54040,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 54040,
+            "endMs": 54080,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 54080,
+            "endMs": 54120,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 54120,
+            "endMs": 54160,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 54160,
+            "endMs": 54200,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 54400,
+            "endMs": 54440,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 54440,
+            "endMs": 54480,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 54480,
+            "endMs": 54520,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 54520,
+            "endMs": 54560,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 88400,
+            "endMs": 88440,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 88440,
+            "endMs": 88480,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Rebel Heart",
+            "startMs": 22080,
+            "endMs": 22120,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Rebel Heart",
+            "startMs": 22120,
+            "endMs": 22160,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Rebel Heart",
+            "startMs": 22160,
+            "endMs": 22200,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Rebel Heart",
+            "startMs": 22200,
+            "endMs": 22240,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Rebel Heart",
+            "startMs": 22840,
+            "endMs": 22880,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Rebel Heart",
+            "startMs": 22880,
+            "endMs": 22920,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Rebel Heart",
+            "startMs": 22920,
+            "endMs": 22960,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Rebel Heart",
+            "startMs": 22960,
+            "endMs": 23000,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Rebel Heart",
+            "startMs": 82320,
+            "endMs": 82360,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Rebel Heart",
+            "startMs": 82360,
+            "endMs": 82400,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Rebel Heart",
+            "startMs": 82400,
+            "endMs": 82440,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 27320,
+            "endMs": 27360,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 27360,
+            "endMs": 27400,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 27400,
+            "endMs": 27440,
+            "members": [
+                "Rei",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        }
+    ]
+}

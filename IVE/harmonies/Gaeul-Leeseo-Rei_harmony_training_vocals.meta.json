@@ -1,0 +1,302 @@
+{
+    "group": "IVE",
+    "type": "harmony",
+    "member": null,
+    "members": [
+        "Gaeul",
+        "Leeseo",
+        "Rei"
+    ],
+    "sampleRate": 22050,
+    "chunkDurationMs": 40,
+    "segments": [
+        {
+            "origSong": "Flu",
+            "startMs": 84480,
+            "endMs": 84520,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84520,
+            "endMs": 84560,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84560,
+            "endMs": 84600,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84600,
+            "endMs": 84640,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84640,
+            "endMs": 84680,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84680,
+            "endMs": 84720,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84720,
+            "endMs": 84760,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84760,
+            "endMs": 84800,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84800,
+            "endMs": 84840,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84840,
+            "endMs": 84880,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84880,
+            "endMs": 84920,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84920,
+            "endMs": 84960,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 84960,
+            "endMs": 85000,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 85000,
+            "endMs": 85040,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 146760,
+            "endMs": 146800,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 146800,
+            "endMs": 146840,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 146840,
+            "endMs": 146880,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 146880,
+            "endMs": 146920,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 146920,
+            "endMs": 146960,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 146960,
+            "endMs": 147000,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 147000,
+            "endMs": 147040,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 147040,
+            "endMs": 147080,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 147080,
+            "endMs": 147120,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 147120,
+            "endMs": 147160,
+            "members": [
+                "Rei",
+                "Leeseo",
+                "Gaeul"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        }
+    ]
+}

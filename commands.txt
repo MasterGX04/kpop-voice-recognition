@@ -1,0 +1,12 @@
+python train_kpop_singers.py `
+  --root "K:\Python Projects\Voice Recognition\" `
+  --group "IVE" `
+  --sr_in 22050 `
+  --sr_ecapa 16000
+  --chunk-sec 2.0 `
+  --epochs 20 `
+  --batch-size 32 `
+  --lr 1e-3 `
+  --val-split 0.15 `
+  --num-workers 8 `
+  --save-dir "K:\Python Projects\Voice Recognition\models\"

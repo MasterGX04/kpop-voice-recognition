@@ -1,0 +1,288 @@
+{
+    "group": "IVE",
+    "type": "harmony",
+    "member": null,
+    "members": [
+        "Gaeul",
+        "Wonyoung"
+    ],
+    "sampleRate": 22050,
+    "chunkDurationMs": 40,
+    "segments": [
+        {
+            "origSong": "Accendio",
+            "startMs": 55840,
+            "endMs": 55880,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 86000,
+            "endMs": 86040,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 86040,
+            "endMs": 86080,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 126480,
+            "endMs": 126520,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 126520,
+            "endMs": 126560,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 126560,
+            "endMs": 126600,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 74880,
+            "endMs": 74920,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 74920,
+            "endMs": 74960,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 74960,
+            "endMs": 75000,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 75000,
+            "endMs": 75040,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 75040,
+            "endMs": 75080,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 75080,
+            "endMs": 75120,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 75120,
+            "endMs": 75160,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 151520,
+            "endMs": 151560,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 153800,
+            "endMs": 153840,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 153840,
+            "endMs": 153880,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 153880,
+            "endMs": 153920,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 153920,
+            "endMs": 153960,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 153960,
+            "endMs": 154000,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 154000,
+            "endMs": 154040,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 154040,
+            "endMs": 154080,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 154080,
+            "endMs": 154120,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 154120,
+            "endMs": 154160,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 154160,
+            "endMs": 154200,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 119360,
+            "endMs": 119400,
+            "members": [
+                "Gaeul",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        }
+    ]
+}

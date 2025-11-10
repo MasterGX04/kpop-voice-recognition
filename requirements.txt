@@ -1,0 +1,13 @@
+numpy
+opencv-python
+torchaudio
+torch
+pydub
+tqdm
+scikit-learn
+matplotlib
+librosa
+Pillow
+transformers
+pygame
+speechbrain

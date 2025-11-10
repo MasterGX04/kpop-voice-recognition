@@ -1,0 +1,242 @@
+{
+    "group": "IVE",
+    "type": "harmony",
+    "member": null,
+    "members": [
+        "Gaeul",
+        "Liz",
+        "Yujin"
+    ],
+    "sampleRate": 22050,
+    "chunkDurationMs": 40,
+    "segments": [
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 176200,
+            "endMs": 176240,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 176240,
+            "endMs": 176280,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 176280,
+            "endMs": 176320,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 176320,
+            "endMs": 176360,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 176360,
+            "endMs": 176400,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 176400,
+            "endMs": 176440,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 176440,
+            "endMs": 176480,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 176480,
+            "endMs": 176520,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 176520,
+            "endMs": 176560,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 176560,
+            "endMs": 176600,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 176600,
+            "endMs": 176640,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 176640,
+            "endMs": 176680,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 176680,
+            "endMs": 176720,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 176720,
+            "endMs": 176760,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 176760,
+            "endMs": 176800,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 176800,
+            "endMs": 176840,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 176840,
+            "endMs": 176880,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 176880,
+            "endMs": 176920,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 162720,
+            "endMs": 162760,
+            "members": [
+                "Liz",
+                "Yujin",
+                "Gaeul"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        }
+    ]
+}

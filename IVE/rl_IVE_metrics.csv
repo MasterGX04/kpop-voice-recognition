@@ -1,0 +1,4 @@
+Song Name,Episode,Total Reward,Prediction Distribution,Loss,Time
+Accendio,1,1464.0,"{'Gaeul': 0.0925, 'Yujin': 0.1715, 'Rei': 0.1206, 'Wonyoung': 0.1975, 'Liz': 0.1123, 'Leeseo': 0.184, 'None': 0.3243}",2.7377,1357.16
+Accendio,1,1455.0,"{'Gaeul': 0.0894, 'Yujin': 0.1788, 'Rei': 0.1279, 'Wonyoung': 0.1881, 'Liz': 0.1123, 'Leeseo': 0.1788, 'None': 0.3378}",2.7905,1357.43
+Accendio,1,1453.5,"{'Gaeul': 0.0946, 'Yujin': 0.1757, 'Rei': 0.1247, 'Wonyoung': 0.1881, 'Liz': 0.1247, 'Leeseo': 0.1881, 'None': 0.3462}",2.7843,1359.96

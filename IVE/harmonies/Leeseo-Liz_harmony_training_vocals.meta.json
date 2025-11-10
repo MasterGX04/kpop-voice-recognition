@@ -1,0 +1,6481 @@
+{
+    "group": "IVE",
+    "type": "harmony",
+    "member": null,
+    "members": [
+        "Leeseo",
+        "Liz"
+    ],
+    "sampleRate": 22050,
+    "chunkDurationMs": 40,
+    "segments": [
+        {
+            "origSong": "Accendio",
+            "startMs": 167280,
+            "endMs": 167320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 93440,
+            "endMs": 93480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 93480,
+            "endMs": 93520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Blue Blood",
+            "startMs": 93520,
+            "endMs": 93560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 38240,
+            "endMs": 38280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 38280,
+            "endMs": 38320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 38320,
+            "endMs": 38360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 154160,
+            "endMs": 154200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 154200,
+            "endMs": 154240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 154240,
+            "endMs": 154280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 154280,
+            "endMs": 154320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 154320,
+            "endMs": 154360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 154360,
+            "endMs": 154400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 154400,
+            "endMs": 154440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 154440,
+            "endMs": 154480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 154480,
+            "endMs": 154520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 154520,
+            "endMs": 154560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 154560,
+            "endMs": 154600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155160,
+            "endMs": 155200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155200,
+            "endMs": 155240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155240,
+            "endMs": 155280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155280,
+            "endMs": 155320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155320,
+            "endMs": 155360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155360,
+            "endMs": 155400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155400,
+            "endMs": 155440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155440,
+            "endMs": 155480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155480,
+            "endMs": 155520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155520,
+            "endMs": 155560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155560,
+            "endMs": 155600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155600,
+            "endMs": 155640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155640,
+            "endMs": 155680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155680,
+            "endMs": 155720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155720,
+            "endMs": 155760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155760,
+            "endMs": 155800,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155800,
+            "endMs": 155840,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155840,
+            "endMs": 155880,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155880,
+            "endMs": 155920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155920,
+            "endMs": 155960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 155960,
+            "endMs": 156000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 156000,
+            "endMs": 156040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 156040,
+            "endMs": 156080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 156080,
+            "endMs": 156120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 156120,
+            "endMs": 156160,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 156160,
+            "endMs": 156200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 156200,
+            "endMs": 156240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 156240,
+            "endMs": 156280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 156280,
+            "endMs": 156320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 156320,
+            "endMs": 156360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 156360,
+            "endMs": 156400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 156400,
+            "endMs": 156440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 156440,
+            "endMs": 156480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 156480,
+            "endMs": 156520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 156520,
+            "endMs": 156560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 156560,
+            "endMs": 156600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 159880,
+            "endMs": 159920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 159920,
+            "endMs": 159960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 159960,
+            "endMs": 160000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 160000,
+            "endMs": 160040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 160040,
+            "endMs": 160080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 160080,
+            "endMs": 160120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 160120,
+            "endMs": 160160,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 160160,
+            "endMs": 160200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 160200,
+            "endMs": 160240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 160240,
+            "endMs": 160280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 160280,
+            "endMs": 160320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 160320,
+            "endMs": 160360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 160360,
+            "endMs": 160400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 160400,
+            "endMs": 160440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 160440,
+            "endMs": 160480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 160480,
+            "endMs": 160520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 160520,
+            "endMs": 160560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 160560,
+            "endMs": 160600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 160600,
+            "endMs": 160640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 160640,
+            "endMs": 160680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Blue Heart",
+            "startMs": 160680,
+            "endMs": 160720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 17920,
+            "endMs": 17960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 96880,
+            "endMs": 96920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 96920,
+            "endMs": 96960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 96960,
+            "endMs": 97000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 97000,
+            "endMs": 97040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 97040,
+            "endMs": 97080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 110160,
+            "endMs": 110200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 110200,
+            "endMs": 110240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 110240,
+            "endMs": 110280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 14520,
+            "endMs": 14560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 14560,
+            "endMs": 14600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 15040,
+            "endMs": 15080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 15080,
+            "endMs": 15120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 15120,
+            "endMs": 15160,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 15160,
+            "endMs": 15200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 88160,
+            "endMs": 88200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 70400,
+            "endMs": 70440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 70440,
+            "endMs": 70480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 70480,
+            "endMs": 70520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 70520,
+            "endMs": 70560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 70560,
+            "endMs": 70600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 70600,
+            "endMs": 70640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 70640,
+            "endMs": 70680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 70680,
+            "endMs": 70720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 70720,
+            "endMs": 70760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 70760,
+            "endMs": 70800,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 70800,
+            "endMs": 70840,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 70840,
+            "endMs": 70880,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 70880,
+            "endMs": 70920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 70920,
+            "endMs": 70960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 70960,
+            "endMs": 71000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71000,
+            "endMs": 71040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71040,
+            "endMs": 71080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71080,
+            "endMs": 71120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71120,
+            "endMs": 71160,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71160,
+            "endMs": 71200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71200,
+            "endMs": 71240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71240,
+            "endMs": 71280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71280,
+            "endMs": 71320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71320,
+            "endMs": 71360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71360,
+            "endMs": 71400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71400,
+            "endMs": 71440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71440,
+            "endMs": 71480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71480,
+            "endMs": 71520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71520,
+            "endMs": 71560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71560,
+            "endMs": 71600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71600,
+            "endMs": 71640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71640,
+            "endMs": 71680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71680,
+            "endMs": 71720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71720,
+            "endMs": 71760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71760,
+            "endMs": 71800,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71800,
+            "endMs": 71840,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71840,
+            "endMs": 71880,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71880,
+            "endMs": 71920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71920,
+            "endMs": 71960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 71960,
+            "endMs": 72000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 72000,
+            "endMs": 72040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 72040,
+            "endMs": 72080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 72080,
+            "endMs": 72120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 72120,
+            "endMs": 72160,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 72160,
+            "endMs": 72200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 72200,
+            "endMs": 72240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 72240,
+            "endMs": 72280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 72280,
+            "endMs": 72320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 72320,
+            "endMs": 72360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 72360,
+            "endMs": 72400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 72400,
+            "endMs": 72440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 72440,
+            "endMs": 72480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 108880,
+            "endMs": 108920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 108920,
+            "endMs": 108960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 108960,
+            "endMs": 109000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109000,
+            "endMs": 109040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109040,
+            "endMs": 109080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109080,
+            "endMs": 109120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109120,
+            "endMs": 109160,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109160,
+            "endMs": 109200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109200,
+            "endMs": 109240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109240,
+            "endMs": 109280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109280,
+            "endMs": 109320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109320,
+            "endMs": 109360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109360,
+            "endMs": 109400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109400,
+            "endMs": 109440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109440,
+            "endMs": 109480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109480,
+            "endMs": 109520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109520,
+            "endMs": 109560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109560,
+            "endMs": 109600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109600,
+            "endMs": 109640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109640,
+            "endMs": 109680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109680,
+            "endMs": 109720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109720,
+            "endMs": 109760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109760,
+            "endMs": 109800,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109800,
+            "endMs": 109840,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109840,
+            "endMs": 109880,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109880,
+            "endMs": 109920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109920,
+            "endMs": 109960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 109960,
+            "endMs": 110000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 110000,
+            "endMs": 110040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 110040,
+            "endMs": 110080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 110080,
+            "endMs": 110120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 110120,
+            "endMs": 110160,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 110160,
+            "endMs": 110200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 151280,
+            "endMs": 151320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 151320,
+            "endMs": 151360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 151360,
+            "endMs": 151400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 151400,
+            "endMs": 151440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 151440,
+            "endMs": 151480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 151480,
+            "endMs": 151520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 151520,
+            "endMs": 151560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 151560,
+            "endMs": 151600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 151600,
+            "endMs": 151640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 151640,
+            "endMs": 151680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 151680,
+            "endMs": 151720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 151720,
+            "endMs": 151760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 151760,
+            "endMs": 151800,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 151800,
+            "endMs": 151840,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 151840,
+            "endMs": 151880,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 151880,
+            "endMs": 151920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 151920,
+            "endMs": 151960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 151960,
+            "endMs": 152000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152000,
+            "endMs": 152040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152040,
+            "endMs": 152080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152080,
+            "endMs": 152120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152120,
+            "endMs": 152160,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152160,
+            "endMs": 152200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152200,
+            "endMs": 152240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152240,
+            "endMs": 152280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152280,
+            "endMs": 152320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152320,
+            "endMs": 152360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152360,
+            "endMs": 152400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152400,
+            "endMs": 152440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152440,
+            "endMs": 152480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152480,
+            "endMs": 152520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152520,
+            "endMs": 152560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152560,
+            "endMs": 152600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152600,
+            "endMs": 152640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152640,
+            "endMs": 152680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152680,
+            "endMs": 152720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152720,
+            "endMs": 152760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152760,
+            "endMs": 152800,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152800,
+            "endMs": 152840,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152840,
+            "endMs": 152880,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152880,
+            "endMs": 152920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152920,
+            "endMs": 152960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 152960,
+            "endMs": 153000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153000,
+            "endMs": 153040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153040,
+            "endMs": 153080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153080,
+            "endMs": 153120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153120,
+            "endMs": 153160,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153160,
+            "endMs": 153200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153200,
+            "endMs": 153240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153240,
+            "endMs": 153280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153280,
+            "endMs": 153320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153320,
+            "endMs": 153360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153360,
+            "endMs": 153400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153400,
+            "endMs": 153440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153440,
+            "endMs": 153480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153480,
+            "endMs": 153520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153520,
+            "endMs": 153560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153560,
+            "endMs": 153600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153600,
+            "endMs": 153640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153640,
+            "endMs": 153680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153680,
+            "endMs": 153720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153720,
+            "endMs": 153760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153760,
+            "endMs": 153800,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153800,
+            "endMs": 153840,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153840,
+            "endMs": 153880,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153880,
+            "endMs": 153920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 153920,
+            "endMs": 153960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 154240,
+            "endMs": 154280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 154280,
+            "endMs": 154320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 154320,
+            "endMs": 154360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 154360,
+            "endMs": 154400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 154400,
+            "endMs": 154440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 154440,
+            "endMs": 154480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 154480,
+            "endMs": 154520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 154520,
+            "endMs": 154560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 154560,
+            "endMs": 154600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 154600,
+            "endMs": 154640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 154640,
+            "endMs": 154680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 154680,
+            "endMs": 154720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 154720,
+            "endMs": 154760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 154760,
+            "endMs": 154800,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 154800,
+            "endMs": 154840,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 154840,
+            "endMs": 154880,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 154880,
+            "endMs": 154920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 154920,
+            "endMs": 154960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 154960,
+            "endMs": 155000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 155000,
+            "endMs": 155040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 155040,
+            "endMs": 155080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 155080,
+            "endMs": 155120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 155120,
+            "endMs": 155160,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 155160,
+            "endMs": 155200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 155200,
+            "endMs": 155240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 155240,
+            "endMs": 155280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Payback",
+            "startMs": 155280,
+            "endMs": 155320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Rebel Heart",
+            "startMs": 170720,
+            "endMs": 170760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 57840,
+            "endMs": 57880,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 57880,
+            "endMs": 57920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 57920,
+            "endMs": 57960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 57960,
+            "endMs": 58000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58000,
+            "endMs": 58040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58040,
+            "endMs": 58080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58080,
+            "endMs": 58120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58120,
+            "endMs": 58160,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58160,
+            "endMs": 58200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58200,
+            "endMs": 58240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58240,
+            "endMs": 58280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58280,
+            "endMs": 58320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58320,
+            "endMs": 58360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58360,
+            "endMs": 58400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58400,
+            "endMs": 58440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58440,
+            "endMs": 58480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58480,
+            "endMs": 58520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58520,
+            "endMs": 58560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58560,
+            "endMs": 58600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58600,
+            "endMs": 58640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58640,
+            "endMs": 58680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58680,
+            "endMs": 58720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58720,
+            "endMs": 58760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58760,
+            "endMs": 58800,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58800,
+            "endMs": 58840,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58840,
+            "endMs": 58880,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58880,
+            "endMs": 58920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58920,
+            "endMs": 58960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 58960,
+            "endMs": 59000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 59000,
+            "endMs": 59040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 59040,
+            "endMs": 59080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 59080,
+            "endMs": 59120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 141280,
+            "endMs": 141320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 141320,
+            "endMs": 141360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 141360,
+            "endMs": 141400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 141400,
+            "endMs": 141440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 141440,
+            "endMs": 141480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 141480,
+            "endMs": 141520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 141520,
+            "endMs": 141560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 141560,
+            "endMs": 141600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 141600,
+            "endMs": 141640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 141640,
+            "endMs": 141680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 141680,
+            "endMs": 141720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 141720,
+            "endMs": 141760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 141760,
+            "endMs": 141800,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 141800,
+            "endMs": 141840,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 141840,
+            "endMs": 141880,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 141880,
+            "endMs": 141920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 141920,
+            "endMs": 141960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 141960,
+            "endMs": 142000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 142000,
+            "endMs": 142040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 142040,
+            "endMs": 142080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 142080,
+            "endMs": 142120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 142120,
+            "endMs": 142160,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 142160,
+            "endMs": 142200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 142200,
+            "endMs": 142240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 142240,
+            "endMs": 142280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 142280,
+            "endMs": 142320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 142320,
+            "endMs": 142360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 142360,
+            "endMs": 142400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 142400,
+            "endMs": 142440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 142440,
+            "endMs": 142480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 142480,
+            "endMs": 142520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 142520,
+            "endMs": 142560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 142560,
+            "endMs": 142600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 142600,
+            "endMs": 142640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 185360,
+            "endMs": 185400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 185400,
+            "endMs": 185440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 185440,
+            "endMs": 185480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 185480,
+            "endMs": 185520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 185520,
+            "endMs": 185560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 185560,
+            "endMs": 185600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 185600,
+            "endMs": 185640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 185640,
+            "endMs": 185680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 185680,
+            "endMs": 185720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 185720,
+            "endMs": 185760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 185760,
+            "endMs": 185800,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 185800,
+            "endMs": 185840,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 185840,
+            "endMs": 185880,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 185880,
+            "endMs": 185920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 185920,
+            "endMs": 185960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 185960,
+            "endMs": 186000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 186000,
+            "endMs": 186040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 186040,
+            "endMs": 186080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 186880,
+            "endMs": 186920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 186920,
+            "endMs": 186960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 188480,
+            "endMs": 188520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 188520,
+            "endMs": 188560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 188560,
+            "endMs": 188600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 188600,
+            "endMs": 188640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 188640,
+            "endMs": 188680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 188680,
+            "endMs": 188720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 188720,
+            "endMs": 188760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 188760,
+            "endMs": 188800,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 188800,
+            "endMs": 188840,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 188840,
+            "endMs": 188880,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 188880,
+            "endMs": 188920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 188920,
+            "endMs": 188960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 188960,
+            "endMs": 189000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189000,
+            "endMs": 189040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189040,
+            "endMs": 189080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189080,
+            "endMs": 189120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189280,
+            "endMs": 189320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189320,
+            "endMs": 189360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189360,
+            "endMs": 189400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189400,
+            "endMs": 189440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189440,
+            "endMs": 189480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189480,
+            "endMs": 189520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189520,
+            "endMs": 189560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189560,
+            "endMs": 189600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189600,
+            "endMs": 189640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189640,
+            "endMs": 189680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189680,
+            "endMs": 189720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189720,
+            "endMs": 189760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189760,
+            "endMs": 189800,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189800,
+            "endMs": 189840,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189840,
+            "endMs": 189880,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189880,
+            "endMs": 189920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189920,
+            "endMs": 189960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 189960,
+            "endMs": 190000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 190000,
+            "endMs": 190040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 190040,
+            "endMs": 190080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 190080,
+            "endMs": 190120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 190120,
+            "endMs": 190160,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 191400,
+            "endMs": 191440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 191440,
+            "endMs": 191480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 191480,
+            "endMs": 191520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 191520,
+            "endMs": 191560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 191560,
+            "endMs": 191600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 191600,
+            "endMs": 191640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 191640,
+            "endMs": 191680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 191680,
+            "endMs": 191720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 191720,
+            "endMs": 191760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 191760,
+            "endMs": 191800,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 191800,
+            "endMs": 191840,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 191840,
+            "endMs": 191880,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 191880,
+            "endMs": 191920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 191920,
+            "endMs": 191960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 191960,
+            "endMs": 192000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 192000,
+            "endMs": 192040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 192040,
+            "endMs": 192080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 192080,
+            "endMs": 192120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 192120,
+            "endMs": 192160,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 192160,
+            "endMs": 192200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 192200,
+            "endMs": 192240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 192240,
+            "endMs": 192280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 192280,
+            "endMs": 192320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 192320,
+            "endMs": 192360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 192360,
+            "endMs": 192400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 192400,
+            "endMs": 192440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 192440,
+            "endMs": 192480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 192480,
+            "endMs": 192520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 192520,
+            "endMs": 192560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 192560,
+            "endMs": 192600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 192600,
+            "endMs": 192640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 192640,
+            "endMs": 192680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 192680,
+            "endMs": 192720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 84200,
+            "endMs": 84240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 84240,
+            "endMs": 84280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 84280,
+            "endMs": 84320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 84320,
+            "endMs": 84360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 84360,
+            "endMs": 84400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 84400,
+            "endMs": 84440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 84440,
+            "endMs": 84480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 84480,
+            "endMs": 84520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 84520,
+            "endMs": 84560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 84560,
+            "endMs": 84600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 84600,
+            "endMs": 84640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 84640,
+            "endMs": 84680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 84680,
+            "endMs": 84720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 84720,
+            "endMs": 84760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 84760,
+            "endMs": 84800,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 84800,
+            "endMs": 84840,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 84840,
+            "endMs": 84880,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 84880,
+            "endMs": 84920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 84920,
+            "endMs": 84960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 84960,
+            "endMs": 85000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 85000,
+            "endMs": 85040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 85040,
+            "endMs": 85080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 85200,
+            "endMs": 85240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 85240,
+            "endMs": 85280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 85280,
+            "endMs": 85320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 85320,
+            "endMs": 85360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 85360,
+            "endMs": 85400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 85400,
+            "endMs": 85440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 85440,
+            "endMs": 85480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 85480,
+            "endMs": 85520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 85520,
+            "endMs": 85560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 85560,
+            "endMs": 85600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 86680,
+            "endMs": 86720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 86720,
+            "endMs": 86760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 86760,
+            "endMs": 86800,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 86800,
+            "endMs": 86840,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 86840,
+            "endMs": 86880,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 86880,
+            "endMs": 86920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 86920,
+            "endMs": 86960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 86960,
+            "endMs": 87000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87000,
+            "endMs": 87040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87040,
+            "endMs": 87080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87080,
+            "endMs": 87120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87120,
+            "endMs": 87160,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87160,
+            "endMs": 87200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87200,
+            "endMs": 87240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87240,
+            "endMs": 87280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87280,
+            "endMs": 87320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87480,
+            "endMs": 87520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87520,
+            "endMs": 87560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87560,
+            "endMs": 87600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87600,
+            "endMs": 87640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87640,
+            "endMs": 87680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87680,
+            "endMs": 87720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87720,
+            "endMs": 87760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87760,
+            "endMs": 87800,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87800,
+            "endMs": 87840,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87840,
+            "endMs": 87880,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87880,
+            "endMs": 87920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87920,
+            "endMs": 87960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 87960,
+            "endMs": 88000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 88000,
+            "endMs": 88040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 88040,
+            "endMs": 88080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 88080,
+            "endMs": 88120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 88120,
+            "endMs": 88160,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 88160,
+            "endMs": 88200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89000,
+            "endMs": 89040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89040,
+            "endMs": 89080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89080,
+            "endMs": 89120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89120,
+            "endMs": 89160,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89160,
+            "endMs": 89200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89200,
+            "endMs": 89240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89240,
+            "endMs": 89280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89280,
+            "endMs": 89320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89320,
+            "endMs": 89360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89360,
+            "endMs": 89400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89400,
+            "endMs": 89440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89440,
+            "endMs": 89480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89480,
+            "endMs": 89520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89520,
+            "endMs": 89560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89560,
+            "endMs": 89600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89600,
+            "endMs": 89640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89640,
+            "endMs": 89680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89680,
+            "endMs": 89720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89720,
+            "endMs": 89760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89760,
+            "endMs": 89800,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89800,
+            "endMs": 89840,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89840,
+            "endMs": 89880,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89880,
+            "endMs": 89920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89920,
+            "endMs": 89960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 89960,
+            "endMs": 90000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 90000,
+            "endMs": 90040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 90040,
+            "endMs": 90080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 90080,
+            "endMs": 90120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 90120,
+            "endMs": 90160,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 90160,
+            "endMs": 90200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 90200,
+            "endMs": 90240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 90240,
+            "endMs": 90280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 90280,
+            "endMs": 90320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 90320,
+            "endMs": 90360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 90360,
+            "endMs": 90400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 90400,
+            "endMs": 90440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 90440,
+            "endMs": 90480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 90480,
+            "endMs": 90520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 90520,
+            "endMs": 90560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 90560,
+            "endMs": 90600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 90600,
+            "endMs": 90640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 90640,
+            "endMs": 90680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 90680,
+            "endMs": 90720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 90720,
+            "endMs": 90760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146160,
+            "endMs": 146200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146200,
+            "endMs": 146240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146240,
+            "endMs": 146280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146280,
+            "endMs": 146320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146320,
+            "endMs": 146360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146360,
+            "endMs": 146400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146400,
+            "endMs": 146440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146440,
+            "endMs": 146480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146480,
+            "endMs": 146520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146520,
+            "endMs": 146560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146560,
+            "endMs": 146600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146600,
+            "endMs": 146640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146640,
+            "endMs": 146680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146680,
+            "endMs": 146720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146720,
+            "endMs": 146760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146760,
+            "endMs": 146800,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146800,
+            "endMs": 146840,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146840,
+            "endMs": 146880,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146880,
+            "endMs": 146920,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146920,
+            "endMs": 146960,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 146960,
+            "endMs": 147000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 147000,
+            "endMs": 147040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 147040,
+            "endMs": 147080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 147080,
+            "endMs": 147120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 147120,
+            "endMs": 147160,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 147160,
+            "endMs": 147200,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 147200,
+            "endMs": 147240,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 147240,
+            "endMs": 147280,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 147280,
+            "endMs": 147320,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 147320,
+            "endMs": 147360,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 147360,
+            "endMs": 147400,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 147400,
+            "endMs": 147440,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 147440,
+            "endMs": 147480,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 147480,
+            "endMs": 147520,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 147520,
+            "endMs": 147560,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 147560,
+            "endMs": 147600,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 147600,
+            "endMs": 147640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 147640,
+            "endMs": 147680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 147680,
+            "endMs": 147720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 147720,
+            "endMs": 147760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 32600,
+            "endMs": 32640,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 32640,
+            "endMs": 32680,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 32680,
+            "endMs": 32720,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 32720,
+            "endMs": 32760,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 92960,
+            "endMs": 93000,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93000,
+            "endMs": 93040,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93040,
+            "endMs": 93080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93080,
+            "endMs": 93120,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 93120,
+            "endMs": 93160,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 148040,
+            "endMs": 148080,
+            "members": [
+                "Liz",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        }
+    ]
+}

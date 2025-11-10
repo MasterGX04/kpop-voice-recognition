@@ -1,0 +1,596 @@
+{
+    "group": "IVE",
+    "type": "harmony",
+    "member": null,
+    "members": [
+        "Leeseo",
+        "Wonyoung"
+    ],
+    "sampleRate": 22050,
+    "chunkDurationMs": 40,
+    "segments": [
+        {
+            "origSong": "Baddie",
+            "startMs": 110000,
+            "endMs": 110040,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 149760,
+            "endMs": 149800,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 149800,
+            "endMs": 149840,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 149840,
+            "endMs": 149880,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 149880,
+            "endMs": 149920,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 149920,
+            "endMs": 149960,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 149960,
+            "endMs": 150000,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150000,
+            "endMs": 150040,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150040,
+            "endMs": 150080,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150080,
+            "endMs": 150120,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150120,
+            "endMs": 150160,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150160,
+            "endMs": 150200,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150200,
+            "endMs": 150240,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150240,
+            "endMs": 150280,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150280,
+            "endMs": 150320,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150320,
+            "endMs": 150360,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150360,
+            "endMs": 150400,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150400,
+            "endMs": 150440,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150440,
+            "endMs": 150480,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150480,
+            "endMs": 150520,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150520,
+            "endMs": 150560,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150560,
+            "endMs": 150600,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150600,
+            "endMs": 150640,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150640,
+            "endMs": 150680,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150680,
+            "endMs": 150720,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150720,
+            "endMs": 150760,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150760,
+            "endMs": 150800,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150800,
+            "endMs": 150840,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150840,
+            "endMs": 150880,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150880,
+            "endMs": 150920,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150920,
+            "endMs": 150960,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 150960,
+            "endMs": 151000,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 151000,
+            "endMs": 151040,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 151040,
+            "endMs": 151080,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 151080,
+            "endMs": 151120,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 151120,
+            "endMs": 151160,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 151160,
+            "endMs": 151200,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 151200,
+            "endMs": 151240,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 151240,
+            "endMs": 151280,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 151280,
+            "endMs": 151320,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 151320,
+            "endMs": 151360,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 151360,
+            "endMs": 151400,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 154400,
+            "endMs": 154440,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 154440,
+            "endMs": 154480,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 154480,
+            "endMs": 154520,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 154520,
+            "endMs": 154560,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 154560,
+            "endMs": 154600,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 154600,
+            "endMs": 154640,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 154640,
+            "endMs": 154680,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 154680,
+            "endMs": 154720,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 154720,
+            "endMs": 154760,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 15240,
+            "endMs": 15280,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 42400,
+            "endMs": 42440,
+            "members": [
+                "Leeseo",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        }
+    ]
+}

@@ -1,0 +1,4017 @@
+{
+    "group": "IVE",
+    "type": "harmony",
+    "member": null,
+    "members": [
+        "Wonyoung",
+        "Yujin"
+    ],
+    "sampleRate": 22050,
+    "chunkDurationMs": 40,
+    "segments": [
+        {
+            "origSong": "Accendio",
+            "startMs": 126200,
+            "endMs": 126240,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 60320,
+            "endMs": 60360,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 60360,
+            "endMs": 60400,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 60400,
+            "endMs": 60440,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 60440,
+            "endMs": 60480,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 60480,
+            "endMs": 60520,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 60520,
+            "endMs": 60560,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 60560,
+            "endMs": 60600,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 60600,
+            "endMs": 60640,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 60640,
+            "endMs": 60680,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 60680,
+            "endMs": 60720,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 60720,
+            "endMs": 60760,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 60760,
+            "endMs": 60800,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 60800,
+            "endMs": 60840,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 60840,
+            "endMs": 60880,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "ATTITUDE",
+            "startMs": 60880,
+            "endMs": 60920,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 56000,
+            "endMs": 56040,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 56040,
+            "endMs": 56080,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 103600,
+            "endMs": 103640,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 103640,
+            "endMs": 103680,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 103680,
+            "endMs": 103720,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 103720,
+            "endMs": 103760,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 103760,
+            "endMs": 103800,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 103800,
+            "endMs": 103840,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 103840,
+            "endMs": 103880,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 103880,
+            "endMs": 103920,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 103920,
+            "endMs": 103960,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 103960,
+            "endMs": 104000,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 104000,
+            "endMs": 104040,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 104040,
+            "endMs": 104080,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 44600,
+            "endMs": 44640,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 44640,
+            "endMs": 44680,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 44680,
+            "endMs": 44720,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 44720,
+            "endMs": 44760,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 44760,
+            "endMs": 44800,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 44800,
+            "endMs": 44840,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 44840,
+            "endMs": 44880,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 60640,
+            "endMs": 60680,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 60680,
+            "endMs": 60720,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 60720,
+            "endMs": 60760,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 60760,
+            "endMs": 60800,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 60800,
+            "endMs": 60840,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 60840,
+            "endMs": 60880,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 60880,
+            "endMs": 60920,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 60920,
+            "endMs": 60960,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 60960,
+            "endMs": 61000,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 61000,
+            "endMs": 61040,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 61040,
+            "endMs": 61080,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 61080,
+            "endMs": 61120,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 61120,
+            "endMs": 61160,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 61160,
+            "endMs": 61200,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 61200,
+            "endMs": 61240,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 61240,
+            "endMs": 61280,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 61280,
+            "endMs": 61320,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 61320,
+            "endMs": 61360,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 61360,
+            "endMs": 61400,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 61400,
+            "endMs": 61440,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 61440,
+            "endMs": 61480,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 63680,
+            "endMs": 63720,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 63720,
+            "endMs": 63760,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 63760,
+            "endMs": 63800,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 63800,
+            "endMs": 63840,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 63840,
+            "endMs": 63880,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 63880,
+            "endMs": 63920,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 64440,
+            "endMs": 64480,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 64480,
+            "endMs": 64520,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 108880,
+            "endMs": 108920,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 108920,
+            "endMs": 108960,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 108960,
+            "endMs": 109000,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 109000,
+            "endMs": 109040,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 109040,
+            "endMs": 109080,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 109080,
+            "endMs": 109120,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 124880,
+            "endMs": 124920,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 124920,
+            "endMs": 124960,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 124960,
+            "endMs": 125000,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 125000,
+            "endMs": 125040,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 125040,
+            "endMs": 125080,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 125080,
+            "endMs": 125120,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 125120,
+            "endMs": 125160,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 125160,
+            "endMs": 125200,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 125200,
+            "endMs": 125240,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 125240,
+            "endMs": 125280,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 125280,
+            "endMs": 125320,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 125320,
+            "endMs": 125360,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 125360,
+            "endMs": 125400,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 125400,
+            "endMs": 125440,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 125440,
+            "endMs": 125480,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 125480,
+            "endMs": 125520,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 125520,
+            "endMs": 125560,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 127960,
+            "endMs": 128000,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 128000,
+            "endMs": 128040,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 128040,
+            "endMs": 128080,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 128080,
+            "endMs": 128120,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 128120,
+            "endMs": 128160,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 128680,
+            "endMs": 128720,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 160560,
+            "endMs": 160600,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 160600,
+            "endMs": 160640,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 160640,
+            "endMs": 160680,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 160680,
+            "endMs": 160720,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 160720,
+            "endMs": 160760,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 160760,
+            "endMs": 160800,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 160800,
+            "endMs": 160840,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 160840,
+            "endMs": 160880,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 160880,
+            "endMs": 160920,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 160920,
+            "endMs": 160960,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 160960,
+            "endMs": 161000,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161000,
+            "endMs": 161040,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161040,
+            "endMs": 161080,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 161080,
+            "endMs": 161120,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 170240,
+            "endMs": 170280,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 170280,
+            "endMs": 170320,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 170320,
+            "endMs": 170360,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 170360,
+            "endMs": 170400,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 170400,
+            "endMs": 170440,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 170440,
+            "endMs": 170480,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 170480,
+            "endMs": 170520,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 170520,
+            "endMs": 170560,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 170560,
+            "endMs": 170600,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 170600,
+            "endMs": 170640,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 170640,
+            "endMs": 170680,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 170680,
+            "endMs": 170720,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 170720,
+            "endMs": 170760,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 170760,
+            "endMs": 170800,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 170800,
+            "endMs": 170840,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 173280,
+            "endMs": 173320,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 173320,
+            "endMs": 173360,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 173360,
+            "endMs": 173400,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 173400,
+            "endMs": 173440,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 173440,
+            "endMs": 173480,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 173480,
+            "endMs": 173520,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 174040,
+            "endMs": 174080,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 174080,
+            "endMs": 174120,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 174120,
+            "endMs": 174160,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 40280,
+            "endMs": 40320,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 52000,
+            "endMs": 52040,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 19920,
+            "endMs": 19960,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 19960,
+            "endMs": 20000,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 20000,
+            "endMs": 20040,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 20040,
+            "endMs": 20080,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 20080,
+            "endMs": 20120,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 165520,
+            "endMs": 165560,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 165800,
+            "endMs": 165840,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 165840,
+            "endMs": 165880,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 165880,
+            "endMs": 165920,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 165920,
+            "endMs": 165960,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 165960,
+            "endMs": 166000,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166000,
+            "endMs": 166040,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166040,
+            "endMs": 166080,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166080,
+            "endMs": 166120,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166120,
+            "endMs": 166160,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166160,
+            "endMs": 166200,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166200,
+            "endMs": 166240,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166240,
+            "endMs": 166280,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166280,
+            "endMs": 166320,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166320,
+            "endMs": 166360,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166360,
+            "endMs": 166400,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166400,
+            "endMs": 166440,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166440,
+            "endMs": 166480,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166480,
+            "endMs": 166520,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166520,
+            "endMs": 166560,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166560,
+            "endMs": 166600,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166600,
+            "endMs": 166640,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166640,
+            "endMs": 166680,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166680,
+            "endMs": 166720,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166720,
+            "endMs": 166760,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166760,
+            "endMs": 166800,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166800,
+            "endMs": 166840,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166840,
+            "endMs": 166880,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166880,
+            "endMs": 166920,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166920,
+            "endMs": 166960,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 166960,
+            "endMs": 167000,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 167000,
+            "endMs": 167040,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 167040,
+            "endMs": 167080,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 167080,
+            "endMs": 167120,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 167120,
+            "endMs": 167160,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 167160,
+            "endMs": 167200,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 167200,
+            "endMs": 167240,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 167240,
+            "endMs": 167280,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 167280,
+            "endMs": 167320,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168040,
+            "endMs": 168080,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168080,
+            "endMs": 168120,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168120,
+            "endMs": 168160,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168160,
+            "endMs": 168200,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168200,
+            "endMs": 168240,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168240,
+            "endMs": 168280,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168280,
+            "endMs": 168320,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168320,
+            "endMs": 168360,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168360,
+            "endMs": 168400,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168400,
+            "endMs": 168440,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168440,
+            "endMs": 168480,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168480,
+            "endMs": 168520,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168520,
+            "endMs": 168560,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168560,
+            "endMs": 168600,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168600,
+            "endMs": 168640,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168640,
+            "endMs": 168680,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168680,
+            "endMs": 168720,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168720,
+            "endMs": 168760,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168760,
+            "endMs": 168800,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168800,
+            "endMs": 168840,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168840,
+            "endMs": 168880,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168880,
+            "endMs": 168920,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168920,
+            "endMs": 168960,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 168960,
+            "endMs": 169000,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 169000,
+            "endMs": 169040,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 169040,
+            "endMs": 169080,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 169080,
+            "endMs": 169120,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 169120,
+            "endMs": 169160,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 169160,
+            "endMs": 169200,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 169200,
+            "endMs": 169240,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 169240,
+            "endMs": 169280,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 169280,
+            "endMs": 169320,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 169320,
+            "endMs": 169360,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 169360,
+            "endMs": 169400,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 169400,
+            "endMs": 169440,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 169440,
+            "endMs": 169480,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 169480,
+            "endMs": 169520,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 169520,
+            "endMs": 169560,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 169560,
+            "endMs": 169600,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 169600,
+            "endMs": 169640,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 97800,
+            "endMs": 97840,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 97840,
+            "endMs": 97880,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 97880,
+            "endMs": 97920,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 97920,
+            "endMs": 97960,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 97960,
+            "endMs": 98000,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98000,
+            "endMs": 98040,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98040,
+            "endMs": 98080,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98080,
+            "endMs": 98120,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98120,
+            "endMs": 98160,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98160,
+            "endMs": 98200,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98200,
+            "endMs": 98240,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98240,
+            "endMs": 98280,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98280,
+            "endMs": 98320,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98320,
+            "endMs": 98360,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98360,
+            "endMs": 98400,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98400,
+            "endMs": 98440,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98440,
+            "endMs": 98480,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98480,
+            "endMs": 98520,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98520,
+            "endMs": 98560,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98560,
+            "endMs": 98600,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98600,
+            "endMs": 98640,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98640,
+            "endMs": 98680,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98680,
+            "endMs": 98720,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98720,
+            "endMs": 98760,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98760,
+            "endMs": 98800,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98800,
+            "endMs": 98840,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98840,
+            "endMs": 98880,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98880,
+            "endMs": 98920,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98920,
+            "endMs": 98960,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 98960,
+            "endMs": 99000,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 99000,
+            "endMs": 99040,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 99040,
+            "endMs": 99080,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 99080,
+            "endMs": 99120,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 99120,
+            "endMs": 99160,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 126320,
+            "endMs": 126360,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 126360,
+            "endMs": 126400,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 126400,
+            "endMs": 126440,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 126440,
+            "endMs": 126480,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 126480,
+            "endMs": 126520,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 126520,
+            "endMs": 126560,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 126560,
+            "endMs": 126600,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 126600,
+            "endMs": 126640,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 126640,
+            "endMs": 126680,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 126840,
+            "endMs": 126880,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 126880,
+            "endMs": 126920,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 126920,
+            "endMs": 126960,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 126960,
+            "endMs": 127000,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 127000,
+            "endMs": 127040,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 127040,
+            "endMs": 127080,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 127080,
+            "endMs": 127120,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 127120,
+            "endMs": 127160,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 127160,
+            "endMs": 127200,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 127200,
+            "endMs": 127240,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 127240,
+            "endMs": 127280,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 127280,
+            "endMs": 127320,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 127680,
+            "endMs": 127720,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 127720,
+            "endMs": 127760,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 127760,
+            "endMs": 127800,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 127800,
+            "endMs": 127840,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 127840,
+            "endMs": 127880,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 132400,
+            "endMs": 132440,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 132440,
+            "endMs": 132480,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 132480,
+            "endMs": 132520,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 132520,
+            "endMs": 132560,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 132560,
+            "endMs": 132600,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 132600,
+            "endMs": 132640,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 132640,
+            "endMs": 132680,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 132680,
+            "endMs": 132720,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 132720,
+            "endMs": 132760,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 132760,
+            "endMs": 132800,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 132800,
+            "endMs": 132840,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 132840,
+            "endMs": 132880,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 132880,
+            "endMs": 132920,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 132920,
+            "endMs": 132960,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 132960,
+            "endMs": 133000,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 133000,
+            "endMs": 133040,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 133040,
+            "endMs": 133080,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 133080,
+            "endMs": 133120,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 133120,
+            "endMs": 133160,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 133160,
+            "endMs": 133200,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 133200,
+            "endMs": 133240,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 133240,
+            "endMs": 133280,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 133280,
+            "endMs": 133320,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 133320,
+            "endMs": 133360,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 133360,
+            "endMs": 133400,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 133400,
+            "endMs": 133440,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 133440,
+            "endMs": 133480,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 133480,
+            "endMs": 133520,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 133520,
+            "endMs": 133560,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 133560,
+            "endMs": 133600,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 133600,
+            "endMs": 133640,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 133640,
+            "endMs": 133680,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 133680,
+            "endMs": 133720,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 133720,
+            "endMs": 133760,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 67200,
+            "endMs": 67240,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 162360,
+            "endMs": 162400,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 162400,
+            "endMs": 162440,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 162440,
+            "endMs": 162480,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 162480,
+            "endMs": 162520,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 162520,
+            "endMs": 162560,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 162560,
+            "endMs": 162600,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 162600,
+            "endMs": 162640,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 162640,
+            "endMs": 162680,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 162680,
+            "endMs": 162720,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 162720,
+            "endMs": 162760,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 162760,
+            "endMs": 162800,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 162800,
+            "endMs": 162840,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 162840,
+            "endMs": 162880,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 162880,
+            "endMs": 162920,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 162920,
+            "endMs": 162960,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 162960,
+            "endMs": 163000,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163000,
+            "endMs": 163040,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163040,
+            "endMs": 163080,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163080,
+            "endMs": 163120,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163120,
+            "endMs": 163160,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163160,
+            "endMs": 163200,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163200,
+            "endMs": 163240,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163240,
+            "endMs": 163280,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163280,
+            "endMs": 163320,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163320,
+            "endMs": 163360,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163360,
+            "endMs": 163400,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163400,
+            "endMs": 163440,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163440,
+            "endMs": 163480,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163480,
+            "endMs": 163520,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163520,
+            "endMs": 163560,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163560,
+            "endMs": 163600,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163600,
+            "endMs": 163640,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163640,
+            "endMs": 163680,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163680,
+            "endMs": 163720,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163720,
+            "endMs": 163760,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163760,
+            "endMs": 163800,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163800,
+            "endMs": 163840,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163840,
+            "endMs": 163880,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163880,
+            "endMs": 163920,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163920,
+            "endMs": 163960,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 163960,
+            "endMs": 164000,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 164000,
+            "endMs": 164040,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 164040,
+            "endMs": 164080,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 164080,
+            "endMs": 164120,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 164120,
+            "endMs": 164160,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 164160,
+            "endMs": 164200,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 164200,
+            "endMs": 164240,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 164240,
+            "endMs": 164280,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 164280,
+            "endMs": 164320,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 164320,
+            "endMs": 164360,
+            "members": [
+                "Yujin",
+                "Wonyoung"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        }
+    ]
+}

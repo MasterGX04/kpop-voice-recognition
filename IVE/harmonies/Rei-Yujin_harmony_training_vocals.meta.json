@@ -1,0 +1,1817 @@
+{
+    "group": "IVE",
+    "type": "harmony",
+    "member": null,
+    "members": [
+        "Rei",
+        "Yujin"
+    ],
+    "sampleRate": 22050,
+    "chunkDurationMs": 40,
+    "segments": [
+        {
+            "origSong": "ELEVEN",
+            "startMs": 141880,
+            "endMs": 141920,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 141920,
+            "endMs": 141960,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 141960,
+            "endMs": 142000,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 142000,
+            "endMs": 142040,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 142040,
+            "endMs": 142080,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 142080,
+            "endMs": 142120,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 142120,
+            "endMs": 142160,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 142160,
+            "endMs": 142200,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "ELEVEN",
+            "startMs": 142200,
+            "endMs": 142240,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 68920,
+            "endMs": 68960,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 68960,
+            "endMs": 69000,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 69000,
+            "endMs": 69040,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 69040,
+            "endMs": 69080,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 69080,
+            "endMs": 69120,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 69120,
+            "endMs": 69160,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 69160,
+            "endMs": 69200,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 69200,
+            "endMs": 69240,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 163440,
+            "endMs": 163480,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 163480,
+            "endMs": 163520,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 163520,
+            "endMs": 163560,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 163560,
+            "endMs": 163600,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 163600,
+            "endMs": 163640,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 163640,
+            "endMs": 163680,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 163680,
+            "endMs": 163720,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 163720,
+            "endMs": 163760,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 163760,
+            "endMs": 163800,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 163800,
+            "endMs": 163840,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 163840,
+            "endMs": 163880,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 163880,
+            "endMs": 163920,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 163920,
+            "endMs": 163960,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 163960,
+            "endMs": 164000,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 164000,
+            "endMs": 164040,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 164040,
+            "endMs": 164080,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 164080,
+            "endMs": 164120,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 164120,
+            "endMs": 164160,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 164160,
+            "endMs": 164200,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 164200,
+            "endMs": 164240,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 164240,
+            "endMs": 164280,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 164280,
+            "endMs": 164320,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 164320,
+            "endMs": 164360,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 164360,
+            "endMs": 164400,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 166240,
+            "endMs": 166280,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 166280,
+            "endMs": 166320,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 166320,
+            "endMs": 166360,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 166360,
+            "endMs": 166400,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 166400,
+            "endMs": 166440,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 166440,
+            "endMs": 166480,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 166480,
+            "endMs": 166520,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 166520,
+            "endMs": 166560,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 166560,
+            "endMs": 166600,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 166600,
+            "endMs": 166640,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 166640,
+            "endMs": 166680,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 166680,
+            "endMs": 166720,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 166720,
+            "endMs": 166760,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 166760,
+            "endMs": 166800,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 166800,
+            "endMs": 166840,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 166840,
+            "endMs": 166880,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 166880,
+            "endMs": 166920,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 166920,
+            "endMs": 166960,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 166960,
+            "endMs": 167000,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167000,
+            "endMs": 167040,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167040,
+            "endMs": 167080,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167080,
+            "endMs": 167120,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167120,
+            "endMs": 167160,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167160,
+            "endMs": 167200,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167200,
+            "endMs": 167240,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167240,
+            "endMs": 167280,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167280,
+            "endMs": 167320,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167320,
+            "endMs": 167360,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167360,
+            "endMs": 167400,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167400,
+            "endMs": 167440,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167440,
+            "endMs": 167480,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167480,
+            "endMs": 167520,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167640,
+            "endMs": 167680,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167680,
+            "endMs": 167720,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167720,
+            "endMs": 167760,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167760,
+            "endMs": 167800,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167800,
+            "endMs": 167840,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167840,
+            "endMs": 167880,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167880,
+            "endMs": 167920,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167920,
+            "endMs": 167960,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 167960,
+            "endMs": 168000,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 168000,
+            "endMs": 168040,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 168040,
+            "endMs": 168080,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 168080,
+            "endMs": 168120,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 168120,
+            "endMs": 168160,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 168160,
+            "endMs": 168200,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 168200,
+            "endMs": 168240,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 168240,
+            "endMs": 168280,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 168280,
+            "endMs": 168320,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 168320,
+            "endMs": 168360,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 168360,
+            "endMs": 168400,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 168400,
+            "endMs": 168440,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 168440,
+            "endMs": 168480,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 168480,
+            "endMs": 168520,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 168520,
+            "endMs": 168560,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 168560,
+            "endMs": 168600,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 168600,
+            "endMs": 168640,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 168640,
+            "endMs": 168680,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 168680,
+            "endMs": 168720,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169160,
+            "endMs": 169200,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169200,
+            "endMs": 169240,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169240,
+            "endMs": 169280,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169280,
+            "endMs": 169320,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169320,
+            "endMs": 169360,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169360,
+            "endMs": 169400,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169400,
+            "endMs": 169440,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169440,
+            "endMs": 169480,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169480,
+            "endMs": 169520,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169520,
+            "endMs": 169560,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169560,
+            "endMs": 169600,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169600,
+            "endMs": 169640,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169640,
+            "endMs": 169680,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169680,
+            "endMs": 169720,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169720,
+            "endMs": 169760,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169760,
+            "endMs": 169800,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169800,
+            "endMs": 169840,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169840,
+            "endMs": 169880,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169880,
+            "endMs": 169920,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169920,
+            "endMs": 169960,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 169960,
+            "endMs": 170000,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 170400,
+            "endMs": 170440,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 170440,
+            "endMs": 170480,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 170480,
+            "endMs": 170520,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 170520,
+            "endMs": 170560,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 170560,
+            "endMs": 170600,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 170600,
+            "endMs": 170640,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 170640,
+            "endMs": 170680,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 170680,
+            "endMs": 170720,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 170720,
+            "endMs": 170760,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 170760,
+            "endMs": 170800,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 170800,
+            "endMs": 170840,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 170840,
+            "endMs": 170880,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 170880,
+            "endMs": 170920,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 170920,
+            "endMs": 170960,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 170960,
+            "endMs": 171000,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 171000,
+            "endMs": 171040,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 171040,
+            "endMs": 171080,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 171080,
+            "endMs": 171120,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 171120,
+            "endMs": 171160,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 171160,
+            "endMs": 171200,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 171200,
+            "endMs": 171240,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 171240,
+            "endMs": 171280,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 171280,
+            "endMs": 171320,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 171320,
+            "endMs": 171360,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 171360,
+            "endMs": 171400,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 171400,
+            "endMs": 171440,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 171440,
+            "endMs": 171480,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 171480,
+            "endMs": 171520,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 171520,
+            "endMs": 171560,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 171560,
+            "endMs": 171600,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 171600,
+            "endMs": 171640,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Summer Festa",
+            "startMs": 171640,
+            "endMs": 171680,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 141320,
+            "endMs": 141360,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 141360,
+            "endMs": 141400,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 141400,
+            "endMs": 141440,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 141440,
+            "endMs": 141480,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 141480,
+            "endMs": 141520,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 141520,
+            "endMs": 141560,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 141560,
+            "endMs": 141600,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 141600,
+            "endMs": 141640,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 141640,
+            "endMs": 141680,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 141680,
+            "endMs": 141720,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "WOW",
+            "startMs": 141720,
+            "endMs": 141760,
+            "members": [
+                "Rei",
+                "Yujin"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        }
+    ]
+}

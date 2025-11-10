@@ -1,0 +1,47 @@
+# --- General Python cache & build ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.log
+*.tmp
+*.DS_Store
+
+# --- Virtual environments ---
+venv/
+env/
+pyannote-env/
+
+# --- OS files ---
+Thumbs.db
+.DS_Store
+
+# --- IDE and editor folders ---
+.vscode/
+.idea/
+*.swp
+
+# --- Audio and video files ---
+*.mp3
+*.wav
+*.pkl
+*.npy
+*.mp4
+*.m4a
+*.flac
+*.ogg
+
+# --- Project-specific folders to ignore ---
+audits/
+pyannote-audio/
+Retrieval-based-Voice-Conversion/
+
+# --- Temporary data, training outputs ---
+checkpoints/
+outputs/
+logs/
+data/
+tmp/
+
+overfit_test.py
+voice_classifier.py
+training_ui.py

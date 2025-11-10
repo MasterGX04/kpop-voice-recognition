@@ -1,0 +1,2807 @@
+{
+    "group": "IVE",
+    "type": "harmony",
+    "member": null,
+    "members": [
+        "Leeseo",
+        "Rei"
+    ],
+    "sampleRate": 22050,
+    "chunkDurationMs": 40,
+    "segments": [
+        {
+            "origSong": "Accendio",
+            "startMs": 46840,
+            "endMs": 46880,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 46880,
+            "endMs": 46920,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 46920,
+            "endMs": 46960,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 46960,
+            "endMs": 47000,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47000,
+            "endMs": 47040,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47040,
+            "endMs": 47080,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47080,
+            "endMs": 47120,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47120,
+            "endMs": 47160,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47160,
+            "endMs": 47200,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47200,
+            "endMs": 47240,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47240,
+            "endMs": 47280,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47280,
+            "endMs": 47320,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47320,
+            "endMs": 47360,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47360,
+            "endMs": 47400,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47400,
+            "endMs": 47440,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47440,
+            "endMs": 47480,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47480,
+            "endMs": 47520,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47520,
+            "endMs": 47560,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47560,
+            "endMs": 47600,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47600,
+            "endMs": 47640,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47640,
+            "endMs": 47680,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47680,
+            "endMs": 47720,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47720,
+            "endMs": 47760,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47760,
+            "endMs": 47800,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47800,
+            "endMs": 47840,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47840,
+            "endMs": 47880,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47880,
+            "endMs": 47920,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47920,
+            "endMs": 47960,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 47960,
+            "endMs": 48000,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 48000,
+            "endMs": 48040,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 48040,
+            "endMs": 48080,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 48080,
+            "endMs": 48120,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 48120,
+            "endMs": 48160,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 48160,
+            "endMs": 48200,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 48200,
+            "endMs": 48240,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 48240,
+            "endMs": 48280,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 48280,
+            "endMs": 48320,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 97720,
+            "endMs": 97760,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 97760,
+            "endMs": 97800,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 97800,
+            "endMs": 97840,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 97840,
+            "endMs": 97880,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 97880,
+            "endMs": 97920,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 97920,
+            "endMs": 97960,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 97960,
+            "endMs": 98000,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 98000,
+            "endMs": 98040,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 98040,
+            "endMs": 98080,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 98080,
+            "endMs": 98120,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 98120,
+            "endMs": 98160,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 98160,
+            "endMs": 98200,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117080,
+            "endMs": 117120,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117120,
+            "endMs": 117160,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117160,
+            "endMs": 117200,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117200,
+            "endMs": 117240,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117240,
+            "endMs": 117280,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117280,
+            "endMs": 117320,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117320,
+            "endMs": 117360,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117360,
+            "endMs": 117400,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117400,
+            "endMs": 117440,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117440,
+            "endMs": 117480,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117480,
+            "endMs": 117520,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117520,
+            "endMs": 117560,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117560,
+            "endMs": 117600,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117600,
+            "endMs": 117640,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117640,
+            "endMs": 117680,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117680,
+            "endMs": 117720,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117720,
+            "endMs": 117760,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117760,
+            "endMs": 117800,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117800,
+            "endMs": 117840,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117840,
+            "endMs": 117880,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117880,
+            "endMs": 117920,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117920,
+            "endMs": 117960,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 117960,
+            "endMs": 118000,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 118000,
+            "endMs": 118040,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 118040,
+            "endMs": 118080,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 118080,
+            "endMs": 118120,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 118120,
+            "endMs": 118160,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 118160,
+            "endMs": 118200,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 118200,
+            "endMs": 118240,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 118240,
+            "endMs": 118280,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 118280,
+            "endMs": 118320,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 118320,
+            "endMs": 118360,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 118360,
+            "endMs": 118400,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 118400,
+            "endMs": 118440,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 118440,
+            "endMs": 118480,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 118480,
+            "endMs": 118520,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Accendio",
+            "startMs": 118520,
+            "endMs": 118560,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 73760,
+            "endMs": 73800,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 73800,
+            "endMs": 73840,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 73840,
+            "endMs": 73880,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 139560,
+            "endMs": 139600,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 139600,
+            "endMs": 139640,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 139640,
+            "endMs": 139680,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 139680,
+            "endMs": 139720,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 139720,
+            "endMs": 139760,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 139760,
+            "endMs": 139800,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Baddie",
+            "startMs": 139800,
+            "endMs": 139840,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 29000,
+            "endMs": 29040,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 29040,
+            "endMs": 29080,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 29080,
+            "endMs": 29120,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 29120,
+            "endMs": 29160,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 29160,
+            "endMs": 29200,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 29200,
+            "endMs": 29240,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 29240,
+            "endMs": 29280,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 29280,
+            "endMs": 29320,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 29320,
+            "endMs": 29360,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 29360,
+            "endMs": 29400,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 29400,
+            "endMs": 29440,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 29440,
+            "endMs": 29480,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 29480,
+            "endMs": 29520,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 72440,
+            "endMs": 72480,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 72480,
+            "endMs": 72520,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 72520,
+            "endMs": 72560,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 72560,
+            "endMs": 72600,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 72600,
+            "endMs": 72640,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 72640,
+            "endMs": 72680,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 72680,
+            "endMs": 72720,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 75800,
+            "endMs": 75840,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 75840,
+            "endMs": 75880,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 75880,
+            "endMs": 75920,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 93440,
+            "endMs": 93480,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 93480,
+            "endMs": 93520,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 93520,
+            "endMs": 93560,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 93560,
+            "endMs": 93600,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 93600,
+            "endMs": 93640,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 93640,
+            "endMs": 93680,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 93680,
+            "endMs": 93720,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 93720,
+            "endMs": 93760,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Flu",
+            "startMs": 93760,
+            "endMs": 93800,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 16720,
+            "endMs": 16760,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 16760,
+            "endMs": 16800,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 16800,
+            "endMs": 16840,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 16840,
+            "endMs": 16880,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 16880,
+            "endMs": 16920,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 16920,
+            "endMs": 16960,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 16960,
+            "endMs": 17000,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 17000,
+            "endMs": 17040,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 122200,
+            "endMs": 122240,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 122240,
+            "endMs": 122280,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 122280,
+            "endMs": 122320,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 122320,
+            "endMs": 122360,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 122360,
+            "endMs": 122400,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 122400,
+            "endMs": 122440,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 122440,
+            "endMs": 122480,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 122480,
+            "endMs": 122520,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 122520,
+            "endMs": 122560,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 122560,
+            "endMs": 122600,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 122600,
+            "endMs": 122640,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 122640,
+            "endMs": 122680,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 122680,
+            "endMs": 122720,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 122720,
+            "endMs": 122760,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 122760,
+            "endMs": 122800,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 122800,
+            "endMs": 122840,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 122840,
+            "endMs": 122880,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 122880,
+            "endMs": 122920,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 122920,
+            "endMs": 122960,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 122960,
+            "endMs": 123000,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 123000,
+            "endMs": 123040,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 123040,
+            "endMs": 123080,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 123080,
+            "endMs": 123120,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 123120,
+            "endMs": 123160,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 123160,
+            "endMs": 123200,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 123200,
+            "endMs": 123240,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Hypnosis",
+            "startMs": 123240,
+            "endMs": 123280,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140000,
+            "endMs": 140040,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140040,
+            "endMs": 140080,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140080,
+            "endMs": 140120,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140120,
+            "endMs": 140160,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140160,
+            "endMs": 140200,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140200,
+            "endMs": 140240,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140240,
+            "endMs": 140280,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140280,
+            "endMs": 140320,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140320,
+            "endMs": 140360,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140360,
+            "endMs": 140400,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140400,
+            "endMs": 140440,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140440,
+            "endMs": 140480,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140480,
+            "endMs": 140520,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140520,
+            "endMs": 140560,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140560,
+            "endMs": 140600,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140600,
+            "endMs": 140640,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140640,
+            "endMs": 140680,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140680,
+            "endMs": 140720,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140720,
+            "endMs": 140760,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140760,
+            "endMs": 140800,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140800,
+            "endMs": 140840,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140840,
+            "endMs": 140880,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140880,
+            "endMs": 140920,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140920,
+            "endMs": 140960,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 140960,
+            "endMs": 141000,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 141000,
+            "endMs": 141040,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 141040,
+            "endMs": 141080,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 141080,
+            "endMs": 141120,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 141120,
+            "endMs": 141160,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 141160,
+            "endMs": 141200,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 141200,
+            "endMs": 141240,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 141240,
+            "endMs": 141280,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 141280,
+            "endMs": 141320,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 141320,
+            "endMs": 141360,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 141360,
+            "endMs": 141400,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 141400,
+            "endMs": 141440,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 141440,
+            "endMs": 141480,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 141480,
+            "endMs": 141520,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 141520,
+            "endMs": 141560,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 141560,
+            "endMs": 141600,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 144880,
+            "endMs": 144920,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 144920,
+            "endMs": 144960,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 144960,
+            "endMs": 145000,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145000,
+            "endMs": 145040,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145040,
+            "endMs": 145080,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145080,
+            "endMs": 145120,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145120,
+            "endMs": 145160,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145160,
+            "endMs": 145200,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145200,
+            "endMs": 145240,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145240,
+            "endMs": 145280,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145280,
+            "endMs": 145320,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145320,
+            "endMs": 145360,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145360,
+            "endMs": 145400,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145400,
+            "endMs": 145440,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145440,
+            "endMs": 145480,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145480,
+            "endMs": 145520,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145520,
+            "endMs": 145560,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145560,
+            "endMs": 145600,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145600,
+            "endMs": 145640,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145640,
+            "endMs": 145680,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145680,
+            "endMs": 145720,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145720,
+            "endMs": 145760,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145760,
+            "endMs": 145800,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145800,
+            "endMs": 145840,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145840,
+            "endMs": 145880,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145880,
+            "endMs": 145920,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145920,
+            "endMs": 145960,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 145960,
+            "endMs": 146000,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 146000,
+            "endMs": 146040,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 146040,
+            "endMs": 146080,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 146080,
+            "endMs": 146120,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 146120,
+            "endMs": 146160,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 146160,
+            "endMs": 146200,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 146200,
+            "endMs": 146240,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 146240,
+            "endMs": 146280,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 146280,
+            "endMs": 146320,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 146320,
+            "endMs": 146360,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Ice Queen",
+            "startMs": 146360,
+            "endMs": 146400,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "Rebel Heart",
+            "startMs": 28200,
+            "endMs": 28240,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "Rebel Heart",
+            "startMs": 28240,
+            "endMs": 28280,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 134720,
+            "endMs": 134760,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 134760,
+            "endMs": 134800,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 139280,
+            "endMs": 139320,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 140040,
+            "endMs": 140080,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 140080,
+            "endMs": 140120,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 140120,
+            "endMs": 140160,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 140160,
+            "endMs": 140200,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 140200,
+            "endMs": 140240,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 140240,
+            "endMs": 140280,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "TKO",
+            "startMs": 140280,
+            "endMs": 140320,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": false,
+            "isAdlib": true
+        },
+        {
+            "origSong": "해야 (HEYA)",
+            "startMs": 142800,
+            "endMs": 142840,
+            "members": [
+                "Rei",
+                "Leeseo"
+            ],
+            "isRepeat": true,
+            "isAdlib": false
+        }
+    ]
+}
