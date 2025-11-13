@@ -2,7 +2,7 @@ import numpy as np
 import torch, torchaudio, math
 import torch.nn.functional as F
 from speechbrain.inference.speaker import EncoderClassifier
-from train_kpop_singers import EcapaHead
+from train_kpop_singers import MultiLabelHead
 import os, csv
 
 @torch.no_grad()
@@ -21,7 +21,7 @@ def predict_40ms(
     emb_dim = ckpt["emb_dim"]
     model_classes = ckpt["classes"]
     
-    head = EcapaHead(ckpt["emb_dim"], len(ckpt["classes"])).to(device)
+    head = MultiLabelHead(ckpt["emb_dim"], len(ckpt["classes"])).to(device)
     head.load_state_dict(ckpt["state_dict"], strict=True)
     head.eval()
 
@@ -47,7 +47,7 @@ def predict_40ms(
     n_frames = math.ceil(T / hop_len)
     
     # buffers: accumulate logits and coverage
-    n_classes = head.classifier.out_features
+    n_classes = head.fc.out_features
     acc = torch.zeros(n_frames, n_classes, device=device)
     cov = torch.zeros(n_frames, device=device)
     
