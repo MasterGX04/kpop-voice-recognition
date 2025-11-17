@@ -319,7 +319,7 @@
         4237,
         4279,
         false,
-        true
+        false
     ],
     [
         "Liz",
@@ -340,7 +340,7 @@
         4477,
         4522,
         false,
-        true
+        false
     ],
     [
         "Gaeul",
@@ -361,6 +361,6 @@
         4589,
         4630,
         false,
-        true
+        false
     ]
 ]

@@ -269,7 +269,7 @@ class VoiceTrainerGUI:
         from sklearn.cluster import KMeans
         
         selectedGroup = self.currentGroup.get()
-        memberList = [member['name'] for member in self.groups[selectedGroup]]
+        
         
     def combineAllVocalsFromGroup(self):
         currentGroup = self.currentGroup.get()
@@ -296,7 +296,8 @@ class VoiceTrainerGUI:
             messagebox.showwarning("No Data", "No vocal or label files found.")
             return
         
-        combineMemberVocals(jsonFiles, vocalsOnlySongs, currentGroup)
+        memberList = [member['name'] for member in self.groups[currentGroup]]
+        combineMemberVocals(jsonFiles, vocalsOnlySongs, currentGroup, memberList)
         messagebox.showinfo("Done", "Combined and saved member vocals")
     
     def chooseSongForHarmonyExtraction(self):

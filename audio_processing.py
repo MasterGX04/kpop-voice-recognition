@@ -34,128 +34,138 @@ def createVocalMask(numChunks, labelList, chunkDurationMs=200):
                 vocalMask[i] = True
     return vocalMask
 
-def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, outputFormat="wav"):
-    baseDir = f"./training_data/{selectedGroup}/training_vocals"
-    harmonyDir = os.path.join(baseDir, "harmonies")
-    os.makedirs(baseDir, exist_ok=True)
-    os.makedirs(harmonyDir, exist_ok=True)
-    
-    memberSegments = collections.defaultdict(list)         
-    harmonySegments = collections.defaultdict(list)  
-    metaData = collections.defaultdict(list) 
-    
-    # Map song title → JSON file for quick lookup
-    jsonFileMap = { os.path.splitext(os.path.basename(f))[0].replace("_labels",""): f
-                    for f in jsonFiles }
-    
+def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
+    """
+    For each vocals-only song, build frame-wise label matrices and
+    save them as JSON files next to the audio.
+
+    Label semantics (per 40 ms chunk, per member):
+      - presence[c] = 1 if member c is singing anything (lead, harmony, adlib)
+      - lead[c]     = 1 if member c is 'main' (isAdLib == False) in that chunk
+      - isRepeat[c] = 1 if this chunk is part of a repeat line for that member
+      - isAdlib[c]  = 1 if this chunk is an ad-lib/background line for that member
+
+    Silence:
+      - if no members active in a chunk, presence[silence] = 1, others 0.
+    """
+    base_dir = f"./training_data/{selectedGroup}"
+    os.makedirs(base_dir, exist_ok=True)
+
+    # Map song title → JSON file
+    jsonFileMap = {
+        os.path.splitext(os.path.basename(f))[0].replace("_labels", ""): f
+        for f in jsonFiles
+    }
+
+    # Class indices
+    member_to_idx = {name: i for i, name in enumerate(members)}
+    if "silence" in (m.lower() for m in members):
+        # Find the actual "silence" member name (case-insensitive)
+        silence_name = next(m for m in members if m.lower() == "silence")
+        silence_idx = member_to_idx[silence_name]
+    else:
+        silence_name = None
+        silence_idx = None
+
     for vocalsFile in vocalsOnlySongs:
-        songTitle = os.path.basename(vocalsFile).replace("_vocals.mp3", "").replace("_vocals.wav", "")
-        print(f"Extracting vocals from {songTitle}")
+        songTitle = (
+            os.path.basename(vocalsFile)
+            .replace("_vocals.mp3", "")
+            .replace("_vocals.wav", "")
+        )
+        print(f"[build_frame_labels] Processing {songTitle}")
         jsonFilePath = jsonFileMap.get(songTitle)
-        
+
         if not jsonFilePath:
-            print(f"Warning: No matching JSON file found for {songTitle}. Skipping.")
+            print(f"  Warning: No matching JSON file found for {songTitle}. Skipping.")
             continue
 
-        with open(jsonFilePath, 'r') as file:
+        with open(jsonFilePath, 'r', encoding="utf-8") as file:
             labels = json.load(file)
-            
-        vocalsPath = os.path.join(f"./training_data/{selectedGroup}", vocalsFile)
-        audio = AudioSegment.from_file(vocalsPath).set_channels(1) # Ensure mono
-        
-        # Builds timeline of chunk-ativations: chunk index -> set of members
-        activationMap = collections.defaultdict(set)
-        repeatMap = collections.defaultdict(bool)
-        adlibMap = collections.defaultdict(bool)
+
+        # --- Build per-chunk maps from your (member, startChunk, endChunk, isRepeat, isAdlib) labels ---
+        activationMap = collections.defaultdict(set)  # chunkIdx -> {memberName}
+        repeatMap = collections.defaultdict(lambda: collections.defaultdict(bool))  # [chunk][member] -> bool
+        adlibMap  = collections.defaultdict(lambda: collections.defaultdict(bool))  # [chunk][member] -> bool
+
+        maxChunkIdx = 0
+
         for label in labels:
             memberName, startChunk, endChunk, isRepeat, isAdlib = label
             for chunkIdx in range(startChunk, endChunk):
                 activationMap[chunkIdx].add(memberName)
-                repeatMap[chunkIdx] = repeatMap[chunkIdx] or isRepeat
-                adlibMap[chunkIdx] = adlibMap[chunkIdx]  or isAdlib
-            
-        # Determine max chunk index to know timeline length
-        maxChunkIdx = max(activationMap.keys())
-        
-        # Iterate through eac hchunk interval and categorize
-        for chunkIdx in tqdm(range(maxChunkIdx + 1), desc="Processing chunks"):
+                repeatMap[chunkIdx][memberName] = (
+                    repeatMap[chunkIdx][memberName] or bool(isRepeat)
+                )
+                adlibMap[chunkIdx][memberName] = (
+                    adlibMap[chunkIdx][memberName] or bool(isAdlib)
+                )
+                if chunkIdx > maxChunkIdx:
+                    maxChunkIdx = chunkIdx
+
+        if maxChunkIdx == 0 and not activationMap:
+            print(f"  Warning: No labeled chunks for {songTitle}. Skipping.")
+            continue
+
+        num_chunks = maxChunkIdx + 1
+        C = len(members)
+
+        # Allocate label arrays: shape (num_chunks, C)
+        presence = np.zeros((num_chunks, C), dtype=np.int32)
+        lead     = np.zeros((num_chunks, C), dtype=np.int32)
+        isRepeat_arr = np.zeros((num_chunks, C), dtype=np.int32)
+        isAdlib_arr  = np.zeros((num_chunks, C), dtype=np.int32)
+
+        # --- Fill label arrays ---
+        for chunkIdx in tqdm(range(num_chunks), desc=f"Chunks for {songTitle}"):
             activeMembers = activationMap.get(chunkIdx, set())
-            startTimeMs = chunkIdx * CHUNK_DURATION 
-            endTimeMs = (chunkIdx + 1) * CHUNK_DURATION
-            chunkAudio = audio[startTimeMs:endTimeMs]
-            
-            segmentMeta = {
-                "origSong": songTitle,
-                "startMs": startTimeMs,
-                "endMs": endTimeMs,
-                "members": list(activeMembers),
-                "isRepeat": bool(repeatMap.get(chunkIdx, False)),
-                "isAdlib":  bool(adlibMap.get(chunkIdx, False)),
-            }
-            
+
             if len(activeMembers) == 0:
-                # Silence
-                memberSegments["silence"].append(chunkAudio)
-                metaData["silence"].append(segmentMeta)
-            elif len(activeMembers) == 1:
-                # Solo Chunk
-                memberName = next(iter(activeMembers))
-                memberSegments[memberName].append(chunkAudio)
-                metaData[memberName].append(segmentMeta)
-            else:
-                # harmony chunk (two or MORE members)
-                key = frozenset(activeMembers)
-                harmonySegments[key].append(chunkAudio)
-                metaData[key].append(segmentMeta)
-            
-    # Export solo WAVs
-    for memberName, segList in memberSegments.items():
-        if not segList:
-            continue
-            
-        fullAudio = sum(segList)
-        outputPath = os.path.join(baseDir, f"{memberName}_training_vocals.{outputFormat}")
-        fullAudio.export(outputPath, format=outputFormat)
-        print(f"Saved solo member file: {outputPath}")
-        
-        metaPath = outputPath.replace(f".{outputFormat}", ".meta.json")
-        
-        with open(metaPath, "w", encoding="utf-8") as jf:
-            json.dump({
-                "group": selectedGroup,
-                "type": "solo" if memberName != "silence" else "silence",
-                "member": None if memberName == "silence" else memberName,
-                "members": [memberName] if memberName != "silence" else [],
-                "sampleRate": 22050,
-                "chunkDurationMs": CHUNK_DURATION,
-                "segments": metaData[memberName],
-            }, jf, indent=4, ensure_ascii=False)
-        print(f"🗒️  Saved metadata: {metaPath}")
-        
-    # Export harmony WAVs
-    for memberSet, segList in harmonySegments.items():
-        if not segList:
-            continue
-    
-        keyName = "-".join(sorted(memberSet))
-        fullAudio = sum(segList)
-        outputPath = os.path.join(harmonyDir, f"{keyName}_harmony_training_vocals.{outputFormat}")
-        fullAudio.export(outputPath, format=outputFormat)
-        print(f"Saved harmony file: {outputPath}")
-        
-        metaPath = outputPath.replace(f".{outputFormat}", ".meta.json")
-        with open(metaPath, "w", encoding="utf-8") as jf:
-            json.dump({
-                "group": selectedGroup,
-                "type": "harmony",
-                "member": None,
-                "members": sorted(list(memberSet)),
-                "sampleRate": 22050,
-                "chunkDurationMs": CHUNK_DURATION,
-                "segments": metaData[memberSet],
-            }, jf, indent=4, ensure_ascii=False)
-        print(f"🗒️  Saved harmony metadata: {metaPath}")
-        
+                # Silence chunk
+                if silence_idx is not None:
+                    presence[chunkIdx, silence_idx] = 1
+                    # leave lead[row] as zeros
+                continue
+
+            # Non-silence: mark per active member
+            for memberName in activeMembers:
+                if memberName not in member_to_idx:
+                    # Unknown/ignored member name in labels
+                    continue
+                m_idx = member_to_idx[memberName]
+
+                p_repeat = bool(repeatMap[chunkIdx].get(memberName, False))
+                p_adlib  = bool(adlibMap[chunkIdx].get(memberName, False))
+
+                presence[chunkIdx, m_idx] = 1
+                isRepeat_arr[chunkIdx, m_idx] = 1 if p_repeat else 0
+                isAdlib_arr[chunkIdx, m_idx]  = 1 if p_adlib else 0
+
+                # lead = active & not ad-lib
+                if not p_adlib:
+                    lead[chunkIdx, m_idx] = 1
+
+        # --- Save to JSON (you can switch to npy if you prefer) ---
+        out_labels_path = os.path.join(base_dir, f"{songTitle}_frame_labels.json")
+        out_data = {
+            "group": selectedGroup,
+            "song": songTitle,
+            "members": members,
+            "silenceName": silence_name,
+            "chunkDurationMs": CHUNK_DURATION,
+            "numChunks": int(num_chunks),
+            # store as nested lists for JSON; or you can save as .npy and keep them as arrays
+            "presence": presence.tolist(),
+            "lead": lead.tolist(),
+            "isRepeat": isRepeat_arr.tolist(),
+            "isAdlib": isAdlib_arr.tolist(),
+        }
+
+        with open(out_labels_path, "w", encoding="utf-8") as jf:
+            json.dump(out_data, jf, indent=2, ensure_ascii=False)
+
+        print(f"  ✅ Saved frame labels: {out_labels_path}")
+       
 def segmentAndSaveAudio(audioPath: str,
                         featOut: str = '',
                         rawOut: str = '',

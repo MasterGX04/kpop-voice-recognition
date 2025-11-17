@@ -137,9 +137,9 @@ class VoiceDetectionApp:
             self.videoTrackItem = VideoTrackItem(self.canvas, self, videoPath, scale=100, scaleX=self.scaleX, position=(0,0), baseHeight=720, isMusicVideo=False)
         
         # Voice detection results
-        memberList = sorted([member['name'] for member in members] + ["silence"])
+        memberList = [member['name'] for member in members] + ["silence"]
+        print(f"Member list: {memberList}")
         if os.path.exists(modelPath):
-            songNameWithout = os.path.splitext(os.path.basename(self.testSongPath))[0]
             os.makedirs("./predictions", exist_ok=True)
             labels40 = predict_40ms(
                 encoder_path="speechbrain/spkrec-ecapa-voxceleb",

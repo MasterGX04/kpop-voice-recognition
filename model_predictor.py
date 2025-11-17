@@ -1,16 +1,17 @@
 import numpy as np
 import torch, torchaudio, math
+import itertools
 import torch.nn.functional as F
 from speechbrain.inference.speaker import EncoderClassifier
 from train_kpop_singers import MultiLabelHead
+from scipy.ndimage import median_filter
 import os, csv
 
 @torch.no_grad()
 def predict_40ms(
     encoder_path: str, head_path: str, wav_path: str,
     sr_target=16000, win_sec=2.0, hop_sec=0.04, use_hann=True,
-    min_frames=3, silence_idx=None, enter_sil=0.55, exit_sil=0.45,
-    output_dir=None, class_names=[]
+    silence_idx=None, output_dir=None, class_names=None, thr=0.6
 ):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     encoder = EncoderClassifier.from_hparams(
@@ -21,7 +22,10 @@ def predict_40ms(
     emb_dim = ckpt["emb_dim"]
     model_classes = ckpt["classes"]
     
-    head = MultiLabelHead(ckpt["emb_dim"], len(ckpt["classes"])).to(device)
+    if not class_names:
+        class_names = list(model_classes)
+    
+    head = MultiLabelHead(emb_dim, len(model_classes)).to(device)
     head.load_state_dict(ckpt["state_dict"], strict=True)
     head.eval()
 
@@ -45,7 +49,6 @@ def predict_40ms(
     
     # number of 40ms frames over the audio
     n_frames = math.ceil(T / hop_len)
-    
     # buffers: accumulate logits and coverage
     n_classes = head.fc.out_features
     acc = torch.zeros(n_frames, n_classes, device=device)
@@ -70,23 +73,21 @@ def predict_40ms(
         # ECAPA wants (B, T)
         emb = encoder.encode_batch(batch).squeeze(1) # (B, D)
         logits = head(emb) # (B, C)
+        
+        n_win_frames = math.ceil(win_len / hop_len)
         # Add into per-frame accumulators
         for i, f0 in enumerate(frame_starts):
-            # Window spans frames
-            n_win_frames = math.ceil(win_len / hop_len)
-            # weight per frame (derived from Hann over samples, approximated uniformly here)
             if w is None:
-                # Uniform frame weights
                 acc[f0:f0 + n_win_frames] += logits[i]
-                cov[f0:f0 + n_win_frames] += 1
+                cov[f0:f0 + n_win_frames] += 1.0
             else:
-                # Compute per-frame weights from the Hann window
-                # Sample midpoint per frame segment
+                # Approximate Hann weighting per 40 ms frame
                 j = torch.arange(n_win_frames, device=device)
-                centers = (j * hop_len + min(hop_len, win_len) // 2).clamp(max=win_len-1)
-                weights = w[centers] + 1e-8  # avoid exact zero
+                centers = (j * hop_len + min(hop_len, win_len) // 2).clamp(max=win_len - 1)
+                weights = w[centers] + 1e-8  # avoid zeros
                 acc[f0:f0 + n_win_frames] += logits[i] * weights.unsqueeze(1)
                 cov[f0:f0 + n_win_frames] += weights
+                
         batch_windows.clear()
         frame_starts.clear()
     
@@ -103,18 +104,35 @@ def predict_40ms(
     # Normalize by coverage
     cov = cov.clamp_min(1e-6).unsqueeze(1) # n_frames, 1)
     logits_frame = acc / cov # (n_frames, C)
-    probs_frame = F.softmax(logits_frame, dim=-1)
+    probs_frame = torch.sigmoid(logits_frame) 
+    # Move to CPU numpy for decode
+    probs_np = probs_frame.detach().cpu().numpy()
+    base_thr = np.full(probs_np.shape[1], thr, dtype=np.float32)
     
-    # Raw 40 ms labels
-    pred_idx = probs_frame.argmax(dim=-1) # (n_frames,)
+    decoded_np = decode_multilabel(probs_np, per_class_thr=base_thr)
     
-    # Post processing: min_duration + silence
-    if min_frames > 1:
-        pred_idx = _enforce_min_duration(pred_idx, min_frames)
-    
+    multi_hot = torch.from_numpy(decoded_np).to(device=device, dtype=torch.bool)
+
+     # If a frame has no member above thr but you still want *someone*,
+    # you can optionally fall back to argmax (excluding silence).
     if silence_idx is not None:
-        pred_idx = _hysteresis_silence(pred_idx, probs_frame[:, silence_idx], silence_idx, enter_sil, exit_sil)
+        non_sil_mask = torch.ones(n_classes, dtype=torch.bool, device=device)
+        non_sil_mask[silence_idx] = False
+    else:
+        non_sil_mask = torch.ones(n_classes, dtype=torch.bool, device=device)
     
+    with torch.no_grad():
+        # default: argmax as a fallback
+        pred_idx = probs_frame.argmax(dim=-1)  # (n_frames,)
+        for t in range(n_frames):
+            act = multi_hot[t]  # (C,)
+            if act.any():
+                # choose the active class with highest prob
+                active_probs = probs_frame[t][act]
+                best_local = torch.argmax(active_probs)
+                active_indices = torch.where(act)[0]
+                pred_idx[t] = active_indices[best_local]
+        
     # ---- 4. Write predictions to .txt (new) ----
     if output_dir is not None:
         os.makedirs(output_dir, exist_ok=True)
@@ -125,69 +143,92 @@ def predict_40ms(
             writer = csv.writer(f)
             header = [
                 "start_time", "end_time",
-                "predicted_label", "confidence",
-                "top2_label", "top2_confidence",
-                "probabilities"
+                "main_label", "main_confidence",
+                "active_labels", "active_confidences",
+                "probabilities",
             ]
             writer.writerow(header)
+
             probs_np = probs_frame.cpu().numpy()
-            for i in range(len(pred_idx)):
+            multi_hot_np = multi_hot.cpu().numpy()
+            pred_idx_np = pred_idx.cpu().numpy()
+
+            for i in range(n_frames):
                 start_t = i * hop_sec
                 end_t = start_t + hop_sec
-                p = probs_np[i]
-                top2 = np.argsort(p)[-2:][::-1]
-                pred_name = class_names[int(pred_idx[i])] if class_names else int(pred_idx[i])
-                top2_name = class_names[top2[1]] if class_names else int(top2[1])
+
+                p = probs_np[i]              # (C,)
+                mh = multi_hot_np[i].astype(bool)
+
+                main_id = int(pred_idx_np[i])
+                main_name = class_names[main_id] if class_names else main_id
+                main_conf = float(p[main_id])
+
+                active_ids = np.where(mh)[0].tolist()
+                active_names = [class_names[j] for j in active_ids] if class_names else active_ids
+                active_confs = [float(p[j]) for j in active_ids]
+
                 row = [
                     round(start_t, 3),
                     round(end_t, 3),
-                    pred_name,
-                    float(p[int(pred_idx[i])]),
-                    top2_name,
-                    float(p[top2[1]]),
-                    "[" + ", ".join(f"{x:.3f}" for x in p) + "]"
+                    main_name,
+                    main_conf,
+                    "|".join(map(str, active_names)),
+                    "[" + ", ".join(f"{c:.3f}" for c in active_confs) + "]",
+                    "[" + ", ".join(f"{x:.3f}" for x in p) + "]",
                 ]
                 writer.writerow(row)
         print(f"✅ Saved predictions to {csv_path}")
         
     # Build segments
-    segments = []
-    cur = int(pred_idx[0]); start = 0
-    for i in range(1, len(pred_idx)):
-        if int(pred_idx[i]) != cur:
-            segments.append((start, i, cur))
-            start = i; cur = int(pred_idx[i])
-    segments.append((start, len(pred_idx), cur))
+    labels_40ms = []
+    multi_hot_np = multi_hot.cpu().numpy()
 
-    labels_40ms = [[class_names[i]] for i in pred_idx] 
+    for t in range(n_frames):
+        active_ids = np.where(multi_hot_np[t].astype(bool))[0].tolist()
+        active_names = [class_names[j] for j in active_ids] if class_names else active_ids
+        labels_40ms.append(active_names)
+        
     return labels_40ms
 
-def _enforce_min_duration(pred_idx: torch.Tensor, k: int) -> torch.Tensor:
-    # Merge runs shorter than k frames into the neighbor with higher count
-    y = pred_idx.clone()
-    i = 0
-    while i < len(y):
-        j = i + 1
-        while j < len(y) and y[j] == y[i]: j += 1
-        if (j - i) < k:
-            left = y[i-1] if i > 0 else None
-            right = y[j] if j < len(y) else None
-            y[i:j] = left if left is not None else right
-        i = j
+def smooth_probs(P, k=5):   # k odd: 5 or 7 works well for 40ms frames
+    return median_filter(P, size=(k, 1))
+
+def hysteresis_decode(p, on=0.60, off=0.45):
+    y = np.zeros_like(p, dtype=np.int32)
+    active = False
+    for i, s in enumerate(p):
+        if not active and s >= on:  active = True
+        if active and s <= off:     active = False
+        y[i] = 1 if active else 0
     return y
 
-def _hysteresis_silence(pred_idx, p_sil, silence_idx, enter=0.55, exit=0.45):
-    # Raise bar to switch into silence, lower it to exit.
-    y = pred_idx.clone()
-    in_sil = False
-    for t in range(len(y)):
-        if in_sil:
-            if p_sil[t] < exit:
-                in_sil = False
-                # choose best non-silence class
-                # (you can carry over from last non-silence instead for stability)
-        else:
-            if p_sil[t] > enter:
-                y[t] = silence_idx
-                in_sil = True
-    return y
+def min_duration(y, min_on=3, min_off=2):
+    out = y.copy()
+    for val, grp in itertools.groupby(range(len(y)), key=lambda i: y[i]):
+        idx = list(grp)
+        if val == 1 and len(idx) < min_on:  out[idx] = 0
+        if val == 0 and len(idx) < min_off: out[idx] = 1
+    return out
+
+def cap_topk(P_row, k=2):
+    keep = np.zeros_like(P_row, dtype=bool)
+    keep[np.argsort(-P_row)[:k]] = True
+    return keep
+
+def decode_multilabel(probs, per_class_thr=None, k_smooth=5, on_add=0.02, off_sub=0.02,
+                      min_on=3, min_off=2, topk=2):
+    P = smooth_probs(probs, k=k_smooth)
+    C = P.shape[1]
+    base = np.full(C, 0.50, np.float32) if per_class_thr is None else np.asarray(per_class_thr, np.float32)
+    on  = np.clip(base + on_add, 0, 1); off = np.clip(base - off_sub, 0, 1)
+
+    Y = np.zeros_like(P, dtype=np.int32)
+    for c in range(C):
+        y = hysteresis_decode(P[:, c], on=on[c], off=off[c])
+        Y[:, c] = min_duration(y, min_on=min_on, min_off=min_off)
+
+    if topk is not None:
+        for t in range(P.shape[0]):
+            Y[t] = Y[t] * cap_topk(P[t], k=topk).astype(np.int32)
+    return Y
