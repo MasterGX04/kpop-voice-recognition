@@ -106,7 +106,8 @@ class KpopVocalDataset(Dataset):
                 chunk_sec: float, num_workers: int, min_song_sec: float = 4.0,
                 pitch_prob: float = 0.3, pitch_semitones_range: Tuple[float, float] = (-2.0, 2.0),
                 window_hop_ratio: float = 0.5, presence_thresh=0.4,
-                alpha_lead=1.0, alpha_adlib = 0.5, min_weight = 0.2, max_weight = 2.0):
+                alpha_lead=1.0, alpha_adlib = 0.5, min_weight = 0.2, max_weight = 2.0,
+                k_train: int = 2):
         super().__init__()
         self.group_dir = group_dir
         self.sr_out = sr_out
@@ -116,6 +117,7 @@ class KpopVocalDataset(Dataset):
 
         self.pitch_semitones_range = pitch_semitones_range
         self.window_hop_ratio = window_hop_ratio
+        self.k_train = k_train
         
         self.presence_thresh = presence_thresh
         self.alpha_lead = alpha_lead
@@ -153,10 +155,16 @@ class KpopVocalDataset(Dataset):
         self.samples: List[Tuple[str, int, np.ndarray]] = []
         frame_ms = float(self.chunk_duration_ms)
         frames_per_window = int(round(self.chunk_sec * 1000.0 / frame_ms))  # e.g. 2.0s / 40ms = 50
+        
         if frames_per_window <= 0:
             raise ValueError("frames_per_window computed as <=0, check chunk_sec and chunkDurationMs")
         
         hop_frames = max(1, int(round(frames_per_window * self.window_hop_ratio)))
+        
+        if self.k_train is not None:
+            hop_frames = max(1, int(self.k_train))
+        else:
+            hop_frames = max(1, int(round(frames_per_window * self.window_hop_ratio)))
 
         print(f"[KpopFrameDataset] Frames/window={frames_per_window}, hop_frames={hop_frames}")
         print(f"[KpopFrameDataset] Members={members} (+ 'silence')")
@@ -192,56 +200,53 @@ class KpopVocalDataset(Dataset):
                 continue
             
             # Slide window over frame indices
-            max_start_frame = num_chunks - frames_per_window
-            for start_frame in range(0, max_start_frame + 1, hop_frames):
-                end_frame = start_frame + frames_per_window
+            half_win = frames_per_window // 2
+            
+            # only use frames that have a full window around them
+            first_center = half_win
+            last_center = num_chunks - half_win - 1
+            
+            # Just in case
+            if last_center <= first_center:
+                print(f"[KpopFrameDataset] {song_name}: not enough frames for a full window, skipping.")
+                continue
+            
+            for center_frame in range(first_center, last_center + 1, hop_frames):
+                # Window [start_frame : end_frame) is the 2s context around this 40ms frame
+                start_frame = center_frame - half_win
+                end_frame   = start_frame + frames_per_window
                 
-                window_presence = presence[start_frame:end_frame]  # [F, C]
-                window_lead = lead_arr[start_frame: end_frame]
+                # Sanity check
+                if start_frame < 0 or end_frame > num_chunks:
+                    continue # Skip weird edge cases
+                
+                # 2s context labels (for importance)
+                window_presence = presence[start_frame:end_frame]   # [F, C]
+                window_lead = lead_arr[start_frame:end_frame]
                 window_adlib = adlib_arr[start_frame:end_frame]
                 
-                # Fractions over this window (0..1)
-                frames_active = window_presence.mean(axis=0) # (C,)
+                # Fractions over this window (0..1) - still useful for importance weights
+                frames_active = window_presence.mean(axis=0)  # (C,)
                 lead_frac = window_lead.mean(axis=0) # (C,)
-                adlib_frac = window_adlib.mean(axis=0) # (C,)
+                adlib_frac  = window_adlib.mean(axis=0) # (C,)
                 
-                # --- multi-hot label_vec ---
+                # Label for THIS example
+                frame_label = presence[center_frame] # shape(num_members,), 0/1
+                
                 label_vec = np.zeros(len(self.classes), dtype=np.float32)
                 importance_vec = np.ones(len(self.classes), dtype=np.float32)
                 
-                total_active_frames = float(frames_active.sum())
-                
-                # -------- Case 1: true silence (no one sings at any 40ms frame) --------
-                if total_active_frames == 0.0:
+                if frame_label.sum() == 0:
+                    # no member active at this 40ms frame -> silendce
                     label_vec[self.silence_idx] = 1.0
                     importance_vec[:] = 0.0
                     importance_vec[self.silence_idx] = 1.0
-                    
-                # --- Case 2: at least someone clearly active ---
-                # -------- Case 2: at least one singer is active in this 2s window --------
                 else:
-                    # You can tune this: how many frames needed for a singer to "count"?
-                    # If you want "any appearance counts", set min_frames_active = 1
-                    # If you want >= 3 frames (~120 ms) use that instead.
-                    # Here we tie it to presence_thresh as a FRACTION of the window:
-                    min_frames_active = max(
-                        1,
-                        int(round(self.presence_thresh * frames_per_window))
-                    )
-                    # e.g. if presence_thresh = 0.05 and frames_per_window=50, then >=3 frames
-
-                    active_any = (frames_active >= min_frames_active).astype(np.float32)
-
-                    # Failsafe: if nobody passes the threshold, at least mark the most active singer
-                    if active_any.sum() == 0:
-                        main_idx = int(frames_active.argmax())
-                        active_any[main_idx] = 1.0
-
-                    # Fill labels: singers + no silence
-                    label_vec[:self.num_members] = active_any
+                    # one or more members active at this frame
+                    label_vec[:self.num_members] = frame_label.astype(np.float32)
                     label_vec[self.silence_idx] = 0.0
-
-                    # Importance weights per singer, using your existing lead/adlib logic
+                    
+                    # Importance weightss: use lead/adlib info from window
                     importance_singers = (
                         1.0
                         + self.alpha_lead * lead_frac
@@ -251,16 +256,15 @@ class KpopVocalDataset(Dataset):
                         importance_singers, self.min_weight, self.max_weight
                     )
                     importance_vec[:self.num_members] = importance_singers
-
-                    # Silence is not important during singing windows
+                    # silence not important when singing
                     importance_vec[self.silence_idx] = 0.5
-        
-                # Map start_frame -> start sample index at sr_out
+                
+                # Map window start frame -> start sample at sr_out
                 start_time_sec = (start_frame * frame_ms) / 1000.0
                 start_sample_out = int(round(start_time_sec * self.sr_out))
 
                 self.samples.append((audio_path, start_sample_out, label_vec, importance_vec))
-
+            
         if not self.samples:
             raise RuntimeError("No training windows built. Check your JSON/audio alignment.")
 
