@@ -6,7 +6,13 @@ python train_kpop_singers.py `
   --chunk-sec 2.0 `
   --epochs 20 `
   --batch-size 64 `
-  --lr 1e-3 `
+  --lr 5e-4 `
   --val-split 0.15 `
-  --num-workers 10 `
+  --num-workers 12 `
   --save-dir "K:\Python Projects\Voice Recognition\models"
+
+- What did I use for AI
+- How I made the project
+- What kind of AI to implement my stuff
+- Explain what I want
+- Show leadership abilities

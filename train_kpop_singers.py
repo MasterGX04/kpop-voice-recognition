@@ -149,6 +149,22 @@ class KpopVocalDataset(Dataset):
             name_to_idx={name: i for i, name in enumerate(self.classes)}
         )
         
+        # Debug stats: how many chunks per category, and a few examples
+        self.debug_category_counts = {
+            "true_silence": 0,
+            "clear_vocal": 0,
+            "ambiguous": 0,
+        }
+
+        # store up to N examples per category
+        max_debug_examples = 10
+        self.debug_category_examples = {
+            "true_silence": [],
+            "clear_vocal": [],
+            "ambiguous": [],
+        }
+        self._max_debug_examples = max_debug_examples
+        
         # ----------------------------
         # 3) Build index of (audio_path, start_sample_out, label_vec)
         # ----------------------------
@@ -226,22 +242,40 @@ class KpopVocalDataset(Dataset):
                 window_adlib = adlib_arr[start_frame:end_frame]
                 
                 # Fractions over this window (0..1) - still useful for importance weights
-                frames_active = window_presence.mean(axis=0)  # (C,)
                 lead_frac = window_lead.mean(axis=0) # (C,)
                 adlib_frac  = window_adlib.mean(axis=0) # (C,)
                 
                 # Label for THIS example
                 frame_label = presence[center_frame] # shape(num_members,), 0/1
+                frames_active = window_presence.mean(axis=0) # fraction per singer
+                
+                any_active_per_frame = (window_presence.sum(axis=1) > 0).astype(np.float32)
+                vocal_frac_window = any_active_per_frame.mean()
+
+                overlap_frac_window = (window_presence.sum(axis=1) > 1).astype(np.float32).mean()
+
+                frames_active = window_presence.mean(axis=0)
+                dominant_idx = frames_active.argmax()
+                dominant_frac = frames_active[dominant_idx] / max(vocal_frac_window, 1e-6)
+
+                any_vocal_center = frame_label.sum() > 0
+
+                # Define thresholds
+                TAU_SILENCE_WINDOW = 0.20    # ≤20% of window is vocal → real silence
+                TAU_DOMINANT = 0.55          # ≥55% of vocal frames are same singer → clean vocal
+                TAU_OVERLAP = 0.30           # ≥30% frames with 2+ singers → ambiguous/gang
                 
                 label_vec = np.zeros(len(self.classes), dtype=np.float32)
                 importance_vec = np.ones(len(self.classes), dtype=np.float32)
                 
-                if frame_label.sum() == 0:
-                    # no member active at this 40ms frame -> silendce
+                # CASE 1 → TRUE SILENCE
+                if not any_vocal_center and vocal_frac_window <= TAU_SILENCE_WINDOW:
                     label_vec[self.silence_idx] = 1.0
-                    importance_vec[:] = 0.0
-                    importance_vec[self.silence_idx] = 1.0
-                else:
+                    importance_vec[self.silence_idx] = 3.0
+                    category = "true_silence"
+                
+                # CASE 2 → CLEAR VOCAL
+                elif any_vocal_center and dominant_frac >= TAU_DOMINANT and overlap_frac_window <= TAU_OVERLAP:
                     # one or more members active at this frame
                     label_vec[:self.num_members] = frame_label.astype(np.float32)
                     label_vec[self.silence_idx] = 0.0
@@ -256,8 +290,40 @@ class KpopVocalDataset(Dataset):
                         importance_singers, self.min_weight, self.max_weight
                     )
                     importance_vec[:self.num_members] = importance_singers
-                    # silence not important when singing
-                    importance_vec[self.silence_idx] = 0.5
+                    # don't care about silence here
+                    importance_vec[self.silence_idx] = 0.0
+                    category = "clear_vocal"
+                # AMBIGUOUS FRAME: short pause, gang vocal, weird overlap
+                else:
+                    if any_vocal_center:
+                        label_vec[:self.num_members] = frame_label.astype(np.float32)
+                    else:
+                        label_vec[self.silence_idx] = 1.0
+                        
+                    importance_vec[:] = 0.1     # tiny weight so model sees it but not confused
+                    category = "ambiguous"
+                
+                # ---------------------------
+                # Debug accounting
+                # ---------------------------
+                if category not in self.debug_category_counts:
+                    # should never happen, but safe-guard
+                    self.debug_category_counts[category] = 0
+                    self.debug_category_examples[category] = []
+
+                self.debug_category_counts[category] += 1
+
+                if len(self.debug_category_examples[category]) < self._max_debug_examples:
+                    # store a small info dict for later inspection
+                    self.debug_category_examples[category].append({
+                        "song": song_name,
+                        "center_frame": int(center_frame),
+                        "vocal_frac_window": float(vocal_frac_window),
+                        "overlap_frac_window": float(overlap_frac_window),
+                        "dominant_idx": int(dominant_idx),
+                        "dominant_frac": float(dominant_frac),
+                        "frame_label": frame_label.tolist(),
+                    })
                 
                 # Map window start frame -> start sample at sr_out
                 start_time_sec = (start_frame * frame_ms) / 1000.0
@@ -267,7 +333,6 @@ class KpopVocalDataset(Dataset):
             
         if not self.samples:
             raise RuntimeError("No training windows built. Check your JSON/audio alignment.")
-
         
         total_labels = np.zeros(len(self.classes), dtype=np.float64)
         total_weights = np.zeros(len(self.classes), dtype=np.float64)
@@ -284,6 +349,24 @@ class KpopVocalDataset(Dataset):
         
         self.base_samples = list(self.samples)
         self.augmented_samples: List[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]] = []
+        
+        # Test for Dataset to see proportion of Data
+        print("\n[KpopFrameDataset] Category counts:")
+        total_windows = sum(self.debug_category_counts.values())
+        for cat, cnt in self.debug_category_counts.items():
+            frac = cnt / max(total_windows, 1)
+            print(f"  {cat:13s}: {cnt:7d} ({frac:5.1%})")
+
+        print("\n[KpopFrameDataset] Example windows per category:")
+        for cat, examples in self.debug_category_examples.items():
+            print(f"\n  Category: {cat}  (showing {len(examples)} examples)")
+            for ex in examples:
+                print(f"    song={ex['song']}, center_frame={ex['center_frame']}, "
+                    f"vocal_frac={ex['vocal_frac_window']:.2f}, "
+                    f"overlap_frac={ex['overlap_frac_window']:.2f}, "
+                    f"dominant_idx={ex['dominant_idx']}, "
+                    f"dominant_frac={ex['dominant_frac']:.2f}, "
+                    f"frame_label={ex['frame_label']}")
         
         # ----------------------------
         # 4) Simple audio cache to avoid re-loading the same song
@@ -502,6 +585,13 @@ def train_epoch(encoder, head, loader, device, optimizer, thr=0.5, use_amp=True)
     head.train()
     
     scaler = torch.amp.GradScaler(device=device, enabled=(use_amp and device.type == "cuda"))
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer,
+        mode='max',
+        factor=0.3,   # multiply LR by 0.3 when plateau
+        patience=1,   # wait 1 epoch with no improvement
+        verbose=True
+    )
     
     total_loss, total_count = 0.0, 0
     total_f1, total_prec, total_rec = 0.0, 0.0, 0.0
