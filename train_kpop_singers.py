@@ -153,6 +153,7 @@ class KpopVocalDataset(Dataset):
         self.debug_category_counts = {
             "true_silence": 0,
             "clear_vocal": 0,
+            "semi_clear_vocal": 0,
             "ambiguous": 0,
         }
 
@@ -161,6 +162,7 @@ class KpopVocalDataset(Dataset):
         self.debug_category_examples = {
             "true_silence": [],
             "clear_vocal": [],
+            "semi_clear_vocal": [],
             "ambiguous": [],
         }
         self._max_debug_examples = max_debug_examples
@@ -265,43 +267,59 @@ class KpopVocalDataset(Dataset):
                 TAU_DOMINANT = 0.55          # ≥55% of vocal frames are same singer → clean vocal
                 TAU_OVERLAP = 0.30           # ≥30% frames with 2+ singers → ambiguous/gang
                 
+                # ------ LOCAL (0.5s) context ------
+                local_radius = 6  # approx 500 ms
+                lf = max(0, center_frame - local_radius)
+                rf = min(num_chunks, center_frame + local_radius + 1)
+                local_presence = presence[lf:rf]
+
+                local_any_active = (local_presence.sum(axis=1) > 0).astype(np.float32)
+                local_vocal_frac = local_any_active.mean()
+
+                local_frames_active = local_presence.mean(axis=0)
+                local_dom_idx = local_frames_active.argmax()
+                local_dom_frac = local_frames_active[local_dom_idx] / max(local_vocal_frac, 1e-6)
+
                 label_vec = np.zeros(len(self.classes), dtype=np.float32)
                 importance_vec = np.ones(len(self.classes), dtype=np.float32)
                 
-                # CASE 1 → TRUE SILENCE
-                if not any_vocal_center and vocal_frac_window <= TAU_SILENCE_WINDOW:
-                    label_vec[self.silence_idx] = 1.0
-                    importance_vec[self.silence_idx] = 3.0
-                    category = "true_silence"
-                
                 # CASE 2 → CLEAR VOCAL
-                elif any_vocal_center and dominant_frac >= TAU_DOMINANT and overlap_frac_window <= TAU_OVERLAP:
-                    # one or more members active at this frame
+                if any_vocal_center:
+                    # Label is ALWAYS singing — never flip or skip
                     label_vec[:self.num_members] = frame_label.astype(np.float32)
                     label_vec[self.silence_idx] = 0.0
                     
-                    # Importance weightss: use lead/adlib info from window
-                    importance_singers = (
-                        1.0
-                        + self.alpha_lead * lead_frac
-                        - self.alpha_adlib * adlib_frac
-                    )
-                    importance_singers = np.clip(
-                        importance_singers, self.min_weight, self.max_weight
-                    )
-                    importance_vec[:self.num_members] = importance_singers
-                    # don't care about silence here
-                    importance_vec[self.silence_idx] = 0.0
-                    category = "clear_vocal"
-                # AMBIGUOUS FRAME: short pause, gang vocal, weird overlap
-                else:
-                    if any_vocal_center:
-                        label_vec[:self.num_members] = frame_label.astype(np.float32)
+                    # GLOBAL clean vocal
+                    if dominant_frac >= TAU_DOMINANT and overlap_frac_window <= TAU_OVERLAP:
+                        importance_singers = (
+                            1.0
+                            + self.alpha_lead * lead_frac
+                            - self.alpha_adlib * adlib_frac
+                        )
+                        importance_singers = np.clip(importance_singers, self.min_weight, self.max_weight)
+                        importance_vec[:self.num_members] = importance_singers
+                        category = "clear_vocal"
+                    elif local_dom_frac >= 0.65:
+                        # not globally clean but locally dominant → short line rescue
+                        importance_vec[:self.num_members] = 0.5   # medium weight
+                        category = "semi_clear_vocal"
                     else:
+                        # ambiguous vocal
+                        importance_vec[:self.num_members] = 0.1
+                        category = "ambiguous"
+                    
+                # center frame silent
+                else:
+                    if vocal_frac_window <= TAU_SILENCE_WINDOW and local_vocal_frac < 0.15:
+                        # real silence
                         label_vec[self.silence_idx] = 1.0
-                        
-                    importance_vec[:] = 0.1     # tiny weight so model sees it but not confused
-                    category = "ambiguous"
+                        importance_vec[self.silence_idx] = 3.0
+                        category = "true_silence"
+                    else:
+                        # ambiguous silence (breath, short pause)
+                        label_vec[self.silence_idx] = 1.0
+                        importance_vec[self.silence_idx] = 0.2
+                        category = "ambiguous"
                 
                 # ---------------------------
                 # Debug accounting
@@ -312,18 +330,29 @@ class KpopVocalDataset(Dataset):
                     self.debug_category_examples[category] = []
 
                 self.debug_category_counts[category] += 1
+                count = self.debug_category_counts[category]
 
-                if len(self.debug_category_examples[category]) < self._max_debug_examples:
-                    # store a small info dict for later inspection
-                    self.debug_category_examples[category].append({
-                        "song": song_name,
-                        "center_frame": int(center_frame),
-                        "vocal_frac_window": float(vocal_frac_window),
-                        "overlap_frac_window": float(overlap_frac_window),
-                        "dominant_idx": int(dominant_idx),
-                        "dominant_frac": float(dominant_frac),
-                        "frame_label": frame_label.tolist(),
-                    })
+                debug_info = {
+                    "song": song_name,
+                    "center_frame": int(center_frame),
+                    "vocal_frac_window": float(vocal_frac_window),
+                    "overlap_frac_window": float(overlap_frac_window),
+                    "dominant_idx": int(dominant_idx),
+                    "dominant_frac": float(dominant_frac),
+                    "frame_label": frame_label.tolist(),
+                }
+
+                reservoir = self.debug_category_examples[category]
+                max_n = self._max_debug_examples
+
+                if len(reservoir) < max_n:
+                    # fill up until we reach max_n
+                    reservoir.append(debug_info)
+                else:
+                    # reservoir sampling: replace an existing one with decreasing probability
+                    j = random.randint(0, count - 1)
+                    if j < max_n:
+                        reservoir[j] = debug_info
                 
                 # Map window start frame -> start sample at sr_out
                 start_time_sec = (start_frame * frame_ms) / 1000.0
@@ -585,13 +614,6 @@ def train_epoch(encoder, head, loader, device, optimizer, thr=0.5, use_amp=True)
     head.train()
     
     scaler = torch.amp.GradScaler(device=device, enabled=(use_amp and device.type == "cuda"))
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer,
-        mode='max',
-        factor=0.3,   # multiply LR by 0.3 when plateau
-        patience=1,   # wait 1 epoch with no improvement
-        verbose=True
-    )
     
     total_loss, total_count = 0.0, 0
     total_f1, total_prec, total_rec = 0.0, 0.0, 0.0
@@ -750,6 +772,12 @@ def main():
     head = MultiLabelHead(emb_dim=emb_dim, num_classes=len(full_ds.class_map.idx_to_name)).to(device)
     
     optimizer = torch.optim.Adam(head.parameters(), lr=args.lr)
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer,
+        mode='max',
+        factor=0.3,   # multiply LR by 0.3 when plateau
+        patience=2,   # wait 1 epoch with no improvement
+    )
     
     best_acc = 0.0
     os.makedirs(args.save_dir, exist_ok=True)
@@ -762,6 +790,13 @@ def main():
         tr_loss, tr_metrics = train_epoch(encoder, head, train_loader, device, optimizer, thr=eval_thr)
         va_loss, va_metrics = eval_epoch(encoder, head, val_loader, device, thr=eval_thr)
         
+        old_lr = optimizer.param_groups[0]['lr']
+        scheduler.step(va_metrics["micro_f1"])
+        new_lr = optimizer.param_groups[0]['lr']
+
+        if new_lr != old_lr:
+            print(f"[LR Scheduler] Reducing LR: {old_lr} → {new_lr}")
+    
         print(
             f"Train - loss: {tr_loss:.4f} | micro-F1: {tr_metrics['micro_f1']:.4f} "
             f"(P {tr_metrics['precision']:.3f}, R {tr_metrics['recall']:.3f}) | subset-acc: {tr_metrics['subset_acc']:.4f}"

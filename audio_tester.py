@@ -3,7 +3,7 @@ import numpy as np
 import time
 from PIL import Image, ImageTk
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, simpledialog
 from pydub import AudioSegment
 from TrackItem import TrackItem
 from collections import defaultdict
@@ -11,12 +11,11 @@ import numpy as np
 import pygame
 from VideoTrack import VideoTrackItem
 from navigation_arrows import NavigationArrows
-import json
+import json, copy
 import codecs
 from lyrics_box import LyricBox
 from audio_processing import getSongsFromSameAlbum
 from zoom_functions import ZoomManager, ProgressBarHandle, ProgressBarNavigator
-from VoicePredictor import VoicePredictor
 from model_predictor import predict_40ms
 import math
 
@@ -154,8 +153,12 @@ class VoiceDetectionApp:
         self.voiceDetectionResults = labels40
         print("Detection results:", labels40[100:200])
             
-        self.labels = self.loadSavedLabels() # Store labels (member, start, end)
-
+        labels = self.loadSavedLabels() # Store labels (member, start, end)
+        if labels == [] and labels40 != []: 
+            self.labels = self.createLabelsFromPredictions(labels40)
+        else:
+            self.labels = labels
+            
         def startLayout():
             self.initializeMemberImages()
             self.updateElementPositions()
@@ -169,15 +172,33 @@ class VoiceDetectionApp:
         
         if len(self.voiceDetectionResults) > 0:
             self.evaluateVoiceDetectionAccuracy()
-        
+            
         self.lastKeyPressTime = 0
         self.updateTimer = 0
         self.enableRootKeybinds()
         self.canvas.focus_set() 
         self.selectedMarker = None
+        
+        # Dragging state
+        self.selectedLabel = None
+        self.isDraggingMarker = False
+        
         self.root.after(50, self.addBackgroundImage)
         # self.root.after(50, self.initializeArrows)
         self.uiHidden = False
+        
+        # undo/redo stack for convenience
+        self.undoStack = []
+        self.redoStack = []
+        self.dragStartLabels = None # Snapshot before drag starts
+        
+        # Splitting labels into two parts status
+        self.splitGapActive = False
+        self.splitGapStartChunk = None
+        
+        # Temporary marker shown when setting the start of a gap-split
+        self.splitGapMarkerId = None
+        
         self.root.bind("<Control-h>", self.toggleUIElements)
         self.root.bind("<Control-r>", self.createVideo)
         self.root.bind("<Control-t>", self.setThumbnail)
@@ -192,6 +213,10 @@ class VoiceDetectionApp:
                 trackItem.initializeTimeline()
         
         self.initializePositions()
+    
+    def _getHistoryFilePath(self):
+        fileNameWithoutExtension = os.path.splitext(os.path.basename(self.testSongPath))[0]
+        return f"./saved_labels/{self.selectedGroup}/{fileNameWithoutExtension}_history.json"
         
     def setPredictedPointsFromMask(self, binaryMask, minSingingLength=3):
         """
@@ -274,8 +299,7 @@ class VoiceDetectionApp:
                 self.videoTrackItem.processVideoAndSave(outputPath=songNameWithoutExtension + ".mp4", fpsCap=30)
         # else:
         #     self.toggleUIElements()
-            
-            
+                       
     def createThumbnail(self):
         basePath = self.testSongPath.rsplit('\\', 1)[0]
         thumbnailImagePath = os.path.join(basePath, "background.jpg")
@@ -404,16 +428,20 @@ class VoiceDetectionApp:
         """
         Move the selected marker left by one chunkIndex.
         """
+        if self.selectedLabel:
+            self.pushUndoState("marker move left")
         self.moveMarker(-1)
-        if (self.selectedLabel):
-            self.updateLabelInJSON()
 
     def moveMarkerRight(self, event):
         """
         Move the selected marker right by one chunkIndex.
         """
+        if self.selectedLabel:
+            self.pushUndoState("marker move right")
         self.moveMarker(1)
-        if (self.selectedLabel):
+        
+    def updateLabels(self, event):
+        if self.selectedLabel:
             self.updateLabelInJSON()
         
     def updateChunkText(self, newIndex):
@@ -491,6 +519,9 @@ class VoiceDetectionApp:
                 
                 self.selectMarker(chunkIndex, "start")
                 self.prepareLabelUpdate(chunkIndex, "start")
+                self.isDraggingMarker = True 
+                # Snapshot label state before drag
+                self.dragStartLabels = copy.deepcopy(self.labels)
                 return
         
         for chunkIndex, marker in self.endPointMarkers.items():
@@ -500,11 +531,227 @@ class VoiceDetectionApp:
                     
                 self.selectMarker(chunkIndex, "end")
                 self.prepareLabelUpdate(chunkIndex, "end")
+                self.isDraggingMarker = True
+                self.dragStartLabels = copy.deepcopy(self.labels)
                 return
             
         self.selectedMarker = None
         self.originalLabel = None
-           
+        self.isDraggingMarker = False
+        self.dragStartLabels = None
+        
+    def onMarkerDrag(self, event):
+        """
+        Drag the currently selected marker horizontally and update its chunk index.
+        The progress bar handle + chunk counter follow the drag.
+        """
+        if not self.isDraggingMarker or not self.selectedMarker:
+            return
+        
+        markerType = self.selectedMarker['type']
+        oldChunkIndex = self.selectedMarker['chunkIndex']
+        chunksInView = self.zoomManager.currentChunksInView
+        sectionIndex = self.progressBarHandle.currentSectionIndex
+        
+        # Progress bar geometry (in canvas coordinates)
+        barX = self.progressBarCanvas.winfo_x()
+        barY = self.progressBarCanvas.winfo_y()
+        barWidth = self.progressBarWidth
+        
+        # Constrain x within progress bar region
+        x = max(barX, min(event.x, barX + barWidth))
+        
+        # Convert x to chunk offset within current section
+        relative = (x - barX) / float(barWidth)
+        chunkOffset = int(round(relative * (chunksInView - 1)))
+        newChunkIndex = sectionIndex * chunksInView + chunkOffset
+        
+        # Clamp to valid range 
+        newChunkIndex = max(0, min(len(self.chunks) - 1, newChunkIndex))
+        
+        # Enforce start <= end to avoid inverted labels
+        if self.selectedLabel:
+            startIdx, endIdx = self.selectedLabel[1], self.selectedLabel[2]
+            if markerType == "start":
+                # Don't let start go past end-1
+                newChunkIndex = min(newChunkIndex, endIdx - 1) if endIdx > 0 else 0
+            elif markerType == "end":
+                # Don't let end go before start + 1
+                newChunkIndex = max(newChunkIndex, startIdx + 1)
+                
+        if newChunkIndex == oldChunkIndex:
+            # No effective movement
+            return
+
+        if markerType == "start":
+            pointsList = self.startPoints
+        else:
+            pointsList = self.endPoints
+
+        if oldChunkIndex in pointsList:
+            pointsList.remove(oldChunkIndex)
+        if newChunkIndex not in pointsList:
+            pointsList.append(newChunkIndex)
+
+        self.selectedMarker["chunkIndex"] = newChunkIndex
+        
+        if self.selectedLabel:
+            for label in self.labels:
+                if label == self.selectedLabel:
+                    if markerType == "start":
+                        label[1] = newChunkIndex
+                    else:
+                        label[2] = newChunkIndex
+                    self.selectedLabel = label  # keep ref up-to-date
+                    break
+            
+        # --- Rebuild timeMarkers and redraw markers from scratch ---
+        self.updateTimeMarkersDict()
+        self.drawMarkers(self.progressBarHandle.currentSectionIndex)
+
+        # --- Sync the rest of the UI (chunk index, time, progress handle, video) ---
+        self.currentChunkIndex = newChunkIndex
+        self.updateChunkText(newChunkIndex)
+        newTimeMs = newChunkIndex * self.chunk_duration
+
+        # Make the handle follow the drag and show time
+        self.currentSectionIndex = sectionIndex
+        self.updateDisplayedTime(newTimeMs)
+        self.updateProgressBarHandle(newTimeMs)
+
+        if hasattr(self, "videoTrackItem"):
+            self.videoTrackItem.seek(newTimeMs)
+
+        self.isManualUpdate = True
+        
+    def onMarkerRelease(self, event):
+        """
+        When the user releases the mouse after dragging a marker,
+        we save labels once to JSON to avoid per-frame lag.
+        """
+        if not self.isDraggingMarker:
+            return
+        
+        self.isDraggingMarker = False
+        
+        # only save if marker corresponds to an actual label
+        if self.selectedLabel:
+            # record previous state into undo stack
+            if self.dragStartLabels is not None:
+                snapshot = {
+                    "labels": self.dragStartLabels,
+                    "description": "marker drag",
+                }
+                self.undoStack.append(snapshot)
+                self.redoStack.clear()
+                self.appendHistoryToFile(snapshot)
+                self.dragStartLabels = None
+
+            # now save the new labels to JSON, update timelines, etc.
+            self.updateLabelInJSON()
+
+    def appendHistoryToFile(self, state):
+        """
+        Append an action state to a JSON history file for long-term storage.
+        This does NOT affect undo/redo after restart; it's mainly for inspection / debugging.
+        """
+        historyPath = self._getHistoryFilePath()
+        try:
+            if os.path.exists(historyPath):
+                with open(historyPath, "r") as f:
+                    history = json.load(f)
+            else:
+                history = []
+            history.append(state)
+            with open(historyPath, "w") as f:
+                json.dump(history, f, indent=2)
+        except Exception as e:
+            print(f"Could not append history: {e}")
+            
+    def pushUndoState(self, description=""):
+        """
+        Save the current labels into the undo stack.
+        Clears the redo stack because a new action invalidates the forward history.
+        """
+        snapshot = {
+            "labels": copy.deepcopy(self.labels),
+            "description": description,
+        }
+        self.undoStack.append(snapshot)
+        self.redoStack.clear()
+        self.appendHistoryToFile(snapshot)
+    
+    def applyLabelsState(self, labels):
+        """
+        Replace self.labels with provided labels and refresh all marker-related state.
+        """
+        self.labels = copy.deepcopy(labels)
+        
+        # Rebuild start/endPoints from labels
+        self.startPoints.clear()
+        self.endPoints.clear()
+        for label in self.labels:
+            start = label[1]
+            end = label[2]
+            if start not in self.startPoints:
+                self.startPoints.append(start)
+            if end not in self.endPoints:
+                self.endPoints.append(end)
+                
+        # Sync internal marker structures and redraw
+        self.updateTimeMarkersDict()
+        self.drawTimeMarkers()
+        self.drawMarkers(self.progressBarHandle.currentSectionIndex)
+
+        # Refresh member timelines / positions so everything stays consistent
+        for trackItem in self.memberImages.values():
+            if trackItem:
+                trackItem.initializeTimeline()
+        self.initializePositions()
+
+        # Also overwrite the main labels JSON so it matches this state
+        fileNameWithoutExtension = os.path.splitext(os.path.basename(self.testSongPath))[0]
+        labelFilePath = f"./saved_labels/{self.selectedGroup}/{fileNameWithoutExtension}_labels.json"
+        try:
+            with open(labelFilePath, "w") as f:
+                json.dump(self.labels, f, indent=4)
+        except Exception as e:
+            print(f"Error writing labels during undo/redo: {e}")
+            
+    def undo(self, event=None):
+        if not self.undoStack:
+            print("Nothing to undo.")
+            return
+
+        # Save current state into redo stack
+        current = {
+            "labels": copy.deepcopy(self.labels),
+            "description": "auto-redo-snapshot",
+        }
+        self.redoStack.append(current)
+        
+        # Restore last undo state
+        state = self.undoStack.pop()
+        self.applyLabelsState(state["labels"])
+        print("Undo:", state.get("description", ""))
+    
+    def redo(self, event=None):
+        if not self.redoStack:
+            print("Nothing to redo.")
+            return
+        
+        # Save current state into undo stack
+        current = {
+            "labels": copy.deepcopy(self.labels),
+            "description": "auto-undo-snapshot",
+        }
+        self.undoStack.append(current)
+        
+        # Restore last redo state
+        state = self.redoStack.pop()
+        self.applyLabelsState(state["labels"])
+        print("Redo:", state.get("description", ""))
+
     def prepareLabelUpdate(self, chunkIndex, markerType):
         """
         Check if the selected marker belongs to a saved label and prepare for updates.
@@ -635,7 +882,8 @@ class VoiceDetectionApp:
                     self.selectedLabel = label  # Update the reference to the modified label
                     break
                 
-        self.selectedMarker["chunkIndex"] = newChunkIndex # This is run            
+        self.selectedMarker["chunkIndex"] = newChunkIndex # This is run
+                    
     
     def addControls(self, root):
         buttonFrame = tk.Frame(root, bg="gray")  # Light gray background for visibility
@@ -1012,6 +1260,61 @@ class VoiceDetectionApp:
                 return member['color']
         return None
     # end getMemberColor
+    
+    def createLabelsFromPredictions(self, detectionResults):
+        """
+        Build self.labels from a list of per-chunk predictions.
+
+        detectionResults: list[list[str]]
+            Example for each chunk: ['Wonyoung'], ['Rei', 'Wonyoung'], ['silence'], []
+
+        Rules:
+        - 'silence' and empty chunks are ignored.
+        - For each member, create [member, startChunk, endChunk] for every
+          contiguous block of chunks where that member appears.
+        """
+        # all known members from self.members
+        memberNames = [m['name'] for m in self.members]
+        labels = []
+            
+        for member in memberNames:
+            inSegment = False
+            startChunk = None
+            for i, chunkLabels in enumerate(detectionResults):
+                # Normalize: treat [] or ['silence'] as  silence
+                if not chunkLabels or 'silence' in chunkLabels:
+                    isActive = False
+                else:
+                    isActive = member in chunkLabels
+                
+                if isActive:
+                    if not inSegment:
+                        # Start new segment
+                        inSegment = True
+                        startChunk = i
+                else:
+                    if inSegment:
+                        # Close previous segment
+                        endChunk = i - 1
+                        if endChunk >= startChunk:
+                            self.startPoints.append(startChunk)
+                            self.endPoints.append(endChunk)
+                            labels.append([member, startChunk, endChunk, False, False])
+                        inSegment = False
+                        startChunk = None
+            
+            if inSegment and startChunk is not None:
+                endChunk = len(detectionResults) - 1
+                if endChunk >= startChunk:
+                    self.startPoints.append(startChunk)
+                    self.endPoints.append(endChunk)
+                    labels.append([member, startChunk, endChunk, False, False])
+                    
+        # Sort labels by start chunk for consistency
+        labels.sort(key=lambda lab: lab[1])
+        
+        return labels
+        
         
     def showAddLabelsMenu(self, event):            
         # Create menu window
@@ -1470,6 +1773,10 @@ class VoiceDetectionApp:
         self.canvas.unbind("<KeyPress-q>")
         self.canvas.unbind("<KeyPress-w>")
         self.canvas.unbind("<KeyPress-l>")
+        self.canvas.unbind("<KeyPress-x>")
+        self.canvas.unbind("<Return>")
+        self.canvas.bind("<Control-z>")
+        self.canvas.bind("<Control-y>")
         self.canvas.unbind_all("<space>")
 
     def enableRootKeybinds(self):
@@ -1477,13 +1784,27 @@ class VoiceDetectionApp:
         self.root.bind("<Left>", self.moveBackwardByChunks)
         self.root.bind("<Right>", self.moveForwardByChunks) 
         self.canvas.bind("<Button-1>", self.onMarkerClick)
+        
+        # Drag / release for markers on the main canvas
+        self.canvas.bind("<B1-Motion>", self.onMarkerDrag)
+        self.canvas.bind("<ButtonRelease-1>", self.onMarkerRelease)
+        
         self.canvas.bind("<KeyPress-a>", self.moveMarkerLeft)
         self.canvas.bind("<KeyPress-d>", self.moveMarkerRight)
+        self.canvas.bind("<Return>", self.updateLabels)
         self.canvas.bind("<KeyPress-s>", self.showAddLabelsMenu)
         self.canvas.bind("<KeyPress-q>", self.addStartPoint)
         self.canvas.bind("<KeyPress-w>", self.addEndPoint)
         self.canvas.bind("<KeyPress-l>", self.addLyricBox)
         self.canvas.bind("<space>", self.togglePlayPause)
+        
+        # split current label at current chunk
+        self.canvas.bind("<KeyPress-x>", self.handleSplitGapKey)
+        self.canvas.bind("<Escape>", self.cancelSplitGap)
+        
+        # Undo / Redo
+        self.canvas.bind("<Control-z>", self.undo)
+        self.canvas.bind("<Control-y>", self.redo)
         
     def loadLyricsFromFile(self):
         """Loads lyrics from a JSON file and adds them to self.lyrics."""
@@ -1820,7 +2141,228 @@ class VoiceDetectionApp:
         self.updateProgressBarHandle(newTimeMs)
         self.updateCanvasForCurrentPosition(int(newTimeMs / self.chunk_duration))
     # end updateCurrentTime
+    
+    def showSplitGapMarker(self, chunkIndex):
+        """
+        Draw a temporary purple marker at the given chunk index to indicate
+        the start of a split-with-gap.
+        """
+        # Remove any previous temp marker
+        if self.splitGapMarkerId is not None:
+            self.canvas.delete(self.splitGapMarkerId)
+            self.splitGapMarkerId = None
+        
+        chunksInView = self.zoomManager.currentChunksInView
+        sectionIndex = self.progressBarHandle.currentSectionIndex
+        
+        # Compute x similar to drawMarkers
+        relativeX = (
+            self.progressBarCanvas.winfo_x()
+            + (chunkIndex % chunksInView / chunksInView) * self.progressBarWidth
+        )
+        x = self.canvas.canvasx(relativeX)
+        y = self.progressBarCanvas.winfo_y()
+        
+        self.splitGapMarkerId = self.canvas.create_line(
+            x, y - 20,
+            x, y,
+            fill="#c080ff",  # soft purple
+            width=3,
+            dash=(3, 2)
+        )
+    
+    def clearSplitGapMarker(self):
+        """
+        Remove the temporary split-gap marker if it exists.
+        """
+        if self.splitGapMarkerId is not None:
+            self.canvas.delete(self.splitGapMarkerId)
+            self.splitGapMarkerId = None
+    
+    def handleSplitGapKey(self, event=None):
+        """
+        Press X once to mark the start of a gap (breath),
+        press X again at the end of the gap to perform the split.
+        Esc cancels.
+        """
+        if not self.splitGapActive:
+            self.splitGapActive = True
+            self.splitGapStartChunk = self.currentChunkIndex
+            self.showSplitGapMarker(self.splitGapStartChunk)
+            print(f"[SplitGap] Start set at chunk {self.splitGapStartChunk}. Move to end and press X again, or Esc to cancel.")
+            return
+        
+        # Second X: finish and apply split
+        gapStart = self.splitGapStartChunk
+        gapEnd = self.currentChunkIndex
+        
+        # Clear visual marker regardless of outcome
+        self.clearSplitGapMarker() 
+        
+        # Reset mode right away (even if nothing happens)
+        self.splitGapActive = False
+        self.splitGapStartChunk = None
+        
+        if gapStart == gapEnd:
+            print("[SplitGap] Start and end are the same chunk; nothing to split.")
+            return
+        
+        # Normalize order (user may drag backwards)
+        if gapEnd < gapStart:
+            gapStart, gapEnd = gapEnd, gapStart
+        
+        self.performSplitWithGap(gapStart, gapEnd)
+        
+    def cancelSplitGap(self, event=None):
+        """
+        Cancel split-gap mode when Esc is pressed.
+        """
+        if self.splitGapActive:
+            print(f"[SplitGap] Canceled (start at chunk {self.splitGapStartChunk} discarded).")
+        
+        self.splitGapActive = False
+        self.splitGapStartChunk = None
+        self.clearSplitGapMarker()
+        
+    def chooseLabelForGap(self, candidates):
+        """
+        Ask the user which label to split if multiple overlap the gap.
+        `candidates` is a list of (index, label) pairs.
+        Returns the chosen index in self.labels, or None if canceled.
+        """
+        if not candidates:
+            return None
+        
+        # Build readable prompt
+        lines = []
+        for i, (idx, label) in enumerate(candidates):
+            member, start, end = label[:3]
+            lines.append(f"{i}: {member} [{start} - {end}]")
+        
+        prompt = "Multiple labels overlap this gap.\n\n" + "\n".join(lines) + \
+             "\n\nEnter the number of the label to split (or Cancel):"
+
+        choice = simpledialog.askinteger(
+            "Choose label to split",
+            prompt,
+            minvalue=0,
+            maxvalue=len(candidates) - 1
+        )
+        
+        if choice is None:
+            print("[SplitGap] User canceled label selection.")
+            return None
+
+        chosenIdx = candidates[choice][0]
+        return chosenIdx
+    
+    def performSplitWithGap(self, gapStart, gapEnd):
+        """
+        Given a gap [gapStart, gapEnd] (inclusive in chunks),
+        split one label that fully covers this segment into two labels,
+        leaving the gap unlabeled.
+
+        Example:
+        label: [Yujin, 0, 100, ...]
+        gap:   40..50
+
+        -> [Yujin, 0, 39, ...] and [Yujin, 51, 100, ...]
+
+        (We subtract 1 and add 1 so the gap itself has no label.)
+        """
+        # Find labels that fully cover the gap
+        candidates = []
+        for idx, label in enumerate(self.labels):
+            if len(label) < 3:
+                continue
+            member, start, end = label[:3]
+            if start <= gapStart and end >= gapEnd:
+                candidates.append((idx, label))
+                
+        if not candidates:
+            print(f"[SplitGap] No label fully covers gap [{gapStart}, {gapEnd}]. Nothing to split.")
+            return
+        
+        if len(candidates) == 1:
+            targetIndex = candidates[0][0]
+        else:
+            # Ask user which overlapping vocal to modify
+            targetIndex = self.chooseLabelForGap(candidates)
+            if targetIndex is None:
+                return
+        
+        original = self.labels[targetIndex]
+        member, start, end = original[:3]
+        isRepeat = original[3] if len(original) > 3 else False
+        isAdLib = original[4] if len(original) > 4 else False
+        
+        # Compute new ranges, leaving a gap
+        leftStart = start
+        leftEnd = gapStart - 1 # last chunk before the breath
+        rightStart = gapEnd + 1 # first chunk after the breath
+        rightEnd = end
+        
+        newLabels = []
+        
+        for idx, label in enumerate(self.labels):
+            if idx != targetIndex:
+                newLabels.append(label)
+            else:
+                # Replace this label with up to two shorter labels
+                if leftEnd >= leftStart:
+                    newLabels.append([member, leftStart, leftEnd, isRepeat, isAdLib])
+                if rightEnd >= rightStart:
+                    newLabels.append([member, rightStart, rightEnd, isRepeat, isAdLib])
             
+        newLabels.sort(key=lambda lab: lab[1])
+
+        print(f"[SplitGap] Split label {original} into:")
+        for lab in newLabels:
+            if lab[0] == member and (lab[1] >= start and lab[2] <= end):
+                print("   ", lab)
+
+        # Take snapshot BEFORE we overwrite labels
+        self.pushUndoState(f"split gap {gapStart}-{gapEnd}")
+
+        # Use the unified helper
+        self.applyLabelsState(newLabels)
+        
+    def applyNewLabelsState(self, newLabels):
+        """
+        Replace self.labels with newLabels, rebuild start/end points,
+        refresh markers and write labels to JSON.
+        """
+        self.labels = newLabels
+
+        # Rebuild startPoints and endPoints
+        self.startPoints.clear()
+        self.endPoints.clear()
+        for label in self.labels:
+            if len(label) < 3:
+                continue
+            start = label[1]
+            end = label[2]
+            if start not in self.startPoints:
+                self.startPoints.append(start)
+            if end not in self.endPoints:
+                self.endPoints.append(end)
+
+        # Update marker structures and redraw
+        self.updateTimeMarkersDict()   # this also calls drawMarkers(...)
+        self.drawTimeMarkers()
+        self.canvas.update()
+        self.root.update_idletasks()
+
+        # Save to the same labels JSON you already use
+        fileNameWithoutExtension = os.path.splitext(os.path.basename(self.testSongPath))[0]
+        labelFilePath = f"./saved_labels/{self.selectedGroup}/{fileNameWithoutExtension}_labels.json"
+        try:
+            with open(labelFilePath, "w") as f:
+                json.dump(self.labels, f, indent=4)
+            print(f"[SplitGap] Labels saved to {labelFilePath}.")
+        except Exception as e:
+            print(f"[SplitGap] Error saving labels: {e}")
+                
     def play(self):
         # Play from saved detection results
         if self.playbackOffset < 0:

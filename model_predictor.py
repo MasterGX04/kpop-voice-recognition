@@ -92,7 +92,7 @@ def predict_40ms(
         frame_starts.clear()
     
     # Assemble windows in small batches to speed up
-    B = 128
+    B = 64
     for s in starts:
         chunk = x[s:s + win_len]
         batch_windows.append(chunk)
@@ -109,29 +109,34 @@ def predict_40ms(
     probs_np = probs_frame.detach().cpu().numpy()
     base_thr = np.full(probs_np.shape[1], thr, dtype=np.float32)
     
+    # Multi-label decode with temperol smoothing
     decoded_np = decode_multilabel(probs_np, per_class_thr=base_thr)
     
     multi_hot = torch.from_numpy(decoded_np).to(device=device, dtype=torch.bool)
-
-     # If a frame has no member above thr but you still want *someone*,
-    # you can optionally fall back to argmax (excluding silence).
-    if silence_idx is not None:
-        non_sil_mask = torch.ones(n_classes, dtype=torch.bool, device=device)
-        non_sil_mask[silence_idx] = False
-    else:
-        non_sil_mask = torch.ones(n_classes, dtype=torch.bool, device=device)
     
-    with torch.no_grad():
-        # default: argmax as a fallback
-        pred_idx = probs_frame.argmax(dim=-1)  # (n_frames,)
-        for t in range(n_frames):
-            act = multi_hot[t]  # (C,)
-            if act.any():
-                # choose the active class with highest prob
-                active_probs = probs_frame[t][act]
-                best_local = torch.argmax(active_probs)
-                active_indices = torch.where(act)[0]
-                pred_idx[t] = active_indices[best_local]
+    # Build Main label sequence using probs + multi_hot
+    multi_hot_np = decoded_np.astype(bool)
+    main_idx_np = np.zeros(n_frames, dtype=np.int64)
+    
+    for t in range(n_frames):
+        p = probs_np[t] # (C, )
+        active = multi_hot_np[t] # Bool mask over classes
+        if active.any():
+            active_ids = np.where(active)[0]
+            # choose active class with highest prob
+            best_local = active_ids[np.argmax(p[active_ids])]
+            main_idx_np[t] = int(best_local)
+        else:
+            # no active class after smoothing
+            if silence_idx is not None:
+                main_idx_np[t] = silence_idx
+            else:
+                main_idx_np[t] = int(np.argmax(p))
+
+    # Reduces single-frame blips and bridges tiny silence gaps
+    main_idx_np = smooth_main_sequence(main_idx_np, silence_idx)
+    
+    pred_idx = torch.from_numpy(main_idx_np).to(device=device, dtype=torch.long)
         
     # ---- 4. Write predictions to .txt (new) ----
     if output_dir is not None:
@@ -232,3 +237,58 @@ def decode_multilabel(probs, per_class_thr=None, k_smooth=5, on_add=0.02, off_su
         for t in range(P.shape[0]):
             Y[t] = Y[t] * cap_topk(P[t], k=topk).astype(np.int32)
     return Y
+
+def smooth_main_sequence(main_idx, silence_idx=None, min_singer_len=3, 
+                         min_silence_len=1, bridge_silence_len=2):
+    """
+    main_idx: 1D np.array of class indices per frame (length T)
+    silence_idx: which index represents silence, or None
+    min_singer_len: minimum frames for a singer segment to be kept
+    min_silence_len: (optional) minimum frames for a silence segment
+    bridge_silence_len: if a silence run <= this and surrounded by same singer,
+                        convert silence to that singer (gap-bridging).
+    """
+    main_idx = np.asarray(main_idx, dtype=np.int64)
+    T = len(main_idx)
+    out = main_idx.copy()
+    
+    start = 0
+    while start < T:
+        label = out[start]
+        end = start + 1
+        while end < T and out[end] == label:
+            end += 1
+        length = end - start
+        
+        # Handle singer segments
+        if silence_idx is not None and label != silence_idx:
+            if length < min_singer_len:
+                # Too short to be reliable singer segment
+                prev_label = out[start - 1] if start > 0 else None
+                next_label = out[end] if end < T else None
+                if prev_label is not None and prev_label == next_label:
+                    out[start:end] = prev_label
+                elif prev_label is not None:
+                    out[start:end] = prev_label
+                elif next_label is not None:
+                    out[start:end] = next_label
+                else:
+                    out[start:end] = silence_idx
+        # Handle silence segments
+        if silence_idx is not None and label == silence_idx:
+            # Optional: enforce min_silence_len
+            if length < min_silence_len:
+                prev_label = out[start - 1] if start > 0 else None
+                next_label = out[end] if end < T else None
+                if prev_label is not None and prev_label == next_label:
+                    out[start:end] = prev_label
+            # Bridge tiny silence gaps between same singer
+            if length <= bridge_silence_len:
+                prev_label = out[start - 1] if start > 0 else None
+                next_label = out[end] if end < T else None
+                if prev_label is not None and prev_label == next_label and prev_label != silence_idx:
+                    out[start:end] = prev_label
+        
+        start = end
+    
+    return out

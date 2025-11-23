@@ -5,10 +5,10 @@ python train_kpop_singers.py `
   --sr_ecapa 16000 `
   --chunk-sec 2.0 `
   --epochs 20 `
-  --batch-size 64 `
+  --batch-size 32 `
   --lr 5e-4 `
   --val-split 0.15 `
-  --num-workers 12 `
+  --num-workers 8 `
   --save-dir "K:\Python Projects\Voice Recognition\models"
 
 - What did I use for AI
@@ -16,3 +16,6 @@ python train_kpop_singers.py `
 - What kind of AI to implement my stuff
 - Explain what I want
 - Show leadership abilities
+
+- Fix members moving around with short lines (order gets messed up so we need debugging)
+- Remove duplicate labels double time if the same member label overlaps
