@@ -71,8 +71,20 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
         songTitle = (
             os.path.basename(vocalsFile)
             .replace("_vocals.mp3", "")
-            .replace("_vocals.wav", "")
         )
+        
+        mp3_path = os.path.join(base_dir, f"{songTitle}_vocals.mp3")
+        wav_path = os.path.join(base_dir, f"{songTitle}_vocals.wav")
+        
+        if not os.path.isfile(wav_path):
+            print(f"[Audio] No WAV file found for {songTitle}. Creating {wav_path}...")
+            try:
+                convertToWav(mp3_path, wav_path)
+                print(f"[Audio]   ✔ Converted {vocalsFile} → {wav_path} @ 22050 Hz")
+            except Exception as e:
+                print(f"[Audio]   ❌ Failed to convert {vocalsFile} to WAV: {e}")
+                continue  # skip this song if conversion fails
+        
         print(f"[build_frame_labels] Processing {songTitle}")
         jsonFilePath = jsonFileMap.get(songTitle)
 
@@ -285,13 +297,13 @@ def getSongsFromSameAlbum():
     songsFromSameAlbum = {
         'IVE': {
             'Ive_Switch': ['해야 (HEYA)', 'Accendio', 'Blue Blood', 'Summer Festa', "Blue Heart", "Hypnosis", "WOW", "My Satisfaction", "LOVE DIVE", "Ice Queen", "Baddie"],
-            'Ive_Empathy': ['Rebel Heart', 'Flu', 'You Wanna Cry', 'ATTITUDE','Thank U', 'TKO', 'Mine', 'ELEVEN', 'Summer[Liz]', 'Wish[Yujin]', 'Payback', 'XOXZ']},
+            'Ive_Empathy': ['Rebel Heart', 'Flu', 'You Wanna Cry', 'ATTITUDE','Thank U', 'TKO', 'Mine', 'ELEVEN', 'Summer[Liz]', 'Wish[Yujin]', 'Payback', 'XOXZ', "Off The Record"]},
         'ITZY': {
             'Born To Be': ['Born To Be', 'Mr. Vampire']   
         },
         'BTS': {
             'Proof': ['Epiphany[Jin]', 'Euphoria[Jungkook]', "Filter[Jimin]", "Love Me Again[V]", "Persona[RM]", "Stigma[V]", "First Love[Suga]", "Disease", "Mama[J-Hope]", "달려라 방탄"],
-            'Love_Yourself_Tear': ['Fake Love']
+            'Love_Yourself_Tear': ['Fake Love', 'Love Maze']
         },
         'Fifty Fifty': {
             'Day & Night': ['Cupid', 'Skittlez']

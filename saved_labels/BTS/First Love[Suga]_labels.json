@@ -2,161 +2,225 @@
     [
         "Suga",
         104,
-        136
+        136,
+        true,
+        false
     ],
     [
         "Suga",
         148,
-        204
+        204,
+        false,
+        false
     ],
     [
         "Suga",
         375,
-        413
+        413,
+        false,
+        false
     ],
     [
         "Suga",
         425,
-        480
+        480,
+        false,
+        false
     ],
     [
         "Suga",
         616,
-        648
+        648,
+        false,
+        false
     ],
     [
         "Suga",
         656,
-        784
+        784,
+        false,
+        false
     ],
     [
         "Suga",
         792,
-        819
+        819,
+        false,
+        false
     ],
     [
         "Suga",
         828,
-        890
+        890,
+        false,
+        false
     ],
     [
         "Suga",
         898,
-        1029
+        1029,
+        false,
+        false
     ],
     [
         "Suga",
         1035,
-        1079
+        1079,
+        false,
+        false
     ],
     [
         "Suga",
         1087,
-        1233
+        1233,
+        false,
+        false
     ],
     [
         "Suga",
         1242,
-        1574
+        1574,
+        false,
+        false
     ],
     [
         "Suga",
         1580,
-        2063
+        2063,
+        false,
+        false
     ],
     [
         "Suga",
         2069,
-        2338
+        2338,
+        false,
+        false
     ],
     [
         "Suga",
         2347,
-        2428
+        2428,
+        false,
+        false
     ],
     [
         "Suga",
         2435,
-        2735
+        2735,
+        false,
+        false
     ],
     [
         "Suga",
         2747,
-        2889
+        2889,
+        false,
+        false
     ],
     [
         "Suga",
         2897,
-        2982
+        2982,
+        false,
+        false
     ],
     [
         "Suga",
         2988,
-        3001
+        3001,
+        false,
+        false
     ],
     [
         "Suga",
         3005,
-        3155
+        3155,
+        false,
+        false
     ],
     [
         "Suga",
         3164,
-        3215
+        3215,
+        false,
+        false
     ],
     [
         "Suga",
         3233,
-        3399
+        3399,
+        false,
+        false
     ],
     [
         "Suga",
         3406,
-        3441
+        3441,
+        false,
+        false
     ],
     [
         "Suga",
         3448,
-        3671
+        3671,
+        false,
+        false
     ],
     [
         "Suga",
         3677,
-        3691
+        3691,
+        false,
+        false
     ],
     [
         "Suga",
         3696,
-        3718
+        3718,
+        false,
+        false
     ],
     [
         "Suga",
         3725,
-        3808
+        3808,
+        false,
+        false
     ],
     [
         "Suga",
         3813,
-        3906
+        3906,
+        false,
+        false
     ],
     [
         "Suga",
         3965,
-        3998
+        3998,
+        false,
+        false
     ],
     [
         "Suga",
         4009,
-        4066
+        4066,
+        false,
+        false
     ],
     [
         "Suga",
         4237,
-        4276
+        4276,
+        false,
+        false
     ],
     [
         "Suga",
         4287,
-        4342
+        4342,
+        false,
+        false
     ]
 ]

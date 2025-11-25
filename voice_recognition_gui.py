@@ -289,7 +289,7 @@ class VoiceTrainerGUI:
         # Get all '_vocals.mp3' files
         vocalsOnlySongs = [
             f for f in os.listdir(audioDir)
-            if f.endswith("_vocals.wav")
+            if f.endswith("_vocals.mp3")
         ]
         
         if not jsonFiles or not vocalsOnlySongs:
