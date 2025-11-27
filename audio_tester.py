@@ -76,6 +76,7 @@ class VoiceDetectionApp:
         self.chunk_duration = 40
         self.totalDurationMs = len(self.audio)
         self.chunks = [self.audio[i:i + self.chunk_duration] for i in range(0, len(self.audio), int(self.chunk_duration))]
+        print(f"Length of chunks: {len(self.chunks)}")
         self.detectionResults = []
         self.currentChunkIndex = 0  # Track current playback position
         self.playbackOffset = 0
@@ -954,7 +955,7 @@ class VoiceDetectionApp:
         chunkIndexFrame = tk.Frame(buttonFrame, bg="gray")
         chunkIndexFrame.pack(side="right", padx=10, pady=10)  # Align to the right side
 
-        tk.Label(chunkIndexFrame, text="Chunk Index:", bg="gray", fg="white", font=("Arial", 10)).pack(side="top")
+        tk.Label(chunkIndexFrame, text="Chunk Index:", bg="turquoise", fg="white", font=("Arial", 10)).pack(side="top")
         self.chunkIndexLabel = tk.Label(chunkIndexFrame, text=str(self.currentChunkIndex), bg="gray", fg="white", font=("Arial", 10))
         self.chunkIndexLabel.pack(side="top")
      
@@ -1014,13 +1015,16 @@ class VoiceDetectionApp:
         
     def initializePositions(self):
         """Initializes the positions each member should be at for a specific chunk index"""
+        n = len(self.chunks)
+        # Run swap/animation logic only where it's safe to do so
         for currentChunk in range(len(self.chunks)):
             for trackItem in self.memberImages.values():
                 if currentChunk < len(self.chunks) - 4:
                     trackItem.checkAndSwap(currentChunk)
                     trackItem.updateAnimations(currentChunk)
                 else:
-                    trackItem.positionTimeline[currentChunk] = trackItem.positionTimeline[len(self.chunks) - 4]
+                    base_idx = len(self.chunks) - 5
+                    trackItem.positionTimeline[currentChunk] = trackItem.positionTimeline[base_idx]
         
         for trackItem in self.memberImages.values():
             trackItem.basePositionTimeline = trackItem.positionTimeline.copy()
@@ -1161,47 +1165,46 @@ class VoiceDetectionApp:
     # Works properly
     def updateProgressBarHandle(self, timeMs): 
         """Update the progress bar handle position based on the current time."""
-        if timeMs >= (len(self.chunks) - 1) * self.chunk_duration:
-            timeMs = (len(self.chunks) - 1) * self.chunk_duration
-    
+        maxTime = (len(self.chunks) - 1) * self.chunk_duration
+        if timeMs >= maxTime:
+            timeMs = maxTime
+
         visibleDuration = self.zoomManager.currentChunksInView * self.chunk_duration
-        totalDuration = len(self.chunks) * self.chunk_duration
-        
+        totalDuration   = len(self.chunks) * self.chunk_duration
+
+        # Compute x for current section
         timeInSection = timeMs - (self.currentSectionIndex * visibleDuration)
-        
         progressRatio = timeInSection / visibleDuration
-        progressRatio = min(progressRatio, 0.999999)
-        x = (progressRatio * self.progressBarWidth) % self.progressBarWidth  # Calculate x position for the handle
-        # Check for wrapping to the next section
+        x = (progressRatio * self.progressBarWidth) % self.progressBarWidth
+
+        # Wrap forward
         if self.previousX > self.progressBarWidth - 50 and x < 50:
-            # print(f"Handle needs to wrap: Previous - {self.previousX}, X - {x}")
             self.currentSectionIndex += 1
-            self.progressBarHandle.currentSectionIndex = self.currentSectionIndex
             if self.currentSectionIndex * visibleDuration >= totalDuration:
-                self.currentSectionIndex = (totalDuration // visibleDuration) - 1  # Prevent overflow
-                return
-            
-            #self.playbackOffset = self.currentSectionIndex * visibleDuration
-            self.drawMarkers(self.currentSectionIndex)
-            self.drawTimeMarkers()
-        
-        # Check for wrapping to the previous section
+                self.currentSectionIndex = max(0, (totalDuration - 1) // visibleDuration)
+            self.progressBarHandle.currentSectionIndex = self.currentSectionIndex
+
+            # recompute for new section
+            timeInSection = timeMs - (self.currentSectionIndex * visibleDuration)
+            progressRatio = timeInSection / visibleDuration
+            x = (progressRatio * self.progressBarWidth) % self.progressBarWidth
+
+        # Wrap backward
         elif self.previousX < 50 and x > self.progressBarWidth - 50:
             self.currentSectionIndex -= 1
-            self.progressBarHandle.currentSectionIndex = self.currentSectionIndex
             if self.currentSectionIndex < 0:
-                self.currentSectionIndex = 0  # Prevent underflow
-                return
-            
-            #self.playbackOffset = self.currentSectionIndex * visibleDuration
-            self.drawTimeMarkers()
-            self.drawMarkers(self.currentSectionIndex)
-            x = self.progressBarWidth  # Reset x position for the previous section
-        
-        # Move the progress bar handle to the new position  
-        self.progressBarHandle.move(x, self.currentSectionIndex)
+                self.currentSectionIndex = 0
+            self.progressBarHandle.currentSectionIndex = self.currentSectionIndex
 
-        # Update the previous x position
+            # recompute for new section
+            timeInSection = timeMs - (self.currentSectionIndex * visibleDuration)
+            progressRatio = timeInSection / visibleDuration
+            x = (progressRatio * self.progressBarWidth) % self.progressBarWidth
+
+        self.drawTimeMarkers()
+        self.drawMarkers(self.currentSectionIndex)
+
+        self.progressBarHandle.move(x, self.currentSectionIndex)
         self.previousX = x
     
     # Works properly
@@ -2438,8 +2441,11 @@ class VoiceDetectionApp:
     def restart(self):
         """Restart playback from the beginning."""
         self.currentChunkIndex = 0
-        self.isPlaying = False
-        self.updateCanvasForCurrentPosition(0)
+        self.playbackOffset = 0
+        self.currentSectionIndex = 0
+        self.progressBarHandle.currentSectionIndex = 0
+        self.previousX = 0  # important!
+        self.updateCanvasForCurrentPosition()
         pygame.mixer.music.rewind()
         
     def rewind(self):

@@ -418,7 +418,7 @@ class TrackItem:
         """
         imgHeight = self.sourceImages[self.currentImageKey].height()
         # e.g. 8% of image height, tweak factor as you like
-        self.progressBarHeight = max(2, int(0.1 * imgHeight))
+        self.progressBarHeight = max(2, int(0.15 * imgHeight))
             
     def setPositionFromTimeline(self, currentChunk):
         """
