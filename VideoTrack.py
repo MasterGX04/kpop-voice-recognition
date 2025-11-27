@@ -1,5 +1,3 @@
-import tkinter as tk
-from tkinter import ttk
 import cv2
 import time
 from PIL import Image, ImageTk, ImageGrab
@@ -9,7 +7,7 @@ import numpy as np
 import os
 import subprocess
 from tqdm import tqdm
-from concurrent.futures import ThreadPoolExecutor, as_completed
+import pygame
 
 class VideoTrackItem(TrackItem):
     def __init__(self, canvas, parent, videoPath, scale=100, scaleX=1.0, position=(0,0), baseHeight=720, isMusicVideo=True):
@@ -18,6 +16,7 @@ class VideoTrackItem(TrackItem):
         self.videoPath = videoPath
         self.parent = parent
         self.cap = cv2.VideoCapture(videoPath)
+        self.cap_lock = threading.Lock()
         self.scale = scale
         self.scaleX = scaleX
         self.videoFrameId = None
@@ -36,6 +35,14 @@ class VideoTrackItem(TrackItem):
         
         self.adjustScale(baseHeight)
         self.setPosition()
+        # Sets video fps
+        fps = self.cap.get(cv2.CAP_PROP_FPS)
+        print(f"Current fps: {fps}")
+        if fps <= 0:
+            self.effective_fps = 30
+        else:
+            self.effective_fps = min(fps, 45) # cap to 30
+            
         self.isMusicVideo = isMusicVideo
         
     def adjustScale(self, currentHeight):
@@ -47,7 +54,7 @@ class VideoTrackItem(TrackItem):
         self.newWidth = int(self.newHeight * (self.frameWidth / self.frameHeight))
         print(f"New height: {self.newHeight}, New width: {self.newWidth}")
         # self.canvas.config(width=self.newWidth, height=self.newHeight)
-    
+      
     def play(self):
         self.isPlaying = True
         self.isPaused = False
@@ -74,24 +81,31 @@ class VideoTrackItem(TrackItem):
             self.videoFrameId = None
 
     def _playVideo(self):
-        # Get video frame rate (frames per second)
-        fps = self.cap.get(cv2.CAP_PROP_FPS)
-        if fps <= 0:
-            raise ValueError("Invalid FPS detected in video file.")
-
-        frameDuration = 1000 / fps  # Duration of each frame in ms
-        lastFrameTime = time.time()
-        
+        # Get video frame rate (frames per second        
         while self.isPlaying and self.cap.isOpened():
             if self.isPaused:
                 time.sleep(0.02)  # Wait briefly while paused
-                lastFrameTime = time.time() 
                 continue
             
-            ret, frame = self.cap.read()
+            # Get current audio playback time (ms)
+            audio_pos_ms = pygame.mixer.music.get_pos()
+            
+            playback_ms = self.parent.playbackOffset + audio_pos_ms
+            
+            # Compute which video frame should be visible
+            frame_index = int((playback_ms / 1000.0) * self.effective_fps)
+            if frame_index < 0:
+                frame_index = 0
+                
+            # Protect VideoCapture operations
+            with self.cap_lock:
+                self.cap.set(cv2.CAP_PROP_POS_FRAMES, frame_index)
+                ret, frame = self.cap.read()
+            
             if not ret:
                 break
             
+            # DRAW FRAME
             frame = cv2.resize(frame, (self.newWidth, self.newHeight))
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             img = ImageTk.PhotoImage(image=Image.fromarray(frame))
@@ -107,11 +121,8 @@ class VideoTrackItem(TrackItem):
             self.canvas.coords(self.videoFrameId, self.position[0], self.position[1])
             self.canvas.update()
             
-            # Maintain FPS
-            elapsedTime = time.time() - lastFrameTime
-            sleepTime = max(0, (frameDuration / 1000) - elapsedTime)
-            time.sleep(sleepTime)
-            lastFrameTime = time.time()
+            time.sleep(0.01)
+            
         self.isPlaying = False
 
     def setPosition(self):
@@ -120,10 +131,12 @@ class VideoTrackItem(TrackItem):
             
     def seek(self, timeMs):
         """Calculate the frame index based on the time in milliseconds"""
-        fps = self.cap.get(cv2.CAP_PROP_FPS)
-        if fps > 0:
-            frameIndex = int((timeMs / 1000.0) * fps)
-            self.cap.set(cv2.CAP_PROP_POS_FRAMES, frameIndex)
+        if self.effective_fps > 0:
+            frameIndex = int((timeMs / 1000.0) * self.effective_fps)
+            if frameIndex < 0:
+                frameIndex = 0
+            with self.cap_lock:
+                self.cap.set(cv2.CAP_PROP_POS_FRAMES, frameIndex)
     
     def captureCanvas(self, canvas):
         canvas.update()

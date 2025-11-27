@@ -21,11 +21,42 @@ class VoiceTrainerGUI:
         self.initPlaceholders()
         
         self.root.title("Voice Trainer")
-        self.root.geometry("900x700")
+        self.setResponsiveGeometry(self.root)
         
         self.createWidgets()
         self.displayMembers(self.currentGroup.get())
+    
+    def setResponsiveGeometry(self, window, scale=0.8, aspect=1920/1080):
+        """Set window size based on monitor, keeping ~1920x1080 aspect ratio."""
+        window.update_idletasks()
         
+        screen_w = self.root.winfo_screenwidth()
+        screen_h = self.root.winfo_screenheight()
+        
+        # Leave some margin to not touch scren edges
+        max_w = int(screen_w * scale)   # e.g., 90% of screen
+        max_h = int(screen_h * scale)
+        
+        print(f"Max_w: {max_w}, max_h: {max_h}")
+        
+        # Start by using max height and compute width from aspect ratio
+        width_from_h = int(max_h * aspect)
+        
+        if width_from_h <= max_w:
+            # Height is the limiting factor
+            win_w = width_from_h
+            win_h = max_h
+        else:
+            # Width is the limiting factor; compute height from width
+            win_w = max_w
+            win_h = int(max_w / aspect)
+            
+        # Center window on the screen
+        x = (screen_w - win_w) // 2
+        y = (screen_h - win_h) // 2
+        
+        self.root.geometry(f"{win_w}x{win_h}+{x}+{y}")
+           
     def createWidgets(self):
         # Topframe: group select
         topFrame = tk.Frame(self.root)
@@ -161,7 +192,7 @@ class VoiceTrainerGUI:
 
         songWindow = tk.Toplevel(self.root)
         songWindow.title(title)
-        songWindow.geometry("900x700")
+        songWindow.geometry(self.root.winfo_geometry())
 
         canvas = tk.Canvas(songWindow)
         frame = tk.Frame(canvas)
@@ -233,12 +264,6 @@ class VoiceTrainerGUI:
                     continueApp[0] = False
                     root.destroy()
                     sys.exit()
-                else:
-                    if tk.messagebox.askyesno("Switch Member/Group", "Do you want to switch to a different member or group?"):
-                        if hasattr(app, "videoTrackItem") and app.videoTrackItem:
-                            app.videoTrackItem.stop()
-                        continueApp[0] = False
-                        root.destroy()
 
             root.protocol("WM_DELETE_WINDOW", onClose)
 

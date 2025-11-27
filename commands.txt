@@ -30,12 +30,11 @@ python train_kpop_singers.py `
 - Explain what I want
 - Show leadership abilities
 
-- Fix members moving around with short lines (order gets messed up so we need debugging)
-- Remove stupid stutter for double "jump" if there is music video
-- Important: VERY BAD AT OVERLAP: EG. yujin sings before Wonyoung ends and model forgets Wonyoung completely
-- Remove duplicate labels double time if the same member label overlaps
-- Fix the issue with the window being squashed on different monitors (shouldn't be static)
+- Important: VERY BAD AT OVERLAP: EG. yujin sings before Wonyoung ends, and model forgets Wonyoung completely
+- Last chunk bug still exists. I have a headache and want to work on model
+- Need to fix the positionTimeline with new aspect ratio. I think the positionTimeline is not actually being updated to accommodate new aspect ratio
 - Fix members moving up and down with variable window heights (works normally but struggles when the window size is changed because distance to 'jump' is altered)
+- FIX Bandaid bug where the user can't press space unless they press Play first
 - Have specific adlib head because model can't predict adlibs but great at long solo parts
 - Must figure out how to detect lines under 1 second long because "Fake love" is short and model ignores it. Chorus is almost perfect
 

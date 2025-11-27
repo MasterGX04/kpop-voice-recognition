@@ -24,13 +24,15 @@ class TrackItem:
         self.timerValue = 0.0  # Timer starts at 0.0 seconds
         self.parent = parent
         
+        parentScaleX = getattr(self.parent, "scaleX", 1.0) if self.parent else 1.0
+        parentScaleY = getattr(self.parent, "scaleY", 1.0) if self.parent else 1.0
+
         self.fontSize = 25
         self.font = tkFont.Font(family="Digital-7", size=self.fontSize, weight="bold")
         self.progressBarXStart = None
         
         self.timerX = 0
         self.timerY = 0
-        self.heightOffset = None
         self.lastUpdateChunk = 0
         
         if type == "image":
@@ -43,7 +45,7 @@ class TrackItem:
             clearImage = self.chromaKeyImage(self.originalImages["dark"], self.memberColor)
             self.originalImages["clear"] = clearImage  
             self.sourceImages["clear"] = ImageTk.PhotoImage(clearImage)
-            self.setTimerPosition()
+            self.setTimerPosition(parentScaleX, parentScaleY)
             
             # Set bar color
             lightImage = self.originalImages["light"]
@@ -78,11 +80,29 @@ class TrackItem:
     def setMaxTime(self, maxTime):
         self.maxTime = maxTime
     
-    def setTimerPosition(self):
-        self.fontSize = int(40 * self.parent.scaleY)
+    def setTimerPosition(self, parentScaleX=None, parentScaleY=None):
+        if parentScaleX is None:
+            parentScaleX = getattr(self.parent, "scaleX", 1.0)
+        if parentScaleY is None:
+            parentScaleY = getattr(self.parent, "scaleY", 1.0)
+        
+        self.fontSize = int(40 * parentScaleX)
         self.font.configure(size=self.fontSize)
-        self.xOffset = int(700 * self.parent.scaleX)
-        self.yOffset = int(15 * self.parent.scaleY)
+        self.xOffset = int(700 * parentScaleX)
+        self.yOffset = int(5 * parentScaleY)
+        
+    def rescalePositionTimeline(self, scaleY):
+        """
+        Rescale Y positions from base timeline using the current vertical scale.
+        Called when the window is resized.
+        """
+        if not hasattr(self, "basePositionTimeline"):
+            return
+
+        self.positionTimeline = [
+            y * scaleY if y != 0.0 else 0.0
+            for y in self.basePositionTimeline
+        ]
         
     def chromaKeyImage(self, image, keyColor):
         """Apply chroma keying to an image"""
@@ -110,6 +130,11 @@ class TrackItem:
         })
         
     def updateAnimations(self, currentChunk):
+        """
+        Update the member's vertical animation for the current chunk.
+        Animations operate entirely in BASE Y-COORDS (not scaled).
+        Scaling is applied later in updateElementPositions().
+        """
         for anim in self.animations[:]:
             if currentChunk < anim["startChunk"]:
                 continue  # Animation hasn't started yet
@@ -122,23 +147,39 @@ class TrackItem:
             currentProgressChunk = currentChunk - anim["startChunk"]
             progress = min(currentProgressChunk / totalChunks, 1.0)
             # Linear interpolation for smooth transition
-            interpolatedY = anim["startY"] + (anim["endY"] - anim["startY"]) * progress
+            startY = anim["startY"] # baseY, unscaled
+            endY = anim["endY"] # baseY, unscaled
+            interpolatedY = startY + (endY - startY) * progress
             
             # x, _ = self.parent.canvas.coords(self.imageId)
            # self.parent.canvas.coords(self.imageId, x, interpolatedY)
             self.positionTimeline[currentChunk] = interpolatedY
             
-            if progress == 1.0:
-                interpolatedY = anim["endY"]  # Lock at final position
+            # Cleanup finished animation
+            if progress >= 1.0:
+                self.positionTimeline[currentChunk] = endY
                 #self.parent.canvas.coords(self.imageId, x, interpolatedY)
-                self.positionTimeline[currentChunk] = interpolatedY
-                
-    def initializeHeightOffset(self, keys):
-        firstKey, secondKey = keys[0], keys[1]
-        firstY = self.parent.canvas.coords(self.parent.memberImages[firstKey].imageId)[1]
-        secondY = self.parent.canvas.coords(self.parent.memberImages[secondKey].imageId)[1]
-        self.heightOffset = (secondY - firstY, firstY)  # (scaledHeight, yOffset)
-        self.initializeProgressBar()
+                self.animations.remove(anim)
+    
+    def getSlotOffsetForSlot(self, slotIndex):
+        """
+        Computes the vertical offset of this member based on slot index and scale.
+        Replaces heightOffset[0] and heightOffset[1].
+        """
+        imgHeight = self.sourceImages[self.currentImageKey].height()
+        baseOffset = int(10 * self.parent.scaleY)  # or 0 if you keep baseY independent
+        return imgHeight * slotIndex + baseOffset
+    
+    def getHeightOffset(self):
+        """
+        Compute vertical offset dynamically from scaling and slot index.
+        This guarantees it always exists and matches the current UI scale.
+        """
+        imgHeight = self.sourceImages[self.currentImageKey].height() # scaled image
+        slot = self.currentSlotIndex
+        spacing = int(15 * self.parent.scaleY)
+        
+        return imgHeight * slot + spacing
         
     def getMostRecentY(self, currentChunk):
         for c in range(currentChunk, -1, -1):
@@ -150,13 +191,8 @@ class TrackItem:
         """
         Checks timeline conditions and triggers swap animations.
         """
-        keys = list(self.parent.memberImages.keys())
-        if not hasattr(self, 'heightOffset') or not self.heightOffset:
-            self.initializeHeightOffset(keys)
-        
         currentSlotIndex = self.parent.slotMap[self.trackMember]
         currentValue = self.timeline[currentChunk]
-        scaledHeight, yOffset = self.heightOffset
 
         baseChunkLength = 12
         membersToPass = []
@@ -165,21 +201,26 @@ class TrackItem:
         for slot in range(currentSlotIndex - 1, -1, -1):
             otherKey = next(name for name, idx in self.parent.slotMap.items() if idx == slot)
             otherTrackItem = self.parent.memberImages[otherKey]
-            otherValue = otherTrackItem.timeline[min(currentChunk + 4, len(self.timeline) - 1)]
+            
+            # Look slightly ahead
+            futureIndex = min(currentChunk + 4, len(self.timeline) - 1)
+            otherValue = otherTrackItem.timeline[futureIndex]
 
             if currentValue > otherValue:
                 membersToPass.append(otherKey)
             else:
                 break
         
+        # If nothing to pass just lock to current BASE Y
+        # DOUBLE CHECK THIS IN CASE
         if not membersToPass:
-            _, y = self.parent.canvas.coords(self.imageId)
-            self.positionTimeline[currentChunk] = y
+            baseY = self.getMostRecentY(currentChunk)
+            self.positionTimeline[currentChunk] = baseY
             return
         
         # Step 2: Animate the current member upward to new Y
         newSlot = currentSlotIndex - len(membersToPass)
-        newY = newSlot * scaledHeight + yOffset
+        newY = self.getSlotOffsetForSlot(newSlot)
         currentY = self.getMostRecentY(currentChunk)
 
         fullLength = baseChunkLength + 2 * (len(membersToPass) - 1)
@@ -200,7 +241,7 @@ class TrackItem:
             originalY = passedTrackItem.getMostRecentY(passedStartChunk)
             passedEndChunk = passedStartChunk + baseChunkLength
             newSlot = passedTrackItem.currentSlotIndex + 1
-            targetY = newSlot * scaledHeight + yOffset
+            targetY = passedTrackItem.getSlotOffsetForSlot(newSlot)
 
             passedTrackItem.animatePosition(
                 startY=originalY,
@@ -213,37 +254,60 @@ class TrackItem:
             self.parent.slotMap[passedKey] = newSlot
     
         # Step 5: Lock this chunk’s Y
-        _, y = self.parent.canvas.coords(self.imageId)
-        self.positionTimeline[currentChunk] = y
+        baseY = self.getMostRecentY(currentChunk)
+        self.positionTimeline[currentChunk] = baseY
     
     def initializeTimeline(self):
-        self.timeline = [0.0] * len(self.parent.chunks)
-        activeChunks = 0
-        labelRanges = [] 
-        # print("All labels:", self.parent.labels)
+        numChunks = len(self.parent.chunks) # Double check this
+        self.timeline = [0.0] * numChunks
+        
+        rawRanges = []
         for label in self.parent.labels:
             member, start, end = label[:3]
             if member == self.trackMember:
-                labelRanges.append((start, end))
-                for chunkIndex in range(start, end + 1):
-                    activeChunks += 1
-                    self.timeline[chunkIndex] = activeChunks * (self.parent.chunk_duration / 1000)
-            
-        totalChunks = len(self.timeline)
-        currentRangeIndex = 0
-        lastTime = 0.0
+                rawRanges.append((start, end))
         
-        for chunkIndex in range(totalChunks):
-        # If within the current label range, skip (already calculated)
-            if (currentRangeIndex < len(labelRanges) and labelRanges[currentRangeIndex][0] <= chunkIndex <= labelRanges[currentRangeIndex][1]):
-                if chunkIndex == labelRanges[currentRangeIndex][1]:
-                    lastTime = self.timeline[chunkIndex]
-                    currentRangeIndex += 1  # Move to the next range
-                    self.lastUpdateChunk = chunkIndex
-                continue
-
-            # Fill in time for chunks outside the active ranges
-            self.timeline[chunkIndex] = lastTime
+        if not rawRanges:
+            return
+        
+        # Sort and merge overlapping/adjacent ranges
+        rawRanges.sort(key=lambda r: r[0]) # Sort by start
+        mergedRanges = [rawRanges[0]]
+        for start, end in rawRanges[1:]:
+            lastStart, lastEnd = mergedRanges[-1]
+            if start <= lastEnd + 1:
+                # Overlapping or directly adjacent: merge
+                mergedRanges[-1] = (lastStart, max(lastEnd, end))
+            else:
+                mergedRanges.append((start, end))
+        
+        # 👉 last chunk where this member sings
+        lastEnd = mergedRanges[-1][1]
+        self.lastUpdateChunk = min(lastEnd, numChunks - 1)
+    
+        activeChunks = 0
+        lastTime = 0.0
+        rangeIdx = 0
+        currentRange = mergedRanges[rangeIdx]
+        
+        # print("All labels:", self.parent.labels)
+        for chunkIndex in range(numChunks):
+            # still within some active range?
+            while rangeIdx < len(mergedRanges) and chunkIndex > currentRange[1]:
+                rangeIdx += 1
+                if rangeIdx < len(mergedRanges):
+                    currentRange = mergedRanges[rangeIdx]
+                else:
+                    currentRange = None
+                    break
+                
+            if currentRange and currentRange[0] <= chunkIndex <= currentRange[1]:
+                # inside active range: incremeent time
+                activeChunks += 1
+                lastTime = activeChunks * (self.parent.chunk_duration / 1000.0)
+                self.timeline[chunkIndex] = lastTime
+            else:
+                self.timeline[chunkIndex] = lastTime
               
     def setImageId(self, imageId):
         self.imageId = imageId
@@ -300,7 +364,8 @@ class TrackItem:
             newHeight = int(baseHeight * (scale / 100))
             resizedImage = originalImage.resize((newWidth, newHeight))
             self.sourceImages[key] = ImageTk.PhotoImage(resizedImage)
-        
+
+        self.updateProgressBarGeometry()
         self.setTimerPosition()
     
     def updateTime(self):
@@ -330,7 +395,7 @@ class TrackItem:
         x, y = self.parent.canvas.coords(self.imageId)
         # Update timer position to align the top-right corner
         self.timerX = x + self.xOffset
-        self.timerY = y - self.yOffset
+        self.timerY = y + self.yOffset
         
         # print(f"Timer x: {self.timerX}, Timer y: {self.timerY}")
         
@@ -345,6 +410,15 @@ class TrackItem:
             fill="white",
             anchor="ne"  # Anchor the text to the right (east)
         )
+    
+    def updateProgressBarGeometry(self):
+        """
+        Update progress bar height based on the current (scaled) image height.
+        This makes the bar thickness scale with the member image.
+        """
+        imgHeight = self.sourceImages[self.currentImageKey].height()
+        # e.g. 8% of image height, tweak factor as you like
+        self.progressBarHeight = max(2, int(0.1 * imgHeight))
             
     def setPositionFromTimeline(self, currentChunk):
         """
@@ -363,9 +437,14 @@ class TrackItem:
         if not self.parent.isPaused:
             self.drawTextForCurrentChunk(chunkIndex)
     
-    def getProgressY(self):
-        _, y = self.parent.canvas.coords(self.imageId)
-        return  y + 0.7 * self.heightOffset[0]
+    def getProgressBarY(self):
+        """
+        Y coordinate where the progress bar should be drawn, based on the image’s
+        position and scaled height.
+        """
+        _, imgY = self.parent.canvas.coords(self.imageId)
+        imgHeight = self.sourceImages[self.currentImageKey].height()
+        return imgY + int(0.7 * imgHeight)
     
     def findStartX(self):
         if self.progressBarXStart is None:
@@ -398,14 +477,14 @@ class TrackItem:
 
     def initializeProgressBar(self):
         """Initialize the progress bar."""
-        self.progressBarHeight = int(15 * self.parent.scaleY)
-        y = self.getProgressY()
+        self.updateProgressBarGeometry()
+        
         self.progressBarImage = self.createRoundedRectangleImage(
             0, self.progressBarHeight, self.progressBarColor, radius=self.progressBarHeight // 2
         )
         
         self.progressBarCanvasImage = self.parent.canvas.create_image(
-            0, self.getProgressY(), anchor="nw", image=self.progressBarImage
+            0, self.getProgressBarY(), anchor="nw", image=self.progressBarImage
         )
         
         self.parent.canvas.tag_lower(self.progressBarCanvasImage, self.imageId)
@@ -422,7 +501,7 @@ class TrackItem:
         # print(f"X start: {xStart}, xEnd: {xEnd}")
         
         barWidth = int(xEnd - xStart) if xEnd != 0 else 0
-        y = self.getProgressY()
+        y = self.getProgressBarY()
         
         color = self.progressBarColor if self.currentImageKey == 'light' else "#ffffff"
         # Update rectangle for the main bar

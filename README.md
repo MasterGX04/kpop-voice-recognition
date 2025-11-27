@@ -1,4 +1,4 @@
-<p align="center"> <img src="images/banner.png" width="80%" alt="Project Banner"> </p> <h1 align="center">🎤 K-Pop Voice Recognition</h1> <p align="center"><b>A Human-Centered Machine Learning System for Multi-Singer Vocal Identification</b></p> <p align="center"> <img src="https://img.shields.io/badge/Python-3.9+-blue.svg"> <img src="https://img.shields.io/badge/ML-PyTorch%20%7C%20TensorFlow-orange.svg"> <img src="https://img.shields.io/badge/UI-Tkinter-success.svg"> <img src="https://img.shields.io/badge/Domain-Music%20AI-purple.svg"> </p>
+<p align="center"> <img src="images/logo.png" width="80%" alt="Project Banner"> </p> <h1 align="center">🎤 K-Pop Voice Recognition</h1> <p align="center"><b>A Human-Centered Machine Learning System for Multi-Singer Vocal Identification</b></p> <p align="center"> <img src="https://img.shields.io/badge/Python-3.9+-blue.svg"> <img src="https://img.shields.io/badge/ML-PyTorch%20%7C%20TensorFlow-orange.svg"> <img src="https://img.shields.io/badge/UI-Tkinter-success.svg"> <img src="https://img.shields.io/badge/Domain-Music%20AI-purple.svg"> </p>
 
 Overview
 
@@ -52,7 +52,7 @@ Solo→mixed-stage training
 </td></tr> </table>
 
 # Demo Visuals
-<p align="center"><i>Replace with real screenshots from your UI.</i></p> <p align="center"> <img src="images/banner.png" width="70%" alt="UI Overview"> </p> <p align="center"> <img src="images/drag_demo.gif" width="60%" alt="Marker Dragging Demo"> </p> <p align="center"> <img src="images/member_highlight.gif" width="60%" alt="Member Highlight Demo"> </p>
+<p align="center"><i>UI Overview</i></p> <p align="center"> <img src="images/banner.png" width="70%" alt="UI Overview"> </p> <p align="center"> <img src="images/drag_demo.gif" width="60%" alt="Marker Dragging Demo"> </p> <p align="center"> <img src="images/member_highlight.gif" width="60%" alt="Member Highlight Demo"> </p>
 
 # How the System Works
 <p align="center"> <img src="images/pipeline_diagram.png" width="85%" alt="Pipeline Diagram"> </p>  

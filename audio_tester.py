@@ -66,6 +66,9 @@ class VoiceDetectionApp:
         self.baseWidth = 1920
         self.baseHeight = 1080
         
+        self.scaleX = 1.0
+        self.scaleY = 1.0
+        
         if os.path.exists(self.vocalsOnlyPath):
             self.audio = AudioSegment.from_file(self.vocalsOnlyPath)
         else:
@@ -92,10 +95,11 @@ class VoiceDetectionApp:
             
         self.startPointMarkers = {}
         self.endPointMarkers = {}
-        self.scaleX = 1.0
-        self.scaleY = 1.0
         
-        self.canvas = tk.Canvas(root, width=1152, height=648, bg="white")
+        self.canvasFrame = tk.Frame(root)
+        self.canvasFrame.pack(fill="both", expand=True)
+        
+        self.canvas = tk.Canvas(self.canvasFrame, bg="white")
         self.canvas.pack(fill="both", expand=True)
         self.canvas.bind("<Configure>", self.onCanvasResize)
         
@@ -125,6 +129,11 @@ class VoiceDetectionApp:
         
         self.progressBarHandle = ProgressBarHandle(self.progressBarCanvas, self, self.progressBarWidth, self.chunk_duration)
         
+        def startLayout():
+            self.initializeMemberImages()
+            self.initializePositions()
+            self.updateElementPositions()
+        
         # Initialize VideoTrack
         videoPath = f"./training_data/{self.selectedGroup}/{os.path.basename(self.testSongPath).replace('.mp3', '.mp4')}"
         if os.path.exists(videoPath):
@@ -151,24 +160,19 @@ class VoiceDetectionApp:
             labels40 = []
 
         self.voiceDetectionResults = labels40
-        print("Detection results:", labels40[100:200])
+        # print("Detection results:", labels40[100:200])
             
         labels = self.loadSavedLabels() # Store labels (member, start, end)
         if labels == [] and labels40 != []: 
             self.labels = self.createLabelsFromPredictions(labels40)
         else:
             self.labels = labels
-            
-        def startLayout():
-            self.initializeMemberImages()
-            self.updateElementPositions()
-
+        
         self.root.after(100, startLayout)
         
         self.addControls(root)
         self.root.after(100, self.drawTimeMarkers)
         self.root.after(50, self.loadLyricsFromFile)
-        self.singingOrNotMask = []
         
         if len(self.voiceDetectionResults) > 0:
             self.evaluateVoiceDetectionAccuracy()
@@ -199,6 +203,8 @@ class VoiceDetectionApp:
         # Temporary marker shown when setting the start of a gap-split
         self.splitGapMarkerId = None
         
+        self.root.protocol("WM_DELETE_WINDOW", self.onClose)
+        
         self.root.bind("<Control-h>", self.toggleUIElements)
         self.root.bind("<Control-r>", self.createVideo)
         self.root.bind("<Control-t>", self.setThumbnail)
@@ -206,6 +212,31 @@ class VoiceDetectionApp:
         self.root.bind("<Control-Shift-B>", self.changeMode)
     # end init
 
+    def onClose(self):
+        """Cleanly stop audio/video playback when this window is closed."""
+        # Stop music if it's playing
+        try:
+            if pygame.mixer.get_init() and pygame.mixer.music.get_busy():
+                pygame.mixer.music.stop()
+        except Exception as e:
+            print("Error stopping music on close:", e)
+
+        # Stop video if present
+        if hasattr(self, "videoTrackItem") and self.videoTrackItem:
+            try:
+                self.videoTrackItem.pause()
+                self.videoTrackItem.stop()
+            except Exception as e:
+                print("Error stopping video on close:", e)
+
+        # Optional: reset flags
+        self.isPlaying = False
+        self.isPaused = False
+
+        # Destroy just this window (the UI window), not the whole app
+        self.root.destroy()
+      
+      
     def resetLabels(self, event):
         self.labels = self.loadSavedLabels()
         for trackItem in    self.memberImages.values():
@@ -886,7 +917,7 @@ class VoiceDetectionApp:
                     
     
     def addControls(self, root):
-        buttonFrame = tk.Frame(root, bg="gray")  # Light gray background for visibility
+        buttonFrame = tk.Frame(root, bg="blue")  # Light gray background for visibility
         buttonFrame.pack(fill="x", side="bottom")  # Place at the bottom
         
         self.singerVar = tk.StringVar(value=self.trainingMember)
@@ -944,6 +975,10 @@ class VoiceDetectionApp:
         self.scaleX = newWidth / self.baseWidth
         self.scaleY = newHeight / self.baseHeight
         
+        # 1) Rescale member timelines (vertical animation positions)
+        for trackItem in self.memberImages.values():
+            trackItem.rescalePositionTimeline(self.scaleY)
+        
         self.addBackgroundImage()
         self.progressBarCanvas.config(width=self.progressBarWidth)
         self.navigationArrows.updateArrows(self.progressBarCanvas)
@@ -951,7 +986,6 @@ class VoiceDetectionApp:
         
         self.progressBarHandle.progressBarWidth = newWidth
         self.root.after(50, self.drawTimeMarkers)
-        self.initializePositions()
         
         if hasattr(self, "videoTrackItem"):
             # Adjust video height to fit canvas and maintain aspect ratio
@@ -969,17 +1003,14 @@ class VoiceDetectionApp:
             effectiveScale = trackItem.scale * self.scaleX 
             
             trackItem.resizeImages(effectiveScale)
-            trackItem.scale
              
             # Update the canvas image and position
             imageId = self.memberImageIds[member]
             imageKey = trackItem.currentImageKey
             trackItem.setImageId(imageId)
+            
             self.canvas.itemconfig(imageId, image=trackItem.sourceImages[imageKey])
             self.canvas.coords(imageId, newX, newY)
-            trackItem.heightOffset = None
-        
-        self.initializePositions()
         
     def initializePositions(self):
         """Initializes the positions each member should be at for a specific chunk index"""
@@ -990,6 +1021,9 @@ class VoiceDetectionApp:
                     trackItem.updateAnimations(currentChunk)
                 else:
                     trackItem.positionTimeline[currentChunk] = trackItem.positionTimeline[len(self.chunks) - 4]
+        
+        for trackItem in self.memberImages.values():
+            trackItem.basePositionTimeline = trackItem.positionTimeline.copy()
         
     def initializeMemberImages(self):
         groupMembers = list(self.images.keys())
@@ -1052,8 +1086,9 @@ class VoiceDetectionApp:
 
             trackItem.setImageId(imageId)
             self.memberImageIds[memberName] = imageId
+            trackItem.initializeProgressBar()
             memberTimes.append(trackItem.timeline[len(self.chunks) - 1])
-            
+          
         # Set max time across all members
         for _, trackItem in self.memberImages.items():
             trackItem.setMaxTime(max(memberTimes))
@@ -1083,7 +1118,6 @@ class VoiceDetectionApp:
         
         if not os.path.exists(labelFilePath):
             print(f"No saved labels found at {labelFilePath}.") 
-            # self.setPredictedPointsFromMask(self.singingOrNotMask)
             return []
         
         # Load json file
@@ -1127,12 +1161,16 @@ class VoiceDetectionApp:
     # Works properly
     def updateProgressBarHandle(self, timeMs): 
         """Update the progress bar handle position based on the current time."""
+        if timeMs >= (len(self.chunks) - 1) * self.chunk_duration:
+            timeMs = (len(self.chunks) - 1) * self.chunk_duration
+    
         visibleDuration = self.zoomManager.currentChunksInView * self.chunk_duration
         totalDuration = len(self.chunks) * self.chunk_duration
         
         timeInSection = timeMs - (self.currentSectionIndex * visibleDuration)
         
         progressRatio = timeInSection / visibleDuration
+        progressRatio = min(progressRatio, 0.999999)
         x = (progressRatio * self.progressBarWidth) % self.progressBarWidth  # Calculate x position for the handle
         # Check for wrapping to the next section
         if self.previousX > self.progressBarWidth - 50 and x < 50:
@@ -1182,7 +1220,10 @@ class VoiceDetectionApp:
         progressRatio = x / self.progressBarWidth
         #print(f"Current progressRatio: {progressRatio }")
         newTimeMs = int(visibleDuration * (self.currentSectionIndex + progressRatio))
-        self.currentChunkIndex = int(newTimeMs / self.chunk_duration)
+        self.currentChunkIndex = min(
+            int(newTimeMs / self.chunk_duration),
+            len(self.chunks) - 1
+        )       
         self.updateChunkText(self.currentChunkIndex)
         self.updateProgressBarHandle(newTimeMs)
         self.updateDisplayedTime(newTimeMs)
@@ -1194,13 +1235,6 @@ class VoiceDetectionApp:
         
     def updateProgressBar(self):
         """Redraw progress bar based on visible range"""
-        totalChunks = len(self.chunks)
-        visibleChunks = self.zoomManager.currentChunksInView
-        
-        # Ensure current section index remains within bounds
-        # self.currentChunkIndex = min(self.currentSectionIndex * visibleChunks, totalChunks - visibleChunks)
-        # self.currentChunks = self.chunks[self.currentChunkIndex: self.currentChunkIndex + visibleChunks]
-        
         playbackTime = self.playbackOffset + pygame.mixer.music.get_pos()
         self.updateTimeMarkersDict()
         self.updateProgressBarHandle(playbackTime)
@@ -1934,21 +1968,20 @@ class VoiceDetectionApp:
         newTimeMs = int(visibleDuration * (self.currentSectionIndex + progressRatio))
         
         # Updates the chunk index
-        self.currentChunkIndex = int(newTimeMs / self.chunk_duration)
+        self.currentChunkIndex = min(
+            int(newTimeMs / self.chunk_duration),
+            len(self.chunks) - 1
+        )
         self.updateChunkText(self.currentChunkIndex)
         # print(f"Released at {newTimeMs}")
         
         self.updateCurrentTime(newTimeMs)
         # self.updateProgressBarHandle(newTimeMs)
         # Restart playback at the new position => This is normal
-        pygame.mixer.music.set_pos(newTimeMs / 1000)
         if hasattr(self, "videoTrackItem"):
             self.videoTrackItem.seek(newTimeMs)
             
         if not self.isPaused:
-            pygame.mixer.music.unpause()
-            if hasattr(self, "videoTrackItem"):
-                self.videoTrackItem.play()
             self.playWithSavedResults(newTimeMs) # Annoying issue
         # Sync music playback with the new chunk index
         
@@ -2365,6 +2398,12 @@ class VoiceDetectionApp:
                 
     def play(self):
         # Play from saved detection results
+        if not self.isPlaying and self.currentChunkIndex >= len(self.chunks) - 1:
+            self.playbackOffset = 0
+            self.currentChunkIndex = 0
+            self.updateProgressBarHandle(0)
+            self.updateDisplayedTime(0)
+
         if self.playbackOffset < 0:
             self.playbackOffset = 0
         
@@ -2429,7 +2468,7 @@ class VoiceDetectionApp:
                 return
 
             self.playbackOffset = startTimeMs
-            self.currentChunkIndex = int(startTimeMs / self.chunk_duration)
+            self.currentChunkIndex = min(int(startTimeMs / self.chunk_duration), len(self.chunks) - 1)
             self.isPlaying = True
             self.isPaused = False
             self.isManualUpdate = False
@@ -2445,7 +2484,10 @@ class VoiceDetectionApp:
                 self.isPlaying = False
                 return
             playbackTime = self.playbackOffset + playbackPos
-            self.currentChunkIndex = int(playbackTime / self.chunk_duration)
+            self.currentChunkIndex = min(
+                int(playbackTime / self.chunk_duration),
+                len(self.chunks) - 1
+            )
             self.updateChunkText(self.currentChunkIndex)
             self.updateProgressBarHandle(playbackTime) # This was working
             self.updateDisplayedTime(playbackTime)

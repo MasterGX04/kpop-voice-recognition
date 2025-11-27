@@ -54,9 +54,19 @@ class ZoomManager:
 
         # Update the current section index based on playback offset and new visible duration
         if hasattr(self.parent, "playbackOffset"):
+            playbackPos = self.pygame.mixer.music.get_pos()
+            if playbackPos < 0:
+                playbackPos = 0
             playbackTime = self.parent.playbackOffset + self.pygame.mixer.music.get_pos()
-            self.parent.currentSectionIndex = int(playbackTime // visibleDuration)
-            self.parent.progressBarHandle.currentSectionIndex = self.parent.currentSectionIndex
+            
+            if visibleDuration > 0:
+                self.parent.currentSectionIndex = max(
+                    0,
+                    int(playbackTime // visibleDuration)
+                )
+                self.parent.progressBarHandle.currentSectionIndex = (
+                    self.parent.currentSectionIndex
+                )
             
         self.parent.updateProgressBar()
         # Update progress bar range
