@@ -1,15 +1,4 @@
-python train_kpop_singers.py `
-  --root "K:\Python Projects\Voice Recognition" `
-  --group "IVE" `
-  --sr_in 22050 `
-  --sr_ecapa 16000 `
-  --chunk-sec 2.0 `
-  --epochs 20 `
-  --batch-size 32 `
-  --lr 5e-4 `
-  --val-split 0.15 `
-  --num-workers 8 `
-  --save-dir "K:\Python Projects\Voice Recognition\models"
+
 
 python train_kpop_singers.py `
   --root "K:\Python Projects\Voice Recognition" `
@@ -31,7 +20,7 @@ python train_kpop_singers.py `
 - Show leadership abilities
 
 - Important: VERY BAD AT OVERLAP: EG. yujin sings before Wonyoung ends, and model forgets Wonyoung completely
-- Last chunk bug still exists. I have a headache and want to work on model
+- Markers are being placed in the wrong places
 - FIX Bandaid bug where the user can't press space unless they press Play first
 - Have specific adlib head because model can't predict adlibs but great at long solo parts
 - Must figure out how to detect lines under 1 second long because "Fake love" is short and model ignores it. Chorus is almost perfect

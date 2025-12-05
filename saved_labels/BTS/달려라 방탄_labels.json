@@ -532,11 +532,25 @@
         false
     ],
     [
+        "RM",
+        3282,
+        3301,
+        false,
+        true
+    ],
+    [
         "Suga",
         3302,
         3371,
         false,
         false
+    ],
+    [
+        "RM",
+        3360,
+        3381,
+        false,
+        true
     ],
     [
         "Suga",
@@ -546,9 +560,170 @@
         false
     ],
     [
+        "RM",
+        3439,
+        3459,
+        false,
+        true
+    ],
+    [
         "Suga",
         3458,
         3493,
+        false,
+        false
+    ],
+    [
+        "J-Hope",
+        3651,
+        3662,
+        false,
+        false
+    ],
+    [
+        "J-Hope",
+        3692,
+        3957,
+        false,
+        false
+    ],
+    [
+        "J-Hope",
+        4004,
+        4057,
+        false,
+        false
+    ],
+    [
+        "J-Hope",
+        4063,
+        4096,
+        false,
+        false
+    ],
+    [
+        "J-Hope",
+        4102,
+        4232,
+        false,
+        false
+    ],
+    [
+        "J-Hope",
+        4238,
+        4307,
+        false,
+        false
+    ],
+    [
+        "V",
+        4306,
+        4381,
+        true,
+        false
+    ],
+    [
+        "Jimin",
+        4306,
+        4381,
+        true,
+        false
+    ],
+    [
+        "Jin",
+        4354,
+        4381,
+        false,
+        true
+    ],
+    [
+        "Jungkook",
+        4374,
+        4381,
+        true,
+        false
+    ],
+    [
+        "V",
+        4411,
+        4453,
+        false,
+        false
+    ],
+    [
+        "Jimin",
+        4411,
+        4453,
+        false,
+        false
+    ],
+    [
+        "Jungkook",
+        4451,
+        4486,
+        true,
+        false
+    ],
+    [
+        "V",
+        4489,
+        4531,
+        false,
+        false
+    ],
+    [
+        "Jimin",
+        4489,
+        4531,
+        false,
+        false
+    ],
+    [
+        "Jin",
+        4528,
+        4598,
+        true,
+        false
+    ],
+    [
+        "Jin",
+        4608,
+        4694,
+        false,
+        false
+    ],
+    [
+        "Jin",
+        4704,
+        4756,
+        false,
+        true
+    ],
+    [
+        "RM",
+        4704,
+        4771,
+        false,
+        false
+    ],
+    [
+        "RM",
+        4782,
+        4847,
+        false,
+        false
+    ],
+    [
+        "RM",
+        4861,
+        4925,
+        false,
+        false
+    ],
+    [
+        "RM",
+        4937,
+        4975,
         false,
         false
     ]

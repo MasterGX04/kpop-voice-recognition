@@ -1188,6 +1188,8 @@ class VoiceDetectionApp:
             timeInSection = timeMs - (self.currentSectionIndex * visibleDuration)
             progressRatio = timeInSection / visibleDuration
             x = (progressRatio * self.progressBarWidth) % self.progressBarWidth
+            
+            self.drawMarkers(self.currentSectionIndex)
 
         # Wrap backward
         elif self.previousX < 50 and x > self.progressBarWidth - 50:
@@ -1201,8 +1203,7 @@ class VoiceDetectionApp:
             progressRatio = timeInSection / visibleDuration
             x = (progressRatio * self.progressBarWidth) % self.progressBarWidth
 
-        self.drawTimeMarkers()
-        self.drawMarkers(self.currentSectionIndex)
+            self.drawMarkers(self.currentSectionIndex)
 
         self.progressBarHandle.move(x, self.currentSectionIndex)
         self.previousX = x
@@ -2101,20 +2102,18 @@ class VoiceDetectionApp:
         self.timeDisplayVar.set(f"{minutes:02}:{seconds:02}.{milliseconds:03}")
         
     def addStartPoint(self, event=None):
-        if self.isInStartOrEnd:    
+        if self.isInStartOrEnd():    
             self.startPoints.append(self.currentChunkIndex)
             self.addMarkerToSection(self.currentChunkIndex, "start")
             print(f"Start point set at chunk {self.currentChunkIndex}.")
-            
         else:
             print(f"Chunk {self.currentChunkIndex} already marked as a start or end point.")
 
     def addEndPoint(self, event=None):
-        if self.isInStartOrEnd:
+        if self.isInStartOrEnd():
             self.endPoints.append(self.currentChunkIndex)
             self.addMarkerToSection(self.currentChunkIndex, "end")
             print(f"End point set at chunk {self.currentChunkIndex}.")
-        
         else:
             print(f"Chunk {self.currentChunkIndex} already marked as a start or end point.")
         

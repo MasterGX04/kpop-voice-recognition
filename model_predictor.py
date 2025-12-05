@@ -3,7 +3,7 @@ import torch, torchaudio, math
 import itertools
 import torch.nn.functional as F
 from speechbrain.inference.speaker import EncoderClassifier
-from train_kpop_singers import MultiLabelHead
+from train_kpop_singers import MultiTaskHead
 from scipy.ndimage import median_filter
 import os, csv
 
@@ -25,7 +25,7 @@ def predict_40ms(
     if not class_names:
         class_names = list(model_classes)
     
-    head = MultiLabelHead(emb_dim, len(model_classes)).to(device)
+    head = MultiTaskHead(emb_dim, len(model_classes)).to(device)
     head.load_state_dict(ckpt["state_dict"], strict=True)
     head.eval()
 
