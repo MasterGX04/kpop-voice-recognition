@@ -1,4 +1,4 @@
-import os
+import os, traceback
 import numpy as np
 import time
 from PIL import Image, ImageTk
@@ -147,21 +147,27 @@ class VoiceDetectionApp:
         
         # Voice detection results
         memberList = [member['name'] for member in members] + ["silence"]
-        print(f"Member list: {memberList}")
+        # print(f"Member list: {memberList}")
         if os.path.exists(modelPath):
             os.makedirs("./predictions", exist_ok=True)
-            labels40 = predict_40ms(
-                encoder_path="speechbrain/spkrec-ecapa-voxceleb",
-                head_path=modelPath,
-                wav_path=vocalsOnlyPath,
-                output_dir=os.path.join(".", "predictions"), 
-                class_names=memberList
-            )
+            try:
+                labels40 = predict_40ms(
+                    encoder_path="speechbrain/spkrec-ecapa-voxceleb",
+                    head_path=modelPath,
+                    wav_path=vocalsOnlyPath,
+                    output_dir=os.path.join(".", "predictions"), 
+                    class_names=memberList
+                )
+            except Exception as e:
+                print("❌ Error while running predict_40ms:")
+                print(f"   {e}")                  # short message
+                traceback.print_exc()             # full stack trace
+                labels40 = []                     # fallback so UI does not crash
         else:
             labels40 = []
 
         self.voiceDetectionResults = labels40
-        # print("Detection results:", labels40[100:200])
+        print("Detection results:", labels40[100:200])
             
         labels = self.loadSavedLabels() # Store labels (member, start, end)
         if labels == [] and labels40 != []: 
@@ -421,8 +427,20 @@ class VoiceDetectionApp:
         memberFN = defaultdict(int)
         
         for i in range(numChunks):
-            predictedList = self.voiceDetectionResults[i]
-            predicted = set() if predictedList == ["None"] else set(predictedList)
+            frameRoles = self.voiceDetectionResults[i]
+            # union of all heads for accuracy
+            main_name = frameRoles.get("main", "") or ""
+            harm_names = frameRoles.get("harmony", []) or []
+            adlib_names = frameRoles.get("adlib", []) or []
+            
+            predicted = set()
+            if main_name:
+                predicted.add(main_name)
+            for m in harm_names:
+                predicted.add(m)
+            for m in adlib_names:
+                predicted.add(m)
+            
             actual = groundTruth[i]
  
             # Update metrics
@@ -1301,53 +1319,122 @@ class VoiceDetectionApp:
     
     def createLabelsFromPredictions(self, detectionResults):
         """
-        Build self.labels from a list of per-chunk predictions.
+        Build self.labels from a list of per-chunk predictions (multi-head).
 
-        detectionResults: list[list[str]]
-            Example for each chunk: ['Wonyoung'], ['Rei', 'Wonyoung'], ['silence'], []
+        detectionResults: list[dict]
+        Each element corresponds to a 40 ms chunk and has:
+            {
+            "main":    str,        # member name or "" for silence
+            "harmony": List[str],  # member names (can be empty)
+            "adlib":   List[str],  # member names (can be empty)
+            }
 
         Rules:
-        - 'silence' and empty chunks are ignored.
-        - For each member, create [member, startChunk, endChunk] for every
-          contiguous block of chunks where that member appears.
+        - "" (blank main) is treated as silence.
+        - For each member and each contiguous segment of activity, create:
+            [member, startChunk, endChunk, isLead, isAdlib]
+        where:
+            isLead  = True  if segment is from the main head
+            isAdlib = True  if segment is from the ad-lib head
+            harmony = isLead == False and isAdlib == False
+        - Avoid double-counting roles: if a member appears in multiple heads
+        in the same chunk, we enforce a precedence:
+            main > adlib > harmony
+        so each member has at most one role per chunk.
         """
+        def addNewLabel():
+            if endChunk >= segStart:
+                isLead = (segRole == "main")
+                isAdlib = (segRole == "adlib")
+                self.startPoints.append(segStart)
+                self.endPoints.append(endChunk)
+                labels.append([member, segStart, endChunk, isLead, isAdlib])
+                
+        if not detectionResults:
+            return []
+    
         # all known members from self.members
         memberNames = [m['name'] for m in self.members]
-        labels = []
-            
+        numChunks = len(detectionResults)
+        
+        self.startPoints = []
+        self.endPoints = []
+        
+        # For each member, we will store a per-chunk role:
+        # "main", "harmony", "adlib", or "none"
+        memberRoles = {member: ["none"] * numChunks for member in memberNames}
+        
+        # ---- 1) Fill memberRoles with per-chunk roles (no overlaps per member) ----
+        for i, frame in enumerate(detectionResults):
+            main_name   = frame.get("main", "") or ""
+            harm_names  = set(frame.get("harmony", []) or [])
+            adlib_names = set(frame.get("adlib", []) or [])
+
+            # Prevent cross-head duplicates:
+            # If someone is main, don't also treat them as harmony/adlib.
+            if main_name in harm_names:
+                harm_names.discard(main_name)
+            if main_name in adlib_names:
+                adlib_names.discard(main_name)
+
+            # If someone shows up in both harmony and adlib (shouldn't normally),
+            # prefer adlib over harmony.
+            both = harm_names & adlib_names
+            if both:
+                harm_names -= both  # keep them only in adlib_names
+
+            for member in memberNames:
+                role = "none"
+                if member == main_name and main_name != "":
+                    role = "main"
+                elif member in adlib_names:
+                    role = "adlib"
+                elif member in harm_names:
+                    role = "harmony"
+                memberRoles[member][i] = role
+        
+        # ---- 2) Convert per-member roles into contiguous segments with flags ----
+        labels = []    
+        
         for member in memberNames:
             inSegment = False
-            startChunk = None
-            for i, chunkLabels in enumerate(detectionResults):
-                # Normalize: treat [] or ['silence'] as  silence
-                if not chunkLabels or 'silence' in chunkLabels:
-                    isActive = False
-                else:
-                    isActive = member in chunkLabels
-                
-                if isActive:
+            segStart = None
+            segRole = None
+            
+            roles = memberRoles[member]
+            
+            for i, role in enumerate(roles):
+                if role != "none":
                     if not inSegment:
                         # Start new segment
                         inSegment = True
-                        startChunk = i
+                        segStart = i
+                        segRole = role
+                    elif role != segRole:
+                        # Role changed -> close previous segment, start new one
+                        endChunk = i - 1
+                        if endChunk >= segStart:
+                            isLead = (segRole == "main")
+                            isAdlib = (segRole == "adlib")
+                            self.startPoints.append(segStart)
+                            self.endPoints.append(endChunk)
+                            labels.append([member, segStart, endChunk, isLead, isAdlib])
+                        
+                        segStart = i
+                        segRole = role
                 else:
                     if inSegment:
                         # Close previous segment
                         endChunk = i - 1
-                        if endChunk >= startChunk:
-                            self.startPoints.append(startChunk)
-                            self.endPoints.append(endChunk)
-                            labels.append([member, startChunk, endChunk, False, False])
+                        addNewLabel()
                         inSegment = False
-                        startChunk = None
-            
-            if inSegment and startChunk is not None:
-                endChunk = len(detectionResults) - 1
-                if endChunk >= startChunk:
-                    self.startPoints.append(startChunk)
-                    self.endPoints.append(endChunk)
-                    labels.append([member, startChunk, endChunk, False, False])
-                    
+                        segStart = None
+                        segRole = None
+                            
+        if inSegment and segStart is not None:
+            endChunk = numChunks - 1
+            addNewLabel()                
+               
         # Sort labels by start chunk for consistency
         labels.sort(key=lambda lab: lab[1])
         
@@ -1834,7 +1921,7 @@ class VoiceDetectionApp:
         self.canvas.bind("<KeyPress-q>", self.addStartPoint)
         self.canvas.bind("<KeyPress-w>", self.addEndPoint)
         self.canvas.bind("<KeyPress-l>", self.addLyricBox)
-        self.canvas.bind("<space>", self.togglePlayPause)
+        self.root.bind_all("<space>", self.togglePlayPause)
         
         # split current label at current chunk
         self.canvas.bind("<KeyPress-x>", self.handleSplitGapKey)
@@ -1933,25 +2020,47 @@ class VoiceDetectionApp:
                 trackItem.updateAndDrawTimer(chunkIndex)
                 if chunkIndex > trackItem.lastUpdateChunk:
                     trackItem.switchImage("clear")
+                    trackItem.currentRole = "none"
                 elif member in membersCurrentlySinging:
+                    trackItem.currentRole = "main"
                     trackItem.switchImage("light")
                 else:
                     trackItem.switchImage("dark")
+                    trackItem.currentRole = "none"
                     
                 self.canvas.itemconfig(imageId, image=trackItem.sourceImages[trackItem.currentImageKey]) 
             
             if hasattr(self, "lyricPositions"):  
                 self.renderLyrics(chunkIndex)
         else:
-            detectedSingers = self.voiceDetectionResults[chunkIndex]
+            # voiceDetectionResults[chunkIndex] is now a dict with heads
+            frameRoles = self.voiceDetectionResults[chunkIndex] if self.voiceDetectionResults else {}
+            
+             # main is a single name or ""
+            main_name = frameRoles.get("main", "") or ""
+            # harmony/adlib are lists
+            harmony_names = frameRoles.get("harmony", []) or []
+            adlib_names = frameRoles.get("adlib", []) or []
+
             # ✅ Update each member's image based on detection
             for member, trackItem in self.memberImages.items():
                 imageId = self.memberImageIds[member]
-
-                if member in detectedSingers:
-                    trackItem.switchImage("light")  # ✅ Detected, highlight
+                
+                if member == main_name:
+                    role = "main"
+                elif member in harmony_names:
+                    role = "harmony"
+                elif member in adlib_names:
+                    role = "adlib"
                 else:
-                    trackItem.switchImage("dark")  # ✅ Not detected, dark mode
+                    role = "none"
+                    
+                trackItem.currentRole = role
+                
+                if role == "none":
+                    trackItem.switchImage("dark")
+                else:
+                    trackItem.switchImage("light")
 
                 self.canvas.itemconfig(imageId, image=trackItem.sourceImages[trackItem.currentImageKey])
             
@@ -2089,7 +2198,7 @@ class VoiceDetectionApp:
     def togglePlayPause(self, event):
         if self.isPlaying and not self.isPaused:
             self.pause()
-        elif self.isPaused:
+        else:
             self.play()
     
     def updateDisplayedTime(self, timeMs):

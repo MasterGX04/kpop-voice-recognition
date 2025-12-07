@@ -296,7 +296,7 @@ def segmentAndSaveAudio(audioPath: str,
 def getSongsFromSameAlbum():
     songsFromSameAlbum = {
         'IVE': {
-            'Ive_Switch': ['해야 (HEYA)', 'Accendio', 'Blue Blood', 'Summer Festa', "Blue Heart", "Hypnosis", "WOW", "My Satisfaction", "LOVE DIVE", "Ice Queen", "Baddie"],
+            'Ive_Switch': ['해야 (HEYA)', 'Accendio', 'Blue Blood', 'Summer Festa', "Blue Heart", "Hypnosis", "WOW", "My Satisfaction", "LOVE DIVE", "Ice Queen", "Baddie", "Heroine"],
             'Ive_Empathy': ['Rebel Heart', 'Flu', 'You Wanna Cry', 'ATTITUDE','Thank U', 'TKO', 'Mine', 'ELEVEN', 'Summer[Liz]', 'Wish[Yujin]', 'Payback', 'XOXZ', "Off The Record"]},
         'ITZY': {
             'Born To Be': ['Born To Be', 'Mr. Vampire']   

@@ -23,6 +23,7 @@ class TrackItem:
         self.animations = animations if animations is not None else []
         self.timerValue = 0.0  # Timer starts at 0.0 seconds
         self.parent = parent
+        self.currentRole = "none" # "main" | "harmony" | "adlib" | "none"
         
         parentScaleX = getattr(self.parent, "scaleX", 1.0) if self.parent else 1.0
         parentScaleY = getattr(self.parent, "scaleY", 1.0) if self.parent else 1.0
@@ -488,7 +489,21 @@ class TrackItem:
         )
         
         self.parent.canvas.tag_lower(self.progressBarCanvasImage, self.imageId)
+     
+    def getColor(self) -> str:
+        role = getattr(self, "currentRole", "none")
         
+        if role == "main":
+            color = self.progressBarColor
+        elif role == "harmony":
+            color = "#66ccff"
+        elif role == "adlib":
+            color = "#cc66ff" 
+        else: # none
+            color = "#ffffff"
+            
+        return color
+       
     def updateProgressBar(self, currentChunk, maxTime):
         currentTime = self.timeline[currentChunk]
         
@@ -503,10 +518,12 @@ class TrackItem:
         barWidth = int(xEnd - xStart) if xEnd != 0 else 0
         y = self.getProgressBarY()
         
-        color = self.progressBarColor if self.currentImageKey == 'light' else "#ffffff"
+        color = self.getColor()
         # Update rectangle for the main bar
         self.progressBarImage = self.createRoundedRectangleImage(
-            int(barWidth), self.progressBarHeight, color, radius=self.progressBarHeight // 2
+            int(barWidth), 
+            self.progressBarHeight, 
+            color, radius=self.progressBarHeight // 2
         )
         
         self.parent.canvas.itemconfig(self.progressBarCanvasImage, image=self.progressBarImage)

@@ -2,11 +2,11 @@
 
 python train_kpop_singers.py `
   --root "K:\Python Projects\Voice Recognition" `
-  --group "BTS" `
+  --group "IVE" `
   --sr_in 22050 `
   --sr_ecapa 16000 `
   --chunk-sec 2.0 `
-  --epochs 10 `
+  --epochs 16 `
   --batch-size 32 `
   --lr 5e-4 `
   --val-split 0.15 `
@@ -20,7 +20,9 @@ python train_kpop_singers.py `
 - Show leadership abilities
 
 - Important: VERY BAD AT OVERLAP: EG. yujin sings before Wonyoung ends, and model forgets Wonyoung completely
-- Markers are being placed in the wrong places
+- Model is really bad at "ooh" or not actual words. Should I add more data or can something else change? Maybe model doesn't recognize as speech
+- Model has issues with parts with a lot of pauses, like a lot of rests between long verses. It excels at long lines with no pauses so how can I fix that? It's improving
+- Struggles with Rei/Gaeul singing at higher pitches because they usually sing so low
 - FIX Bandaid bug where the user can't press space unless they press Play first
 - Have specific adlib head because model can't predict adlibs but great at long solo parts
 - Must figure out how to detect lines under 1 second long because "Fake love" is short and model ignores it. Chorus is almost perfect
