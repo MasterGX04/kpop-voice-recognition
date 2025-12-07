@@ -52,7 +52,7 @@
         "Liz",
         576,
         615,
-        true,
+        false,
         false
     ],
     [
@@ -66,7 +66,7 @@
         "Liz",
         645,
         682,
-        true,
+        false,
         false
     ],
     [
@@ -80,7 +80,7 @@
         "Liz",
         705,
         751,
-        true,
+        false,
         false
     ],
     [
@@ -94,7 +94,7 @@
         "Liz",
         772,
         819,
-        true,
+        false,
         false
     ],
     [
@@ -102,7 +102,7 @@
         815,
         834,
         false,
-        true
+        false
     ],
     [
         "Leeseo",
@@ -122,63 +122,63 @@
         "Wonyoung",
         1060,
         1109,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         1115,
         1209,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         1215,
         1303,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         1303,
         1355,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         1419,
         1470,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         1478,
         1600,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         1606,
         1681,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         1680,
         1782,
-        true,
+        false,
         false
     ],
     [
         "Liz",
         1784,
         1888,
-        true,
+        false,
         false
     ],
     [
@@ -255,42 +255,49 @@
         "Yujin",
         2466,
         2563,
-        true,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        2560,
+        2596,
+        false,
         false
     ],
     [
         "Yujin",
         2598,
         2691,
-        true,
+        false,
         false
     ],
     [
         "Liz",
         2688,
         2740,
-        true,
+        false,
         false
     ],
     [
         "Liz",
         2747,
         2936,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         2932,
         2985,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         2984,
         3164,
-        true,
+        false,
         false
     ],
     [
@@ -304,7 +311,7 @@
         "Wonyoung",
         3170,
         3246,
-        true,
+        false,
         false
     ],
     [
@@ -318,14 +325,14 @@
         "Yujin",
         3244,
         3346,
-        true,
+        false,
         false
     ],
     [
         "Liz",
         3351,
         3453,
-        true,
+        false,
         false
     ],
     [
@@ -339,7 +346,7 @@
         "Leeseo",
         3570,
         3634,
-        true,
+        false,
         false
     ],
     [
@@ -353,7 +360,7 @@
         "Liz",
         3701,
         3768,
-        true,
+        false,
         false
     ],
     [
@@ -395,14 +402,14 @@
         "Gaeul",
         4109,
         4208,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         4216,
         4306,
-        true,
+        false,
         false
     ],
     [
@@ -416,7 +423,7 @@
         "Gaeul",
         4345,
         4420,
-        true,
+        false,
         false
     ],
     [
@@ -437,14 +444,14 @@
         "Leeseo",
         4417,
         4523,
-        true,
+        false,
         false
     ],
     [
         "Liz",
         4525,
         4627,
-        true,
+        false,
         false
     ],
     [

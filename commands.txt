@@ -13,70 +13,39 @@ python train_kpop_singers.py `
   --num-workers 8 `
   --save-dir "K:\Python Projects\Voice Recognition\models"
 
-- What did I use for AI
-- How I made the project
-- What kind of AI to implement my stuff
-- Explain what I want
-- Show leadership abilities
-
-- Important: VERY BAD AT OVERLAP: EG. yujin sings before Wonyoung ends, and model forgets Wonyoung completely
-- Model is really bad at "ooh" or not actual words. Should I add more data or can something else change? Maybe model doesn't recognize as speech
+- Important: VERY BAD AT OVERLAP and Harmonies: EG. Leeseo sings with Liz before Liz ends, and model forgets Liz completely and can only switch between them binary
 - Model has issues with parts with a lot of pauses, like a lot of rests between long verses. It excels at long lines with no pauses so how can I fix that? It's improving
+- Must add separate category for gang vocals (especially useful for Love Dive, My Satisfaction, and Accendio)
+- Fix bug where the progressbar handle goes over the song's length
 - Struggles with Rei/Gaeul singing at higher pitches because they usually sing so low
-- FIX Bandaid bug where the user can't press space unless they press Play first
-- Have specific adlib head because model can't predict adlibs but great at long solo parts
+- Still gets confused between LEeseo and Wonyoung
+- Lyrics look stupid now because I didn't change where they spawn based on window resizing
+- Add visual representation for labels vs non-labeled data 
+- Change training so that some members are backing 
 - Must figure out how to detect lines under 1 second long because "Fake love" is short and model ignores it. Chorus is almost perfect
+- MARKERS Aren't Being Drawn Properly when switching to new section index. Only changes when user manually changes it 
+- Edit UI so that markers can stack on top of each other
+- Only de weight or mark as harmony for adlib/backing if they are not alone
+- In Attitude Loud Liz harmony + Wonyoung lead is kind of a mess
 
-✅ MODEL / HEADS
-
-Add a harmony head to detect harmonized vocals distinctly.
-
-Add an ad-lib head to capture short, irregular vocal bursts.
-
-Fuse multi-window embeddings (40ms + 200ms + 500ms) in the transformer.
-
-✅ TEMPORAL / CONTEXT
-
-Add a 400–600ms context window to stabilize identity for short/choppy lines.
-
-Apply temporal smoothing (median filter / hysteresis) during inference.
-
-Enforce a minimum-duration rule to clean up micro false-negatives.
-
-✅ TRAINING DATA
-
-Gather more short-line (<1s) phrase samples per member.
-
-Add harmony-specific examples (upper + lower harmonies).
-
-Add more real group-song line samples across multiple eras.
-
-Ensure each member has low/mid/high register examples.
-
-Create a dedicated dataset of ad-libs and one-syllable vocals.
-
-✅ AUGMENTATION
-
-Add pitch shift (±1–2 semitones) for register robustness.
-
-Add formant shift to simulate timbre variation.
-
-Add tempo shift to match different song BPM textures.
-
-Add mild reverb/EQ/noise to simulate real mixing conditions.
-
-✅ LABELING
-
-Label harmony regions explicitly in JSON.
-
-Label ad-lib segments separately from main vocals.
-
-Expand labels to differentiate lead vs background clearer.
-
-✅ ARCHITECTURE TUNING
-
-Use class-weighted loss to boost recall for weak/quiet members.
-
-Use focal loss to improve classification for harmonies/ad-libs.
-
-Increase dropout in high-confusion contexts (heavy harmonies).
+Checklist for songs that have had isRepeat changed:
+- Accendio (Added gang vocal labels for ah-ah-ah)
+- Attitude (Huge mess, changed harmony vs ad-lib)
+- Baddie (Not much change)
+- Blue Blood (Gang vocals and removed faint ad-libs)
+- Blue Heart (Liz has "harmonies" instead of ad-libs)
+- Eleven (No problem)
+- Flu (This song is a mess)
+- Hypnosis (No Problem)
+- Ice Queen (Complete mess but good)
+- Mine (literally perfect with no adlibs)
+- My Satisfaction (perfect with no adlibs but had to just add a few gang vocals for "ha ha ha ha ha")
+- Payback (a lot of high notes from backing vocalist)
+- Off The Record
+- Rebel Heart (slightly echoey but decently easy)
+- Summer Festa (Complicated Liz harmonies and "drink your heart out")
+- TKO (fixed training but with Liz and Yujin)
+- WOW (Very difficult but clear Liz adlibs)
+- XOXZ (So many gang vocals, (eg. "Hey! XOXZ" it would've killed silence vs vocals)
+- You Wanna Cry (All bugs came from Liz ad-libs and some were actually dulled by the music so I had to remove them because you couldn't hear her when the vocals were removed)
+- Heya (It was fine just added a little of gang vocals)

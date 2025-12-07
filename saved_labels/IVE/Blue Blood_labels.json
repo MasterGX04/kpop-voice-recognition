@@ -3,63 +3,77 @@
         "Rei",
         273,
         363,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         366,
         471,
-        true,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        470,
+        518,
+        false,
         false
     ],
     [
         "Leeseo",
         516,
         651,
-        true,
+        false,
         false
     ],
     [
         "Leeseo",
         655,
         713,
-        true,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        712,
+        763,
+        false,
         false
     ],
     [
         "Liz",
         759,
         882,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         880,
         1005,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         1004,
         1073,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         1086,
         1112,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         1116,
         1192,
-        true,
+        false,
         false
     ],
     [
@@ -73,14 +87,14 @@
         "Gaeul",
         1207,
         1233,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         1237,
         1321,
-        true,
+        false,
         false
     ],
     [
@@ -94,7 +108,7 @@
         "Wonyoung",
         1328,
         1355,
-        true,
+        false,
         false
     ],
     [
@@ -108,36 +122,36 @@
         "Wonyoung",
         1360,
         1433,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         1449,
         1471,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         1473,
         1485,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         1489,
         1499,
-        true,
+        false,
         false
     ],
     [
-        "Rei",
+        "Gang Vocal",
         1654,
         1673,
         false,
-        true
+        false
     ],
     [
         "Wonyoung",
@@ -182,13 +196,6 @@
         false
     ],
     [
-        "Rei",
-        2026,
-        2037,
-        false,
-        true
-    ],
-    [
         "Gaeul",
         2034,
         2092,
@@ -199,231 +206,231 @@
         "Yujin",
         2093,
         2215,
-        true,
+        false,
         false
     ],
     [
         "Liz",
         2215,
         2339,
-        true,
+        false,
         false
     ],
     [
         "Leeseo",
         2336,
         2405,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         2404,
         2421,
-        true,
+        false,
         true
     ],
     [
         "Leeseo",
         2418,
         2442,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         2435,
         2452,
-        true,
+        false,
         true
     ],
     [
         "Leeseo",
         2448,
         2527,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         2525,
         2543,
-        true,
+        false,
         true
     ],
     [
         "Leeseo",
         2538,
         2560,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         2556,
         2573,
-        true,
+        false,
         true
     ],
     [
         "Rei",
         2570,
         2654,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         2662,
         2686,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         2691,
         2770,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         2783,
         2819,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         2822,
         2833,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         2904,
         2940,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         2943,
         2957,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         3268,
         3288,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         3290,
         3303,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         3306,
         3318,
-        true,
+        false,
         false
     ],
     [
         "Liz",
         3547,
         3619,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         3617,
         3634,
-        true,
+        false,
         true
     ],
     [
         "Liz",
         3631,
         3652,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         3647,
         3662,
-        true,
+        false,
         true
     ],
     [
         "Liz",
         3661,
         3742,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         3737,
         3755,
-        true,
+        false,
         true
     ],
     [
         "Liz",
         3753,
         3778,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         3768,
         3785,
-        true,
+        false,
         true
     ],
     [
         "Yujin",
         3783,
         3864,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         3874,
         3894,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         3903,
         3979,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         3994,
         4028,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         4033,
         4048,
-        true,
+        false,
         false
     ]
 ]

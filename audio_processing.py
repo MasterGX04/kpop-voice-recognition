@@ -18,38 +18,26 @@ def convertToWav(inputMp3Path, outputWavPath):
     monoAudio = audio.set_channels(1).set_frame_rate(22050)
     monoAudio.export(outputWavPath, format="wav")
     
-def createVocalMask(numChunks, labelList, chunkDurationMs=200):
-    """
-    Create a boolean mask of length numChunks indicating where vocals occur.
-    Assumes labelList uses 40ms indices, and chunks are in 200ms.
-
-    :return: List of booleans, True if vocals are present in chunk
-    """
-    vocalMask = [False] * numChunks
-    for singer, start40, end40 in labelList:
-        start200 = start40 // (chunkDurationMs // 40)
-        end200 = end40 // (chunkDurationMs // 40)
-        for i in range(start200, end200 + 1):
-            if i < numChunks:
-                vocalMask[i] = True
-    return vocalMask
-
 def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
     """
-    For each vocals-only song, build frame-wise label matrices and
-    save them as JSON files next to the audio.
+    Build frame-wise labels for each vocals-only song.
 
-    Label semantics (per 40 ms chunk, per member):
-      - presence[c] = 1 if member c is singing anything (lead, harmony, adlib)
-      - lead[c]     = 1 if member c is 'main' (isAdLib == False) in that chunk
-      - isRepeat[c] = 1 if this chunk is part of a repeat line for that member
-      - isAdlib[c]  = 1 if this chunk is an ad-lib/background line for that member
+    NOTE: Semantics (per 40 ms chunk, per member):
+      - presence[c]   = 1 if member c is singing anything (lead, harmony, adlib, gang)
+      - lead[c]       = 1 if member c is the perceptual main voice in that chunk
+      - isRepeat[c]   = 1 if member c is backing/harmony in that chunk
+      - isAdlib[c]    = 1 if member c is doing an ad-lib line in that chunk
 
-    Silence:
-      - if no members active in a chunk, presence[silence] = 1, others 0.
+    'isRepeat' in the JSON is now interpreted as "backing vocal?" at segment level.
+    'Gang Vocal' is treated as a special member for non-attributable vocals.
     """
     base_dir = f"./training_data/{selectedGroup}"
     os.makedirs(base_dir, exist_ok=True)
+    
+    # add Silence and Gang Vocal into members  
+    if len(members) > 1:
+        memberList = members + ["Silence"] + ["Gang Vocal"]
+        
 
     # Map song title → JSON file
     jsonFileMap = {
@@ -58,15 +46,23 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
     }
 
     # Class indices
-    member_to_idx = {name: i for i, name in enumerate(members)}
-    if "silence" in (m.lower() for m in members):
-        # Find the actual "silence" member name (case-insensitive)
-        silence_name = next(m for m in members if m.lower() == "silence")
-        silence_idx = member_to_idx[silence_name]
-    else:
-        silence_name = None
-        silence_idx = None
-
+    member_to_idx = {name: i for i, name in enumerate(memberList)}
+    
+    silence_name = None
+    silence_idx = None
+    for m in memberList:
+        if m.lower() == "silence":
+            silence_name = m
+            silence_idx = member_to_idx[m]
+            break
+    
+    # Gang vocal name
+    gang_name = None
+    for m in memberList:
+        if m.lower() == "gang vocal":
+            gang_name = m
+            break
+        
     for vocalsFile in vocalsOnlySongs:
         songTitle = (
             os.path.basename(vocalsFile)
@@ -96,21 +92,18 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
             labels = json.load(file)
 
         # --- Build per-chunk maps from your (member, startChunk, endChunk, isRepeat, isAdlib) labels ---
-        activationMap = collections.defaultdict(set)  # chunkIdx -> {memberName}
-        repeatMap = collections.defaultdict(lambda: collections.defaultdict(bool))  # [chunk][member] -> bool
-        adlibMap  = collections.defaultdict(lambda: collections.defaultdict(bool))  # [chunk][member] -> bool
-
+        activationMap = collections.defaultdict(list)  # chunkIdx -> {memberName}
         maxChunkIdx = 0
 
         for label in labels:
-            memberName, startChunk, endChunk, isRepeat, isAdlib = label
+            # JSON: [memberName, startChunk, endChunk, isBacking, isAdlib]
+            memberName, startChunk, endChunk, isBacking, isAdlib = label
+            isBacking = bool(isBacking)
+            isAdlib = bool(isAdlib)
+            
             for chunkIdx in range(startChunk, endChunk):
-                activationMap[chunkIdx].add(memberName)
-                repeatMap[chunkIdx][memberName] = (
-                    repeatMap[chunkIdx][memberName] or bool(isRepeat)
-                )
-                adlibMap[chunkIdx][memberName] = (
-                    adlibMap[chunkIdx][memberName] or bool(isAdlib)
+                activationMap[chunkIdx].append(
+                    (memberName, startChunk, isBacking, isAdlib)
                 )
                 if chunkIdx > maxChunkIdx:
                     maxChunkIdx = chunkIdx
@@ -120,61 +113,135 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
             continue
 
         num_chunks = maxChunkIdx + 1
-        C = len(members)
+        C = len(memberList)
 
         # Allocate label arrays: shape (num_chunks, C)
         presence = np.zeros((num_chunks, C), dtype=np.int32)
-        lead     = np.zeros((num_chunks, C), dtype=np.int32)
-        isRepeat_arr = np.zeros((num_chunks, C), dtype=np.int32)
+        lead = np.zeros((num_chunks, C), dtype=np.int32)
+        isBacking_arr = np.zeros((num_chunks, C), dtype=np.int32)
         isAdlib_arr  = np.zeros((num_chunks, C), dtype=np.int32)
+        
+        # Helper: choose lead per frame according hierarchy
+        def choose_lead(valid_segments):
+            """
+            valid_segments: list of (name, idx, startChunk, isBacking, isAdlib)
+            Returns: lead_idx or None
+            """
+            if not valid_segments:
+                return None
+
+            # Split into gang vs non-gang
+            non_gang = []
+            gang_segs = []
+            for name, idx, startC, isBacking, isAdlib in valid_segments:
+                if gang_name is not None and name == gang_name:
+                    gang_segs.append((name, idx, startC, isBacking, isAdlib))
+                else:
+                    non_gang.append((name, idx, startC, isBacking, isAdlib))
+            
+            # If any non-gang exists, we never let gang be lead
+            if non_gang:
+                # Priority A: non-gang, not ad-lib, not backing
+                candA = [
+                    seg for seg in non_gang
+                    if not seg[3] and (not seg[4]) # not backing or adlib     
+                ]
+                
+                if candA:
+                    return max(candA, key=lambda s: s[2])[1]  # idx
+                
+                # Priority B: non-gang, not ad-lib
+                candB = [seg for seg in non_gang if not seg[4]]  # not adlib
+                if candB:
+                    return max(candB, key=lambda s: s[2])[1]
+                
+                # Priority C: non-gang ad-lib (no main vocals present)
+                candC = [seg for seg in non_gang if seg[4]]  # adlib only
+                if candC:
+                    return max(candC, key=lambda s: s[2])[1]
+                
+                # Fallback: any non-gang
+                return max(non_gang, key=lambda s: s[2])[1]
+
+            # Only gang vocals
+            if gang_segs:
+                # Allow gang vocal to be lead if it's alone
+                return max(gang_segs, key=lambda s: s[2])[1]
+
+            return None
 
         # --- Fill label arrays ---
         for chunkIdx in tqdm(range(num_chunks), desc=f"Chunks for {songTitle}"):
-            activeMembers = activationMap.get(chunkIdx, set())
+            segs = activationMap.get(chunkIdx, [])
 
-            if len(activeMembers) == 0:
-                # Silence chunk
+            if len(segs) == 0:
+                # Silence
                 if silence_idx is not None:
                     presence[chunkIdx, silence_idx] = 1
-                    # leave lead[row] as zeros
                 continue
 
-            # Non-silence: mark per active member
-            for memberName in activeMembers:
+            # Build valid segments with indices
+            valid_segments = []
+            for (memberName, startChunk, isBacking, isAdlib) in segs:
                 if memberName not in member_to_idx:
-                    # Unknown/ignored member name in labels
+                    # Unknown label (e.g. future groups) -> ignore
                     continue
                 m_idx = member_to_idx[memberName]
+                valid_segments.append(
+                    (memberName, m_idx, startChunk, isBacking, isAdlib)
+                )
 
-                p_repeat = bool(repeatMap[chunkIdx].get(memberName, False))
-                p_adlib  = bool(adlibMap[chunkIdx].get(memberName, False))
-
+                # Base tags: everyone active has presence
                 presence[chunkIdx, m_idx] = 1
-                isRepeat_arr[chunkIdx, m_idx] = 1 if p_repeat else 0
-                isAdlib_arr[chunkIdx, m_idx]  = 1 if p_adlib else 0
+                if isAdlib:
+                    isAdlib_arr[chunkIdx, m_idx] = 1
+                if isBacking:
+                    # segment-level backing flag
+                    isBacking_arr[chunkIdx, m_idx] = 1
 
-                # lead = active & not ad-lib
-                if not p_adlib:
-                    lead[chunkIdx, m_idx] = 1
+            if not valid_segments:
+                # Nothing we know about; treat as silence if desired
+                if silence_idx is not None:
+                    presence[chunkIdx, silence_idx] = 1
+                continue
+
+            # Decide lead index using hierarchy + latest start
+            lead_idx = choose_lead(valid_segments)
+            if lead_idx is not None:
+                lead[chunkIdx, lead_idx] = 1
+
+            # Now assign harmony/backing vs ad-lib for non-leads
+            for (name, m_idx, startC, isBacking, isAdlib) in valid_segments:
+                if m_idx == lead_idx:
+                    # Lead can still be ad-lib in solo sections; keep isAdlib_arr as set above.
+                    continue
+
+                # Non-lead:
+                if isAdlib:
+                    # Already tagged in isAdlib_arr; we treat this as ad-lib only
+                    continue
+                else:
+                    # Active, non-adlib, non-lead → harmony/backing
+                    isBacking_arr[chunkIdx, m_idx] = 1
 
         # --- Save to JSON (you can switch to npy if you prefer) ---
         out_labels_path = os.path.join(base_dir, f"{songTitle}_frame_labels.json")
         out_data = {
             "group": selectedGroup,
             "song": songTitle,
-            "members": members,
+            "members": memberList,
             "silenceName": silence_name,
             "chunkDurationMs": CHUNK_DURATION,
             "numChunks": int(num_chunks),
             # store as nested lists for JSON; or you can save as .npy and keep them as arrays
             "presence": presence.tolist(),
             "lead": lead.tolist(),
-            "isRepeat": isRepeat_arr.tolist(),
+            "isBacking": isBacking_arr.tolist(),
             "isAdlib": isAdlib_arr.tolist(),
         }
 
         with open(out_labels_path, "w", encoding="utf-8") as jf:
-            json.dump(out_data, jf, indent=2, ensure_ascii=False)
+            json.dump(out_data, jf, indent=2, separators=(",", ":"),)
 
         print(f"  ✅ Saved frame labels: {out_labels_path}")
        
@@ -296,14 +363,14 @@ def segmentAndSaveAudio(audioPath: str,
 def getSongsFromSameAlbum():
     songsFromSameAlbum = {
         'IVE': {
-            'Ive_Switch': ['해야 (HEYA)', 'Accendio', 'Blue Blood', 'Summer Festa', "Blue Heart", "Hypnosis", "WOW", "My Satisfaction", "LOVE DIVE", "Ice Queen", "Baddie", "Heroine"],
+            'Ive_Switch': ['해야 (HEYA)', 'Accendio', 'Blue Blood', 'Summer Festa', "Blue Heart", "Hypnosis", "WOW", "My Satisfaction", "LOVE DIVE", "Ice Queen", "Baddie", "Heroine", "Supernova Love"],
             'Ive_Empathy': ['Rebel Heart', 'Flu', 'You Wanna Cry', 'ATTITUDE','Thank U', 'TKO', 'Mine', 'ELEVEN', 'Summer[Liz]', 'Wish[Yujin]', 'Payback', 'XOXZ', "Off The Record"]},
         'ITZY': {
             'Born To Be': ['Born To Be', 'Mr. Vampire']   
         },
         'BTS': {
             'Proof': ['Epiphany[Jin]', 'Euphoria[Jungkook]', "Filter[Jimin]", "Love Me Again[V]", "Persona[RM]", "Stigma[V]", "First Love[Suga]", "Disease", "Mama[J-Hope]", "달려라 방탄"],
-            'Love_Yourself_Tear': ['Fake Love', 'Love Maze']
+            'Love_Yourself_Tear': ['Fake Love', 'Love Maze', 'Magic Shop']
         },
         'Fifty Fifty': {
             'Day & Night': ['Cupid', 'Skittlez']

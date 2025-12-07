@@ -38,119 +38,119 @@
         "Leeseo",
         587,
         640,
-        true,
+        false,
         false
     ],
     [
         "Leeseo",
         644,
         699,
-        true,
+        false,
         false
     ],
     [
         "Leeseo",
         702,
         813,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         831,
         876,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         888,
         935,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         945,
         989,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         1001,
         1041,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         1046,
         1055,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         1059,
         1109,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         1115,
         1168,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         1172,
         1281,
-        true,
+        false,
         false
     ],
     [
         "Liz",
         1287,
         1337,
-        true,
+        false,
         false
     ],
     [
         "Liz",
         1344,
         1395,
-        true,
+        false,
         false
     ],
     [
         "Liz",
         1401,
         1480,
-        true,
+        false,
         false
     ],
     [
         "Liz",
         1493,
         1518,
-        true,
+        false,
         false
     ],
     [
         "Liz",
         1522,
         1546,
-        true,
+        false,
         false
     ],
     [
         "Liz",
         1550,
         1594,
-        true,
+        false,
         false
     ],
     [
@@ -213,7 +213,7 @@
         "Leeseo",
         2072,
         2127,
-        true,
+        false,
         false
     ],
     [
@@ -227,7 +227,7 @@
         "Leeseo",
         2130,
         2183,
-        true,
+        false,
         false
     ],
     [
@@ -241,7 +241,7 @@
         "Leeseo",
         2187,
         2301,
-        true,
+        false,
         false
     ],
     [
@@ -255,49 +255,49 @@
         "Wonyoung",
         2315,
         2361,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         2374,
         2421,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         2430,
         2476,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         2488,
         2527,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         2530,
         2541,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         2545,
         2596,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         2601,
         2654,
-        true,
+        false,
         false
     ],
     [
@@ -311,7 +311,7 @@
         "Yujin",
         2659,
         2767,
-        true,
+        false,
         false
     ],
     [
@@ -326,28 +326,28 @@
         2773,
         2824,
         false,
-        true
+        false
     ],
     [
         "Yujin",
         2823,
         2870,
-        true,
-        false
+        false,
+        true
     ],
     [
         "Liz",
         2830,
         2881,
         false,
-        true
+        false
     ],
     [
         "Yujin",
         2881,
         2928,
-        true,
-        false
+        false,
+        true
     ],
     [
         "Liz",
@@ -367,21 +367,21 @@
         "Liz",
         3009,
         3032,
-        true,
+        false,
         false
     ],
     [
         "Liz",
         3037,
         3079,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         3338,
         3370,
-        true,
+        false,
         false
     ],
     [
@@ -389,20 +389,20 @@
         3368,
         3394,
         false,
-        true
+        false
     ],
     [
         "Leeseo",
         3424,
         3450,
         false,
-        true
+        false
     ],
     [
         "Rei",
         3452,
         3483,
-        true,
+        false,
         false
     ],
     [
@@ -410,7 +410,7 @@
         3482,
         3508,
         false,
-        true
+        false
     ],
     [
         "Rei",
@@ -423,7 +423,7 @@
         "Gaeul",
         3567,
         3599,
-        true,
+        false,
         false
     ],
     [
@@ -431,7 +431,7 @@
         3596,
         3630,
         false,
-        true
+        false
     ],
     [
         "Gaeul",
@@ -445,13 +445,13 @@
         3652,
         3687,
         false,
-        true
+        false
     ],
     [
         "Gaeul",
         3682,
         3711,
-        true,
+        false,
         false
     ],
     [
@@ -459,7 +459,7 @@
         3711,
         3755,
         false,
-        true
+        false
     ],
     [
         "Gaeul",
@@ -472,14 +472,14 @@
         "Yujin",
         3794,
         4068,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         4088,
         4139,
-        true,
+        false,
         false
     ],
     [
@@ -493,7 +493,7 @@
         "Wonyoung",
         4145,
         4195,
-        true,
+        false,
         false
     ],
     [
@@ -507,14 +507,14 @@
         "Wonyoung",
         4201,
         4277,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         4281,
         4306,
-        true,
+        false,
         false
     ],
     [
@@ -556,21 +556,21 @@
         "Liz",
         4523,
         4547,
-        true,
+        false,
         false
     ],
     [
         "Liz",
         4552,
         4575,
-        true,
+        false,
         false
     ],
     [
         "Liz",
         4580,
         4622,
-        true,
+        false,
         false
     ]
 ]

@@ -3,7 +3,7 @@
         "Wonyoung",
         132,
         177,
-        true,
+        false,
         false
     ],
     [
@@ -19,13 +19,6 @@
         365,
         false,
         false
-    ],
-    [
-        "Leeseo",
-        363,
-        380,
-        false,
-        true
     ],
     [
         "Liz",
@@ -80,77 +73,105 @@
         "Leeseo",
         732,
         786,
-        true,
+        false,
         false
     ],
     [
         "Leeseo",
         794,
         851,
-        true,
+        false,
         false
     ],
     [
         "Leeseo",
         858,
         914,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         912,
         986,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         989,
         1092,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         1097,
         1216,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         1220,
         1229,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         1234,
         1335,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         1338,
         1406,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         1410,
         1456,
-        true,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        1456,
+        1494,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        1502,
+        1540,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        1549,
+        1664,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        1670,
+        1711,
+        false,
         false
     ],
     [
         "Rei",
         1686,
         1731,
-        true,
+        false,
         true
     ],
     [
@@ -234,77 +255,77 @@
         "Leeseo",
         2204,
         2255,
-        true,
+        false,
         false
     ],
     [
         "Leeseo",
         2263,
         2320,
-        true,
+        false,
         false
     ],
     [
         "Leeseo",
         2326,
         2383,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         2382,
         2441,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         2444,
         2457,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         2459,
         2559,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         2566,
         2684,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         2689,
         2698,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         2705,
         2805,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         2808,
         2875,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         2881,
         2925,
-        true,
+        false,
         false
     ],
     [
@@ -374,36 +395,36 @@
         "Yujin",
         3378,
         3435,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         3439,
         3540,
-        true,
+        false,
         false
     ],
     [
         "Leeseo",
         3500,
         3543,
-        false,
-        true
+        true,
+        false
     ],
     [
         "Rei",
         3547,
         3660,
-        true,
+        false,
         false
     ],
     [
         "Leeseo",
         3622,
         3660,
-        false,
-        true
+        true,
+        false
     ],
     [
         "Rei",
@@ -414,13 +435,6 @@
     ],
     [
         "Leeseo",
-        3669,
-        3679,
-        false,
-        true
-    ],
-    [
-        "Gaeul",
         3669,
         3679,
         false,
@@ -430,21 +444,21 @@
         "Leeseo",
         3683,
         3785,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         3744,
         3789,
-        false,
-        true
+        true,
+        false
     ],
     [
         "Gaeul",
         3788,
         3855,
-        true,
+        false,
         false
     ],
     [
@@ -458,14 +472,35 @@
         "Leeseo",
         3860,
         3908,
-        true,
+        false,
         false
     ],
     [
-        "Rei",
-        4136,
-        4165,
-        true,
+        "Gang Vocal",
+        3907,
+        3942,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        3952,
+        3988,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        3997,
+        4110,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        4120,
+        4159,
+        false,
         false
     ],
     [
@@ -479,7 +514,7 @@
         "Wonyoung",
         4295,
         4338,
-        true,
+        false,
         false
     ]
 ]

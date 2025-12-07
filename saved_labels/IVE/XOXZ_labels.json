@@ -70,9 +70,30 @@
         false
     ],
     [
+        "Gang Vocal",
+        610,
+        652,
+        false,
+        false
+    ],
+    [
         "Gaeul",
         654,
         674,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        673,
+        691,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        697,
+        715,
         false,
         false
     ],
@@ -98,17 +119,31 @@
         false
     ],
     [
+        "Gang Vocal",
+        956,
+        1004,
+        false,
+        false
+    ],
+    [
         "Liz",
         1005,
         1041,
-        true,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        1048,
+        1066,
+        false,
         false
     ],
     [
         "Liz",
         1065,
         1103,
-        true,
+        false,
         false
     ],
     [
@@ -119,10 +154,31 @@
         false
     ],
     [
+        "Gang Vocal",
+        1199,
+        1249,
+        false,
+        false
+    ],
+    [
         "Liz",
         1249,
         1286,
-        true,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        1291,
+        1302,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        1307,
+        1342,
+        false,
         false
     ],
     [
@@ -140,6 +196,13 @@
         false
     ],
     [
+        "Gang Vocal",
+        1377,
+        1407,
+        false,
+        false
+    ],
+    [
         "Gaeul",
         1403,
         1472,
@@ -150,6 +213,13 @@
         "Gaeul",
         1488,
         1500,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        1500,
+        1530,
         false,
         false
     ],
@@ -196,17 +266,45 @@
         false
     ],
     [
+        "Gang Vocal",
+        1835,
+        1854,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        1858,
+        1876,
+        false,
+        false
+    ],
+    [
         "Wonyoung",
         1881,
         1900,
-        true,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        1897,
+        1915,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        1920,
+        1938,
+        false,
         false
     ],
     [
         "Wonyoung",
         1942,
         1974,
-        true,
+        false,
         false
     ],
     [
@@ -221,12 +319,19 @@
         2069,
         2080,
         false,
-        true
+        false
     ],
     [
         "Rei",
         2086,
         2181,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        2210,
+        2228,
         false,
         false
     ],
@@ -238,10 +343,17 @@
         false
     ],
     [
+        "Gang Vocal",
+        2273,
+        2289,
+        false,
+        false
+    ],
+    [
         "Yujin",
         2290,
         2325,
-        true,
+        false,
         false
     ],
     [
@@ -266,9 +378,23 @@
         true
     ],
     [
+        "Gang Vocal",
+        2424,
+        2474,
+        false,
+        false
+    ],
+    [
         "Yujin",
         2474,
         2511,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        2516,
+        2526,
         false,
         false
     ],
@@ -304,14 +430,14 @@
         "Rei",
         2776,
         2814,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         2822,
         2957,
-        true,
+        false,
         false
     ],
     [
@@ -329,9 +455,23 @@
         false
     ],
     [
+        "Gang Vocal",
+        3159,
+        3208,
+        false,
+        false
+    ],
+    [
         "Gaeul",
         3208,
         3244,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        3252,
+        3269,
         false,
         false
     ],
@@ -350,6 +490,13 @@
         false
     ],
     [
+        "Gang Vocal",
+        3405,
+        3453,
+        false,
+        false
+    ],
+    [
         "Liz",
         3453,
         3490,
@@ -362,6 +509,20 @@
         3516,
         false,
         true
+    ],
+    [
+        "Gang Vocal",
+        3494,
+        3505,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        3511,
+        3550,
+        false,
+        false
     ],
     [
         "Yujin",

@@ -25,11 +25,20 @@ def loadMemberImages(groupName, members: dict, songPath):
     songsFromSameAlbum = getSongsFromSameAlbum()
     songName = os.path.splitext(os.path.basename(songPath))[0]
     albumName = None
+    groupAlbums = songsFromSameAlbum.get(groupName, {})
     
-    for album, songs in songsFromSameAlbum[groupName].items():
+    for album, songs in groupAlbums.items():
         if songName in songs:
             albumName = album
             break  # Exit once we find the album
+    
+    # If not found, fall back to the first album key
+    if albumName is None:
+        if groupAlbums:
+            # Get first key
+            albumName = next(iter(groupAlbums.keys()))
+        else:
+            albumName = None  # or set a default if preferred
     
     for memberObject in members:
         memberName = memberObject['name']
@@ -62,6 +71,9 @@ class VoiceDetectionApp:
         self.playbackThread = None
         self.vocalsOnlyPath = vocalsOnlyPath
         self.selectedGroup = selectedGroup
+        # Which audio file pyame should currently play
+        self.currentAudioPath = self.testSongPath
+        self.audioMode = "mix" # Or vocals
 
         self.baseWidth = 1920
         self.baseHeight = 1080
@@ -167,7 +179,7 @@ class VoiceDetectionApp:
             labels40 = []
 
         self.voiceDetectionResults = labels40
-        print("Detection results:", labels40[100:200])
+        # print("Detection results:", labels40[100:200])
             
         labels = self.loadSavedLabels() # Store labels (member, start, end)
         if labels == [] and labels40 != []: 
@@ -481,6 +493,7 @@ class VoiceDetectionApp:
         if self.selectedLabel:
             self.pushUndoState("marker move left")
         self.moveMarker(-1)
+        self.updateLabels()
 
     def moveMarkerRight(self, event):
         """
@@ -489,6 +502,7 @@ class VoiceDetectionApp:
         if self.selectedLabel:
             self.pushUndoState("marker move right")
         self.moveMarker(1)
+        self.updateLabels()
         
     def updateLabels(self, event):
         if self.selectedLabel:
@@ -1208,6 +1222,7 @@ class VoiceDetectionApp:
             x = (progressRatio * self.progressBarWidth) % self.progressBarWidth
             
             self.drawMarkers(self.currentSectionIndex)
+            self.drawTimeMarkers()
 
         # Wrap backward
         elif self.previousX < 50 and x > self.progressBarWidth - 50:
@@ -1222,6 +1237,7 @@ class VoiceDetectionApp:
             x = (progressRatio * self.progressBarWidth) % self.progressBarWidth
 
             self.drawMarkers(self.currentSectionIndex)
+            self.drawTimeMarkers()
 
         self.progressBarHandle.move(x, self.currentSectionIndex)
         self.previousX = x
@@ -1481,13 +1497,13 @@ class VoiceDetectionApp:
 
         for i, (member, startPoint, endPoint, isRepeat, isAdLib) in enumerate(self.getLabels()):
             var = tk.BooleanVar()
-            repeatVar = tk.BooleanVar(value=isRepeat)
+            isBacking = tk.BooleanVar(value=isRepeat)
             adLibVar = tk.BooleanVar(value=isAdLib)
-            checkboxesByIndex.append((var, repeatVar, adLibVar))
+            checkboxesByIndex.append((var, isBacking, adLibVar))
             
             # Init checkbox arrays
             checkboxes[(startPoint, endPoint)] = var
-            repeatVars[(startPoint, endPoint)] = repeatVar
+            repeatVars[(startPoint, endPoint)] = isBacking
             adLibVars[(startPoint, endPoint)] = adLibVar
             
             memberText = f" -> {member}" if member is not None else ""
@@ -1507,8 +1523,8 @@ class VoiceDetectionApp:
 
             repeatCheckbox = tk.Checkbutton(
                 scrollFrame,
-                text="Repeat Line",
-                variable=repeatVar,
+                text="Are they backing vocals?",
+                variable=isBacking,
                 anchor="w",
                 bg="lightgray",
                 fg="darkblue",
@@ -1553,6 +1569,9 @@ class VoiceDetectionApp:
         memberLabel = tk.Label(labelMenu, text="Choose Member:")
         memberLabel.pack(pady=5)
         memberMapping = {member['name']: member for member in self.members}
+        # Adds gang vocal as option
+        gangVocalLabel = {"name": "Gang Vocal", "id": "gang"}  # id can be anything unique
+        memberMapping["Gang Vocal"] = gangVocalLabel
         memberNames = list(memberMapping.keys())
         memberVar = tk.StringVar(value=memberNames[0] if memberNames else "")
         memberDropdown = ttk.Combobox(labelMenu, textvariable=memberVar, values=memberNames, state="readonly")
@@ -1578,9 +1597,10 @@ class VoiceDetectionApp:
                             self.labels.append(label)
                             selectedLabels.append(label)
                             print(f"Label saved: {label}")
-                            trackItem = self.memberImages[member]
-                            if trackItem:
-                                trackItem.initializeTimeline()
+                            if member != "Gang Vocal":
+                                trackItem = self.memberImages[member]
+                                if trackItem:
+                                    trackItem.initializeTimeline()
 
                 if selectedLabels:
                     self.saveLabels(self.selectedGroup, self.testSongPath)
@@ -1607,7 +1627,7 @@ class VoiceDetectionApp:
                     label[4] = isAdLib
                     
                     updatedLabels.append(label)
-                    print(f"Repeat status updated: {label}")
+                    # print(f"Repeat status updated: {label}")
 
                 self.labels = updatedLabels
                 selectedLabels = updatedLabels
@@ -1899,6 +1919,7 @@ class VoiceDetectionApp:
         self.canvas.unbind("<KeyPress-w>")
         self.canvas.unbind("<KeyPress-l>")
         self.canvas.unbind("<KeyPress-x>")
+        self.canvas.unbind("<KeyPress-v>")
         self.canvas.unbind("<Return>")
         self.canvas.bind("<Control-z>")
         self.canvas.bind("<Control-y>")
@@ -1922,6 +1943,7 @@ class VoiceDetectionApp:
         self.canvas.bind("<KeyPress-w>", self.addEndPoint)
         self.canvas.bind("<KeyPress-l>", self.addLyricBox)
         self.root.bind_all("<space>", self.togglePlayPause)
+        self.root.bind("<KeyPress-v>", self.toggleAudioMode)
         
         # split current label at current chunk
         self.canvas.bind("<KeyPress-x>", self.handleSplitGapKey)
@@ -2045,6 +2067,7 @@ class VoiceDetectionApp:
             # ✅ Update each member's image based on detection
             for member, trackItem in self.memberImages.items():
                 imageId = self.memberImageIds[member]
+                trackItem.updateAndDrawTimer(chunkIndex)
                 
                 if member == main_name:
                     role = "main"
@@ -2210,22 +2233,16 @@ class VoiceDetectionApp:
         milliseconds = timeMs % 1000
         self.timeDisplayVar.set(f"{minutes:02}:{seconds:02}.{milliseconds:03}")
         
-    def addStartPoint(self, event=None):
-        if self.isInStartOrEnd():    
-            self.startPoints.append(self.currentChunkIndex)
-            self.addMarkerToSection(self.currentChunkIndex, "start")
-            print(f"Start point set at chunk {self.currentChunkIndex}.")
-        else:
-            print(f"Chunk {self.currentChunkIndex} already marked as a start or end point.")
+    def addStartPoint(self, event=None): 
+        self.startPoints.append(self.currentChunkIndex)
+        self.addMarkerToSection(self.currentChunkIndex, "start")
+        print(f"Start point set at chunk {self.currentChunkIndex}.")
 
     def addEndPoint(self, event=None):
-        if self.isInStartOrEnd():
-            self.endPoints.append(self.currentChunkIndex)
-            self.addMarkerToSection(self.currentChunkIndex, "end")
-            print(f"End point set at chunk {self.currentChunkIndex}.")
-        else:
-            print(f"Chunk {self.currentChunkIndex} already marked as a start or end point.")
-        
+        self.endPoints.append(self.currentChunkIndex)
+        self.addMarkerToSection(self.currentChunkIndex, "end")
+        print(f"End point set at chunk {self.currentChunkIndex}.")
+    
     def clearAllMarkers(self):
         """
         Clear all start and end markers from the canvas and reset marker dictionaries.
@@ -2241,37 +2258,69 @@ class VoiceDetectionApp:
         self.endPointMarkers.clear()
         
     def drawMarkers(self, sectionIndex):
+        """
+        Draw start/end markers for the current section.
+
+        If multiple markers share the same chunkIndex (e.g., start + end at the
+        same point, or multiple labels with same boundary), we "stack" them
+        vertically so they don't hide each other.
+
+        Up to 3 markers are stacked per chunkIndex.
+        """
         self.clearAllMarkers()
         
         if sectionIndex not in self.timeMarkers:
             # print(f"No markers to draw for sectionIndex {sectionIndex}.")
             return
         
+        # Group markers by chunkIndex for this section
+        markersByChunk = {}
+        for markerType, chunkIndex in self.timeMarkers[sectionIndex]:
+            markersByChunk.setdefault(chunkIndex, []).append(markerType)
+        
         chunksInView = self.zoomManager.currentChunksInView
         # print(f"Current chunks in view: {chunksInView}")
         
-        for markerType, chunkIndex in self.timeMarkers[sectionIndex]:
-            relativeX = self.progressBarCanvas.winfo_x() + (chunkIndex % chunksInView / chunksInView) * self.progressBarWidth
-
+        for chunkIndex, typeList in markersByChunk.items():
+            relativeX = (
+                self.progressBarCanvas.winfo_x()
+                + (chunkIndex % chunksInView / chunksInView) * self.progressBarWidth
+            )
             x = self.canvas.canvasx(relativeX)
-            y = self.progressBarCanvas.winfo_y()
-        
+            baseY = self.progressBarCanvas.winfo_y()
+
             if x < 0 or x > self.canvas.winfo_width():
                 print(f"Marker at chunk {chunkIndex} is out of bounds (x={x}).")
-                return
-        
-            if markerType == "start":
-                if chunkIndex not in self.startPointMarkers:
-                    marker = self.canvas.create_line(
-                        x, y - 20, 
-                        x, y, 
-                        fill="green", width=4
+                continue
+
+            # Stack up to 3 markers per chunkIndex
+            maxStack = 3
+            for stackIndex, markerType in enumerate(typeList[:maxStack]):
+                # Each stacked marker is shifted slightly upward
+                stackOffset = stackIndex * 6  # pixels between markers
+                yTop = baseY - 20 - stackOffset
+                yBottom = baseY - stackOffset
+
+                if markerType == "start":
+                    # We still keep one entry per chunkIndex in this dict
+                    markerId = self.canvas.create_line(
+                        x, yTop,
+                        x, yBottom,
+                        fill="green",
+                        width=4
                     )
-                    self.startPointMarkers[chunkIndex] = marker
-            elif markerType == "end":
-                if chunkIndex not in self.endPointMarkers:
-                    marker = self.canvas.create_line(x, y - 20, x, y, fill="red", width=4)
-                    self.endPointMarkers[chunkIndex] = marker
+                    # last drawn start marker wins for this chunkIndex (OK: logic elsewhere
+                    # assumes a single visual "start" line per chunkIndex)
+                    self.startPointMarkers[chunkIndex] = markerId
+
+                elif markerType == "end":
+                    markerId = self.canvas.create_line(
+                        x, yTop,
+                        x, yBottom,
+                        fill="red",
+                        width=4
+                    )
+                    self.endPointMarkers[chunkIndex] = markerId
     # end drawMarkers
     
     def updateCurrentTime(self, newTimeMs):
@@ -2574,7 +2623,7 @@ class VoiceDetectionApp:
         if not self.isPlaying or self.isManualUpdate:
             try:
                 if not self.isPlaying:
-                    pygame.mixer.music.load(self.testSongPath)
+                    pygame.mixer.music.load(self.currentAudioPath)
                 pygame.mixer.music.play(start=startTimeMs / 1000)
             except pygame.error as e:
                 print(f"Error loading audio file: {e}")
@@ -2629,6 +2678,59 @@ class VoiceDetectionApp:
         # Start updating chunks
         updateChunk()
     # end playWIthSavedResults
+    
+    def toggleAudioMode(self, event=None):
+        """
+        Toggle between full mix (self.testSongPath) and vocals-only (self.vocalsOnlyPath)
+        while preserving playback position. Bound to 'V'.
+        """
+        # If we don't have a vocals-only file, just bail
+        if not os.path.exists(self.vocalsOnlyPath):
+            print("⚠️ Vocals-only file not found; cannot toggle audio mode.")
+            return
+        
+        # Figure out where we are in the song (in ms)
+        if self.isPlaying and not self.isPaused and pygame.mixer.get_init():
+            pos = pygame.mixer.music.get_pos()
+            if pos < 0:
+                pos = 0
+            playbackTime = self.playbackOffset + pos
+        else:
+            # Fallback: use current chunk index
+            playbackTime = self.currentChunkIndex * self.chunk_duration
+
+        # Toggle mode + path
+        if self.currentAudioPath == self.testSongPath:
+            self.currentAudioPath = self.vocalsOnlyPath
+            self.audioMode = "vocals"
+            print("🔊 Switched to *vocals-only* audio.")
+        else:
+            self.currentAudioPath = self.testSongPath
+            self.audioMode = "mix"
+            print("🎵 Switched to *full mix* audio.")
+
+        # If we're currently playing (and not paused), restart playback on the new source
+        if self.isPlaying and not self.isPaused:
+            try:
+                pygame.mixer.music.stop()
+                pygame.mixer.music.load(self.currentAudioPath)
+                pygame.mixer.music.play(start=playbackTime / 1000.0)
+
+                # Keep our offset consistent with this new start
+                self.playbackOffset = playbackTime
+            except pygame.error as e:
+                print(f"Error switching audio source: {e}")
+                return
+
+            # Keep UI in sync
+            self.currentChunkIndex = min(
+                int(playbackTime / self.chunk_duration),
+                len(self.chunks) - 1
+            )
+            self.updateChunkText(self.currentChunkIndex)
+            self.updateProgressBarHandle(playbackTime)
+            self.updateDisplayedTime(playbackTime)
+            self.updateCanvasForCurrentPosition(self.currentChunkIndex)
     
     def addMarkerToSection(self, chunkIndex, markerType):
         """

@@ -3,7 +3,7 @@
         "Wonyoung",
         12,
         93,
-        true,
+        false,
         false
     ],
     [
@@ -17,56 +17,56 @@
         "Wonyoung",
         220,
         298,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         334,
         409,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         442,
         523,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         545,
         628,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         649,
         729,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         750,
         828,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         854,
         935,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         956,
         1036,
-        true,
+        false,
         false
     ],
     [
@@ -87,28 +87,28 @@
         "Leeseo",
         1244,
         1336,
-        true,
+        false,
         false
     ],
     [
         "Leeseo",
         1345,
         1435,
-        true,
+        false,
         false
     ],
     [
         "Leeseo",
         1449,
         1537,
-        true,
+        false,
         false
     ],
     [
         "Leeseo",
         1563,
         1650,
-        true,
+        false,
         false
     ],
     [
@@ -122,7 +122,7 @@
         "Liz",
         1764,
         1844,
-        true,
+        false,
         false
     ],
     [
@@ -143,42 +143,42 @@
         "Wonyoung",
         2187,
         2264,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         2264,
         2312,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         2316,
         2340,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         2342,
         2365,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         2368,
         2416,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         2419,
         2477,
-        true,
+        false,
         false
     ],
     [
@@ -199,35 +199,35 @@
         "Rei",
         2681,
         2766,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         2782,
         2872,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         2887,
         2970,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         3000,
         3082,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         3091,
         3176,
-        true,
+        false,
         false
     ],
     [
@@ -241,14 +241,14 @@
         "Gaeul",
         3198,
         3280,
-        true,
+        false,
         false
     ],
     [
         "Gaeul",
         3296,
         3381,
-        true,
+        false,
         false
     ],
     [
@@ -262,21 +262,21 @@
         "Gaeul",
         3412,
         3492,
-        true,
+        false,
         false
     ],
     [
         "Liz",
         3495,
         3544,
-        true,
-        true
+        false,
+        false
     ],
     [
         "Liz",
         3546,
         3647,
-        true,
+        false,
         false
     ],
     [
@@ -290,14 +290,14 @@
         "Yujin",
         3701,
         3748,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         3752,
         3850,
-        true,
+        false,
         false
     ],
     [
@@ -311,15 +311,8 @@
         "Wonyoung",
         3912,
         3989,
-        true,
-        false
-    ],
-    [
-        "Liz",
-        3977,
-        4022,
         false,
-        true
+        false
     ],
     [
         "Wonyoung",
@@ -332,28 +325,21 @@
         "Wonyoung",
         4117,
         4197,
-        true,
-        false
-    ],
-    [
-        "Liz",
-        4187,
-        4248,
         false,
-        true
+        false
     ],
     [
         "Wonyoung",
         4232,
         4256,
-        true,
+        false,
         false
     ],
     [
         "Wonyoung",
         4258,
         4315,
-        true,
+        false,
         false
     ]
 ]

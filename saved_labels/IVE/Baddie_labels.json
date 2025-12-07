@@ -10,7 +10,7 @@
         "Gaeul",
         200,
         356,
-        true,
+        false,
         false
     ],
     [
@@ -94,42 +94,42 @@
         "Wonyoung",
         1241,
         1402,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         1400,
         1553,
-        true,
+        false,
         false
     ],
     [
         "Leeseo",
         1577,
         1640,
-        true,
+        false,
         false
     ],
     [
         "Leeseo",
         1651,
         1700,
-        true,
+        false,
         false
     ],
     [
         "Leeseo",
         1727,
         1791,
-        true,
+        false,
         false
     ],
     [
         "Leeseo",
         1802,
         1847,
-        true,
+        false,
         false
     ],
     [
@@ -171,14 +171,14 @@
         "Liz",
         2290,
         2452,
-        true,
+        false,
         false
     ],
     [
         "Yujin",
         2450,
         2602,
-        true,
+        false,
         false
     ],
     [
@@ -192,49 +192,56 @@
         "Leeseo",
         2750,
         2902,
-        true,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        2901,
+        2915,
+        false,
         false
     ],
     [
         "Leeseo",
         3162,
         3200,
-        true,
+        false,
         false
     ],
     [
         "Liz",
         3226,
         3291,
-        true,
+        false,
         false
     ],
     [
         "Liz",
         3302,
         3350,
-        true,
+        false,
         false
     ],
     [
         "Leeseo",
         3377,
         3439,
-        true,
+        false,
         false
     ],
     [
         "Leeseo",
         3453,
         3496,
-        true,
+        false,
         false
     ],
     [
         "Rei",
         3489,
         3652,
-        true,
+        false,
         false
     ],
     [
@@ -255,7 +262,7 @@
         "Wonyoung",
         3650,
         3804,
-        true,
+        false,
         false
     ],
     [
