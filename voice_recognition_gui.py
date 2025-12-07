@@ -124,7 +124,7 @@ class VoiceTrainerGUI:
             labelText.pack(side="left", padx=20)
          
     def loadMemberImage(self, groupName, member):
-        imagePath = os.path.join(groupName, "images", f"{member['name']}.png")
+        imagePath = os.path.join("member_images", groupName, f"{member['name']}.png")
         try:
             image = Image.open(imagePath).resize(self.imageSize)
         except Exception:
