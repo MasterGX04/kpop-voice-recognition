@@ -212,7 +212,7 @@ class VoiceTrainerGUI:
 
             albumName = self.getAlbumForSong(selectedGroup, songName)
             if albumName:
-                albumImagePath = os.path.join(selectedGroup, "images", f"{albumName}.png")
+                albumImagePath = os.path.join("member_images", selectedGroup, f"{albumName}.png")
                 try:
                     image = Image.open(albumImagePath).resize((100, 100))
                     songIcon = ImageTk.PhotoImage(image)

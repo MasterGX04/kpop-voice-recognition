@@ -57,14 +57,14 @@
     ],
     [
         "Jungkook",
-        582,
+        581,
         615,
         false,
         false
     ],
     [
         "Jungkook",
-        623,
+        622,
         668,
         false,
         false
@@ -267,6 +267,13 @@
     ],
     [
         "Suga",
+        2920,
+        2933,
+        false,
+        true
+    ],
+    [
+        "Suga",
         2942,
         2948,
         false,
@@ -317,7 +324,287 @@
     [
         "Jin",
         4049,
+        4108,
+        false,
+        false
+    ],
+    [
+        "Jin",
+        4127,
         4211,
+        false,
+        false
+    ],
+    [
+        "V",
+        4231,
+        4302,
+        false,
+        false
+    ],
+    [
+        "V",
+        4307,
+        4389,
+        false,
+        false
+    ],
+    [
+        "Jin",
+        4389,
+        4514,
+        false,
+        false
+    ],
+    [
+        "V",
+        4537,
+        4572,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        4581,
+        4614,
+        false,
+        false
+    ],
+    [
+        "Jin",
+        4617,
+        4651,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        4659,
+        4694,
+        false,
+        false
+    ],
+    [
+        "Jungkook",
+        4698,
+        4734,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        4740,
+        4774,
+        false,
+        false
+    ],
+    [
+        "Jimin",
+        4788,
+        4813,
+        false,
+        false
+    ],
+    [
+        "Jimin",
+        4827,
+        4852,
+        false,
+        false
+    ],
+    [
+        "V",
+        4848,
+        4975,
+        false,
+        false
+    ],
+    [
+        "Jungkook",
+        4961,
+        4997,
+        false,
+        true
+    ],
+    [
+        "V",
+        5001,
+        5058,
+        false,
+        false
+    ],
+    [
+        "Jungkook",
+        5042,
+        5077,
+        false,
+        true
+    ],
+    [
+        "V",
+        5083,
+        5149,
+        false,
+        false
+    ],
+    [
+        "Jimin",
+        5170,
+        5298,
+        false,
+        false
+    ],
+    [
+        "Jungkook",
+        5284,
+        5317,
+        false,
+        true
+    ],
+    [
+        "Jimin",
+        5323,
+        5378,
+        false,
+        false
+    ],
+    [
+        "Jungkook",
+        5367,
+        5397,
+        false,
+        true
+    ],
+    [
+        "Jimin",
+        5400,
+        5488,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        5806,
+        5958,
+        false,
+        false
+    ],
+    [
+        "Jungkook",
+        5866,
+        5905,
+        false,
+        true
+    ],
+    [
+        "Gang Vocal",
+        5966,
+        6024,
+        false,
+        false
+    ],
+    [
+        "Jungkook",
+        6010,
+        6070,
+        false,
+        true
+    ],
+    [
+        "Gang Vocal",
+        6045,
+        6194,
+        false,
+        false
+    ],
+    [
+        "Jungkook",
+        6102,
+        6133,
+        false,
+        true
+    ],
+    [
+        "Jungkook",
+        6186,
+        6216,
+        false,
+        true
+    ],
+    [
+        "Gang Vocal",
+        6200,
+        6282,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        6287,
+        6347,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        6366,
+        6451,
+        false,
+        false
+    ],
+    [
+        "Jungkook",
+        6458,
+        6495,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        6501,
+        6533,
+        false,
+        false
+    ],
+    [
+        "Jimin",
+        6537,
+        6573,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        6581,
+        6614,
+        false,
+        false
+    ],
+    [
+        "V",
+        6620,
+        6653,
+        false,
+        false
+    ],
+    [
+        "Gang Vocal",
+        6659,
+        6693,
+        false,
+        false
+    ],
+    [
+        "Jin",
+        6708,
+        6736,
+        false,
+        false
+    ],
+    [
+        "Jin",
+        6749,
+        6777,
         false,
         false
     ]

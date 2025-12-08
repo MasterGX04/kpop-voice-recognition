@@ -493,7 +493,6 @@ class VoiceDetectionApp:
         if self.selectedLabel:
             self.pushUndoState("marker move left")
         self.moveMarker(-1)
-        self.updateLabels()
 
     def moveMarkerRight(self, event):
         """
@@ -502,11 +501,10 @@ class VoiceDetectionApp:
         if self.selectedLabel:
             self.pushUndoState("marker move right")
         self.moveMarker(1)
-        self.updateLabels()
         
     def updateLabels(self, event):
-        if self.selectedLabel:
-            self.updateLabelInJSON()
+        print("Labels have been updated!")
+        self.updateLabelInJSON()
         
     def updateChunkText(self, newIndex):
         """Update the chunk index value displayed."""
@@ -649,8 +647,10 @@ class VoiceDetectionApp:
 
         if markerType == "start":
             pointsList = self.startPoints
+            markerDict = self.startPointMarkers
         else:
             pointsList = self.endPoints
+            markerDict = self.endPointMarkers
 
         if oldChunkIndex in pointsList:
             pointsList.remove(oldChunkIndex)
@@ -668,11 +668,59 @@ class VoiceDetectionApp:
                         label[2] = newChunkIndex
                     self.selectedLabel = label  # keep ref up-to-date
                     break
-            
-        # --- Rebuild timeMarkers and redraw markers from scratch ---
-        self.updateTimeMarkersDict()
-        self.drawMarkers(self.progressBarHandle.currentSectionIndex)
+        
+        # --- Update timeMarkers only for old & new sections ---
+        oldSection = oldChunkIndex // chunksInView
+        newSection = newChunkIndex // chunksInView
+        
+        if hasattr(self, "timeMarkers"):
+            # Remove tuple from oldSection
+            if oldSection in self.timeMarkers:
+                try:
+                    self.timeMarkers[oldSection].remove((markerType, oldChunkIndex))
+                    if not self.timeMarkers[oldSection]:
+                        del self.timeMarkers[oldSection]
+                except ValueError:
+                    pass  # out of sync? ignore
+                
+                # Add tuple to newSection
+            self.timeMarkers.setdefault(newSection, []).append((markerType, newChunkIndex))
+        
+        # --- Move the actual canvas line to the new X (before stacking) ---
+        markerId = markerDict.get(oldChunkIndex)
+        if markerId is not None:
+            # Compute new X for newChunkIndex
+            relativeX = barX + (newChunkIndex % chunksInView / chunksInView) * barWidth
+            x_new = self.canvas.canvasx(relativeX)
+            baseY = barY
+            height = 20
 
+            # Temporarily place at base position
+            self.canvas.coords(
+                markerId,
+                x_new, baseY - height,
+                x_new, baseY
+            )
+
+            # Update dict key
+            del markerDict[oldChunkIndex]
+            markerDict[newChunkIndex] = markerId
+        else:
+            # Fallback: if marker not found, you *could* regenerate via updateTimeMarkersDict,
+            # but this should normally not happen.
+            print(f"Warning: canvas marker for {markerType} at {oldChunkIndex} not found.")
+        
+        # --- Re-stack only at the old and new chunks ---
+        self.restackMarkersAtChunk(oldChunkIndex)
+        self.restackMarkersAtChunk(newChunkIndex)
+        
+        # --- Sync the rest of the UI (chunk index, time, progress handle, video) ---
+        self.selectedMarker["chunkIndex"] = newChunkIndex
+        self.currentChunkIndex = newChunkIndex
+        self.updateChunkText(newChunkIndex)
+
+        newTimeMs = newChunkIndex * self.chunk_duration
+    
         # --- Sync the rest of the UI (chunk index, time, progress handle, video) ---
         self.currentChunkIndex = newChunkIndex
         self.updateChunkText(newChunkIndex)
@@ -877,7 +925,71 @@ class VoiceDetectionApp:
                 json.dump(self.labels, file, indent=4)       
         except Exception as e:
             print(f"Error updating labels in {labelFilePath}: {e}")
+    
+    def restackMarkersAtChunk(self, chunkIndex):
+        """
+        Reposition markers at a single chunkIndex so that overlapping
+        start/end markers are 'stacked' vertically instead of sitting on top
+        of each other.
+
+        This is O(1): only touches that one chunk, no full redraw.
+        """  
+        chunksInView = self.zoomManager.currentChunksInView
+        if chunksInView <= 0:
+            return
+        
+        if chunkIndex < 0 or chunkIndex >= len(self.chunks):
+            return
+        
+        hasStart = chunkIndex in self.startPointMarkers
+        hasEnd = chunkIndex in self.endPointMarkers
+        if not hasStart and not hasEnd:
+            return
+        
+        # Compute x position for this chunk
+        barX = self.progressBarCanvas.winfo_x()
+        barY = self.progressBarCanvas.winfo_y()
+        barWidth = self.progressBarWidth
+        
+        relativeX = barX + (chunkIndex % chunksInView / chunksInView) * barWidth
+        x = self.canvas.canvasx(relativeX)
+        
+        baseY = barY
+        height = 20
+        stackOffset = 6
+        
+        if hasStart and hasEnd:
+            startId = self.startPointMarkers[chunkIndex]
+            endId = self.endPointMarkers[chunkIndex]
             
+            # Start marker at base
+            self.canvas.coords(
+                startId,
+                x, baseY - height,
+                x, baseY
+            )
+            # End marker slightly above
+            self.canvas.coords(
+                endId,
+                x, baseY - height - stackOffset,
+                x, baseY - stackOffset
+            )
+
+        elif hasStart:
+            startId = self.startPointMarkers[chunkIndex]
+            self.canvas.coords(
+                startId,
+                x, baseY - height,
+                x, baseY
+            )
+
+        elif hasEnd:
+            endId = self.endPointMarkers[chunkIndex]
+            self.canvas.coords(
+                endId,
+                x, baseY - height,
+                x, baseY
+            )
                             
     def moveMarker(self, direction):
         """
@@ -885,7 +997,10 @@ class VoiceDetectionApp:
         """
         def calculateX(chunkIndex):
             chunksInView = self.zoomManager.currentChunksInView
-            return self.progressBarCanvas.winfo_x() + (chunkIndex % chunksInView / chunksInView) * self.progressBarWidth
+            return (
+                self.progressBarCanvas.winfo_x() + 
+                (chunkIndex % chunksInView / chunksInView) * self.progressBarWidth
+            )
         # end calculateX 
         
         if not self.selectedMarker:
@@ -903,6 +1018,7 @@ class VoiceDetectionApp:
         
         y = self.progressBarCanvas.winfo_y()
         
+        # --- Remove old marker + index from the appropriate structures -
         if markerType == "start":
             if chunkIndex in self.startPointMarkers:
                 self.canvas.delete(self.startPointMarkers[chunkIndex])
@@ -912,12 +1028,14 @@ class VoiceDetectionApp:
             else:
                 print(f"Warning: Start marker at chunkIndex {chunkIndex} not found.")
         
-            self.startPointMarkers[newChunkIndex] = self.canvas.create_line(
+            markerId = self.canvas.create_line(
                 calculateX(newChunkIndex), y - 20,
                 calculateX(newChunkIndex), y,
                 fill="green", width=4
             )
+            self.startPointMarkers[newChunkIndex] = markerId
             self.startPoints.append(newChunkIndex)
+            
         elif markerType == "end":
             if chunkIndex in self.endPointMarkers:
                 self.canvas.delete(self.endPointMarkers[chunkIndex])
@@ -927,11 +1045,13 @@ class VoiceDetectionApp:
             else:
                 print(f"Warning: End marker at chunkIndex {chunkIndex} not found.")
             
-            self.endPointMarkers[newChunkIndex] = self.canvas.create_line(
+            # Create new end marker at newChunkIndex
+            markerId = self.canvas.create_line(
                 calculateX(newChunkIndex), y - 20,
                 calculateX(newChunkIndex), y,
                 fill="red", width=4
             )
+            self.endPointMarkers[newChunkIndex] = markerId
             self.endPoints.append(newChunkIndex)
             
         # Update label in self.labels if applicable
@@ -945,9 +1065,12 @@ class VoiceDetectionApp:
                         label[2] = newChunkIndex  # Update the end index
                     self.selectedLabel = label  # Update the reference to the modified label
                     break
-                
-        self.selectedMarker["chunkIndex"] = newChunkIndex # This is run
-                    
+        
+        # Restack locally at old and new chunk Positions
+        self.restackMarkersAtChunk(chunkIndex)
+        self.restackMarkersAtChunk(newChunkIndex)    
+        
+        self.selectedMarker["chunkIndex"] = newChunkIndex # This is run 
     
     def addControls(self, root):
         buttonFrame = tk.Frame(root, bg="blue")  # Light gray background for visibility
@@ -2765,6 +2888,9 @@ class VoiceDetectionApp:
                     width=4,
                 )
                 print(f"End marker added at chunk {chunkIndex}.")
+                
+        # MAKE SURE TO DOUBLE CHECK THIS
+        self.restackMarkersAtChunk(chunkIndex)
     
     def saveLabels(self, selectedGroup, testSongPath, clearExisting=False):
         # Get file name without extension

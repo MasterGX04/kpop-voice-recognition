@@ -16,36 +16,22 @@ python train_kpop_singers.py `
 - Important: VERY BAD AT OVERLAP and Harmonies: EG. Leeseo sings with Liz before Liz ends, and model forgets Liz completely and can only switch between them binary
 - Model has issues with parts with a lot of pauses, like a lot of rests between long verses. It excels at long lines with no pauses so how can I fix that? It's improving
 - Must add separate category for gang vocals (especially useful for Love Dive, My Satisfaction, and Accendio)
-- Fix bug where the progressbar handle goes over the song's length
 - Struggles with Rei/Gaeul singing at higher pitches because they usually sing so low
-- Still gets confused between LEeseo and Wonyoung
-- Lyrics look stupid now because I didn't change where they spawn based on window resizing
-- Add visual representation for labels vs non-labeled data 
-- Change training so that some members are backing 
-- Must figure out how to detect lines under 1 second long because "Fake love" is short and model ignores it. Chorus is almost perfect
-- MARKERS Aren't Being Drawn Properly when switching to new section index. Only changes when user manually changes it 
-- Edit UI so that markers can stack on top of each other
-- Only de weight or mark as harmony for adlib/backing if they are not alone
-- In Attitude Loud Liz harmony + Wonyoung lead is kind of a mess
+- Still gets confused between Leeseo and Wonyoung
 
-Checklist for songs that have had isRepeat changed:
-- Accendio (Added gang vocal labels for ah-ah-ah)
-- Attitude (Huge mess, changed harmony vs ad-lib)
-- Baddie (Not much change)
-- Blue Blood (Gang vocals and removed faint ad-libs)
-- Blue Heart (Liz has "harmonies" instead of ad-libs)
-- Eleven (No problem)
-- Flu (This song is a mess)
-- Hypnosis (No Problem)
-- Ice Queen (Complete mess but good)
-- Mine (literally perfect with no adlibs)
-- My Satisfaction (perfect with no adlibs but had to just add a few gang vocals for "ha ha ha ha ha")
-- Payback (a lot of high notes from backing vocalist)
-- Off The Record
-- Rebel Heart (slightly echoey but decently easy)
-- Summer Festa (Complicated Liz harmonies and "drink your heart out")
-- TKO (fixed training but with Liz and Yujin)
-- WOW (Very difficult but clear Liz adlibs)
-- XOXZ (So many gang vocals, (eg. "Hey! XOXZ" it would've killed silence vs vocals)
-- You Wanna Cry (All bugs came from Liz ad-libs and some were actually dulled by the music so I had to remove them because you couldn't hear her when the vocals were removed)
-- Heya (It was fine just added a little of gang vocals)
+Bugs:
+- Lyrics look stupid now because I didn't change where they spawn based on window resizing
+- Edit UI so that markers can stack on top of each other (kind of, they need to stack when you move it over another marker). Should be done with:
+	- Add visual representation for labels vs non-labeled data 
+- Only deweight or mark as harmony for adlib/backing if they are not alone
+- Fix bug where the progressbar handle goes over the song's length
+- Bug: If you try to move section indices while trying to create new label, THE MARKER MOVES TO THE OTHER SECTION!!!!
+
+IVE Songs to Train:
+- Summer Liz (Because Liz doesn't sing deep usually)
+- Heroine (Gaeul and Rei High Notes)
+- Supernova Love
+- I AM
+- WAVE (Gaeul high notes and everyone raps)
+- Royal (high notes)?
+- Shine With Me
