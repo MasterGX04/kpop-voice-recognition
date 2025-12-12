@@ -103,7 +103,7 @@ class KpopVocalDataset(Dataset):
         => label size = num_members + 1, last index is silence.
     """
     def __init__(self, group_dir: str, sr_out: int,
-                chunk_sec: float, num_workers: int, min_song_sec: float = 4.0,
+                chunk_sec: float, num_workers: int, group_name: str, min_song_sec: float = 4.0,
                 pitch_prob: float = 0.3, pitch_semitones_range: Tuple[float, float] = (-2.0, 2.0),
                 window_hop_ratio: float = 0.5, presence_thresh=0.4,
                 alpha_lead=1.0, alpha_adlib = 0.5, min_weight = 0.2, max_weight = 2.0,
@@ -142,12 +142,34 @@ class KpopVocalDataset(Dataset):
         self.chunk_duration_ms = meta0["chunkDurationMs"]  # should be 40
         self.num_members = len(members)
         
-        self.classes = members + ["silence"]
+        self.classes = members + ['silence']
         self.silence_idx = len(self.classes) - 1
         self.class_map = ClassMap(
             idx_to_name=self.classes,
             name_to_idx={name: i for i, name in enumerate(self.classes)}
         )
+        
+        # ----------------------------
+        # 1b) Optional: manual harmony annotations
+        #     ./saved_labels/<group>/<Song>_test_harmonies.json
+        #     ./debug_harmonies/<group>/<Song>/<pair_name>.mp3
+        # ---
+        self.group_name = group_name
+        
+        # JSON with manual pairs
+        harmony_label_dir = os.path.join(".", "saved_labels", group_name)
+        harmony_pattern = os.path.join(harmony_label_dir, "*_test_harmonies.json")
+        harmony_files = sorted(glob.glob(harmony_pattern))
+        
+        # Root where debug harmony mp3 clips live
+        self.debug_harmony_root = os.path.join(".", "debug_harmonies", group_name)
+        self.manual_harmonies = self._load_manual_harmony_jsons(harmony_files)
+        
+        self.gang_idx = None
+        for i, name in enumerate(self.classes):
+            if name.lower() == "gang vocal":
+                self.gang_idx = i
+                break
         
         # Debug stats: how many chunks per category, and a few examples
         self.debug_category_counts = {
@@ -188,7 +210,7 @@ class KpopVocalDataset(Dataset):
             hop_frames = max(1, int(round(frames_per_window * self.window_hop_ratio)))
 
         print(f"[KpopFrameDataset] Frames/window={frames_per_window}, hop_frames={hop_frames}")
-        print(f"[KpopFrameDataset] Members={members} (+ 'silence')")
+        print(f"[KpopFrameDataset] Members={members}")
         
         for jpath in json_files:
             with open(jpath, "r", encoding="utf-8") as f:
@@ -208,6 +230,32 @@ class KpopVocalDataset(Dataset):
                 raise ValueError(f"presence shape mismatch in {jpath}")
             lead_arr = np.asarray(meta["lead"], dtype=np.int32)      # [T, C]
             adlib_arr = np.asarray(meta["isAdlib"], dtype=np.int32)  # [T, C]
+            backing_arr = np.asarray(meta["isBacking"], dtype=np.int32) # backing /harmony
+            
+            # Inject manual harmony overrides (if any)
+            if song_name in self.manual_harmonies:
+                overrides = self.manual_harmonies[song_name]
+                for seg in overrides:
+                    s = max(0, seg["start"])
+                    e = min (num_chunks - 1, seg["end"])
+                    if s > 3:
+                        continue
+                    
+                    lead_idx = seg["lead_idx"]
+                    harm_idx = seg["harm_idx"]
+
+                    # Ensure lead is active as lead + presence
+                    lead_arr[s:e+1, lead_idx] = 1
+                    presence[s:e+1, lead_idx] = 1
+
+                    # Ensure harmony is marked as backing + presence
+                    backing_arr[s:e+1, harm_idx] = 1
+                    presence[s:e+1, harm_idx] = 1
+
+                print(
+                    f"[KpopFrameDataset] Applied {len(overrides)} manual harmony segments "
+                    f"to song {song_name}"
+                )
             
             song_dur_sec = num_chunks * frame_ms / 1000.0
             if song_dur_sec < self.min_song_sec or num_chunks < frames_per_window:
@@ -245,10 +293,18 @@ class KpopVocalDataset(Dataset):
                 window_presence = presence[start_frame:end_frame]   # [F, C]
                 window_lead = lead_arr[start_frame:end_frame]
                 window_adlib = adlib_arr[start_frame:end_frame]
+                window_backing = backing_arr[start_frame:end_frame]
                 
                 # Fractions over this window (0..1) - still useful for importance weights
                 lead_frac = window_lead.mean(axis=0) # (C,)
                 adlib_frac = window_adlib.mean(axis=0) # (C,)
+                presence_frac = window_presence.mean(axis=0) # (C,)
+                
+                # Backing/harmony = present but not lead or ad-lib
+                backing_frac = np.clip(
+                    presence_frac - lead_frac - adlib_frac,
+                    0.0, 1.0
+                )
                 
                 # Label for THIS example
                 frame_label = presence[center_frame] # shape(num_members,), 0/1
@@ -264,11 +320,13 @@ class KpopVocalDataset(Dataset):
                 dominant_frac = frames_active[dominant_idx] / max(vocal_frac_window, 1e-6)
 
                 any_vocal_center = frame_label.sum() > 0
-
-                # Define thresholds
-                TAU_SILENCE_WINDOW = 0.20    # ≤20% of window is vocal → real silence
-                TAU_DOMINANT = 0.55          # ≥55% of vocal frames are same singer → clean vocal
-                TAU_OVERLAP = 0.30           # ≥30% frames with 2+ singers → ambiguous/gang
+                
+                # For convenience
+                has_real_vocals = presence_frac.copy()
+                if self.gang_idx is not None:
+                    # exclude Gang Vocal from "real member" sum
+                    has_real_vocals[self.gang_idx] = 0.0
+                any_real = has_real_vocals.sum() > 1e-3
                 
                 # ------ LOCAL (0.5s) context ------
                 local_radius = 6  # approx 500 ms
@@ -286,20 +344,57 @@ class KpopVocalDataset(Dataset):
                 label_vec = np.zeros(len(self.classes), dtype=np.float32)
                 importance_vec = np.ones(len(self.classes), dtype=np.float32)
                 
+                TAU_SILENCE_WINDOW = 0.20    # ≤20% of window is vocal → real silence
+                TAU_DOMINANT = 0.55          # ≥55% of vocal frames are same singer → clean vocal
+                TAU_OVERLAP = 0.30           # ≥30% frames with 2+ singers → ambiguous/gang
+                
                 # CASE 1 → CLEAR VOCAL
                 if any_vocal_center:
                     # Label is ALWAYS singing — never flip or skip
                     label_vec[:self.num_members] = frame_label.astype(np.float32)
                     label_vec[self.silence_idx] = 0.0
                     
+                    # Define thresholds
+                    W_LEAD = 1.0 # How much lead boosts weight
+                    W_BACKING = 0.6 # backing/harmony boost
+                    W_ADLIB = 0.7 # How strongly ad-libs DOWN-weight
+                    W_GANG_SOLO = 0.6 # Gang vocal alone
+                    W_GANG_OVERLAP = 0.3 # Gang vocal when members also sing
+                    
+                    # Check if num_members implies +gang vocals or no
+                    importance_singers = np.ones(self.num_members, dtype=np.float32)
+                    
                     # GLOBAL clean vocal
                     if dominant_frac >= TAU_DOMINANT and overlap_frac_window <= TAU_OVERLAP:
-                        importance_singers = (
-                            1.0
-                            + self.alpha_lead * lead_frac
-                            - self.alpha_adlib * adlib_frac
-                        )
-                        importance_singers = np.clip(importance_singers, self.min_weight, self.max_weight)
+                        for c in range(self.num_members):
+                            if presence_frac[c] < 1e-3: 
+                                # not present in this window
+                                importance_singers[c] = self.min_weight
+                                continue
+                            
+                            # Handle Gang Vocal specially
+                            if self.gang_idx is not None and c == self.gang_idx:
+                                if any_real:
+                                    # Gang layered under members -> small weight
+                                    w = W_GANG_OVERLAP
+                                else:
+                                    # pure gang section -> moderate weight
+                                    w = W_GANG_SOLO
+                                importance_singers[c] = np.clip(w, self.min_weight, self.max_weight)
+                                continue
+                        
+                        # Normal member
+                        lf = float(lead_frac[c])
+                        bf = float(backing_frac[c])
+                        af = float(adlib_frac[c])
+                        
+                        # Base weight: 1 + lead boost + backing boost - ad-lib penalty
+                        w = 1.0 + W_LEAD * lf + W_BACKING * bf - W_ADLIB * af
+                        
+                        # IF mostly ad-lib and not really lead/backing, don't crash it too low
+                        if af > 0.5 and lf < 0.2 and bf < 0.2:
+                            w = max(w, 0.7)
+                        
                         importance_vec[:self.num_members] = importance_singers
                         category = "clear_vocal"
                     elif local_dom_frac >= 0.65:
@@ -371,14 +466,15 @@ class KpopVocalDataset(Dataset):
                 
                 # Background/harmony rames
                 # Present, not lead, not-adlib, and overlapping with someone else
-                bg_mask = (
-                    window_presence.astype(np.float32)
-                    * (1.0 - window_lead.astype(np.float32))
-                    * (1.0 - window_adlib.astype(np.float32))
-                ) # [F, C]
-                bg_mask *= overlap_mask[:, None] # Zero out non-overlap frames
+                backing_mask = window_backing.astype(np.float32)
+                backing_mask *= overlap_mask[:, None] # Zero out non-overlap frames
                 # Fraction of frames in this 2s window where each singer is "background in overlap"
-                harmony_frac = bg_mask.mean(axis=0)  # (C,)
+                harmony_frac = backing_mask.mean(axis=0)  # (C,)
+                
+                # Gang vocal is not a harmony target
+                if self.gang_idx is not None:
+                    harmony_frac[self.gang_idx] = 0.0
+                    adlib_frac[self.gang_idx] = 0.0
                 
                 # Thresholds for labeling
                 TAU_HARMONY = 0.15
@@ -613,7 +709,95 @@ class KpopVocalDataset(Dataset):
                 return torch.nn.functional.pad(seg2, (0, pad))
         except Exception:
             return seg
+    
+    def _load_manual_harmony_jsons(self, harmony_files: List[str]) -> Dict[str, List[dict]]:
+        """
+        Parse <Song>_test_harmonies.json files and build:
+            manual_harmonies[song_name] = [
+                {
+                    "start": int,
+                    "end": int,
+                    "lead_idx": int,
+                    "harm_idx": int,
+                    "pair_name": str,
+                    "debug_mp3": Optional[str],
+                }, ...
+            ]
+        The first member in 'members' is treated as lead, second as harmony.
+        """
+        manual: Dict[str, List[dict]] = {}
         
+        # Only real members, no "silence"
+        member_to_idx = {
+            name: i for i, name in enumerate(self.classes)
+            if i != self.silence_idx
+        }
+        
+        for hpath in harmony_files:
+            try:
+                with open(hpath, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+            except Exception as e:
+                print(f"[KpopFrameDataset] Failed to read harmony file {hpath}: {e}")
+                continue
+            
+            song = data.get("song")
+            if not song:
+                print(f"[KpopFrameDataset] Harmony file {hpath} has no 'song' key, skipping.")
+                continue
+                
+            song_segments: List[dict] = manual.get(song, [])
+            
+            for pair in data.get("pairs", []):
+                members = pair.get("members", [])
+                if len(members) < 2:
+                    continue
+                
+                lead_name, harm_name = members[0], members[1]
+                if lead_name not in member_to_idx or harm_name not in member_to_idx:
+                    print(
+                        f"[KpopFrameDataset] Harmony file {hpath}: unknown members "
+                        f"{members} (skipping this pair)"
+                    )
+                    continue
+                
+                lead_idx = member_to_idx[lead_name]
+                harm_idx = member_to_idx[harm_name]
+                pair_name = pair.get("name", "")
+                
+                # Try to find debug mp3
+                debug_mp3 = None
+                song_debug_dir = os.path.join(self.debug_harmony_root, song)
+                if os.path.isdir(song_debug_dir) and pair_name:
+                    mp3_pattern = os.path.join(song_debug_dir, f"{pair_name}*.mp3")
+                    mp3_matches = glob.glob(mp3_pattern)
+                    if mp3_matches:
+                        debug_mp3 = mp3_matches[0]
+                
+                # Treat every segment (A + B) as "lead=harmony[0], harmony=harmony[1]"
+                # to match your description: first member = lead, second = harmony.
+                for key in ("segmentsA", "segmentsB"):
+                    for seg in pair.get(key, []):
+                        start_chunk = int(seg["startChunk"])
+                        end_chunk = int(seg["endChunk"])
+                        song_segments.append(
+                            {
+                                "start": start_chunk,
+                                "end": end_chunk,
+                                "lead_idx": lead_idx,
+                                "harm_idx": harm_idx,
+                                "pair_name": pair_name,
+                                "debug_mp3": debug_mp3,
+                            }
+                        )
+
+            if song_segments:
+                manual[song] = song_segments
+
+        print(f"[KpopFrameDataset] Loaded manual harmonies for {len(manual)} songs.")
+        return manual                        
+                
+            
     # ---------- Dataset API ----------
     def __len__(self) -> int:
         # base windows + precomputed augmented windows
@@ -950,13 +1134,9 @@ def main():
     print("Using device:", device)
     
     group_dir = os.path.join(args.root, "training_data", args.group)
-    members = sorted([d for d in os.listdir(group_dir)
-                      if os.path.isdir(os.path.join(group_dir, d)) and d.lower() not in ["harmonies", "images"]])
-    
-    print("Members detected:", members)
     
     # Dataset & split
-    full_ds = KpopVocalDataset(group_dir, args.sr_ecapa, args.chunk_sec, num_workers=args.num_workers, pitch_prob=0.0)
+    full_ds = KpopVocalDataset(group_dir, args.sr_ecapa, args.chunk_sec, num_workers=args.num_workers, group_name=args.group ,pitch_prob=0.0)
     
     print("Classes:", full_ds.class_map.idx_to_name)
     print("len(full_ds) =", len(full_ds))

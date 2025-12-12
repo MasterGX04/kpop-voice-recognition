@@ -41,9 +41,14 @@ outputs/
 logs/
 data/
 tmp/
+pitch_test/
+debug_harmonies/
 
 overfit_test.py
 voice_classifier.py
 training_ui.py
+pitch_test.py
+harmony_test.py
 
 *predictions.csv
+*_test_harmonies.json

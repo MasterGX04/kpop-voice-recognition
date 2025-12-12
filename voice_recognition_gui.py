@@ -37,7 +37,7 @@ class VoiceTrainerGUI:
         max_w = int(screen_w * scale)   # e.g., 90% of screen
         max_h = int(screen_h * scale)
         
-        print(f"Max_w: {max_w}, max_h: {max_h}")
+        # print(f"Max_w: {max_w}, max_h: {max_h}")
         
         # Start by using max height and compute width from aspect ratio
         width_from_h = int(max_h * aspect)
@@ -389,6 +389,9 @@ if __name__ == "__main__":
     }   
     
     root = tk.Tk()
+    
+    icon = tk.PhotoImage(file="./images/logo.png")
+    root.iconphoto(True, icon)
     
     app = VoiceTrainerGUI(root, groups)
     root.mainloop()

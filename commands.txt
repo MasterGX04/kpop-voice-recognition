@@ -1,4 +1,15 @@
-
+python train_kpop_singers.py `
+  --root "K:\Python Projects\Voice Recognition" `
+  --group "BTS" `
+  --sr_in 22050 `
+  --sr_ecapa 16000 `
+  --chunk-sec 2.0 `
+  --epochs 12 `
+  --batch-size 32 `
+  --lr 5e-4 `
+  --val-split 0.15 `
+  --num-workers 8 `
+  --save-dir "K:\Python Projects\Voice Recognition\models"
 
 python train_kpop_singers.py `
   --root "K:\Python Projects\Voice Recognition" `
@@ -6,7 +17,7 @@ python train_kpop_singers.py `
   --sr_in 22050 `
   --sr_ecapa 16000 `
   --chunk-sec 2.0 `
-  --epochs 16 `
+  --epochs 20 `
   --batch-size 32 `
   --lr 5e-4 `
   --val-split 0.15 `
@@ -18,20 +29,46 @@ python train_kpop_singers.py `
 - Must add separate category for gang vocals (especially useful for Love Dive, My Satisfaction, and Accendio)
 - Struggles with Rei/Gaeul singing at higher pitches because they usually sing so low
 - Still gets confused between Leeseo and Wonyoung
+- Maybe change labels into a dict of lists so that we don't have to have O(n) for literally anything to do with labels 
+- Visual representation for gang vocals
+
+- Harmony does not work properly it thinks that Rei and Leeseo = Leeseo ALWAYS sings with Rei
+- In Crush when Gaeul sings high the model thinks it's Yujin and thinking about it they sound similar
+- Short lines in between rests are still badly predicted
+- It still sucks when GAeul sing high lol
+- Ad Libs don't work because it may think that ad-libs are gang vocal or "silence". BIG bug
+- Excels when Leeseo sings higher but fails miserably when she sings lower and confuses her with Wonyoung
+- When Wonyoung sings higher it's ok but as soon as she lowers her octave the model dies.
+- Model is absolutely in love with Yujin and got nearly 100% of her non ad-lib parts
+- Model actually has no idea what "Gang Vocal" means and predicts 0 for actual gang vocal. Likely overfit pretty badly
 
 Bugs:
 - Lyrics look stupid now because I didn't change where they spawn based on window resizing
-- Edit UI so that markers can stack on top of each other (kind of, they need to stack when you move it over another marker). Should be done with:
-	- Add visual representation for labels vs non-labeled data 
-- Only deweight or mark as harmony for adlib/backing if they are not alone
 - Fix bug where the progressbar handle goes over the song's length
+
 - Bug: If you try to move section indices while trying to create new label, THE MARKER MOVES TO THE OTHER SECTION!!!!
+- why Leeseo is being oconfused as gang vocal
+- Include custom harmonies to combine singers together to "simulate" a harmony because I realized only Rei + Gaeul and Rei + Leeseo
+- Ad lib starts way too early
 
 IVE Songs to Train:
 - Summer Liz (Because Liz doesn't sing deep usually)
 - Heroine (Gaeul and Rei High Notes)
 - Supernova Love
-- I AM
+- Crush (We need all of the Gaeul and Rei high notes but they're barely in the song)
+- I WANT (Important Rei singing high)
 - WAVE (Gaeul high notes and everyone raps)
-- Royal (high notes)?
+- Royal (high notes)? Actually not very useful
 - Shine With Me
+- I AM with INSANE HIGH NOTES
+
+Good IVE Songs to Test on:
+- Either Way
+- Royal (Choppy notes)
+
+Important BTS songs:
+- 0:00
+- Ugh/Tear 
+- Just One Day for Jungkook ad-libs
+- Life Goes On (for modern V deep voice)
+- Heartbeat (Good Harmonization)

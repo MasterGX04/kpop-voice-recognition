@@ -34,11 +34,11 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
     base_dir = f"./training_data/{selectedGroup}"
     os.makedirs(base_dir, exist_ok=True)
     
-    # add Silence and Gang Vocal into members  
-    if len(members) > 1:
-        memberList = members + ["Silence"] + ["Gang Vocal"]
-        
-
+    # add Gang Vocal into members  
+    memberList = list(members)
+    if "Gang Vocal" not in memberList:
+        memberList.append("Gang Vocal")
+ 
     # Map song title → JSON file
     jsonFileMap = {
         os.path.splitext(os.path.basename(f))[0].replace("_labels", ""): f
@@ -48,13 +48,7 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
     # Class indices
     member_to_idx = {name: i for i, name in enumerate(memberList)}
     
-    silence_name = None
-    silence_idx = None
-    for m in memberList:
-        if m.lower() == "silence":
-            silence_name = m
-            silence_idx = member_to_idx[m]
-            break
+    silence_name = "silence"
     
     # Gang vocal name
     gang_name = None
@@ -176,8 +170,6 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
 
             if len(segs) == 0:
                 # Silence
-                if silence_idx is not None:
-                    presence[chunkIdx, silence_idx] = 1
                 continue
 
             # Build valid segments with indices
@@ -200,9 +192,7 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
                     isBacking_arr[chunkIdx, m_idx] = 1
 
             if not valid_segments:
-                # Nothing we know about; treat as silence if desired
-                if silence_idx is not None:
-                    presence[chunkIdx, silence_idx] = 1
+                # Nothing we know about; treat as silence by leaving row zero
                 continue
 
             # Decide lead index using hierarchy + latest start
@@ -241,7 +231,7 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
         }
 
         with open(out_labels_path, "w", encoding="utf-8") as jf:
-            json.dump(out_data, jf, indent=2, separators=(",", ":"),)
+            json.dump(out_data, jf, separators=(",", ":"))
 
         print(f"  ✅ Saved frame labels: {out_labels_path}")
        

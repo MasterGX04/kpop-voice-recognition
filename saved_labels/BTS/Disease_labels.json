@@ -101,99 +101,99 @@
         "V",
         1192,
         1301,
-        true,
+        false,
         false
     ],
     [
         "Jungkook",
         1304,
         1332,
-        true,
+        false,
         false
     ],
     [
         "Jungkook",
         1334,
         1433,
-        true,
+        false,
         false
     ],
     [
         "Jin",
         1436,
         1464,
-        true,
+        false,
         false
     ],
     [
         "Jin",
         1467,
         1493,
-        true,
+        false,
         false
     ],
     [
         "Jin",
         1496,
         1523,
-        true,
+        false,
         false
     ],
     [
         "Jin",
         1527,
         1550,
-        true,
+        false,
         false
     ],
     [
         "Jimin",
         1550,
         1664,
-        true,
+        false,
         false
     ],
     [
         "Jungkook",
         1675,
         1788,
-        true,
+        false,
         false
     ],
     [
         "Jimin",
         1794,
         1926,
-        true,
+        false,
         false
     ],
     [
         "J-Hope",
         1898,
         1966,
-        true,
-        true
+        false,
+        false
     ],
     [
         "J-Hope",
         1972,
         2025,
-        true,
-        true
+        false,
+        false
     ],
     [
         "Jimin",
         2017,
         2046,
-        true,
+        false,
         false
     ],
     [
         "J-Hope",
         2037,
         2085,
-        true,
-        true
+        false,
+        false
     ],
     [
         "RM",
@@ -206,7 +206,7 @@
         "J-Hope",
         2090,
         2145,
-        true,
+        false,
         true
     ],
     [
@@ -297,168 +297,168 @@
         "Jin",
         3330,
         3444,
-        true,
+        false,
         false
     ],
     [
         "Jimin",
         3389,
         3444,
-        true,
+        false,
         true
     ],
     [
         "Jimin",
         3443,
         3574,
-        true,
+        false,
         false
     ],
     [
         "Jungkook",
         3574,
         3602,
-        true,
+        false,
         false
     ],
     [
         "Jungkook",
         3606,
         3631,
-        true,
+        false,
         false
     ],
     [
         "Jungkook",
         3635,
         3661,
-        true,
+        false,
         false
     ],
     [
         "Jungkook",
         3666,
         3688,
-        true,
+        false,
         false
     ],
     [
         "V",
         3688,
         3805,
-        true,
+        false,
         false
     ],
     [
         "V",
         3813,
         3927,
-        true,
+        false,
         false
     ],
     [
         "Jin",
         3934,
         3979,
-        true,
+        false,
         false
     ],
     [
         "Jin",
         3982,
         4065,
-        true,
+        false,
         false
     ],
     [
         "J-Hope",
         4037,
         4105,
-        true,
-        true
+        false,
+        false
     ],
     [
         "J-Hope",
         4111,
         4165,
-        true,
-        true
+        false,
+        false
     ],
     [
         "Jin",
         4156,
         4187,
-        true,
+        false,
         false
     ],
     [
         "J-Hope",
         4177,
         4223,
-        true,
-        true
+        false,
+        false
     ],
     [
         "J-Hope",
         4230,
         4283,
-        true,
-        true
+        false,
+        false
     ],
     [
         "Jungkook",
         4293,
         4341,
-        true,
+        false,
         false
     ],
     [
         "Jimin",
         4336,
         4413,
-        true,
+        false,
         false
     ],
     [
         "Jungkook",
         4414,
         4458,
-        true,
+        false,
         false
     ],
     [
         "Jimin",
         4460,
         4524,
-        true,
+        false,
         false
     ],
     [
         "Jungkook",
         4525,
         4576,
-        true,
+        false,
         false
     ],
     [
         "Jin",
         4579,
         4640,
-        true,
+        false,
         false
     ],
     [
         "Jungkook",
         4644,
         4694,
-        true,
+        false,
         false
     ],
     [
         "Jin",
         4698,
         4759,
-        true,
+        false,
         false
     ],
     [
@@ -486,21 +486,21 @@
         "Jungkook",
         5074,
         5115,
-        true,
+        false,
         false
     ],
     [
         "V",
         5111,
         5146,
-        true,
+        false,
         false
     ],
     [
         "Jin",
         5143,
         5176,
-        true,
+        false,
         false
     ],
     [
@@ -521,42 +521,42 @@
         "Jungkook",
         5359,
         5404,
-        true,
+        false,
         false
     ],
     [
         "Jungkook",
         5408,
         5491,
-        true,
+        false,
         false
     ],
     [
         "Jimin",
         5433,
         5489,
-        false,
-        true
+        true,
+        false
     ],
     [
         "J-Hope",
         5479,
         5531,
-        true,
-        true
+        false,
+        false
     ],
     [
         "J-Hope",
         5536,
         5590,
-        true,
-        true
+        false,
+        false
     ],
     [
         "Jungkook",
         5581,
         5612,
-        true,
+        false,
         false
     ],
     [
@@ -570,21 +570,21 @@
         "J-Hope",
         5596,
         5650,
-        true,
-        true
+        false,
+        false
     ],
     [
         "J-Hope",
         5654,
         5703,
-        true,
-        true
+        false,
+        false
     ],
     [
         "Jimin",
         5666,
         5718,
-        true,
+        false,
         false
     ],
     [

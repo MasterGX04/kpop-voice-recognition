@@ -11,8 +11,8 @@ import os, csv
 def predict_40ms(
     encoder_path: str, head_path: str, wav_path: str,
     sr_target=16000, win_sec=2.0, hop_sec=0.04, use_hann=True,
-    silence_idx=None, output_dir=None, class_names=None, 
-    thr_main=0.6, thr_harm: float = 0.45, thr_adlib: float = 0.6
+    output_dir=None, class_names=None, thr_main=0.5, 
+    thr_harm: float = 0.45, thr_adlib: float = 0.6
 ):
     """
     Returns labels_40ms: list of dicts, one per 40 ms frame:
@@ -39,12 +39,29 @@ def predict_40ms(
     if not class_names:
         class_names = list(model_classes)
         
-    if silence_idx is None:
-        silence_idx = len(model_classes) - 1
+    silence_idx = None
+    for i, name in enumerate(class_names):
+        if name.lower() == "silence":
+            silence_idx = i
+            break
     
     num_main = len(model_classes)
     num_members = num_main - 1
     member_names = class_names[:num_members]
+    
+    # Find gang vocal index (it will exist)
+    gang_idx = None
+    for i, name in enumerate(class_names):
+        if name.lower() == "gang vocal":
+            gang_idx = i
+            break
+    
+    # print(f"Silence index: {silence_idx}, Gang index: {gang_idx}") 
+    # Mask of "real members" with no gang or silence
+    real_member_mask = np.ones(num_main, dtype=bool)
+    real_member_mask[silence_idx] = False
+    if gang_idx is not None:
+        real_member_mask[gang_idx] = False
     
     fused_dim = base_dim * 2
     head = MultiTaskHead(fused_dim, num_members).to(device)
@@ -167,36 +184,46 @@ def predict_40ms(
     
     # --- Decode main / harmony / ad-lib ---
     base_thr_main = np.full(probs_main_np.shape[1], thr_main, dtype=np.float32)
-    decoded_main_np = decode_multilabel(probs_main_np, per_class_thr=base_thr_main)
+    decoded_main_np = decode_multilabel(probs_main_np, per_class_thr=base_thr_main, max_gap_frames=3)
     
     # harmony / adlib thresholds are per member (no silence)
     base_thr_harm = np.full(num_members, thr_harm, dtype=np.float32)
     base_thr_ad = np.full(num_members, thr_adlib, dtype=np.float32)
     
-    decoded_harm_np = decode_multilabel(probs_harm_np, per_class_thr=base_thr_harm)
-    decoded_ad_np = decode_multilabel(probs_ad_np, per_class_thr=base_thr_ad)
+    decoded_harm_np = decode_multilabel(probs_harm_np, per_class_thr=base_thr_harm, min_on_frames=2)
+    decoded_ad_np = decode_multilabel(probs_ad_np, per_class_thr=base_thr_ad, min_on_frames=2)
     
     # --- Build main_idx_np (single "main" singer per frame) ---
     multi_hot_main = decoded_main_np.astype(bool)
     main_idx_np = np.zeros(n_frames, dtype=np.int64)
     
     for t in range(n_frames):
-        p = probs_main_np[t] # (C, )
-        active = multi_hot_main[t] # Bool mask over classes
-        if active.any():
-            active_ids = np.where(active)[0]
-            # choose active class with highest prob
-            best_local = active_ids[np.argmax(p[active_ids])]
-            main_idx_np[t] = int(best_local)
-        else:
-            # no active class after smoothing
-            if silence_idx is not None:
-                main_idx_np[t] = silence_idx
-            else:
-                main_idx_np[t] = int(np.argmax(p))
+        p = probs_main_np[t]       # (C,)
+        active = multi_hot_main[t] # bool mask over classes
 
+        chosen = None
+
+        if active.any():
+            # 1) REAL MEMBERS FIRST (exclude gang & silence)
+            real_active_ids = np.where(active & real_member_mask)[0]
+            if len(real_active_ids) > 0:
+                chosen = int(real_active_ids[np.argmax(p[real_active_ids])])
+            # 2) If no real member, but Gang Vocal is active -> main = Gang
+            elif gang_idx is not None and active[gang_idx]:
+                chosen = int(gang_idx)
+
+        # 3) Fallbacks when nothing above chose a label
+        if chosen is None:
+            if silence_idx is not None:
+                chosen = int(silence_idx)
+            else:
+                chosen = int(np.argmax(p))
+
+        main_idx_np[t] = chosen
+    
+    
     # Reduces single-frame blips and bridges tiny silence gaps
-    main_idx_np = smooth_main_sequence(main_idx_np, silence_idx)
+    main_idx_np = smooth_main_track(main_idx_np, silence_idx)
     pred_idx = torch.from_numpy(main_idx_np).to(device=device, dtype=torch.long)
         
     # ---- 4. Write predictions to .txt ----
@@ -208,10 +235,12 @@ def predict_40ms(
         with open(csv_path, "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
             header = [
-                "start_time", "end_time",
+                "start_chunk", "start_time", "end_time",
                 "main_label", "main_confidence",
                 "active_labels", "active_confidences",
-                "probabilities",
+                "harmonies", "harmony_probs",
+                "adlibs", "adlib_probs",
+                "probabilities_main",
             ]
             writer.writerow(header)
 
@@ -222,25 +251,57 @@ def predict_40ms(
                 start_t = i * hop_sec
                 end_t = start_t + hop_sec
 
-                p = probs_main_np[i]              # (C,)
-                mh = multi_hot_main_np[i]
+                # === MAIN PROBS ===
+                p_main = probs_main_np[i] # (C_main,)
+                mh_main = multi_hot_main_np[i] # bool mask
 
                 main_id = int(pred_idx_np[i])
-                main_names = class_names[main_id]
-                main_conf = float(p[main_id])
+                main_name = class_names[main_id]
+                main_conf = float(p_main[main_id])
+                
+                active_main_ids = np.where(mh_main)[0].tolist()
+                active_main_names = [class_names[j] for j in active_main_ids]
+                active_main_confs = [float(p_main[j]) for j in active_main_ids]
+                
+                # === HARMONY ===
+                harm_mask = decoded_harm_np[i].astype(bool)
+                harm_ids = np.where(harm_mask)[0].tolist()
+                harm_names = [member_names[j] for j in harm_ids]
 
-                active_ids = np.where(mh)[0].tolist()
-                active_names = [class_names[j] for j in active_ids]
-                active_confs = [float(p[j]) for j in active_ids]
+                # collect harmony probabilities ONLY if something is active
+                if len(harm_ids) > 0:
+                    harm_full_probs_str = "[" + ", ".join(f"{x:.3f}" for x in probs_harm_np[i]) + "]"
+                    harm_names_str = "|".join(harm_names)
+                else:
+                    harm_full_probs_str = "[]"
+                    harm_names_str = ""
+                
+                # === AD-LIB ===
+                ad_mask = decoded_ad_np[i].astype(bool)
+                ad_ids = np.where(ad_mask)[0].tolist()
+                ad_names = [member_names[j] for j in ad_ids]
+
+                if len(ad_ids) > 0:
+                    ad_probs = [float(probs_ad_np[i][j]) for j in ad_ids]
+                    ad_probs_str = "[" + ", ".join(f"{c:.3f}" for c in ad_probs) + "]"
+                    ad_names_str = "|".join(ad_names)
+                else:
+                    ad_probs_str = "[]"
+                    ad_names_str = ""
 
                 row = [
+                    i,
                     round(start_t, 3),
                     round(end_t, 3),
-                    main_names,
+                    main_name,
                     main_conf,
-                    "|".join(map(str, active_names)),
-                    "[" + ", ".join(f"{c:.3f}" for c in active_confs) + "]",
-                    "[" + ", ".join(f"{x:.3f}" for x in p) + "]",
+                    "|".join(active_main_names),
+                    "[" + ", ".join(f"{c:.3f}" for c in active_main_confs) + "]",
+                    harm_names_str,
+                    harm_full_probs_str,
+                    ad_names_str,
+                    ad_probs_str,
+                    "[" + ", ".join(f"{x:.3f}" for x in p_main) + "]",
                 ]
                 writer.writerow(row)
         print(f"✅ Saved predictions to {csv_path}")
@@ -249,37 +310,57 @@ def predict_40ms(
     labels_40ms = []
 
     for t in range(n_frames):
-        # main / lead
-        main_id = int(main_idx_np[t])  
+        main_id = int(main_idx_np[t])
 
+        # --- Determine main name ---
         if main_id == silence_idx:
-            main_name = "" # silence → blank string
+            main_name = "silence"
+            main_is_valid = False
         else:
             main_name = class_names[main_id]
+            main_is_valid = (main_name != "Gang Vocal")
 
+        # --- Harmony (members only) ---
+        if main_is_valid:
+            harm_mask = decoded_harm_np[t].astype(bool)
+            harm_ids = np.where(harm_mask)[0].tolist()
+            harm_names = [member_names[j] for j in harm_ids]
+        else:
+            # No main singer → harmony makes no sense
+            harm_names = []
 
-        # harmony (members only)
-        harm_mask = decoded_harm_np[t].astype(bool)
-        harm_ids = np.where(harm_mask)[0].tolist()
-        harm_names = [member_names[j] for j in harm_ids]
-
-        # ad-lib (members only)
+        # --- Ad-lib (can exist with or without main, your choice) ---
         ad_mask = decoded_ad_np[t].astype(bool)
         ad_ids = np.where(ad_mask)[0].tolist()
         ad_names = [member_names[j] for j in ad_ids]
-        
+
         labels_40ms.append({
             "main": main_name,
             "harmony": harm_names,
             "adlib": ad_names,
         })
-        
+
     return labels_40ms
 
-def smooth_probs(P, k=5):   # k odd: 5 or 7 works well for 40ms frames
+def median_smooth_over_time(P, k=3):
+    """
+    Median-filter probabilities over time to reduce jitter.
+
+    P: (T, C) array of probabilities
+    window_frames: odd integer, size of the median window in frames.
+                   For 40ms frames, 3 means 120ms context on each side.
+    """
     return median_filter(P, size=(k, 1))
 
-def hysteresis_decode(p, on=0.60, off=0.45):
+def apply_on_off_thresholds(p, on=0.60, off=0.45):
+    """
+    Turn a 1D probability sequence into 0/1 using two thresholds:
+
+    - When currently OFF, we only turn ON if p >= on_thresh.
+    - When currently ON, we stay ON until p <= off_thresh.
+
+    This avoids flickering when probabilities hover near the threshold.
+    """
     y = np.zeros_like(p, dtype=np.int32)
     active = False
     for i, s in enumerate(p):
@@ -288,12 +369,41 @@ def hysteresis_decode(p, on=0.60, off=0.45):
         y[i] = 1 if active else 0
     return y
 
-def min_duration(y, min_on=3, min_off=2):
+def enforce_min_active_and_fill_gaps(y, min_on_frames=3, max_gap_frames=2):
+    """
+    Post-process a 0/1 sequence:
+
+    - Remove very short active runs (1s) shorter than min_on_frames.
+    - Fill short gaps of 0s (silence) between 1s if the gap length
+      is <= max_gap_frames.
+
+    Example:
+      max_gap_frames = 2 means we allow up to 2 consecutive 0s
+      between 1s and we treat them as if the class stayed active.
+    """
     out = y.copy()
-    for val, grp in itertools.groupby(range(len(y)), key=lambda i: y[i]):
+    T = len(y)
+    for val, grp in itertools.groupby(range(T), key=lambda i: y[i]):
         idx = list(grp)
-        if val == 1 and len(idx) < min_on:  out[idx] = 0
-        if val == 0 and len(idx) < min_off: out[idx] = 1
+        length = len(idx)
+        
+        if val == 1 and length < min_on_frames:
+            # Too-short active run → turn off
+            out[idx] = 0
+    
+    # Second pass: fill small 0-gaps between 1s
+    y2 = out.copy()
+    for val, grp in itertools.groupby(range(T), key=lambda i: y2[i]):
+        idx = list(grp)
+        length = len(idx)
+
+        if val == 0 and length <= max_gap_frames:
+            # Only fill if surrounded by 1s on both sides
+            left = idx[0] - 1
+            right = idx[-1] + 1
+            if left >= 0 and right < T and y2[left] == 1 and y2[right] == 1:
+                out[idx] = 1
+                
     return out
 
 def cap_topk(P_row, k=2):
@@ -301,32 +411,66 @@ def cap_topk(P_row, k=2):
     keep[np.argsort(-P_row)[:k]] = True
     return keep
 
-def decode_multilabel(probs, per_class_thr=None, k_smooth=5, on_add=0.02, off_sub=0.02,
-                      min_on=3, min_off=2, topk=2):
-    P = smooth_probs(probs, k=k_smooth)
-    C = P.shape[1]
-    base = np.full(C, 0.50, np.float32) if per_class_thr is None else np.asarray(per_class_thr, np.float32)
-    on  = np.clip(base + on_add, 0, 1); off = np.clip(base - off_sub, 0, 1)
+def decode_multilabel(probs, per_class_thr=None, k_smooth=3, on_add=0.02, off_sub=0.02,
+                      min_on_frames=3, max_gap_frames=2, topk=2):
+    """
+    Decode multi-label probabilities over time into 0/1 activity:
+
+    1. Median smooth over time with window 'smooth_window'.
+    2. For each class:
+         - use on/off thresholds (hysteresis) around 'per_class_thr'
+         - enforce a minimum active duration (min_on_frames)
+         - fill small gaps of up to 'max_gap_frames' between active regions
+    3. Optionally keep at most 'topk' active classes per frame.
+
+    Returns:
+        Y: int32 array of shape (T, C) with 0/1 per frame per class.
+    """
+    # Smooth in time
+    P = median_smooth_over_time(probs, k=k_smooth)
+    T, C = P.shape
+    
+    # 2. thresholds per class
+    base = (
+        np.full(C, 0.50, np.float32)
+        if per_class_thr is None
+        else np.asarray(per_class_thr, np.float32)
+    )
+    on = np.clip(base + on_add, 0, 1)
+    off = np.clip(base - off_sub, 0, 1)
 
     Y = np.zeros_like(P, dtype=np.int32)
-    for c in range(C):
-        y = hysteresis_decode(P[:, c], on=on[c], off=off[c])
-        Y[:, c] = min_duration(y, min_on=min_on, min_off=min_off)
 
+    for c in range(C):
+        # 2a. hysteresis on/off
+        y = apply_on_off_thresholds(P[:, c], on=on[c], off=off[c])
+        # 2b. enforce min active duration & fill short gaps
+        y = enforce_min_active_and_fill_gaps(
+            y,
+            min_on_frames=min_on_frames,
+            max_gap_frames=max_gap_frames,
+        )
+        Y[:, c] = y
+
+    # 3. optional per-frame top-k restriction
     if topk is not None:
-        for t in range(P.shape[0]):
-            Y[t] = Y[t] * cap_topk(P[t], k=topk).astype(np.int32)
+        for t in range(T):
+            keep = cap_topk(P[t], k=topk)
+            Y[t] = Y[t] * keep.astype(np.int32)
+
     return Y
 
-def smooth_main_sequence(main_idx, silence_idx=None, min_singer_len=3, 
+def smooth_main_track(main_idx, silence_idx=None, min_singer_len=3, 
                          min_silence_len=1, bridge_silence_len=2):
     """
-    main_idx: 1D np.array of class indices per frame (length T)
-    silence_idx: which index represents silence, or None
-    min_singer_len: minimum frames for a singer segment to be kept
-    min_silence_len: (optional) minimum frames for a silence segment
-    bridge_silence_len: if a silence run <= this and surrounded by same singer,
-                        convert silence to that singer (gap-bridging).
+    Post-process the per-frame main class index sequence.
+
+    - Remove very short singer segments (shorter than min_singer_len).
+    - Optionally enforce a minimum silence length.
+    - Bridge small silence gaps (<= bridge_silence_len) between the same singer.
+
+    This operates AFTER the per-class multi-label decode, so it's a last pass
+    over the single 'main' label track.
     """
     main_idx = np.asarray(main_idx, dtype=np.int64)
     T = len(main_idx)
@@ -354,6 +498,7 @@ def smooth_main_sequence(main_idx, silence_idx=None, min_singer_len=3,
                     out[start:end] = next_label
                 else:
                     out[start:end] = silence_idx
+                    
         # Handle silence segments
         if silence_idx is not None and label == silence_idx:
             # Optional: enforce min_silence_len
@@ -366,7 +511,11 @@ def smooth_main_sequence(main_idx, silence_idx=None, min_singer_len=3,
             if length <= bridge_silence_len:
                 prev_label = out[start - 1] if start > 0 else None
                 next_label = out[end] if end < T else None
-                if prev_label is not None and prev_label == next_label and prev_label != silence_idx:
+                if (
+                    prev_label is not None 
+                    and prev_label == next_label 
+                    and prev_label != silence_idx
+                ):
                     out[start:end] = prev_label
         
         start = end

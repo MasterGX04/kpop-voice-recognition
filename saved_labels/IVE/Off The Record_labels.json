@@ -186,7 +186,7 @@
         1828,
         1859,
         false,
-        true
+        false
     ],
     [
         "Yujin",
@@ -207,7 +207,7 @@
         1924,
         1966,
         false,
-        true
+        false
     ],
     [
         "Gaeul",
@@ -325,7 +325,7 @@
         "Leeseo",
         2876,
         3101,
-        false,
+        true,
         false
     ],
     [
@@ -368,7 +368,7 @@
         3539,
         3661,
         false,
-        true
+        false
     ],
     [
         "Yujin",
@@ -382,7 +382,7 @@
         3676,
         3734,
         false,
-        true
+        false
     ],
     [
         "Rei",
@@ -396,7 +396,7 @@
         3850,
         3871,
         false,
-        true
+        false
     ],
     [
         "Rei",
@@ -431,14 +431,14 @@
         3981,
         4008,
         false,
-        true
+        false
     ],
     [
         "Yujin",
         3981,
         4080,
         false,
-        true
+        false
     ],
     [
         "Gaeul",
@@ -459,7 +459,7 @@
         4092,
         4136,
         false,
-        true
+        false
     ],
     [
         "Gaeul",
@@ -473,7 +473,7 @@
         4148,
         4190,
         false,
-        true
+        false
     ],
     [
         "Liz",

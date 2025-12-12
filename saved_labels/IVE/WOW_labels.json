@@ -375,7 +375,7 @@
         3362,
         3375,
         false,
-        true
+        false
     ],
     [
         "Yujin",
@@ -514,8 +514,8 @@
         "Liz",
         4354,
         4382,
-        false,
-        true
+        true,
+        false
     ],
     [
         "Gaeul",

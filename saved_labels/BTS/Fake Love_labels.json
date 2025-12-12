@@ -150,7 +150,7 @@
         "Jungkook",
         1210,
         1250,
-        true,
+        false,
         false
     ],
     [
@@ -542,7 +542,7 @@
         "Jimin",
         4434,
         4641,
-        true,
+        false,
         false
     ],
     [
@@ -619,7 +619,7 @@
         "V",
         5271,
         5396,
-        false,
+        true,
         false
     ],
     [
@@ -633,7 +633,7 @@
         "V",
         5427,
         5554,
-        false,
+        true,
         false
     ],
     [
@@ -647,7 +647,7 @@
         "Jin",
         5579,
         5654,
-        true,
+        false,
         false
     ],
     [
@@ -661,7 +661,7 @@
         "Jin",
         5659,
         5733,
-        true,
+        false,
         false
     ],
     [
@@ -675,7 +675,7 @@
         "Jin",
         5737,
         5860,
-        true,
+        false,
         false
     ],
     [

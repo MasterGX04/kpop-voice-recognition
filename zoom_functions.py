@@ -26,7 +26,7 @@ class ZoomManager:
         self.zoomSlider = tk.Scale(
             self.zoomFrame,
             from_=1.0,
-            to=25.0,
+            to=30.0,
             resolution=0.1,
             orient=tk.HORIZONTAL,
             variable=self.zoomVar,

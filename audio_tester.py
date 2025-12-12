@@ -158,7 +158,7 @@ class VoiceDetectionApp:
             self.videoTrackItem = VideoTrackItem(self.canvas, self, videoPath, scale=100, scaleX=self.scaleX, position=(0,0), baseHeight=720, isMusicVideo=False)
         
         # Voice detection results
-        memberList = [member['name'] for member in members] + ["silence"]
+        memberList = [member['name'] for member in members] + ['Gang Vocal'] + ["silence"]
         # print(f"Member list: {memberList}")
         if os.path.exists(modelPath):
             os.makedirs("./predictions", exist_ok=True)
@@ -503,7 +503,6 @@ class VoiceDetectionApp:
         self.moveMarker(1)
         
     def updateLabels(self, event):
-        print("Labels have been updated!")
         self.updateLabelInJSON()
         
     def updateChunkText(self, newIndex):
@@ -523,10 +522,56 @@ class VoiceDetectionApp:
             self.canvas.itemconfig(self.endPointMarkers[chunkIndex], fill="pink")
         
         self.canvas.bind("<Delete>", self.deleteSelectedMarker)
+       
+    def deleteLabelAndMarkers(self, label):
+        """
+        Given a full label [member, startChunk, endChunk],
+        delete both markers, update arrays, and update JSON.
+        """
+        member, startChunk, endChunk = label
+        
+        # Remove start marker
+        if startChunk in self.startPointMarkers:
+            self.canvas.delete(self.startPointMarkers[startChunk])
+            del self.startPointMarkers[startChunk]
+        if startChunk in self.startPoints:
+            self.startPoints.remove(startChunk)
+            
+        # --- Remove end marker ---
+        if endChunk in self.endPointMarkers:
+            self.canvas.delete(self.endPointMarkers[endChunk])
+            del self.endPointMarkers[endChunk]
+        if endChunk in self.endPoints:
+            self.endPoints.remove(endChunk)
+
+        # --- Update internal labels list ---
+        self.labels = [
+            l for l in self.labels
+            if not (l[0] == member and l[1] == startChunk and l[2] == endChunk)
+        ]
+
+        # --- Rebuild timeMarkers from startPoints/endPoints ---
+        self.updateTimeMarkersDict()
+
+        # --- Save updated labels back to JSON (sorted by start index for safety) ---
+        fileNameWithoutExtension = os.path.splitext(os.path.basename(self.testSongPath))[0]
+        labelFilePath = f"./saved_labels/{self.selectedGroup}/{fileNameWithoutExtension}_labels.json"
+
+        try:
+            sortedLabels = sorted(self.labels, key=lambda label: label[1])
+            with open(labelFilePath, "w") as file:
+                json.dump(sortedLabels, file, indent=4)
+        except Exception as e:
+            print(f"Error updating labels in {labelFilePath}: {e}")
+    
+        # Optional: refresh timelines now that labels changed
+        for trackItem in self.memberImages.values():
+            trackItem.initializeTimeline()
         
     def deleteSelectedMarker(self, event=None):
         """
-        Delete the selected marker and update all relevant data structures and JSON.
+        Delete the selected marker. 
+        If it is part of a label, remove BOTH start and end markers and the label from JSON.
         """
         if not self.selectedMarker:
             return
@@ -534,21 +579,40 @@ class VoiceDetectionApp:
         chunkIndex = self.selectedMarker["chunkIndex"]
         markerType = self.selectedMarker["type"]
         
-        if markerType == "start":
-            if chunkIndex in self.startPointMarkers:
-                self.canvas.delete(self.startPointMarkers[chunkIndex])
-                del self.startPointMarkers[chunkIndex]
-                if chunkIndex in self.startPoints:
-                    self.startPoints.remove(chunkIndex)  # Remove from startPoints
-        elif markerType == "end":
-            if chunkIndex in self.endPointMarkers:
-                self.canvas.delete(self.endPointMarkers[chunkIndex])
-                del self.endPointMarkers[chunkIndex]
-                if chunkIndex in self.endPoints:
-                    self.endPoints.remove(chunkIndex)  # Remove from endPoints
-                
-        self.removeLabelFromJSON(chunkIndex, markerType)
+        # Check to see if this marker brelongs to a label
+        labelToDelete = None
+        for label in self.labels:
+            _, start, end = label[:3]
+            if ((markerType == "start" and start == chunkIndex) or
+                (markerType == "end" and end == chunkIndex)):
+                labelToDelete = label[:3]
+                break
+        
+        if labelToDelete:
+            # 2) Delete BOTH markers + label
+            self.pushUndoState("delete-label")
+            
+            # Delete BOTH markers + label
+            self.deleteLabelAndMarkers(labelToDelete)
+        else:
+            self.pushUndoState("delete stray marker")
+            
+            if markerType == "start":
+                if chunkIndex in self.startPointMarkers:
+                    self.canvas.delete(self.startPointMarkers[chunkIndex])
+                    del self.startPointMarkers[chunkIndex]
+                    if chunkIndex in self.startPoints:
+                        self.startPoints.remove(chunkIndex)  # Remove from startPoints
+            elif markerType == "end":
+                if chunkIndex in self.endPointMarkers:
+                    self.canvas.delete(self.endPointMarkers[chunkIndex])
+                    del self.endPointMarkers[chunkIndex]
+                    if chunkIndex in self.endPoints:
+                        self.endPoints.remove(chunkIndex)  # Remove from endPoints
+                    
         self.selectedMarker = None
+        self.selectedLabel = None
+        self.originalLabel = None
     
     def resetMarkerColor(self):
         """
@@ -826,7 +890,7 @@ class VoiceDetectionApp:
         labelFilePath = f"./saved_labels/{self.selectedGroup}/{fileNameWithoutExtension}_labels.json"
         try:
             with open(labelFilePath, "w") as f:
-                json.dump(self.labels, f, indent=4)
+                json.dump(self.labels, f, separators=(",", ":"))
         except Exception as e:
             print(f"Error writing labels during undo/redo: {e}")
             
@@ -882,11 +946,11 @@ class VoiceDetectionApp:
         """
         Save updated labels to JSON file
         """
-        # print("Label update function called")
         if not self.selectedLabel:
             print("Label not selected")
             return
         
+        print("Labels have been updated!")
         fileNameWithoutExtension = os.path.splitext(os.path.basename(self.testSongPath))[0]
         labelFilePath = f"./saved_labels/{self.selectedGroup}/{fileNameWithoutExtension}_labels.json"
         
@@ -908,24 +972,6 @@ class VoiceDetectionApp:
         except Exception as e:
             print(f"Error saving labels to {labelFilePath}: {e}")
              
-    def removeLabelFromJSON(self, chunkIndex, markerType):
-        """
-        Remove the label corresponding to the deleted marker and update the JSON file.
-        """
-        fileNameWithoutExtension = os.path.splitext(os.path.basename(self.testSongPath))[0]
-        labelFilePath = f"./saved_labels/{self.selectedGroup}/{fileNameWithoutExtension}_labels.json" 
-        
-        try:
-            self.labels = [
-            label for label in self.labels
-            if not ((markerType == "start" and label[1] == chunkIndex) or
-                    (markerType == "end" and label[2] == chunkIndex))
-            ]
-            with open(labelFilePath, "w") as file:
-                json.dump(self.labels, file, indent=4)       
-        except Exception as e:
-            print(f"Error updating labels in {labelFilePath}: {e}")
-    
     def restackMarkersAtChunk(self, chunkIndex):
         """
         Reposition markers at a single chunkIndex so that overlapping
@@ -956,7 +1002,7 @@ class VoiceDetectionApp:
         
         baseY = barY
         height = 20
-        stackOffset = 6
+        stackOffset = 20
         
         if hasStart and hasEnd:
             startId = self.startPointMarkers[chunkIndex]
@@ -1615,7 +1661,7 @@ class VoiceDetectionApp:
         
         checkboxes = {}
         checkboxesByIndex = []  # Index-based access
-        repeatVars = {}
+        backingVars = {}
         adLibVars = {}
 
         for i, (member, startPoint, endPoint, isRepeat, isAdLib) in enumerate(self.getLabels()):
@@ -1626,8 +1672,8 @@ class VoiceDetectionApp:
             
             # Init checkbox arrays
             checkboxes[(startPoint, endPoint)] = var
-            repeatVars[(startPoint, endPoint)] = isBacking
-            adLibVars[(startPoint, endPoint)] = adLibVar
+            backingVars[(member, startPoint, endPoint)] = isBacking
+            adLibVars[(member, startPoint, endPoint)] = adLibVar
             
             memberText = f" -> {member}" if member is not None else ""
             text = f"Start: {startPoint}, End: {endPoint}{memberText}"
@@ -1703,20 +1749,21 @@ class VoiceDetectionApp:
         def saveSelectedLabels():
             selectedLabels = []
             mainCheckboxSelected = any(var.get() for var in checkboxes.values())
+            print(f"Main checkbox select: {mainCheckboxSelected}")
             member = memberVar.get()
 
             if mainCheckboxSelected:
-                for (startPoint, endPoint), var in checkboxes.items():
+                for (m_label, startPoint, endPoint), var in checkboxes.items():
                     if var.get():
                         # Is Repeat
-                        repeatVar = repeatVars.get((startPoint, endPoint))
-                        isRepeat = repeatVar.get() if repeatVar else False
+                        backingVar = backingVars.get((member, startPoint, endPoint))
+                        isBacking = backingVar.get() if backingVar else False
                         # Ad Lib
-                        adLibVar = adLibVars.get((startPoint, endPoint))
+                        adLibVar = adLibVars.get((member, startPoint, endPoint))
                         isAdLib = adLibVar.get() if adLibVar else False
                         
                         if member:
-                            label = [member, startPoint, endPoint, isRepeat, isAdLib]
+                            label = [member, startPoint, endPoint, isBacking, isAdLib]
                             self.labels.append(label)
                             selectedLabels.append(label)
                             print(f"Label saved: {label}")
@@ -1737,16 +1784,17 @@ class VoiceDetectionApp:
                     if len(label) < 5:
                         label.append(False)
                         
+                    labelMember = label[0]
                     startPoint = label[1]
                     endPoint = label[2]
-                    # Is Repeat
-                    repeatVar = repeatVars.get((startPoint, endPoint))
-                    isRepeat = repeatVar.get() if isinstance(repeatVar, tk.BooleanVar) else False
+                    # Is Backing
+                    backingVar = backingVars.get((labelMember, startPoint, endPoint))
+                    isBacking = backingVar.get() if isinstance(backingVar, tk.BooleanVar) else False
                     
-                    adLibVar = adLibVars.get((startPoint, endPoint))
+                    adLibVar = adLibVars.get((labelMember, startPoint, endPoint))
                     isAdLib = adLibVar.get() if adLibVar else False
                         
-                    label[3] = isRepeat
+                    label[3] = isBacking
                     label[4] = isAdLib
                     
                     updatedLabels.append(label)
@@ -2357,11 +2405,13 @@ class VoiceDetectionApp:
         self.timeDisplayVar.set(f"{minutes:02}:{seconds:02}.{milliseconds:03}")
         
     def addStartPoint(self, event=None): 
+        self.pushUndoState("add start marker")
         self.startPoints.append(self.currentChunkIndex)
         self.addMarkerToSection(self.currentChunkIndex, "start")
         print(f"Start point set at chunk {self.currentChunkIndex}.")
 
     def addEndPoint(self, event=None):
+        self.pushUndoState("add end marker")
         self.endPoints.append(self.currentChunkIndex)
         self.addMarkerToSection(self.currentChunkIndex, "end")
         print(f"End point set at chunk {self.currentChunkIndex}.")
@@ -2413,14 +2463,14 @@ class VoiceDetectionApp:
             baseY = self.progressBarCanvas.winfo_y()
 
             if x < 0 or x > self.canvas.winfo_width():
-                print(f"Marker at chunk {chunkIndex} is out of bounds (x={x}).")
+                # print(f"Marker at chunk {chunkIndex} is out of bounds (x={x}).")
                 continue
 
             # Stack up to 3 markers per chunkIndex
             maxStack = 3
             for stackIndex, markerType in enumerate(typeList[:maxStack]):
                 # Each stacked marker is shifted slightly upward
-                stackOffset = stackIndex * 6  # pixels between markers
+                stackOffset = stackIndex * 20  # pixels between markers
                 yTop = baseY - 20 - stackOffset
                 yBottom = baseY - stackOffset
 
