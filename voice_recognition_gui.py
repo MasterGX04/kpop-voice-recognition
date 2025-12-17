@@ -5,10 +5,6 @@ from PIL import Image, ImageTk
 from audio_processing import combineMemberVocals, getSongsFromSameAlbum, extractAndSaveHarmoniesFromSong
 from audio_tester import VoiceDetectionApp, loadMemberImages
 import sys
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import matplotlib.pyplot as plt
-import numpy as np
-from voice_classifier import train
 
 class VoiceTrainerGUI:
     def __init__(self, root, groups):
@@ -136,7 +132,7 @@ class VoiceTrainerGUI:
         selectedGroup = self.currentGroup.get()
         memberList = [member['name'] for member in self.groups[selectedGroup]]
         print(f"Starting to train on vocals forr {selectedGroup}")
-        train(selectedGroup, memberList)
+        # train(selectedGroup, memberList)
     
     def enableGlobalScroll(self, canvas, container):
         def _onMouseWheel(event):

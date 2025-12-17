@@ -255,8 +255,11 @@ class VoiceDetectionApp:
         # Destroy just this window (the UI window), not the whole app
         self.root.destroy()
       
-      
     def resetLabels(self, event):
+        self.labels = []
+        self.selectedLabel = None
+        self.startPoints = []
+        self.endPoints = []
         self.labels = self.loadSavedLabels()
         for trackItem in    self.memberImages.values():
             if trackItem:
@@ -933,7 +936,7 @@ class VoiceDetectionApp:
         Check if the selected marker belongs to a saved label and prepare for updates.
         """
         for label in self.labels:
-            member, start, end = label[:3]
+            _, start, end = label[:3]
             if (markerType == "start" and start == chunkIndex) or (markerType == "end" and end == chunkIndex):
                 self.selectedLabel = label
                 self.originalLabel = label.copy()
@@ -964,7 +967,7 @@ class VoiceDetectionApp:
             #         break
             sortedLabels = sorted(self.labels, key=lambda label: label[1])
             with open(labelFilePath, "w") as file:
-                json.dump(sortedLabels , file, indent=4)
+                json.dump(sortedLabels, file, separators=(",", ":"))
                 
             # print(f"Labels saved to {labelFilePath}.")
             self.updateTimeMarkersDict()
@@ -1663,17 +1666,28 @@ class VoiceDetectionApp:
         checkboxesByIndex = []  # Index-based access
         backingVars = {}
         adLibVars = {}
-
-        for i, (member, startPoint, endPoint, isRepeat, isAdLib) in enumerate(self.getLabels()):
+        
+        rowToLabelIndex = [] 
+        labelKeys = []  # index -> (memberFromGetLabels, start, end)
+        for i, (member, startPoint, endPoint, isBacking, isAdLib) in enumerate(self.getLabels()):
             var = tk.BooleanVar()
-            isBacking = tk.BooleanVar(value=isRepeat)
+            isBacking = tk.BooleanVar(value=isBacking)
             adLibVar = tk.BooleanVar(value=isAdLib)
             checkboxesByIndex.append((var, isBacking, adLibVar))
+            labelKeys.append((member, startPoint, endPoint)) 
             
+            labelIndex = None
+            if member is not None:
+                for j, lab in enumerate(self.labels):
+                    if len(lab) >= 3 and lab[0] == member and lab[1] == startPoint and lab[2] == endPoint:
+                        labelIndex = j
+                        break
+            rowToLabelIndex.append(labelIndex)
+    
             # Init checkbox arrays
-            checkboxes[(startPoint, endPoint)] = var
-            backingVars[(member, startPoint, endPoint)] = isBacking
-            adLibVars[(member, startPoint, endPoint)] = adLibVar
+            checkboxes[i] = var
+            backingVars[i] = isBacking
+            adLibVars[i] = adLibVar
             
             memberText = f" -> {member}" if member is not None else ""
             text = f"Start: {startPoint}, End: {endPoint}{memberText}"
@@ -1690,7 +1704,7 @@ class VoiceDetectionApp:
             )
             labelCheckbox.grid(row=i, column=0, sticky="w", padx=5, pady=2)
 
-            repeatCheckbox = tk.Checkbutton(
+            backingCheckbox = tk.Checkbutton(
                 scrollFrame,
                 text="Are they backing vocals?",
                 variable=isBacking,
@@ -1699,7 +1713,7 @@ class VoiceDetectionApp:
                 fg="darkblue",
                 selectcolor="darkgrey"
             )
-            repeatCheckbox.grid(row=i, column=1, padx=5, pady=2)
+            backingCheckbox.grid(row=i, column=1, padx=5, pady=2)
              
             adLibCheckBox = tk.Checkbutton(
                 scrollFrame,
@@ -1711,16 +1725,8 @@ class VoiceDetectionApp:
                 selectcolor="darkgrey"
             )
             adLibCheckBox.grid(row=i, column=2, padx=5, pady=2)
-            
-            # Functionality for labelCheckbox
-            def createMainCheckboxCallback(index, start, end):
-                def callback():
-                    updateMemberVarFromDetection()
-                return callback
-                        
-            labelCheckbox.config(command=createMainCheckboxCallback(i, startPoint, endPoint))
             labelCheckbox.bind("<Button-1>", lambda event, index=i: onCheckboxClick(event, index, "main"))
-            repeatCheckbox.bind("<Button-1>", lambda event, index=i: onCheckboxClick(event, index, "repeat"))
+            backingCheckbox.bind("<Button-1>", lambda event, index=i: onCheckboxClick(event, index, "repeat"))
             adLibCheckBox.bind("<Button-1>", lambda event, index=i: onCheckboxClick(event, index, "adlib"))
             
             if member:
@@ -1750,25 +1756,23 @@ class VoiceDetectionApp:
             selectedLabels = []
             mainCheckboxSelected = any(var.get() for var in checkboxes.values())
             print(f"Main checkbox select: {mainCheckboxSelected}")
-            member = memberVar.get()
 
             if mainCheckboxSelected:
-                for (m_label, startPoint, endPoint), var in checkboxes.items():
+                for i, var in checkboxes.items():
                     if var.get():
-                        # Is Repeat
-                        backingVar = backingVars.get((member, startPoint, endPoint))
-                        isBacking = backingVar.get() if backingVar else False
-                        # Ad Lib
-                        adLibVar = adLibVars.get((member, startPoint, endPoint))
-                        isAdLib = adLibVar.get() if adLibVar else False
+                        chosenMember = memberVar.get()
+                        _, startPoint, endPoint = labelKeys[i]
                         
-                        if member:
-                            label = [member, startPoint, endPoint, isBacking, isAdLib]
+                        isBacking = backingVars[i].get()
+                        isAdLib = adLibVars[i].get()
+                        
+                        if chosenMember:
+                            label = [chosenMember, startPoint, endPoint, isBacking, isAdLib]
                             self.labels.append(label)
                             selectedLabels.append(label)
                             print(f"Label saved: {label}")
-                            if member != "Gang Vocal":
-                                trackItem = self.memberImages[member]
+                            if chosenMember != "Gang Vocal":
+                                trackItem = self.memberImages[chosenMember]
                                 if trackItem:
                                     trackItem.initializeTimeline()
 
@@ -1776,34 +1780,35 @@ class VoiceDetectionApp:
                     self.saveLabels(self.selectedGroup, self.testSongPath)
                 
             else:
-                # No main checkboxes selected — only updating isRepeatLine status
-                updatedLabels = []
-                for label in self.labels:
-                    if len(label) < 4:
-                        label.append(False)
-                    if len(label) < 5:
-                        label.append(False)
-                        
-                    labelMember = label[0]
-                    startPoint = label[1]
-                    endPoint = label[2]
-                    # Is Backing
-                    backingVar = backingVars.get((labelMember, startPoint, endPoint))
-                    isBacking = backingVar.get() if isinstance(backingVar, tk.BooleanVar) else False
-                    
-                    adLibVar = adLibVars.get((labelMember, startPoint, endPoint))
-                    isAdLib = adLibVar.get() if adLibVar else False
-                        
-                    label[3] = isBacking
-                    label[4] = isAdLib
-                    
-                    updatedLabels.append(label)
-                    # print(f"Repeat status updated: {label}")
+                # Update backing/adlib flags on EXISTING labels only
+                changed = 0
 
-                self.labels = updatedLabels
-                selectedLabels = updatedLabels
+                for i in range(len(labelKeys)):
+                    labelIndex = rowToLabelIndex[i]
+                    if labelIndex is None:
+                        continue  # this UI row is an unlabeled (None, start, end) pair
 
-                if selectedLabels:
+                    label = self.labels[labelIndex]
+
+                    # Ensure length
+                    while len(label) < 5:
+                        label.append(False)
+
+                    oldB, oldA = label[3], label[4]
+                    newB = backingVars[i].get()
+                    newA = adLibVars[i].get()
+
+                    label[3] = newB
+                    label[4] = newA
+
+                    if (oldB, oldA) != (newB, newA):
+                        changed += 1
+                        print(f"[UPDATE] row={i} -> self.labels[{labelIndex}] {label[:3]} backing {oldB}->{newB} adlib {oldA}->{newA}")
+
+                print(f"[UPDATE] changedLabels={changed}")
+
+                if changed > 0:
+                    # clearExisting=True means "write self.labels as truth"
                     self.saveLabels(self.selectedGroup, self.testSongPath, True)
             labelMenu.destroy()
                 
@@ -1840,28 +1845,6 @@ class VoiceDetectionApp:
                     shiftRange[checkboxType] = (-1, -1)
                 lastClicked[checkboxType] = index
         # end onCheckboxClick
-        
-        # Helper function that updates member based on prediction
-        def updateMemberVarFromDetection():
-            from collections import Counter
-            selectedRanges = [
-                (start, end)
-                for (start, end), var in checkboxes.items()
-                if var.get()
-            ]
-            
-            chunkCounts = Counter()
-            for start, end in selectedRanges:
-                for i in range(start, end + 1):
-                    if 0 <= i < len(self.voiceDetectionResults):
-                        for member in self.voiceDetectionResults[i]:
-                            if member != "None":
-                                chunkCounts[member] += 1
-            
-            if chunkCounts:
-                mostCommonMember, _ = chunkCounts.most_common(1)[0]
-                if mostCommonMember in memberMapping:
-                    memberVar.set(mostCommonMember)
         
         buttonFrame = tk.Frame(labelMenu)
         buttonFrame.pack(pady=10)
@@ -2200,13 +2183,13 @@ class VoiceDetectionApp:
     def updateCanvasForCurrentPosition(self, chunkIndex):
         """Highlight the corresponding member's image if their voice matches the current time."""
         if self.testOrVideo == "Video":
-            membersCurrentlySinging = set()
-        
+            membersCurrentlySinging = {}  # member -> (isBacking, isAdlib)
+
             for label in self.labels:
-                member, start, end = label[:3]
+                member, start, end, isBacking, isAdlib = label
                 if start <= chunkIndex <= end:
-                    membersCurrentlySinging.add(member)
-            
+                    membersCurrentlySinging[member] = (isBacking, isAdlib)
+                    
             # Update canvas for each member
             for member, trackItem in self.memberImages.items():
                 imageId = self.memberImageIds[member]
@@ -2215,7 +2198,15 @@ class VoiceDetectionApp:
                     trackItem.switchImage("clear")
                     trackItem.currentRole = "none"
                 elif member in membersCurrentlySinging:
-                    trackItem.currentRole = "main"
+                    isBacking, isAdlib = membersCurrentlySinging[member]
+                    
+                    if not isBacking and not isAdlib:
+                        trackItem.currentRole = "main"
+                    elif not isBacking and isAdlib:
+                        trackItem.currentRole = "adlib"
+                    else:
+                        trackItem.currentRole = "harmony"
+                        
                     trackItem.switchImage("light")
                 else:
                     trackItem.switchImage("dark")
@@ -2354,10 +2345,10 @@ class VoiceDetectionApp:
         # Step 1: Add all labels directly from self.labels
         for label in self.labels:
             member, labelStart, labelEnd = label[:3]
-            isRepeat = label[3] if len(label) > 3 else False
+            isBacking = label[3] if len(label) > 3 else False
             isAdLib = label[4] if len(label) > 4 else False
 
-            matchedPoints.append((member, labelStart, labelEnd, isRepeat, isAdLib))
+            matchedPoints.append((member, labelStart, labelEnd, isBacking, isAdLib))
             usedPairs.add((labelStart, labelEnd))
             usedStarts.add(labelStart)
             usedEnds.add(labelEnd)
@@ -2658,9 +2649,7 @@ class VoiceDetectionApp:
                 return
         
         original = self.labels[targetIndex]
-        member, start, end = original[:3]
-        isRepeat = original[3] if len(original) > 3 else False
-        isAdLib = original[4] if len(original) > 4 else False
+        member, start, end, isBacking, isAdLib = original
         
         # Compute new ranges, leaving a gap
         leftStart = start
@@ -2676,9 +2665,9 @@ class VoiceDetectionApp:
             else:
                 # Replace this label with up to two shorter labels
                 if leftEnd >= leftStart:
-                    newLabels.append([member, leftStart, leftEnd, isRepeat, isAdLib])
+                    newLabels.append([member, leftStart, leftEnd, isBacking, isAdLib])
                 if rightEnd >= rightStart:
-                    newLabels.append([member, rightStart, rightEnd, isRepeat, isAdLib])
+                    newLabels.append([member, rightStart, rightEnd, isBacking, isAdLib])
             
         newLabels.sort(key=lambda lab: lab[1])
 
@@ -2965,4 +2954,4 @@ class VoiceDetectionApp:
             combinedLabels = sorted(combinedLabels, key=lambda label: label[1])
         
         with open(labelFilePath, "w") as f:
-            json.dump(combinedLabels, f, indent=4)
+            json.dump(combinedLabels, f, separators=(",", ":"))

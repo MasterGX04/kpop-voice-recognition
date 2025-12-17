@@ -5,10 +5,10 @@ import librosa
 from concurrent.futures import ThreadPoolExecutor  
 import numpy as np
 from tqdm import tqdm
-import pickle
 import queue
 import threading, collections
 import traceback
+import random
 
 CHUNK_DURATION = 40
 CHUNK_DURATION_200MS = 200  # 200ms chunk duration
@@ -95,12 +95,11 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
             isBacking = bool(isBacking)
             isAdlib = bool(isAdlib)
             
-            for chunkIdx in range(startChunk, endChunk):
+            for chunkIdx in range(startChunk, endChunk + 1):
                 activationMap[chunkIdx].append(
                     (memberName, startChunk, isBacking, isAdlib)
                 )
-                if chunkIdx > maxChunkIdx:
-                    maxChunkIdx = chunkIdx
+                maxChunkIdx = max(maxChunkIdx, endChunk)
 
         if maxChunkIdx == 0 and not activationMap:
             print(f"  Warning: No labeled chunks for {songTitle}. Skipping.")
@@ -114,6 +113,7 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
         lead = np.zeros((num_chunks, C), dtype=np.int32)
         isBacking_arr = np.zeros((num_chunks, C), dtype=np.int32)
         isAdlib_arr  = np.zeros((num_chunks, C), dtype=np.int32)
+        adlibPrimary = np.zeros((num_chunks, C), dtype=np.int32)
         
         # Helper: choose lead per frame according hierarchy
         def choose_lead(valid_segments):
@@ -144,13 +144,13 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
                 if candA:
                     return max(candA, key=lambda s: s[2])[1]  # idx
                 
-                # Priority B: non-gang, not ad-lib
-                candB = [seg for seg in non_gang if not seg[4]]  # not adlib
+                # Priority B: non-gang ad-lib (no main vocals present)
+                candB = [seg for seg in non_gang if seg[4]]  # adlib only
                 if candB:
                     return max(candB, key=lambda s: s[2])[1]
                 
-                # Priority C: non-gang ad-lib (no main vocals present)
-                candC = [seg for seg in non_gang if seg[4]]  # adlib only
+                # Priority C: non-gang, not ad-lib
+                candC = [seg for seg in non_gang if not seg[4]]  # not adlib
                 if candC:
                     return max(candC, key=lambda s: s[2])[1]
                 
@@ -187,7 +187,12 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
                 presence[chunkIdx, m_idx] = 1
                 if isAdlib:
                     isAdlib_arr[chunkIdx, m_idx] = 1
-                if isBacking:
+                    
+                    # primary/foreground ad-lib
+                    if isBacking:
+                        adlibPrimary[chunkIdx, m_idx] = 1
+                        
+                elif isBacking:
                     # segment-level backing flag
                     isBacking_arr[chunkIdx, m_idx] = 1
 
@@ -199,21 +204,31 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
             lead_idx = choose_lead(valid_segments)
             if lead_idx is not None:
                 lead[chunkIdx, lead_idx] = 1
-
-            # Now assign harmony/backing vs ad-lib for non-leads
-            for (name, m_idx, startC, isBacking, isAdlib) in valid_segments:
-                if m_idx == lead_idx:
-                    # Lead can still be ad-lib in solo sections; keep isAdlib_arr as set above.
-                    continue
-
-                # Non-lead:
-                if isAdlib:
-                    # Already tagged in isAdlib_arr; we treat this as ad-lib only
-                    continue
-                else:
-                    # Active, non-adlib, non-lead → harmony/backing
-                    isBacking_arr[chunkIdx, m_idx] = 1
-
+                        
+        overlapRuns = buildOverlapRunsFromActivationMap(
+            activationMap,
+            minMembers=2,
+            minRunLen=20
+        )
+        
+        pick = pickRandomOverlapWindow(overlapRuns, maxLen=100)
+        
+        if pick is None:
+            print(f"[debug] {songTitle}: no overlap runs found (>=2 members for >=20 chunks).")
+        else:
+            winStart, winEnd, membersSet = pick
+            # show only the members involved in that overlap (plus Gang Vocal if you want)
+            showMembers = [m for m in memberList if m in membersSet]
+            print(f"\n[debug] {songTitle}: overlap window {winStart}..{winEnd} (len={winEnd-winStart+1}) members={sorted(showMembers)}")
+            debugPrintWindow(
+                presence, lead,
+                isBacking_arr, isAdlib_arr,
+                memberList, member_to_idx,
+                winStart, winEnd,
+                showMembers=showMembers
+            )
+            print()
+                
         # --- Save to JSON (you can switch to npy if you prefer) ---
         out_labels_path = os.path.join(base_dir, f"{songTitle}_frame_labels.json")
         out_data = {
@@ -228,6 +243,7 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
             "lead": lead.tolist(),
             "isBacking": isBacking_arr.tolist(),
             "isAdlib": isAdlib_arr.tolist(),
+            "adlibPrimary": adlibPrimary.tolist()
         }
 
         with open(out_labels_path, "w", encoding="utf-8") as jf:
@@ -235,121 +251,6 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
 
         print(f"  ✅ Saved frame labels: {out_labels_path}")
        
-def segmentAndSaveAudio(audioPath: str,
-                        featOut: str = '',
-                        rawOut: str = '',
-                        chunkMs: int = 1000,
-                        sr: int = 22050,
-                        nMfcc: int = 40,
-                        nFft: int = 512):
-    """
-    Slice <audioPath> into <chunkMs>-ms windows, compute MFCC (+Δ, ΔΔ) and
-    log-magnitude STFT for each window, and optionally cache results.
-
-    Returns
-    -------
-    features : np.ndarray, shape (N_chunks, T, 120 + (nFft//2 + 1))
-    raw      : list[np.ndarray], each of length samplesPerChunk
-    """
-
-    # 0) Fast path: load cached features (and raws) if present
-    if featOut and os.path.exists(featOut):
-        feats = np.load(featOut, allow_pickle=True)
-        raws  = pickle.load(open(rawOut, "rb")) if rawOut and os.path.exists(rawOut) else None
-        return feats, raws
-
-    # 1) Load mono @ 22050 Hz
-    y, _ = librosa.load(audioPath, sr=sr, mono=True)
-    if y.size == 0:
-        raise ValueError(f"{audioPath} contains no samples.")
-    y = librosa.util.normalize(y) # Scale to [-1, 1]
-
-    # 2) Split into fixed-length chunks
-    samplesPerChunk = int(sr * (chunkMs / 1000.0))
-    pad = (-len(y)) % samplesPerChunk
-    if pad:
-        y = np.pad(y, (0, pad))
-    rawChunks = y.reshape(-1, samplesPerChunk)  # (N, S)
-
-    hopLen = max(1, sr // 100)
-
-    # stftBins = nFft // 2 + 1
-    featChunks = []
-    
-    chunkBar = tqdm(rawChunks,desc=f"Extracting features from {os.path.basename(audioPath)}",
-                                 total=len(rawChunks),
-                                 dynamic_ncols=True,
-                                 leave=False,
-                                 position=1)
-    mel_fb = librosa.filters.mel(sr=sr, n_fft=nFft, n_mels=128, fmax=sr//2)
-    
-    for chunk in chunkBar:
-        # STFT → log|S|
-        # MFCC (+Δ, ΔΔ)
-        #log-Mel spectrogram
-        S = librosa.stft(chunk, n_fft=nFft, hop_length=hopLen, center=False)
-        mag = np.abs(S)
-        power = mag**2
-        mel_spec = mel_fb @ power
-        log_mel = librosa.power_to_db(mel_spec, ref=np.max) # Shape (128, T1)
-        
-        # MFCC + Δ + ΔΔ
-        mfcc = librosa.feature.mfcc(y=chunk, sr=sr, n_mfcc=nMfcc,
-                                    n_fft=nFft, hop_length=hopLen, center=False)
-        d1 = librosa.feature.delta(mfcc)
-        d2 = librosa.feature.delta(mfcc, order=2)
-        mfccFull = np.vstack([mfcc, d1, d2]) 
-        
-        # Pitch contour
-        f0 = librosa.yin(chunk, fmin=80, fmax=1000, sr=sr, frame_length=nFft, hop_length=hopLen)
-        
-        # Handle NaNs and replace with 0 or interpolated
-        f0 = np.nan_to_num(f0, nan=0.0)[None, :] 
-        
-        # Spectral flatness + centroid + bandwidth
-        flatness = librosa.feature.spectral_flatness(y=chunk, n_fft=nFft,
-                                                      hop_length=hopLen)
-        centroid = librosa.feature.spectral_centroid(y=chunk, sr=sr,
-                                                      n_fft=nFft, hop_length=hopLen)
-        bandwidth = librosa.feature.spectral_bandwidth(y=chunk, sr=sr,
-                                                       n_fft=nFft, hop_length=hopLen)
-        
-        extras = np.vstack([flatness, centroid, bandwidth])
-        
-        # Fix this LPC
-        lpc_feat = extract_formants(chunk, sr=sr, order=12, n_formants=3)
-        
-        #Combine features: Choose common time dimension T = min(T1,T2,T3,T4) 
-        T = min(log_mel.shape[1], mfccFull.shape[1], f0.shape[1], extras.shape[1])
-        log_mel_t = log_mel[:, :T]
-        mfccFull_t = mfccFull[:, :T]
-        f0_t = f0[:, :T]
-        extras_t = extras[:, :T]
-        lpc_rep = lpc_feat.reshape(-1, 1).repeat(T, axis=1)
-        
-        combined = np.vstack([log_mel_t,
-                              mfccFull_t,
-                              f0_t,
-                              extras_t, lpc_rep])
-        
-        # Time-align branches by right-padding the shorter time axis
-        featChunks.append(combined.T)
-
-    features = np.array(featChunks, dtype=np.float32)
-    
-    m = np.mean(features, axis=(0,1), keepdims=True)
-    s = np.std(features, axis=(0,1), keepdims=True) + 1e-8
-    features = (features - m) / s
-
-    # 4) Cache
-    if featOut:
-        np.save(featOut, features)
-    if rawOut:
-        with open(rawOut, "wb") as f:
-            pickle.dump(rawChunks, f)
-
-    return features, rawChunks
-    
 def getSongsFromSameAlbum():
     songsFromSameAlbum = {
         'IVE': {
@@ -369,120 +270,105 @@ def getSongsFromSameAlbum():
     
     return songsFromSameAlbum
 
-def loadLabels(jsonPath):
-        """Load labeled data and dynamically check if a chunk is within a singer's range"""
-        with open(jsonPath, "r") as file:
-            labels = json.load(file)
-
-        # ✅ Store singers in a list of (startChunk, endChunk)
-        chunkRanges = []
-        for entry in labels:
-            singer, start, end, isRepeat, isAdLib = entry
-            chunkRanges.append((singer, start, end, isRepeat, isAdLib))
-
-        return chunkRanges 
-    
-def createLabelArray(totalChunks, labelRanges, memberList):
+def buildOverlapRunsFromActivationMap(activationMap, minMembers=2, minRunLen=20):
     """
-    Returns a label array of shape (totalChunks, numMembers).
-    Default is all zeros (representing silence).
-    If one or more singers are active during a chunk, the respective indices are set.
+    activationMap: dict chunkIdx -> list of tuples (memberName, startChunk, isBacking, isAdlib)
+    Returns list of runs: [(runStart, runEnd, membersSet), ...] where runEnd is inclusive.
+    A run is a contiguous chunk span where >= minMembers are active.
     """
-    labelArray = np.zeros((totalChunks, len(memberList)), dtype=np.float32)
-    memberIndex = {name: i for i, name in enumerate(memberList)}
+    if not activationMap:
+        return []
 
-    for label in labelRanges:
-        singer, start40, end40 = label[:3]
+    allChunks = sorted(activationMap.keys())
 
-        if singer in memberIndex:
-            idx = memberIndex[singer]
+    # Helper: active member set at chunk
+    def membersAtChunk(t):
+        return set(seg[0] for seg in activationMap.get(t, []))
 
-            # Convert 40ms chunk indices to 200ms indices
-            start200 = start40 // 5
-            end200 = end40 // 5
+    runs = []
+    runStart = None
+    runMembersUnion = set()
+    prev = None
 
-            # Clamp to bounds
-            start200 = max(0, start200)
-            end200 = min(totalChunks - 1, end200)
+    for t in allChunks:
+        activeMembers = membersAtChunk(t)
+        qualifies = (len(activeMembers) >= minMembers)
 
-            labelArray[start200:end200+1, idx] = 1.0  # One-hot
+        contiguous = (prev is None or t == prev + 1)
 
-    return labelArray
+        if qualifies and (runStart is None):
+            runStart = t
+            runMembersUnion = set(activeMembers)
+        elif qualifies and runStart is not None and contiguous:
+            runMembersUnion |= activeMembers
+        elif qualifies and runStart is not None and (not contiguous):
+            # close previous run, start new
+            runEnd = prev
+            if (runEnd - runStart + 1) >= minRunLen:
+                runs.append((runStart, runEnd, set(runMembersUnion)))
+            runStart = t
+            runMembersUnion = set(activeMembers)
+        elif (not qualifies) and runStart is not None:
+            # close run
+            runEnd = prev
+            if (runEnd - runStart + 1) >= minRunLen:
+                runs.append((runStart, runEnd, set(runMembersUnion)))
+            runStart = None
+            runMembersUnion = set()
 
-def extract_formants(chunk: np.ndarray, sr: int, order: int = 12, n_formants: int = 3):
-    # 1) LPC coefficients
-    a = librosa.lpc(chunk, order=order)
-    # 2) Roots
-    rts = np.roots(a)
-    # 3) Keep only roots with positive imag part
-    rts = [r for r in rts if np.imag(r) >= 0]
-    # 4) Convert to frequencies & bandwidth
-    formants = []
-    for r in rts:
-        ang = np.arctan2(np.imag(r), np.real(r))
-        freq = ang * (sr / (2*np.pi))
-        bw = -1.0 * (sr / (2*np.pi)) * np.log(np.abs(r))
-        formants.append((freq, bw))
-    # 5) Sort by frequency
-    formants_sorted = sorted(formants, key=lambda x: x[0])
-    # 6) Take top n_formants
-    selected = formants_sorted[:n_formants]
-    # 7) Flatten into 1-D feature vector
-    feat = []
-    for (f, b) in selected:
-        feat.extend([f, b])
-    return np.array(feat, dtype=np.float32) 
+        prev = t
 
-def extractVocalSegmentsByType(labels, minOverlapChunks=10):
-        """
-        Extracts segments from label data and classifies into:
-        - Solo segments
-        - Ad-lib (label[4] = True)
-        - Harmony (non-adlib overlaps ≥ minOverlapChunks)
-        - Transition (non-adlib overlaps < minOverlapChunks)
-        """
-        CHUNK_DURATION = 40
-        
-        # Timeline of active singers per chunk
-        chunkMap = {}
-        for label in labels:
-            name, start, end, _, isAdLib = label
-            for i in range(start, end + 1):
-                chunkMap.setdefault(i, []).append((name, isAdLib))
-        
-        # Build labeled segments per singer
-        soloSegments = []
-        adlibSegments = []
-        harmonySegments = []
-        transitionSegments = []
+    # close if ended in run
+    if runStart is not None:
+        runEnd = prev
+        if (runEnd - runStart + 1) >= minRunLen:
+            runs.append((runStart, runEnd, set(runMembersUnion)))
 
-        for label in labels:
-            name, start, end, _, isAdLib = label
-            overlap = False
-            overlapLength = 0
+    return runs
 
-            for i in range(start, end + 1):
-                if len(chunkMap[i]) > 1:
-                    overlap = True
-                    overlapLength += 1
+def pickRandomOverlapWindow(overlapRuns, maxLen=100):
+    """
+    overlapRuns: [(runStart, runEnd, membersSet), ...]
+    Returns (winStart, winEnd, membersSet) with winEnd inclusive, or None if no runs.
+    """
+    if not overlapRuns:
+        return None
 
-            if isAdLib:
-                adlibSegments.append((name, start, end))
-            elif overlap:
-                if overlapLength >= minOverlapChunks:
-                    harmonySegments.append((name, start, end))
-                else:
-                    transitionSegments.append((name, start, end))
-            else:
-                soloSegments.append((name, start, end))
-        
-        return {
-            "solo": soloSegments,
-            "adlib": adlibSegments,
-            "harmony": harmonySegments,
-            "transition": transitionSegments
-        }
-      
+    runStart, runEnd, membersSet = random.choice(overlapRuns)
+    runLen = runEnd - runStart + 1
+    winLen = min(maxLen, runLen)
+
+    # choose a random sub-window inside the run
+    maxStart = runEnd - winLen + 1
+    winStart = random.randint(runStart, maxStart)
+    winEnd = winStart + winLen - 1
+    return (winStart, winEnd, membersSet)
+
+def debugPrintWindow(presence, lead, isBackingStyle, isAdlib, memberList, member_to_idx,
+                     winStart, winEnd, showMembers=None):
+    """
+    Prints P/L/S/B/A tags for chunks winStart..winEnd (inclusive)
+    P=presence, L=lead, S=secondaryRole, B=backing style, A=adlib style
+    """
+    if showMembers is None:
+        showMembers = memberList
+
+    header = "chunk | " + " | ".join([f"{m:>10}" for m in showMembers])
+    print(header)
+    print("-" * len(header))
+
+    for t in range(winStart, winEnd + 1):
+        row = []
+        for m in showMembers:
+            i = member_to_idx[m]
+            tags = []
+            if presence[t, i]: tags.append("P")
+            if lead[t, i]: tags.append("L")
+            if isBackingStyle[t, i]: tags.append("B")
+            if isAdlib[t, i]: tags.append("A")
+            row.append("".join(tags) if tags else ".")
+        print(f"{t:5d} | " + " | ".join([f"{cell:>10}" for cell in row]))
+          
 def extractAndSaveHarmoniesFromSong(selectedGroup, songName):
         """
         Extracts vocal parts from a labeled song and saves categorized segments (solo, harmony, adlib, transition)

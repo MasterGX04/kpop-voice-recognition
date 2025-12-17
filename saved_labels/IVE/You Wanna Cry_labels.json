@@ -114,9 +114,16 @@
     [
         "Liz",
         1653,
-        1760,
+        1740,
         false,
         false
+    ],
+    [
+        "Liz",
+        1725,
+        1759,
+        false,
+        true
     ],
     [
         "Liz",
@@ -128,6 +135,20 @@
     [
         "Liz",
         1859,
+        1947,
+        false,
+        false
+    ],
+    [
+        "Liz",
+        1931,
+        1974,
+        false,
+        true
+    ],
+    [
+        "Liz",
+        1976,
         2064,
         false,
         false
@@ -319,7 +340,7 @@
         4015,
         4093,
         false,
-        true
+        false
     ],
     [
         "Wonyoung",

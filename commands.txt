@@ -39,8 +39,7 @@ python train_kpop_singers.py `
 - Ad Libs don't work because it may think that ad-libs are gang vocal or "silence". BIG bug
 - Excels when Leeseo sings higher but fails miserably when she sings lower and confuses her with Wonyoung
 - When Wonyoung sings higher it's ok but as soon as she lowers her octave the model dies.
-- Model is absolutely in love with Yujin and got nearly 100% of her non ad-lib parts
-- Model actually has no idea what "Gang Vocal" means and predicts 0 for actual gang vocal. Likely overfit pretty badly
+- The song "Payback" is weird because it has gang vocal backing 
 
 Bugs:
 - Lyrics look stupid now because I didn't change where they spawn based on window resizing
@@ -50,6 +49,8 @@ Bugs:
 - why Leeseo is being oconfused as gang vocal
 - Include custom harmonies to combine singers together to "simulate" a harmony because I realized only Rei + Gaeul and Rei + Leeseo
 - Ad lib starts way too early
+- Labels are fucking buggy you have to fix them to avoid stupid bugs. Ad-libs and backing vocals are not properly being saved
+- I think the issue is that you can't select multiple labels and alter isBacking or isAdlib
 
 IVE Songs to Train:
 - Summer Liz (Because Liz doesn't sing deep usually)

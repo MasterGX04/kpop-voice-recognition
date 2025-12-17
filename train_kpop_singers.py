@@ -165,6 +165,8 @@ class KpopVocalDataset(Dataset):
         self.debug_harmony_root = os.path.join(".", "debug_harmonies", group_name)
         self.manual_harmonies = self._load_manual_harmony_jsons(harmony_files)
         
+        self.synthetic_harmony_clips = self._collect_synthetic_harmony_clips()
+        
         self.gang_idx = None
         for i, name in enumerate(self.classes):
             if name.lower() == "gang vocal":
@@ -231,32 +233,9 @@ class KpopVocalDataset(Dataset):
             lead_arr = np.asarray(meta["lead"], dtype=np.int32)      # [T, C]
             adlib_arr = np.asarray(meta["isAdlib"], dtype=np.int32)  # [T, C]
             backing_arr = np.asarray(meta["isBacking"], dtype=np.int32) # backing /harmony
+            secondary_arr = np.asarray(meta["secondaryRole"], dtype=np.int32)
             
-            # Inject manual harmony overrides (if any)
-            if song_name in self.manual_harmonies:
-                overrides = self.manual_harmonies[song_name]
-                for seg in overrides:
-                    s = max(0, seg["start"])
-                    e = min (num_chunks - 1, seg["end"])
-                    if s > 3:
-                        continue
-                    
-                    lead_idx = seg["lead_idx"]
-                    harm_idx = seg["harm_idx"]
-
-                    # Ensure lead is active as lead + presence
-                    lead_arr[s:e+1, lead_idx] = 1
-                    presence[s:e+1, lead_idx] = 1
-
-                    # Ensure harmony is marked as backing + presence
-                    backing_arr[s:e+1, harm_idx] = 1
-                    presence[s:e+1, harm_idx] = 1
-
-                print(
-                    f"[KpopFrameDataset] Applied {len(overrides)} manual harmony segments "
-                    f"to song {song_name}"
-                )
-            
+        
             song_dur_sec = num_chunks * frame_ms / 1000.0
             if song_dur_sec < self.min_song_sec or num_chunks < frames_per_window:
                 print(f"[KpopFrameDataset] Skipping {song_name}: too short ({song_dur_sec:.2f}s)")
@@ -292,19 +271,17 @@ class KpopVocalDataset(Dataset):
                 # 2s context labels (for importance)
                 window_presence = presence[start_frame:end_frame]   # [F, C]
                 window_lead = lead_arr[start_frame:end_frame]
+                window_secondary = secondary_arr[start_frame:end_frame]
                 window_adlib = adlib_arr[start_frame:end_frame]
-                window_backing = backing_arr[start_frame:end_frame]
+                window_backingStyle = backing_arr[start_frame:end_frame]
                 
                 # Fractions over this window (0..1) - still useful for importance weights
-                lead_frac = window_lead.mean(axis=0) # (C,)
-                adlib_frac = window_adlib.mean(axis=0) # (C,)
-                presence_frac = window_presence.mean(axis=0) # (C,)
+                presence_frac = window_presence.mean(axis=0) # how often each siniger is present
+                lead_frac = window_lead.mean(axis=0) # How often they are lead (role)
+                secondary_frac = window_secondary.mean(axis=0) # how often they are secondary
                 
-                # Backing/harmony = present but not lead or ad-lib
-                backing_frac = np.clip(
-                    presence_frac - lead_frac - adlib_frac,
-                    0.0, 1.0
-                )
+                adlib_frac = window_adlib.mean(axis=0) # How often they are adlib (style)
+                backingStyle_frac = window_backingStyle.mean(axis=0) # How often they are backing (style)
                 
                 # Label for THIS example
                 frame_label = presence[center_frame] # shape(num_members,), 0/1
@@ -354,10 +331,16 @@ class KpopVocalDataset(Dataset):
                     label_vec[:self.num_members] = frame_label.astype(np.float32)
                     label_vec[self.silence_idx] = 0.0
                     
+                    # Gang Vocal should be window-based, not center frame
+                    if self.gang_idx is not None:
+                        GANG_TAU = 0.1
+                        label_vec[self.gang_idx] = 1.0 if presence_frac[self.gang_idx] >= GANG_TAU else 0.0
+                    
                     # Define thresholds
-                    W_LEAD = 1.0 # How much lead boosts weight
+                    W_LEAD = 0.9 # How much lead boosts weight
+                    W_SECONDARY = 0.6
                     W_BACKING = 0.6 # backing/harmony boost
-                    W_ADLIB = 0.7 # How strongly ad-libs DOWN-weight
+                    W_ADLIB = 0.3 # How strongly ad-libs DOWN-weight
                     W_GANG_SOLO = 0.6 # Gang vocal alone
                     W_GANG_OVERLAP = 0.3 # Gang vocal when members also sing
                     
@@ -383,17 +366,25 @@ class KpopVocalDataset(Dataset):
                                 importance_singers[c] = np.clip(w, self.min_weight, self.max_weight)
                                 continue
                         
-                        # Normal member
-                        lf = float(lead_frac[c])
-                        bf = float(backing_frac[c])
-                        af = float(adlib_frac[c])
-                        
-                        # Base weight: 1 + lead boost + backing boost - ad-lib penalty
-                        w = 1.0 + W_LEAD * lf + W_BACKING * bf - W_ADLIB * af
-                        
-                        # IF mostly ad-lib and not really lead/backing, don't crash it too low
-                        if af > 0.5 and lf < 0.2 and bf < 0.2:
-                            w = max(w, 0.7)
+                            # Normal member
+                            lf = float(lead_frac[c])
+                            bf = float(backingStyle_frac[c])
+                            sf = float(secondary_frac[c]) # Secondary role (non-lead overlap)
+                            af = float(adlib_frac[c])
+                            
+                            adlibPenalty = W_ADLIB * af
+
+                            # cancel penalty for solo/lead adlibs
+                            if af > 0.3 and lf > sf:
+                                adlibPenalty *= 0.2   # or even 0.0
+
+                            w = 1.0 + W_LEAD*lf + W_BACKING*bf + W_SECONDARY*sf - adlibPenalty
+                            
+                            # IF mostly ad-lib and not really lead/backing, don't crash it too low
+                            if af > 0.5 and lf < 0.2 and bf < 0.2:
+                                w = max(w, 0.7)
+                                
+                            importance_singers[c] = np.clip(w, self.min_weight, self.max_weight)
                         
                         importance_vec[:self.num_members] = importance_singers
                         category = "clear_vocal"
@@ -404,19 +395,32 @@ class KpopVocalDataset(Dataset):
                     else:
                         # ambiguous vocal
                         importance_vec[:self.num_members] = 0.1
+                        
+                        present = presence_frac[:self.num_members] > 1e-3
+                        importance_vec[:self.num_members][present] = 0.4
+                        
+                        # if gang exists and is present, give it extra weight (this is the whole point)
+                        if self.gang_idx is not None and presence_frac[self.gang_idx] > 1e-3:
+                            importance_vec[self.gang_idx] = 0.8
+                        
                         category = "ambiguous"
                     
                 # center frame silent
-                else:
+                else:       
+                    # IMPORTANT: don't heavily punish members/gang during silence-center windows,
+                    # because the 2s context can contain vocals nearby.
+                    importance_vec[:self.num_members] = 0.1  # weak negatives for singers (including gang)
                     if vocal_frac_window <= TAU_SILENCE_WINDOW and local_vocal_frac < 0.15:
                         # real silence
+                        importance_vec[:self.num_members] = 0.2
                         label_vec[self.silence_idx] = 1.0
-                        importance_vec[self.silence_idx] = 3.0
+                        importance_vec[self.silence_idx] = 1.0
                         category = "true_silence"
                     else:
                         # ambiguous silence (breath, short pause)
-                        label_vec[self.silence_idx] = 1.0
-                        importance_vec[self.silence_idx] = 0.2
+                        importance_vec[:self.num_members] = 0.2 # Super weak negative near vocals
+                        label_vec[self.silence_idx] = 0.0
+                        importance_vec[self.silence_idx] = 0.0
                         category = "ambiguous"
                 
                 # ---------------------------
@@ -458,50 +462,103 @@ class KpopVocalDataset(Dataset):
                 # Per-singer arrays
                 harmony_vec = np.zeros(self.num_members, dtype=np.float32)
                 harmony_wts = np.zeros(self.num_members, dtype=np.float32)
-                adlib_vec    = np.zeros(self.num_members, dtype=np.float32)
-                adlib_wts    = np.zeros(self.num_members, dtype=np.float32)
+                adlib_vec = np.zeros(self.num_members, dtype=np.float32)
+                adlib_wts = np.zeros(self.num_members, dtype=np.float32)
                 
-                # Frame-level overlap: where multiple singers are active
-                overlap_mask = (window_presence.sum(axis=1) > 1).astype(np.float32) # [F]
+                # --- Center-band adlib supervision (replaces pos_ad = adlib_frac >= TAU_ADLIB) ---
+                band = 1
+                cf0 = max(start_frame, center_frame - band)
+                cf1 = min(end_frame, center_frame + band + 1)
+                lead_votes = lead_arr[cf0:cf1].sum(axis=0)
+                center_adlib = adlib_arr[cf0:cf1].max(axis=0) # (C,) 0/1 whether adlib appears
+                center_lead = np.zeros(self.num_members, dtype=bool)
+                if lead_votes.sum() > 0:
+                    center_lead[np.argmax(lead_votes)] = True
+                any_lead_center = center_lead.any()
                 
-                # Background/harmony rames
-                # Present, not lead, not-adlib, and overlapping with someone else
-                backing_mask = window_backing.astype(np.float32)
-                backing_mask *= overlap_mask[:, None] # Zero out non-overlap frames
-                # Fraction of frames in this 2s window where each singer is "background in overlap"
-                harmony_frac = backing_mask.mean(axis=0)  # (C,)
-                
-                # Gang vocal is not a harmony target
-                if self.gang_idx is not None:
-                    harmony_frac[self.gang_idx] = 0.0
-                    adlib_frac[self.gang_idx] = 0.0
-                
-                # Thresholds for labeling
-                TAU_HARMONY = 0.15
-                TAU_ADLIB = 0.08 # min fraction of ad-lib
-                
-                # --- Harmony head ---
-                # Only bother if the window has enough overlap overall.
-                if overlap_frac_window >= TAU_OVERLAP:
-                    pos_harm = harmony_frac >= TAU_HARMONY
-                    harmony_vec[pos_harm] = 1.0
-                    # positives: strong weight, negatives: mild regularization
-                    harmony_wts[pos_harm] = 1.0
-                    harmony_wts[~pos_harm] = 0.2
-                else:
-                    # no meaningful overlap → ignore this window for harmony
+                if not any_lead_center:
                     harmony_wts[:] = 0.0
-                    
-                # Ad-lib head
-                pos_ad = adlib_frac >= TAU_ADLIB
-                adlib_vec[pos_ad] = 1.0
-                adlib_wts[pos_ad] = 1.5 # upweight rare ad-libs
-                adlib_wts[~pos_ad] = 0.2 # weak negatives
                 
+                pos_ad = center_adlib.astype(bool)
+                adlib_vec[:] = 0.0
+                adlib_vec[pos_ad] = 1.0
+                
+                center_presence = presence[cf0:cf1].max(axis=0).astype(bool)
+                center_secondary = secondary_arr[cf0:cf1].max(axis=0).astype(bool)
+                center_backing = backing_arr[cf0:cf1].max(axis=0).astype(bool)
+                center_overlap = (presence[cf0:cf1].sum(axis=1) > 1).any()
+                
+                # only treat harmony if there's overlap right NOW (not somewhere in the 2s")
+                if center_overlap and any_lead_center:
+                    pos_harm = center_backing & ~center_lead
+                    harmony_vec[pos_harm] = 1.0
+                    
+                    # Base negative: present but not harmony (weak-ish)
+                    W_NEG_BASE = 0.6
+
+                    # Strong negative: lead should almost never be harmony
+                    W_NEG_LEAD = 1.2
+
+                    # Medium negative: secondary-but-not-backing should not be called harmony
+                    W_NEG_SECONDARY = 0.9
+                    
+                    # Positive weight: reward true harmony
+                    W_POS_HARM = 1.6
+    
+                    # Weights: only train on singers who are present rn
+                    harmony_wts[:] = 0.0
+                    harmony_wts[center_presence] = W_NEG_BASE # weak negatives
+                    harmony_wts[center_secondary & center_presence & ~pos_harm] = W_NEG_SECONDARY
+                    
+                    # Make false "lead is harmony" expensive
+                    harmony_wts[center_lead & center_presence & ~pos_harm] = W_NEG_LEAD
+                    harmony_wts[pos_harm] = W_POS_HARM
+                else:
+                    harmony_wts[:] = 0.0 # ignore harmony when there is no overlap in the center
+                
+                valid_ad_mask = center_presence # Only train adlib for singers who are present
+                
+                # weights: ignore non-present singers for the adlib head
+                adlib_wts[:] = 0.0
+                
+                # This is the cost of a false positive adlib on a present singer.
+                W_NEG_SOLO = 0.5 # present, not adlib, not clearly lead/secondary (rare)
+                W_NEG_SECONDARY = 0.8 # present+secondary but not adlib (important: overlap ≠ adlib)
+                W_NEG_LEAD = 1.1 # present+lead but not adlib (very important: lead ≠ adlib)
+                
+                # Positive weight: reward catching real adlibs.
+                W_POS_ADLIB = 1.5
+                
+                # Apply negatives only to present singers by default
+                adlib_wts[valid_ad_mask] = W_NEG_SOLO
+                
+                # Stronger negatives depending on ROLE:
+                # If singer is lead and not adlib, it should be expensive to predict adlib=1.
+                adlib_wts[center_lead & valid_ad_mask & ~pos_ad] = W_NEG_LEAD
+                
+                # If singer is secondary (overlapping/non-lead) and not adlib,
+                # make it moderately expensive to predict adlib=1 (prevents "everyone adlibs" shortcut).
+                adlib_wts[center_secondary & valid_ad_mask & ~pos_ad] = W_NEG_SECONDARY
+                
+                # Positives override negatives
+                adlib_wts[pos_ad] = W_POS_ADLIB
+                
+                # if center_overlap and random.random() < 0.01:
+                #     print("HARMONY WTS:",
+                #         "lead", harmony_wts[center_lead].tolist(),
+                #         "secondary", harmony_wts[center_secondary].tolist(),
+                #         "pos", harmony_wts[pos_harm].tolist())
+                #     print("counts:",
+                #         "present", int(center_presence.sum()),
+                #         "secondary", int(center_secondary.sum()),
+                #         "backing", int(center_backing.sum()),
+                #         "lead", int(center_lead.sum()),
+                #         "pos_harm", int(pos_harm.sum()))
+                                
                 # Map window start frame -> start sample at sr_out
                 start_time_sec = (start_frame * frame_ms) / 1000.0
                 start_sample_out = int(round(start_time_sec * self.sr_out))
-
+                                        
                 self.samples.append(
                     (
                         audio_path,
@@ -514,7 +571,9 @@ class KpopVocalDataset(Dataset):
                         adlib_wts,
                     )
                 )
-            
+        
+        self._append_synthetic_harmony_samples(frames_per_window, frame_ms)
+        
         if not self.samples:
             raise RuntimeError("No training windows built. Check your JSON/audio alignment.")
         
@@ -548,16 +607,16 @@ class KpopVocalDataset(Dataset):
             frac = cnt / max(total_windows, 1)
             print(f"  {cat:13s}: {cnt:7d} ({frac:5.1%})")
 
-        print("\n[KpopFrameDataset] Example windows per category:")
-        for cat, examples in self.debug_category_examples.items():
-            print(f"\n  Category: {cat}  (showing {len(examples)} examples)")
-            for ex in examples:
-                print(f"    song={ex['song']}, center_frame={ex['center_frame']}, "
-                    f"vocal_frac={ex['vocal_frac_window']:.2f}, "
-                    f"overlap_frac={ex['overlap_frac_window']:.2f}, "
-                    f"dominant_idx={ex['dominant_idx']}, "
-                    f"dominant_frac={ex['dominant_frac']:.2f}, "
-                    f"frame_label={ex['frame_label']}")
+        # print("\n[KpopFrameDataset] Example windows per category:")
+        # for cat, examples in self.debug_category_examples.items():
+        #     print(f"\n  Category: {cat}  (showing {len(examples)} examples)")
+        #     for ex in examples:
+        #         print(f"    song={ex['song']}, center_frame={ex['center_frame']}, "
+        #             f"vocal_frac={ex['vocal_frac_window']:.2f}, "
+        #             f"overlap_frac={ex['overlap_frac_window']:.2f}, "
+        #             f"dominant_idx={ex['dominant_idx']}, "
+        #             f"dominant_frac={ex['dominant_frac']:.2f}, "
+        #             f"frame_label={ex['frame_label']}")
         
         # ----------------------------
         # 4) Simple audio cache to avoid re-loading the same song
@@ -582,10 +641,123 @@ class KpopVocalDataset(Dataset):
                 return cand
         return None
     
+    def _collect_synthetic_harmony_clips(self):
+        """
+        Returns a list of dicts:
+        {"path": mp3_path, "lead_idx": int, "harm_idx": int}
+        Deduped by mp3 path.
+        """
+        seen = set()
+        clips = []
+
+        for song, segs in self.manual_harmonies.items():
+            for seg in segs:
+                mp3 = seg.get("debug_mp3")
+                if not mp3:
+                    continue
+
+                key = (mp3, seg["lead_idx"], seg["harm_idx"])
+                if key in seen:
+                    continue
+                seen.add(key)
+
+                clips.append({
+                    "path": mp3,
+                    "lead_idx": int(seg["lead_idx"]),
+                    "harm_idx": int(seg["harm_idx"]),
+                })
+
+        print(f"[KpopFrameDataset] Synthetic harmony clips: {len(clips)}")
+        return clips
+    
     def _get_resampler(self, sr_src: int) -> Resample:
         if sr_src not in self._resamplers:
             self._resamplers[sr_src] = Resample(sr_src, self.sr_out)
         return self._resamplers[sr_src]
+    
+    def _append_synthetic_harmony_samples(self, frames_per_window: int, frame_ms: int):
+        """
+        Adds extra training windows from synthetic harmony MP3s.
+        These windows are *already overlapped by construction*, so harmony labels are valid.
+        """
+        if not getattr(self, "synthetic_harmony_clips", None):
+            return
+
+        win_sec = (frames_per_window * frame_ms) / 1000.0
+        win_samples = int(round(win_sec * self.sr_out))
+        hop_samples = max(1, win_samples // 2)  # 50% overlap windows
+
+        added = 0
+
+        for clip in self.synthetic_harmony_clips:
+            path = clip["path"]
+            lead_idx = clip["lead_idx"]
+            harm_idx = clip["harm_idx"]
+
+            try:
+                info = torchaudio.info(path)
+                dur_sec = info.num_frames / float(info.sample_rate)
+                total_out = int(round(dur_sec * self.sr_out))
+            except Exception as e:
+                print(f"[KpopFrameDataset] Could not read info for {path}: {e}")
+                continue
+
+            if total_out <= 0:
+                continue
+
+            # windows starting positions in output sample space
+            starts = list(range(0, max(1, total_out - win_samples + 1), hop_samples))
+            if not starts:
+                starts = [0]
+
+            for start_sample_out in starts:
+                # --- MAIN head: keep this light (or ignore), since this is for harmony robustness ---
+                label_vec = np.zeros(len(self.classes), dtype=np.float32)
+                importance_vec = np.zeros(len(self.classes), dtype=np.float32)
+
+                # Mark both singers as present (multi-label). Do NOT mark silence.
+                label_vec[lead_idx] = 1.0
+                label_vec[harm_idx] = 1.0
+
+                # VERY IMPORTANT: keep weights light so you don't distort main learning.
+                importance_vec[lead_idx] = 0.4
+                importance_vec[harm_idx] = 0.4
+                if self.silence_idx is not None:
+                    importance_vec[self.silence_idx] = 0.0
+
+                # --- HARMONY head: the whole point ---
+                harmony_vec = np.zeros(self.num_members, dtype=np.float32)
+                harmony_wts = np.zeros(self.num_members, dtype=np.float32)
+
+                # Harmony definition: second member is harmony
+                harmony_vec[harm_idx] = 1.0
+
+                # Train only on the two active singers in this synthetic clip
+                harmony_wts[lead_idx] = 0.3  # negative: lead is present but not harmony
+                harmony_wts[harm_idx] = 1.2  # positive
+
+                # --- ADLIB head: optional, but safest is to IGNORE it here ---
+                adlib_vec = np.zeros(self.num_members, dtype=np.float32)
+                adlib_wts = np.zeros(self.num_members, dtype=np.float32)
+                # (If you want to teach "this is NOT adlib", you can set weak negatives instead:)
+                # adlib_wts[lead_idx] = 0.1
+                # adlib_wts[harm_idx] = 0.1
+
+                self.samples.append(
+                    (
+                        path,
+                        int(start_sample_out),
+                        label_vec,
+                        importance_vec,
+                        harmony_vec,
+                        harmony_wts,
+                        adlib_vec,
+                        adlib_wts,
+                    )
+                )
+                added += 1
+
+        print(f"[KpopFrameDataset] Added synthetic harmony windows: {added}")
     
     def _load_song_wave(self, path: str) -> torch.Tensor:
         """
@@ -854,14 +1026,22 @@ class KpopVocalDataset(Dataset):
 # Model: ECAPA encoder (frozen or trainable) + linear head
 # ---------------------------
 class MultiTaskHead(nn.Module):
-    def __init__(self, emb_dim: int, num_members: int):
+    def __init__(self, emb_dim_fused: int, emb_dim_ctx: int, num_members: int):
         super().__init__()
         self.num_members = num_members
         
         # hidden = 256
         hidden = 256
-        self.shared = nn.Sequential(
-            nn.Linear(emb_dim, hidden),
+        # Shared trunk for main/harmony (fused = 2D)
+        self.shared_fused = nn.Sequential(
+            nn.Linear(emb_dim_fused, hidden),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+        )
+        
+        # Shared trunk for adlib (ctx = D)
+        self.shared_ctx = nn.Sequential(
+            nn.Linear(emb_dim_ctx, hidden),
             nn.ReLU(),
             nn.Dropout(0.2),
         )
@@ -871,15 +1051,14 @@ class MultiTaskHead(nn.Module):
         self.harmony_head = nn.Linear(hidden, num_members) # harmony per member
         self.adlib_head = nn.Linear(hidden, num_members) # adlib per member
     
-    def forward(self, emb):
-        h = self.shared(emb)
-        logits_main = self.presence_head(h)
-        logits_harmony = self.harmony_head(h)
-        logits_adlib = self.adlib_head(h)
+    def forward(self, emb_fused, emb_ctx):
+        h_fused = self.shared_fused(emb_fused)
+        h_ctx   = self.shared_ctx(emb_ctx)
+
         return {
-            "main": logits_main,
-            "harmony": logits_harmony,
-            "adlib": logits_adlib,
+            "main":    self.presence_head(h_fused),
+            "harmony": self.harmony_head(h_fused),
+            "adlib":   self.adlib_head(h_ctx),
         }
   
 def binarize_logits(logits: torch.Tensor, thr: float = 0.5) -> torch.Tensor:
@@ -999,7 +1178,7 @@ def train_epoch(encoder, head, loader, device, optimizer,
         amp_ctx = torch.autocast(device_type=device.type, enabled=(use_amp and device.type=="cuda"))
         
         with amp_ctx:
-            out = head(emb_fused)
+            out = head(emb_fused, emb_ctx)
             logits_main = out["main"]      # (B, C_main)
             logits_harm = out["harmony"]   # (B, C_members)
             logits_ad   = out["adlib"]     # (B, C_members)
@@ -1007,7 +1186,6 @@ def train_epoch(encoder, head, loader, device, optimizer,
             # --- main head ---
             loss_main_raw = bce(logits_main, y_main)
             loss_main = (loss_main_raw * w_main).mean()
-            
             
             # --- harmony head ---
             loss_harm_raw = bce(logits_harm, y_harm)
@@ -1064,8 +1242,7 @@ def eval_epoch(encoder, head, loader, device, thr=0.5, use_amp=True,
          y_harm, w_harm,
          y_ad,   w_ad) = batch
         
-        
-        wavs   = wavs.to(device)
+        wavs = wavs.to(device)
         y_main = y_main.to(device)
         w_main = w_main.to(device)
         y_harm = y_harm.to(device)
@@ -1091,10 +1268,10 @@ def eval_epoch(encoder, head, loader, device, thr=0.5, use_amp=True,
             
             emb_fused = torch.cat([emb_main, emb_ctx], dim=1)    
             
-            out = head(emb_fused)
+            out = head(emb_fused, emb_ctx)
             logits_main = out["main"]
             logits_harm = out["harmony"]
-            logits_ad   = out["adlib"]
+            logits_ad = out["adlib"]
             
             loss_main_raw = bce(logits_main, y_main)
             loss_main = (loss_main_raw * w_main).mean()
@@ -1173,7 +1350,11 @@ def main():
     fused_dim = emb_dim * 2
     num_members = full_ds.num_members
         
-    head = MultiTaskHead(emb_dim=fused_dim, num_members=num_members).to(device)
+    head = MultiTaskHead(
+        emb_dim_fused=fused_dim, 
+        emb_dim_ctx=emb_dim, 
+        num_members=num_members
+    ).to(device)
     
     optimizer = torch.optim.Adam(head.parameters(), lr=args.lr)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(

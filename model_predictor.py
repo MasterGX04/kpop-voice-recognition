@@ -9,7 +9,7 @@ import os, csv
 
 @torch.no_grad()
 def predict_40ms(
-    encoder_path: str, head_path: str, wav_path: str,
+    encoder_path: str, head_path: str, wav_path: str    ,
     sr_target=16000, win_sec=2.0, hop_sec=0.04, use_hann=True,
     output_dir=None, class_names=None, thr_main=0.5, 
     thr_harm: float = 0.45, thr_adlib: float = 0.6
@@ -34,7 +34,7 @@ def predict_40ms(
     )
     
     ckpt = torch.load(head_path, map_location=device)
-    base_dim = ckpt["emb_dim"] # 192
+    emb_dim = ckpt["emb_dim"] # 192
     model_classes = ckpt["classes"]
     if not class_names:
         class_names = list(model_classes)
@@ -46,7 +46,7 @@ def predict_40ms(
             break
     
     num_main = len(model_classes)
-    num_members = num_main - 1
+    num_members = num_main - 1 # drop silence
     member_names = class_names[:num_members]
     
     # Find gang vocal index (it will exist)
@@ -63,8 +63,8 @@ def predict_40ms(
     if gang_idx is not None:
         real_member_mask[gang_idx] = False
     
-    fused_dim = base_dim * 2
-    head = MultiTaskHead(fused_dim, num_members).to(device)
+    fused_dim = emb_dim * 2
+    head = MultiTaskHead(emb_dim_fused=fused_dim, emb_dim_ctx=emb_dim, num_members=num_members).to(device)
     head.load_state_dict(ckpt["state_dict"], strict=True)
     head.eval()
 
@@ -126,7 +126,7 @@ def predict_40ms(
         # fUSE + HEAD 
         emb_fused = torch.cat([emb_main, emb_ctx], dim=1)
         
-        out = head(emb_fused)
+        out = head(emb_fused, emb_ctx)
         logits_main = out["main"] # (B, num_members+1)
         logits_harmony = out["harmony"] # (B, num_members)
         logits_adlib = out["adlib"] # (B, num_members)
@@ -184,7 +184,7 @@ def predict_40ms(
     
     # --- Decode main / harmony / ad-lib ---
     base_thr_main = np.full(probs_main_np.shape[1], thr_main, dtype=np.float32)
-    decoded_main_np = decode_multilabel(probs_main_np, per_class_thr=base_thr_main, max_gap_frames=3)
+    decoded_main_np = decode_multilabel(probs_main_np, per_class_thr=base_thr_main, max_gap_frames=2)
     
     # harmony / adlib thresholds are per member (no silence)
     base_thr_harm = np.full(num_members, thr_harm, dtype=np.float32)
@@ -223,7 +223,7 @@ def predict_40ms(
     
     
     # Reduces single-frame blips and bridges tiny silence gaps
-    main_idx_np = smooth_main_track(main_idx_np, silence_idx)
+    # main_idx_np = smooth_main_track(main_idx_np, silence_idx)
     pred_idx = torch.from_numpy(main_idx_np).to(device=device, dtype=torch.long)
         
     # ---- 4. Write predictions to .txt ----
