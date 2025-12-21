@@ -14,10 +14,10 @@ python train_kpop_singers.py `
 python train_kpop_singers.py `
   --root "K:\Python Projects\Voice Recognition" `
   --group "IVE" `
-  --sr_in 22050 `
-  --sr_ecapa 16000 `
+  --sr_in 44100 `
+  --sr_out 24000 `
   --chunk-sec 2.0 `
-  --epochs 20 `
+  --epochs 22 `
   --batch-size 32 `
   --lr 5e-4 `
   --val-split 0.15 `
@@ -49,8 +49,6 @@ Bugs:
 - why Leeseo is being oconfused as gang vocal
 - Include custom harmonies to combine singers together to "simulate" a harmony because I realized only Rei + Gaeul and Rei + Leeseo
 - Ad lib starts way too early
-- Labels are fucking buggy you have to fix them to avoid stupid bugs. Ad-libs and backing vocals are not properly being saved
-- I think the issue is that you can't select multiple labels and alter isBacking or isAdlib
 
 IVE Songs to Train:
 - Summer Liz (Because Liz doesn't sing deep usually)

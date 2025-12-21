@@ -60,7 +60,7 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
     for vocalsFile in vocalsOnlySongs:
         songTitle = (
             os.path.basename(vocalsFile)
-            .replace("_vocals.mp3", "")
+            .replace("_vocals.wav", "")
         )
         
         mp3_path = os.path.join(base_dir, f"{songTitle}_vocals.mp3")
@@ -254,7 +254,7 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
 def getSongsFromSameAlbum():
     songsFromSameAlbum = {
         'IVE': {
-            'Ive_Switch': ['해야 (HEYA)', 'Accendio', 'Blue Blood', 'Summer Festa', "Blue Heart", "Hypnosis", "WOW", "My Satisfaction", "LOVE DIVE", "Ice Queen", "Baddie", "Heroine", "Supernova Love"],
+            'Ive_Switch': ['해야 (HEYA)', 'Accendio', 'Blue Blood', 'Summer Festa', "Blue Heart", "Hypnosis", "WOW", "My Satisfaction", "LOVE DIVE", "Ice Queen", "Baddie", "Heroine", "Supernova Love", "RESET"],
             'Ive_Empathy': ['Rebel Heart', 'Flu', 'You Wanna Cry', 'ATTITUDE','Thank U', 'TKO', 'Mine', 'ELEVEN', 'Summer[Liz]', 'Wish[Yujin]', 'Payback', 'XOXZ', "Off The Record"]},
         'ITZY': {
             'Born To Be': ['Born To Be', 'Mr. Vampire']   
@@ -368,52 +368,6 @@ def debugPrintWindow(presence, lead, isBackingStyle, isAdlib, memberList, member
             if isAdlib[t, i]: tags.append("A")
             row.append("".join(tags) if tags else ".")
         print(f"{t:5d} | " + " | ".join([f"{cell:>10}" for cell in row]))
-          
-def extractAndSaveHarmoniesFromSong(selectedGroup, songName):
-        """
-        Extracts vocal parts from a labeled song and saves categorized segments (solo, harmony, adlib, transition)
-        in both .mp3 and Mel chunk format to:
-            ./training_data/{selectedGroup}/songs_to_update/{songName}/
-        """
-        labelPath = f"./saved_labels/{selectedGroup}/{songName}_labels.json"
-        vocalsPath = f"./training_data/{selectedGroup}/{songName}_vocals.mp3"
-        outDir = f"./training_data/{selectedGroup}/songs_to_update/{songName}"
-        os.makedirs(outDir, exist_ok=True)
-
-        if not os.path.exists(labelPath) or not os.path.exists(vocalsPath):
-            print(f"❌ Missing label or vocals file for {songName}")
-            return
-
-        with open(labelPath, "r") as f:
-            labels = json.load(f)
-
-        vocals = AudioSegment.from_file(vocalsPath)
-        segmentMap = extractVocalSegmentsByType(labels, minOverlapChunks=10)
-
-        for typ, segments in segmentMap.items():
-            for idx, (name, startChunk, endChunk) in enumerate(segments):
-                startTime = startChunk * 40
-                endTime = (endChunk + 1) * 40
-                segment = vocals[startTime:endTime]
-
-                # Save .mp3
-                mp3Path = os.path.join(outDir, f"{typ}_{name}_{idx}.mp3")
-                wavPath = mp3Path.replace(".mp3", ".wav")
-                melPath = mp3Path.replace(".mp3", "_mel_200ms.npy")
-                rawPath = mp3Path.replace(".mp3", "_raw_200ms.pkl")
-
-                segment.export(mp3Path, format="mp3")
-                segment.export(wavPath, format="wav")
-
-                # Save Mel chunks
-                segmentAndSaveAudio(
-                    wavPath,
-                    savePath=melPath,
-                    rawSavePath=rawPath,
-                    segmentDuration=200
-                )
-
-        print(f"Extracted harmonies and vocals from {songName} into {outDir}")
       
 def estimatePitchRanges(audioChunks, sr=22050, groupSize=3, groupName='', savePath=None):
     """

@@ -17,6 +17,7 @@ Tested on: Python 3.9, CUDA 12.x with torch cu124 wheels.
 """
 
 import os, argparse,  random, glob, json
+from collections import OrderedDict
 from dataclasses import dataclass
 from typing import List, Tuple, Dict 
 
@@ -30,7 +31,7 @@ import numpy as np
 from torchaudio.transforms import Resample
 
 from tqdm import tqdm
-from speechbrain.inference.speaker import EncoderClassifier
+from muq import MuQ
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ---------------------------
@@ -42,7 +43,7 @@ def parse_args():
                     help="Path that contains <group>/<member>/train/Isolated_Vocals")
     ap.add_argument("--group", type=str, required=True, help="Group folder name under root")
     ap.add_argument("--sr_in", type=int, default=22050, help="Expected input sample rate of your files")
-    ap.add_argument("--sr_ecapa", type=int, default=16000, help="ECAPA target sample rate")
+    ap.add_argument("--sr_out", type=int, default=16000, help="ECAPA target sample rate")
     ap.add_argument("--chunk-sec", type=float, default=2.0, help="Chunk length in seconds for training")
     ap.add_argument("--batch-size", type=int, default=16)
     ap.add_argument("--epochs", type=int, default=10)
@@ -51,8 +52,7 @@ def parse_args():
     ap.add_argument("--seed", type=int, default=1337)
     ap.add_argument("--save-dir", type=str, default="./checkpoints")
     ap.add_argument("--num-workers", type=int, default=2)
-    ap.add_argument("--eval_thr", type=float, default=0.5)
-    ap.add_argument("--freeze-ecapa", action="store_true", help="Freeze ECAPA encoder parameters")
+    ap.add_argument("--eval_thr", type=float, default=0.7)
     return ap.parse_args()
 
 # ---------------------------
@@ -103,19 +103,16 @@ class KpopVocalDataset(Dataset):
         => label size = num_members + 1, last index is silence.
     """
     def __init__(self, group_dir: str, sr_out: int,
-                chunk_sec: float, num_workers: int, group_name: str, min_song_sec: float = 4.0,
-                pitch_prob: float = 0.3, pitch_semitones_range: Tuple[float, float] = (-2.0, 2.0),
-                window_hop_ratio: float = 0.5, presence_thresh=0.4,
-                alpha_lead=1.0, alpha_adlib = 0.5, min_weight = 0.2, max_weight = 2.0,
-                k_train: int = 2):
+                chunk_sec: float, group_name: str, min_song_sec: float = 4.0,
+                window_hop_ratio: float = 0.5, presence_thresh=0.4, alpha_lead=1.0, 
+                alpha_adlib = 0.5, min_weight = 0.2, max_weight = 2.0, k_train: int = 2, useMuq=False):
         super().__init__()
         self.group_dir = group_dir
-        self.sr_out = sr_out
+        self.sr_out = sr_out # This should be 24000 HZ
         self.chunk_sec = chunk_sec
         self.chunk_len = int(round(chunk_sec * sr_out))
         self.min_song_sec = min_song_sec
-
-        self.pitch_semitones_range = pitch_semitones_range
+        
         self.window_hop_ratio = window_hop_ratio
         self.k_train = k_train
         
@@ -233,8 +230,6 @@ class KpopVocalDataset(Dataset):
             lead_arr = np.asarray(meta["lead"], dtype=np.int32)      # [T, C]
             adlib_arr = np.asarray(meta["isAdlib"], dtype=np.int32)  # [T, C]
             backing_arr = np.asarray(meta["isBacking"], dtype=np.int32) # backing /harmony
-            secondary_arr = np.asarray(meta["secondaryRole"], dtype=np.int32)
-            
         
             song_dur_sec = num_chunks * frame_ms / 1000.0
             if song_dur_sec < self.min_song_sec or num_chunks < frames_per_window:
@@ -271,14 +266,12 @@ class KpopVocalDataset(Dataset):
                 # 2s context labels (for importance)
                 window_presence = presence[start_frame:end_frame]   # [F, C]
                 window_lead = lead_arr[start_frame:end_frame]
-                window_secondary = secondary_arr[start_frame:end_frame]
                 window_adlib = adlib_arr[start_frame:end_frame]
                 window_backingStyle = backing_arr[start_frame:end_frame]
                 
                 # Fractions over this window (0..1) - still useful for importance weights
                 presence_frac = window_presence.mean(axis=0) # how often each siniger is present
                 lead_frac = window_lead.mean(axis=0) # How often they are lead (role)
-                secondary_frac = window_secondary.mean(axis=0) # how often they are secondary
                 
                 adlib_frac = window_adlib.mean(axis=0) # How often they are adlib (style)
                 backingStyle_frac = window_backingStyle.mean(axis=0) # How often they are backing (style)
@@ -325,6 +318,48 @@ class KpopVocalDataset(Dataset):
                 TAU_DOMINANT = 0.55          # ≥55% of vocal frames are same singer → clean vocal
                 TAU_OVERLAP = 0.30           # ≥30% frames with 2+ singers → ambiguous/gang
                 
+                # Define thresholds
+                W_LEAD = 0.9 # How much lead boosts weight
+                W_BACKING = 0.6 # backing/harmony boost
+                W_ADLIB = 0.3 # How strongly ad-libs DOWN-weight
+                W_GANG_SOLO = 0.6 # Gang vocal alone
+                W_GANG_OVERLAP = 0.3 # Gang vocal when members also sing
+                
+                def computeSingerWeights(presenceFrac, leadFrac, backingFrac, adlibFrac, *,
+                         minW, maxW,
+                         W_LEAD=0.9, W_BACKING=0.6, W_ADLIB=0.3,
+                         scale=1.0):
+                        """
+                        Returns importance_singers (shape: [num_members]) using ONE consistent formula.
+                        scale < 1.0 makes it "less confident" without changing the logic.
+                        """
+                        numMembers = len(presenceFrac)
+                        w = np.full(numMembers, minW, dtype=np.float32)
+
+                        presentMask = presenceFrac > 1e-3
+                        if not np.any(presentMask):
+                            return w
+
+                        # Base formula for present singers only
+                        lf = leadFrac.astype(np.float32)
+                        bf = backingFrac.astype(np.float32)
+                        af = adlibFrac.astype(np.float32)
+
+                        adlibPenalty = W_ADLIB * af
+                        # cancel penalty for adlibs that are still "vocal identity" (your intention)
+                        adlibPenalty = np.where(af > 0.3, adlibPenalty * 0.2, adlibPenalty)
+
+                        base = 1.0 + W_LEAD * lf + W_BACKING * bf - adlibPenalty
+
+                        # Don’t crash pure-adlib regions too low
+                        base = np.where((af > 0.5) & (lf < 0.2) & (bf < 0.2), np.maximum(base, 0.7), base)
+
+                        # Confidence scaling toward 1.0 (keeps 1.0 fixed)
+                        scaled = 1.0 + scale * (base - 1.0)
+
+                        w[presentMask] = np.clip(scaled[presentMask], minW, maxW)
+                        return w
+                
                 # CASE 1 → CLEAR VOCAL
                 if any_vocal_center:
                     # Label is ALWAYS singing — never flip or skip
@@ -336,74 +371,56 @@ class KpopVocalDataset(Dataset):
                         GANG_TAU = 0.1
                         label_vec[self.gang_idx] = 1.0 if presence_frac[self.gang_idx] >= GANG_TAU else 0.0
                     
-                    # Define thresholds
-                    W_LEAD = 0.9 # How much lead boosts weight
-                    W_SECONDARY = 0.6
-                    W_BACKING = 0.6 # backing/harmony boost
-                    W_ADLIB = 0.3 # How strongly ad-libs DOWN-weight
-                    W_GANG_SOLO = 0.6 # Gang vocal alone
-                    W_GANG_OVERLAP = 0.3 # Gang vocal when members also sing
-                    
                     # Check if num_members implies +gang vocals or no
                     importance_singers = np.ones(self.num_members, dtype=np.float32)
                     
                     # GLOBAL clean vocal
                     if dominant_frac >= TAU_DOMINANT and overlap_frac_window <= TAU_OVERLAP:
-                        for c in range(self.num_members):
-                            if presence_frac[c] < 1e-3: 
-                                # not present in this window
-                                importance_singers[c] = self.min_weight
-                                continue
-                            
-                            # Handle Gang Vocal specially
-                            if self.gang_idx is not None and c == self.gang_idx:
-                                if any_real:
-                                    # Gang layered under members -> small weight
-                                    w = W_GANG_OVERLAP
-                                else:
-                                    # pure gang section -> moderate weight
-                                    w = W_GANG_SOLO
-                                importance_singers[c] = np.clip(w, self.min_weight, self.max_weight)
-                                continue
-                        
-                            # Normal member
-                            lf = float(lead_frac[c])
-                            bf = float(backingStyle_frac[c])
-                            sf = float(secondary_frac[c]) # Secondary role (non-lead overlap)
-                            af = float(adlib_frac[c])
-                            
-                            adlibPenalty = W_ADLIB * af
-
-                            # cancel penalty for solo/lead adlibs
-                            if af > 0.3 and lf > sf:
-                                adlibPenalty *= 0.2   # or even 0.0
-
-                            w = 1.0 + W_LEAD*lf + W_BACKING*bf + W_SECONDARY*sf - adlibPenalty
-                            
-                            # IF mostly ad-lib and not really lead/backing, don't crash it too low
-                            if af > 0.5 and lf < 0.2 and bf < 0.2:
-                                w = max(w, 0.7)
-                                
-                            importance_singers[c] = np.clip(w, self.min_weight, self.max_weight)
-                        
-                        importance_vec[:self.num_members] = importance_singers
+                        importance_singers = computeSingerWeights(
+                            presenceFrac=presence_frac[:self.num_members],
+                            leadFrac=lead_frac[:self.num_members],
+                            backingFrac=backingStyle_frac[:self.num_members],
+                            adlibFrac=adlib_frac[:self.num_members],
+                            minW=self.min_weight,
+                            maxW=self.max_weight,
+                            W_LEAD=W_LEAD, W_BACKING=W_BACKING, W_ADLIB=W_ADLIB,
+                            scale=1.0,
+                        )
                         category = "clear_vocal"
                     elif local_dom_frac >= 0.65:
-                        # not globally clean but locally dominant → short line rescue
-                        importance_vec[:self.num_members] = 0.5   # medium weight
+                        local_presence_frac = local_presence.mean(axis=0)[:self.num_members]
+                        local_lead_frac = lead_arr[lf:rf].mean(axis=0)[:self.num_members]
+                        local_backing_frac = backing_arr[lf:rf].mean(axis=0)[:self.num_members]
+                        local_adlib_frac = adlib_arr[lf:rf].mean(axis=0)[:self.num_members]
+
+                        importance_singers = computeSingerWeights(
+                            presenceFrac=local_presence_frac,
+                            leadFrac=local_lead_frac,
+                            backingFrac=local_backing_frac,
+                            adlibFrac=local_adlib_frac,
+                            minW=self.min_weight,
+                            maxW=self.max_weight,
+                            W_LEAD=W_LEAD, W_BACKING=W_BACKING, W_ADLIB=W_ADLIB,
+                            scale=0.65,  # softer than clean
+                        )
                         category = "semi_clear_vocal"
                     else:
                         # ambiguous vocal
-                        importance_vec[:self.num_members] = 0.1
-                        
-                        present = presence_frac[:self.num_members] > 1e-3
-                        importance_vec[:self.num_members][present] = 0.4
-                        
-                        # if gang exists and is present, give it extra weight (this is the whole point)
-                        if self.gang_idx is not None and presence_frac[self.gang_idx] > 1e-3:
-                            importance_vec[self.gang_idx] = 0.8
+                        importance_singers = np.full(self.num_members, 0.4, dtype=np.float32)
+                        # if you still want to weaken everyone:
+                        importance_singers[:] = 0.3
+                        category = "ambiguous"
                         
                         category = "ambiguous"
+                    
+                    importance_vec[:self.num_members] = importance_singers
+                    importance_vec[self.silence_idx] = 1.0
+
+                    neg_floor = 0.6
+                    center_present = frame_label[:self.num_members].astype(bool)
+                    importance_vec[:self.num_members][~center_present] = np.maximum(
+                        importance_vec[:self.num_members][~center_present], neg_floor
+                    )
                     
                 # center frame silent
                 else:       
@@ -412,7 +429,7 @@ class KpopVocalDataset(Dataset):
                     importance_vec[:self.num_members] = 0.1  # weak negatives for singers (including gang)
                     if vocal_frac_window <= TAU_SILENCE_WINDOW and local_vocal_frac < 0.15:
                         # real silence
-                        importance_vec[:self.num_members] = 0.2
+                        importance_vec[:self.num_members] = 0.1
                         label_vec[self.silence_idx] = 1.0
                         importance_vec[self.silence_idx] = 1.0
                         category = "true_silence"
@@ -484,13 +501,15 @@ class KpopVocalDataset(Dataset):
                 adlib_vec[pos_ad] = 1.0
                 
                 center_presence = presence[cf0:cf1].max(axis=0).astype(bool)
-                center_secondary = secondary_arr[cf0:cf1].max(axis=0).astype(bool)
                 center_backing = backing_arr[cf0:cf1].max(axis=0).astype(bool)
                 center_overlap = (presence[cf0:cf1].sum(axis=1) > 1).any()
                 
+                center_primary_adlib = center_backing & center_adlib
+                center_secondary_adlib = pos_ad & ~center_backing
+                
                 # only treat harmony if there's overlap right NOW (not somewhere in the 2s")
                 if center_overlap and any_lead_center:
-                    pos_harm = center_backing & ~center_lead
+                    pos_harm = center_backing & ~center_lead & ~center_adlib
                     harmony_vec[pos_harm] = 1.0
                     
                     # Base negative: present but not harmony (weak-ish)
@@ -498,9 +517,6 @@ class KpopVocalDataset(Dataset):
 
                     # Strong negative: lead should almost never be harmony
                     W_NEG_LEAD = 1.2
-
-                    # Medium negative: secondary-but-not-backing should not be called harmony
-                    W_NEG_SECONDARY = 0.9
                     
                     # Positive weight: reward true harmony
                     W_POS_HARM = 1.6
@@ -508,7 +524,6 @@ class KpopVocalDataset(Dataset):
                     # Weights: only train on singers who are present rn
                     harmony_wts[:] = 0.0
                     harmony_wts[center_presence] = W_NEG_BASE # weak negatives
-                    harmony_wts[center_secondary & center_presence & ~pos_harm] = W_NEG_SECONDARY
                     
                     # Make false "lead is harmony" expensive
                     harmony_wts[center_lead & center_presence & ~pos_harm] = W_NEG_LEAD
@@ -522,38 +537,26 @@ class KpopVocalDataset(Dataset):
                 adlib_wts[:] = 0.0
                 
                 # This is the cost of a false positive adlib on a present singer.
-                W_NEG_SOLO = 0.5 # present, not adlib, not clearly lead/secondary (rare)
-                W_NEG_SECONDARY = 0.8 # present+secondary but not adlib (important: overlap ≠ adlib)
+                W_NEG_SOLO = 0.5 # present, not adlib, not clearly lead
                 W_NEG_LEAD = 1.1 # present+lead but not adlib (very important: lead ≠ adlib)
                 
                 # Positive weight: reward catching real adlibs.
-                W_POS_ADLIB = 1.5
+                W_POS_ADLIB = 1.4
+                W_POS_ADLIB_PRIMARY = 2.2
                 
                 # Apply negatives only to present singers by default
                 adlib_wts[valid_ad_mask] = W_NEG_SOLO
                 
                 # Stronger negatives depending on ROLE:
-                # If singer is lead and not adlib, it should be expensive to predict adlib=1.
-                adlib_wts[center_lead & valid_ad_mask & ~pos_ad] = W_NEG_LEAD
-                
-                # If singer is secondary (overlapping/non-lead) and not adlib,
-                # make it moderately expensive to predict adlib=1 (prevents "everyone adlibs" shortcut).
-                adlib_wts[center_secondary & valid_ad_mask & ~pos_ad] = W_NEG_SECONDARY
+                any_primary_adlib = center_primary_adlib.any()
+                if not any_primary_adlib:
+                    adlib_wts[center_lead & valid_ad_mask & ~pos_ad] = W_NEG_LEAD
+                else:
+                    adlib_wts[center_lead & valid_ad_mask & ~pos_ad] = 0.8  # mild, optional
                 
                 # Positives override negatives
-                adlib_wts[pos_ad] = W_POS_ADLIB
-                
-                # if center_overlap and random.random() < 0.01:
-                #     print("HARMONY WTS:",
-                #         "lead", harmony_wts[center_lead].tolist(),
-                #         "secondary", harmony_wts[center_secondary].tolist(),
-                #         "pos", harmony_wts[pos_harm].tolist())
-                #     print("counts:",
-                #         "present", int(center_presence.sum()),
-                #         "secondary", int(center_secondary.sum()),
-                #         "backing", int(center_backing.sum()),
-                #         "lead", int(center_lead.sum()),
-                #         "pos_harm", int(pos_harm.sum()))
+                adlib_wts[center_secondary_adlib] = W_POS_ADLIB
+                adlib_wts[center_primary_adlib] = W_POS_ADLIB_PRIMARY
                                 
                 # Map window start frame -> start sample at sr_out
                 start_time_sec = (start_frame * frame_ms) / 1000.0
@@ -571,9 +574,7 @@ class KpopVocalDataset(Dataset):
                         adlib_wts,
                     )
                 )
-        
-        self._append_synthetic_harmony_samples(frames_per_window, frame_ms)
-        
+    
         if not self.samples:
             raise RuntimeError("No training windows built. Check your JSON/audio alignment.")
         
@@ -595,10 +596,6 @@ class KpopVocalDataset(Dataset):
         print("silence windows:", n_silence, "/", len(self.samples))
         
         self.base_samples = list(self.samples)
-        self.augmented_samples: List[
-            Tuple[torch.Tensor, torch.Tensor, torch.Tensor,
-                  torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]
-        ] = []
         
         # Test for Dataset to see proportion of Data
         print("\n[KpopFrameDataset] Category counts:")
@@ -621,12 +618,9 @@ class KpopVocalDataset(Dataset):
         # ----------------------------
         # 4) Simple audio cache to avoid re-loading the same song
         # ----------------------------
-        self._cache_path = None
-        self._cache_wave = None  # (1, T_out)
+        self._max_cached_songs = 24       # tune this (8–32 is typical)
+        self._wave_cache = OrderedDict()  # path -> wav (1, T_out)
         self._resamplers: Dict[int, Resample] = {}
-        
-        if pitch_prob > 0.0:
-            self._build_pitch_augmented_subset(pitch_prob, num_workers)
 
         print(f"[KpopFrameDataset] total windows: {len(self.samples)}")
     
@@ -671,101 +665,20 @@ class KpopVocalDataset(Dataset):
         return clips
     
     def _get_resampler(self, sr_src: int) -> Resample:
-        if sr_src not in self._resamplers:
-            self._resamplers[sr_src] = Resample(sr_src, self.sr_out)
-        return self._resamplers[sr_src]
-    
-    def _append_synthetic_harmony_samples(self, frames_per_window: int, frame_ms: int):
-        """
-        Adds extra training windows from synthetic harmony MP3s.
-        These windows are *already overlapped by construction*, so harmony labels are valid.
-        """
-        if not getattr(self, "synthetic_harmony_clips", None):
-            return
-
-        win_sec = (frames_per_window * frame_ms) / 1000.0
-        win_samples = int(round(win_sec * self.sr_out))
-        hop_samples = max(1, win_samples // 2)  # 50% overlap windows
-
-        added = 0
-
-        for clip in self.synthetic_harmony_clips:
-            path = clip["path"]
-            lead_idx = clip["lead_idx"]
-            harm_idx = clip["harm_idx"]
-
-            try:
-                info = torchaudio.info(path)
-                dur_sec = info.num_frames / float(info.sample_rate)
-                total_out = int(round(dur_sec * self.sr_out))
-            except Exception as e:
-                print(f"[KpopFrameDataset] Could not read info for {path}: {e}")
-                continue
-
-            if total_out <= 0:
-                continue
-
-            # windows starting positions in output sample space
-            starts = list(range(0, max(1, total_out - win_samples + 1), hop_samples))
-            if not starts:
-                starts = [0]
-
-            for start_sample_out in starts:
-                # --- MAIN head: keep this light (or ignore), since this is for harmony robustness ---
-                label_vec = np.zeros(len(self.classes), dtype=np.float32)
-                importance_vec = np.zeros(len(self.classes), dtype=np.float32)
-
-                # Mark both singers as present (multi-label). Do NOT mark silence.
-                label_vec[lead_idx] = 1.0
-                label_vec[harm_idx] = 1.0
-
-                # VERY IMPORTANT: keep weights light so you don't distort main learning.
-                importance_vec[lead_idx] = 0.4
-                importance_vec[harm_idx] = 0.4
-                if self.silence_idx is not None:
-                    importance_vec[self.silence_idx] = 0.0
-
-                # --- HARMONY head: the whole point ---
-                harmony_vec = np.zeros(self.num_members, dtype=np.float32)
-                harmony_wts = np.zeros(self.num_members, dtype=np.float32)
-
-                # Harmony definition: second member is harmony
-                harmony_vec[harm_idx] = 1.0
-
-                # Train only on the two active singers in this synthetic clip
-                harmony_wts[lead_idx] = 0.3  # negative: lead is present but not harmony
-                harmony_wts[harm_idx] = 1.2  # positive
-
-                # --- ADLIB head: optional, but safest is to IGNORE it here ---
-                adlib_vec = np.zeros(self.num_members, dtype=np.float32)
-                adlib_wts = np.zeros(self.num_members, dtype=np.float32)
-                # (If you want to teach "this is NOT adlib", you can set weak negatives instead:)
-                # adlib_wts[lead_idx] = 0.1
-                # adlib_wts[harm_idx] = 0.1
-
-                self.samples.append(
-                    (
-                        path,
-                        int(start_sample_out),
-                        label_vec,
-                        importance_vec,
-                        harmony_vec,
-                        harmony_wts,
-                        adlib_vec,
-                        adlib_wts,
-                    )
-                )
-                added += 1
-
-        print(f"[KpopFrameDataset] Added synthetic harmony windows: {added}")
+        key = (sr_src, self.sr_out)
+        if key not in self._resamplers:
+            self._resamplers[key] = torchaudio.transforms.Resample(sr_src, self.sr_out)
+        return self._resamplers[key]
     
     def _load_song_wave(self, path: str) -> torch.Tensor:
         """
-        Load + mono + resample a *whole song* once, cache it.
-        Returns Tensor (1, T_out).
+        Load + mono + resample whole song once, cache it (LRU).
+        Returns (1, T_out) at self.sr_out.
         """
-        if self._cache_path == path and self._cache_wave is not None:
-            return self._cache_wave
+        if path in self._wave_cache:
+            wav = self._wave_cache.pop(path)  # refresh LRU
+            self._wave_cache[path] = wav
+            return wav
 
         wav, sr_src = torchaudio.load(path)  # (C, T_src)
         if wav.size(0) > 1:
@@ -775,112 +688,16 @@ class KpopVocalDataset(Dataset):
             resampler = self._get_resampler(sr_src)
             wav = resampler(wav)
 
-        self._cache_path = path
-        self._cache_wave = wav  # (1, T_out)
+        wav = wav.contiguous()  # good practice
+
+        # store in cache
+        self._wave_cache[path] = wav
+
+        # evict oldest if too large
+        if len(self._wave_cache) > self._max_cached_songs:
+            self._wave_cache.popitem(last=False)
+
         return wav
-    
-    def _build_pitch_augmented_subset(self, pitch_aug_ratio: float, max_workers: int = 4):
-        """
-        Precompute pitch-shifted copies of a subset of base samples.
-
-        Stores them in self.augmented_samples as (audio_chunk, label_tensor, weight_tensor).
-        """
-        num_base = len(self.base_samples)
-        if num_base == 0:
-            return
-
-        num_aug = max(1, int(num_base * pitch_aug_ratio))
-        # randomly choose which base samples to augment
-        indices = random.sample(range(num_base), num_aug)
-
-        print(f"[KpopVocalDataset] Precomputing {num_aug} pitch-augmented chunks "
-              f"out of {num_base} base windows (ratio={pitch_aug_ratio:.2f})")
-
-        def worker(base_idx: int):
-            (audio_path,
-             start_sample_out,
-             label_vec,
-             importance_vec,
-             harmony_vec,
-             harmony_wts,
-             adlib_vec,
-             adlib_wts) = self.base_samples[base_idx]
-
-            # Load and resample this song independently (no cached state)
-            wav, sr_src = torchaudio.load(audio_path)   # (C, T_src)
-            if wav.size(0) > 1:
-                wav = wav.mean(dim=0, keepdim=True)
-
-            if sr_src != self.sr_out:
-                resampler = Resample(sr_src, self.sr_out)
-                wav = resampler(wav)                    # (1, T_out)
-
-            end = start_sample_out + self.chunk_len
-            if end > wav.shape[-1]:
-                pad = end - wav.shape[-1]
-                seg = torch.nn.functional.pad(wav[..., start_sample_out:], (0, pad))
-            else:
-                seg = wav[..., start_sample_out:end]    # (1, chunk_len)
-
-            # Apply pitch shift ONCE here
-            seg_aug = self._apply_pitch_shift(seg)
-            if seg_aug is None:
-                return None
-            lab_main = torch.from_numpy(label_vec).to(torch.float32)
-            wts_main = torch.from_numpy(importance_vec).to(torch.float32)
-            lab_harm = torch.from_numpy(harmony_vec).to(torch.float32)
-            wts_harm = torch.from_numpy(harmony_wts).to(torch.float32)
-            lab_ad   = torch.from_numpy(adlib_vec).to(torch.float32)
-            wts_ad   = torch.from_numpy(adlib_wts).to(torch.float32)
-            
-            return (seg_aug, lab_main, wts_main,
-                    lab_harm, wts_harm,
-                    lab_ad, wts_ad)
-
-        results = []
-        # If max_workers <= 1, just run sequentially (handy for debugging)
-        if max_workers is None or max_workers <= 1:
-            for idx in tqdm(indices, desc="Precomputing pitch augs (1 worker)"):
-                out = worker(idx)
-                if out is not None:
-                    results.append(out)
-        else:
-            with ThreadPoolExecutor(max_workers=max_workers) as ex:
-                futures = [ex.submit(worker, idx) for idx in indices]
-                for fut in tqdm(as_completed(futures),
-                                total=len(futures),
-                                desc="Precomputing pitch augs"):
-                    out = fut.result()
-                    if out is not None:
-                        results.append(out)
-
-        self.augmented_samples.extend(results)
-        print(f"[KpopVocalDataset] Done. Augmented samples: {len(self.augmented_samples)}")
-    
-    def _apply_pitch_shift(self, seg: torch.Tensor) -> torch.Tensor:
-        """
-        Apply a random pitch shift to seg (1, T). Always attempts to shift;
-        if anything fails, returns seg unchanged.
-        """
-        n_steps = random.uniform(-2.0, 2.0)  # e.g. ±2 semitones
-        try:
-            if hasattr(torchaudio.functional, "pitch_shift"):
-                seg2 = torchaudio.functional.pitch_shift(seg, self.sr_out, n_steps=n_steps)
-            else:
-                effects = [
-                    ["pitch", f"{n_steps * 100.0}"],
-                    ["rate", f"{self.sr_out}"],
-                ]
-                seg2, _ = torchaudio.sox_effects.apply_effects_tensor(seg, self.sr_out, effects)
-
-            # Ensure exact length chunk_len
-            if seg2.shape[-1] >= self.chunk_len:
-                return seg2[..., : self.chunk_len]
-            else:
-                pad = self.chunk_len - seg2.shape[-1]
-                return torch.nn.functional.pad(seg2, (0, pad))
-        except Exception:
-            return seg
     
     def _load_manual_harmony_jsons(self, harmony_files: List[str]) -> Dict[str, List[dict]]:
         """
@@ -973,58 +790,39 @@ class KpopVocalDataset(Dataset):
     # ---------- Dataset API ----------
     def __len__(self) -> int:
         # base windows + precomputed augmented windows
-        return len(self.base_samples) + len(self.augmented_samples)
-
+        return len(self.base_samples)
+    
     def __getitem__(self, idx: int):
-        base_count = len(self.base_samples)
-
         # ---- Case 1: base sample (no pitch shift) ----
-        if idx < base_count:
-            (audio_path,
-             start_sample_out,
-             label_vec,
-             importance_vec,
-             harmony_vec,
-             harmony_wts,
-             adlib_vec,
-             adlib_wts) = self.base_samples[idx]
+        (audio_path,
+            start_sample_out,
+            label_vec,
+            importance_vec,
+            harmony_vec,
+            harmony_wts,
+            adlib_vec,
+            adlib_wts) = self.base_samples[idx]
 
-            wav = self._load_song_wave(audio_path)  # (1, T_out)
-            end = start_sample_out + self.chunk_len
-            if end > wav.shape[-1]:
-                pad = end - wav.shape[-1]
-                seg = torch.nn.functional.pad(wav[..., start_sample_out:], (0, pad))
-            else:
-                seg = wav[..., start_sample_out:end]  # (1, chunk_len)
+        wav = self._load_song_wave(audio_path)  # (1, T_out)
+        end = start_sample_out + self.chunk_len
+        if end > wav.shape[-1]:
+            pad = end - wav.shape[-1]
+            seg = torch.nn.functional.pad(wav[..., start_sample_out:], (0, pad))
+        else:
+            seg = wav[..., start_sample_out:end]  # (1, chunk_len)
 
-            labels_main = torch.from_numpy(label_vec).to(torch.float32)
-            weights_main = torch.from_numpy(importance_vec).to(torch.float32)
-            labels_harm = torch.from_numpy(harmony_vec).to(torch.float32)
-            weights_harm = torch.from_numpy(harmony_wts).to(torch.float32)
-            labels_ad   = torch.from_numpy(adlib_vec).to(torch.float32)
-            weights_ad   = torch.from_numpy(adlib_wts).to(torch.float32)
-            
-            return (seg,
-                    labels_main, weights_main,
-                    labels_harm, weights_harm,
-                    labels_ad,   weights_ad)
+        labels_main = torch.from_numpy(label_vec).to(torch.float32)
+        weights_main = torch.from_numpy(importance_vec).to(torch.float32)
+        labels_harm = torch.from_numpy(harmony_vec).to(torch.float32)
+        weights_harm = torch.from_numpy(harmony_wts).to(torch.float32)
+        labels_ad   = torch.from_numpy(adlib_vec).to(torch.float32)
+        weights_ad   = torch.from_numpy(adlib_wts).to(torch.float32)
+        
+        return (seg,
+                labels_main, weights_main,
+                labels_harm, weights_harm,
+                labels_ad,   weights_ad)
 
-        # ---- Case 2: augmented sample (precomputed pitch-shifted) ----
-        aug_idx = idx - base_count
-        (seg_aug,
-         lab_main, wts_main,
-         lab_harm, wts_harm,
-         lab_ad,   wts_ad) = self.augmented_samples[aug_idx]
-
-        # Return copies so we don't accidentally mutate the cached tensors
-        return (seg_aug.clone(),
-                lab_main.clone(), wts_main.clone(),
-                lab_harm.clone(), wts_harm.clone(),
-                lab_ad.clone(),   wts_ad.clone())
-
-# ---------------------------
-# Model: ECAPA encoder (frozen or trainable) + linear head
-# ---------------------------
 class MultiTaskHead(nn.Module):
     def __init__(self, emb_dim_fused: int, emb_dim_ctx: int, num_members: int):
         super().__init__()
@@ -1060,7 +858,112 @@ class MultiTaskHead(nn.Module):
             "harmony": self.harmony_head(h_fused),
             "adlib":   self.adlib_head(h_ctx),
         }
-  
+
+# ---------------------------
+# Model: ECAPA encoder (frozen or trainable) + linear head
+# ---------------------------
+class MuQEncoderWrapper(nn.Module):
+    """
+    Wrap MuQ so it behaves like SpeechBrain's encoder.encode_batch(...)
+    returning (B, 1, D) so your .squeeze(1) keeps working.
+    """
+    def __init__(
+        self,
+        muq_model,
+        muq_sr: int = 24000,
+        pooling: str = "mean",   # mean is simplest & stable
+        debug: bool = True,
+    ):
+        super().__init__()
+        self.muq = muq_model
+        self.muq_sr = muq_sr
+        self.pooling = pooling
+        self.debug = debug
+        self.topk_frac=0.3
+        self._debug_printed = False
+            
+    @torch.no_grad()
+    def encode_batch(self, wavs: torch.Tensor, ctx_frac: float = 0.2) -> torch.Tensor:
+        """
+        One MuQ forward. Returns:
+          emb_main: (B, 1, D)
+          emb_ctx:  (B, 1, D) pooled from the center frames
+        """
+        if wavs.ndim != 2:
+            raise ValueError(f"MuQ expects (B, T), got {wavs.shape}")
+
+        x = wavs
+
+        # MuQ forward: expected to output framewise reps (B, T', D)
+        out = self.muq(x, output_hidden_states=False)
+
+        if self.debug and not self._debug_printed:
+            print("[MuQ DEBUG] input x:", tuple(x.shape), x.dtype, x.device)
+            print("[MuQ DEBUG] out type:", type(out))
+            if isinstance(out, dict):
+                print("[MuQ DEBUG] out keys:", list(out.keys()))
+            else:
+                # show common attrs if present
+                for k in ["last_hidden_state", "hidden_states"]:
+                    print(f"[MuQ DEBUG] has {k}:", hasattr(out, k))
+            self._debug_printed = True
+            
+        # Common conventions: out could be a dict-like or object with last_hidden_state
+        feats = getattr(out, "last_hidden_state", None)
+        if feats is None and isinstance(out, dict):
+            feats = out.get("last_hidden_state", None)
+        if feats is None:
+            # fallback: if the model returns tensor directly
+            if torch.is_tensor(out):
+                feats = out
+            else:
+                raise RuntimeError("Could not find MuQ frame features (last_hidden_state).")
+
+        # feats: (B, T', D)
+        B, Tprime, D = feats.shape
+
+        # ---- global pooled ----
+        emb_main = self._pool_feats(feats)  # (B, D)
+
+         # ---- center pooled (slice frames, not waveform) ----
+        ctx_len = max(1, int(round(Tprime * ctx_frac)))
+        mid = Tprime // 2
+        half = ctx_len // 2
+        start = max(0, mid - half)
+        end = min(Tprime, start + ctx_len)
+        start = max(0, end - ctx_len)  # keep exact length when possible
+
+        feats_center = feats[:, start:end, :]  # (B, ctx_len, D)
+        emb_ctx = self._pool_feats(feats_center)  # (B, D)
+
+        if self.debug and not hasattr(self, "_debug_two_printed"):
+            print(f"[MuQ DEBUG] feats={tuple(feats.shape)} center=[{start}:{end}] ctx_len={ctx_len}")
+            self._debug_two_printed = True
+
+        return emb_main.unsqueeze(1), emb_ctx.unsqueeze(1)
+    
+    def _pool_feats(self, feats: torch.Tensor) -> torch.Tensor:
+        # feats: (B, T', D) -> (B, D)
+        if self.pooling == "mean":
+            return feats.mean(dim=1)
+        elif self.pooling == "cls":
+            return feats[:, 0, :]
+        elif self.pooling == "topk":
+            # NOTE: make sure self.topk_frac exists in __init__
+            scores = feats.norm(p=2, dim=-1)  # (B, T')
+            T = feats.size(1)
+            k = max(1, int(T * self.topk_frac))
+            idx = scores.topk(k, dim=1).indices  # (B, k)
+            idx = idx.unsqueeze(-1).expand(-1, -1, feats.size(-1))  # (B,k,D)
+            top_feats = feats.gather(dim=1, index=idx)  # (B,k,D)
+            
+            if self.debug and not hasattr(self, "_debug_topk_printed"):
+                print(f"[MuQ DEBUG] topk k={k}/{T} example idx:", idx[0, :, 0].detach().cpu().numpy()[:10])
+                self._debug_topk_printed = True
+            return top_feats.mean(dim=1)
+        else:
+            raise ValueError(f"Unknown pooling: {self.pooling}")
+
 def binarize_logits(logits: torch.Tensor, thr: float = 0.5) -> torch.Tensor:
     """(B, C) logits -> (B, C) {0,1} via sigmoid threshold."""
     probs = logits.detach().sigmoid().to("cpu")
@@ -1110,8 +1013,7 @@ def subset_accuracy(logits: torch.Tensor, targets: torch.Tensor, thr: float = 0.
     t_cpu = targets.detach().to("cpu")
     eq = (preds == t_cpu).all(dim=1)  # (B,)
     return eq.float().mean().item()
-    
-    
+       
 # ---------------------------
 # Training / evaluation
 # ---------------------------
@@ -1145,37 +1047,35 @@ def train_epoch(encoder, head, loader, device, optimizer,
          y_harm, w_harm,
          y_ad,   w_ad) = batch
         
-        wavs   = wavs.to(device, non_blocking=True)   # (B, 1, T)
+        wavs = wavs.to(device, non_blocking=True)   # (B, 1, T)
         y_main = y_main.to(device, non_blocking=True)
         w_main = w_main.to(device, non_blocking=True)
         y_harm = y_harm.to(device, non_blocking=True)
         w_harm = w_harm.to(device, non_blocking=True)
-        y_ad   = y_ad.to(device, non_blocking=True)
-        w_ad   = w_ad.to(device, non_blocking=True)
+        y_ad = y_ad.to(device, non_blocking=True)
+        w_ad = w_ad.to(device, non_blocking=True)
         
         # Ensure shapes for ECAPA
         if wavs.ndim == 3 and wavs.size(1) == 1:
-            wavs_ecapa = wavs.squeeze(1)        # (B, T)
+            wavs_encoder = wavs.squeeze(1)        # (B, T)
         elif wavs.ndim == 2:
-            wavs_ecapa = wavs                   # (B, T)
+            wavs_encoder = wavs                   # (B, T)
         else:
             raise ValueError(f"Unexpected wavs shape: {wavs.shape}")
         
+        amp_ctx = torch.autocast(device_type=device.type, enabled=(use_amp and device.type=="cuda"))
+        
         with torch.no_grad():
-             # SpeechBrain ECAPA expects (B, T) or (B, 1, T) tensors; encode_batch handles both.
-             # print(f"[DEBUG] wavs.shape = {wavs.shape}, dtype={wavs.dtype}, device={wavs.device}")
-             emb_main = encoder.encode_batch(wavs_ecapa).squeeze(1) # (B, D)
-             
-             # 400-600ms center context
-             ctx_wavs = extract_center_context(wavs, ctx_frac)
-             ctx_ecapa = ctx_wavs.squeeze(1)
-             emb_ctx = encoder.encode_batch(ctx_ecapa).squeeze(1)
+            # SpeechBrain ECAPA expects (B, T) or (B, 1, T) tensors; encode_batch handles both.
+            # print(f"[DEBUG] wavs.shape = {wavs.shape}, dtype={wavs.dtype}, device={wavs.device}")
+            emb_main_b1, emb_ctx_b1 = encoder.encode_batch(wavs_encoder, ctx_frac=ctx_frac)
+            emb_main = emb_main_b1.squeeze(1)  # (B, D)
+            emb_ctx  = emb_ctx_b1.squeeze(1)   # (B, D)
              
         # Fuse multi-window embeddings
         emb_fused = torch.cat([emb_main, emb_ctx], dim=1)
         
         optimizer.zero_grad(set_to_none=True)
-        amp_ctx = torch.autocast(device_type=device.type, enabled=(use_amp and device.type=="cuda"))
         
         with amp_ctx:
             out = head(emb_fused, emb_ctx)
@@ -1183,20 +1083,20 @@ def train_epoch(encoder, head, loader, device, optimizer,
             logits_harm = out["harmony"]   # (B, C_members)
             logits_ad   = out["adlib"]     # (B, C_members)
             
-            # --- main head ---
-            loss_main_raw = bce(logits_main, y_main)
-            loss_main = (loss_main_raw * w_main).mean()
-            
-            # --- harmony head ---
-            loss_harm_raw = bce(logits_harm, y_harm)
-            loss_harm = (loss_harm_raw * w_harm).mean()
-            
-            # --- ad-lib head ---
-            loss_ad_raw = bce(logits_ad, y_ad) 
-            loss_ad = (loss_ad_raw * w_ad).mean()
-            
-            # Total loss with task weights
-            loss = loss_main + lambda_harmony * loss_harm + lambda_adlib * loss_ad
+        # --- main head ---
+        loss_main_raw = bce(logits_main, y_main)
+        loss_main = (loss_main_raw * w_main).mean()
+        
+        # --- harmony head ---
+        loss_harm_raw = bce(logits_harm, y_harm)
+        loss_harm = (loss_harm_raw * w_harm).mean()
+        
+        # --- ad-lib head ---
+        loss_ad_raw = bce(logits_ad, y_ad) 
+        loss_ad = (loss_ad_raw * w_ad).mean()
+        
+        # Total loss with task weights
+        loss = loss_main + lambda_harmony * loss_harm + lambda_adlib * loss_ad
         
         if scaler.is_enabled():
             scaler.scale(loss).backward()
@@ -1251,38 +1151,35 @@ def eval_epoch(encoder, head, loader, device, thr=0.5, use_amp=True,
         w_ad   = w_ad.to(device)
         
         if wavs.ndim == 3 and wavs.size(1) == 1:
-            wavs_ecapa = wavs.squeeze(1)
+            wavs_encoder = wavs.squeeze(1)
         elif wavs.ndim == 2:
-            wavs_ecapa = wavs
+            wavs_encoder = wavs
         else:
             raise ValueError(f"Unexpected wavs shape: {wavs.shape}")
 
+        # Full 2s
+        emb_main_b1, emb_ctx_b1 = encoder.encode_batch(wavs_encoder, ctx_frac=ctx_frac)
+        emb_main = emb_main_b1.squeeze(1)  # (B, D)
+        emb_ctx  = emb_ctx_b1.squeeze(1)  # (B, D)
+        
+        emb_fused = torch.cat([emb_main, emb_ctx], dim=1)    
+        
         with torch.autocast(device_type=device.type, enabled=(use_amp and device.type=="cuda")):
-            # Full 2s
-            emb_main = encoder.encode_batch(wavs_ecapa).squeeze(1)  # (B, D)
-            
-            # 0.5s center context
-            ctx_wavs = extract_center_context(wavs, ctx_frac=ctx_frac) # (B, 1, T_ctx)
-            ctx_ecapa = ctx_wavs.squeeze(1) # (B, T_ctx)
-            emb_ctx = encoder.encode_batch(ctx_ecapa).squeeze(1) # (B, D)
-            
-            emb_fused = torch.cat([emb_main, emb_ctx], dim=1)    
-            
             out = head(emb_fused, emb_ctx)
             logits_main = out["main"]
             logits_harm = out["harmony"]
-            logits_ad = out["adlib"]
-            
-            loss_main_raw = bce(logits_main, y_main)
-            loss_main = (loss_main_raw * w_main).mean()
-            
-            loss_harm_raw = bce(logits_harm, y_harm)
-            loss_harm = (loss_harm_raw * w_harm).mean()
-            
-            loss_ad_raw = bce(logits_ad, y_ad)
-            loss_ad = (loss_ad_raw * w_ad).mean()
-            
-            loss = loss_main + lambda_harm * loss_harm + lambda_ad * loss_ad
+            logits_ad   = out["adlib"]
+        
+        loss_main_raw = bce(logits_main, y_main)
+        loss_main = (loss_main_raw * w_main).mean()
+        
+        loss_harm_raw = bce(logits_harm, y_harm)
+        loss_harm = (loss_harm_raw * w_harm).mean()
+        
+        loss_ad_raw = bce(logits_ad, y_ad)
+        loss_ad = (loss_ad_raw * w_ad).mean()
+        
+        loss = loss_main + lambda_harm * loss_harm + lambda_ad * loss_ad
         
         bsz = wavs.size(0)
         total_loss += loss.item() * bsz
@@ -1294,10 +1191,14 @@ def eval_epoch(encoder, head, loader, device, thr=0.5, use_amp=True,
         total_rec += rec * bsz
         total_subset_acc += subset_accuracy(logits_main, y_main, thr=thr) * bsz
     
+    pred_pos = (torch.sigmoid(logits_main.detach()) > thr).float().sum(dim=1).mean().item()
+    true_pos = y_main.sum(dim=1).mean().item()
+    print(f"[DEBUG] avg_pred_pos={pred_pos:.2f} avg_true_pos={true_pos:.2f}")
+    
     avg_loss = total_loss / max(1, total_count)
-    avg_f1   = total_f1 / max(1, total_count)
-    avg_p    = total_prec / max(1, total_count)
-    avg_r    = total_rec / max(1, total_count)
+    avg_f1 = total_f1 / max(1, total_count)
+    avg_p = total_prec / max(1, total_count)
+    avg_r = total_rec / max(1, total_count)
     avg_subset = total_subset_acc / max(1, total_count)
     return avg_loss, {"micro_f1": avg_f1, "precision": avg_p, "recall": avg_r, "subset_acc": avg_subset}
 
@@ -1313,7 +1214,7 @@ def main():
     group_dir = os.path.join(args.root, "training_data", args.group)
     
     # Dataset & split
-    full_ds = KpopVocalDataset(group_dir, args.sr_ecapa, args.chunk_sec, num_workers=args.num_workers, group_name=args.group ,pitch_prob=0.0)
+    full_ds = KpopVocalDataset(group_dir, sr_out=args.sr_out, chunk_sec=args.chunk_sec, group_name=args.group, useMuq=True)
     
     print("Classes:", full_ds.class_map.idx_to_name)
     print("len(full_ds) =", len(full_ds))
@@ -1328,25 +1229,27 @@ def main():
     val_loader   = DataLoader(val_ds, batch_size=args.batch_size, shuffle=False,
                               num_workers=args.num_workers, pin_memory=True, drop_last=False)
     
-    # Load SpeachBrain ECAPA encoder (pretraiened)
+    # Load MuQ ECAPA encoder (pretraiened)
+    muq = MuQ.from_pretrained("OpenMuQ/MuQ-large-msd-iter")
+    muq.to(device).eval()
     
-    encoder = EncoderClassifier.from_hparams(
-        source="speechbrain/spkrec-ecapa-voxceleb",
-        run_opts={"device": "cuda" if device.type == "cuda" else "cpu"}
-    )
+    encoder = MuQEncoderWrapper(
+        muq_model=muq,
+        muq_sr=args.sr_out,
+        pooling="topk",
+        debug=False
+    ).to(device)
     
-    if args.freeze_ecapa:
-        for p in encoder.parameters():
-            p.requires_grad = False
-            
-    # Probe embedding dim with dummy forward
-    dummy = torch.zeros(
-        1, int(args.chunk_sec * args.sr_ecapa),
-        dtype=torch.float32, device=device   
-    )
+    dummy = torch.zeros(1, int(args.chunk_sec * args.sr_out), device=device)
+
+    # Ensure (B, T)
+    if dummy.ndim == 3 and dummy.size(1) == 1:
+        dummy = dummy.squeeze(1)
+
     with torch.no_grad():
-        emb_dim = encoder.encode_batch(dummy).squeeze(1).shape[-1]
-    
+        emb_main_b1, _ = encoder.encode_batch(dummy)  # tuple
+        emb_dim = emb_main_b1.squeeze(1).shape[-1]
+        
     fused_dim = emb_dim * 2
     num_members = full_ds.num_members
         
@@ -1366,9 +1269,9 @@ def main():
     
     best_acc = 0.0
     os.makedirs(args.save_dir, exist_ok=True)
-    ckpt_path = os.path.join(args.save_dir, f"{args.group}_ecapa_head.pt")
+    ckpt_path = os.path.join(args.save_dir, f"{args.group}_muq_head.pt")
     
-    eval_thr = getattr(args, "eval_thr", 0.5)
+    eval_thr = getattr(args, "eval_thr", 0.7)
     
     for epoch in range(1, args.epochs + 1):
         print(f"\nEpoch {epoch}/{args.epochs}")
@@ -1397,7 +1300,7 @@ def main():
                 "state_dict": head.state_dict(),
                 "classes": full_ds.class_map.idx_to_name,
                 "emb_dim": emb_dim,
-                "sr": args.sr_ecapa,
+                "sr": args.sr_out,
                 "chunk_sec": args.chunk_sec,
                 "group": args.group,
                 "eval_thr": eval_thr,

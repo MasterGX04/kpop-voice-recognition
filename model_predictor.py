@@ -2,15 +2,15 @@ import numpy as np
 import torch, torchaudio, math
 import itertools
 import torch.nn.functional as F
-from speechbrain.inference.speaker import EncoderClassifier
-from train_kpop_singers import MultiTaskHead, extract_center_context
+from train_kpop_singers import MultiTaskHead, MuQEncoderWrapper
+from muq import MuQ
 from scipy.ndimage import median_filter
 import os, csv
 
 @torch.no_grad()
 def predict_40ms(
     encoder_path: str, head_path: str, wav_path: str    ,
-    sr_target=16000, win_sec=2.0, hop_sec=0.04, use_hann=True,
+    sr_target=24000, win_sec=2.0, hop_sec=0.04, use_hann=True,
     output_dir=None, class_names=None, thr_main=0.5, 
     thr_harm: float = 0.45, thr_adlib: float = 0.6
 ):
@@ -28,10 +28,10 @@ def predict_40ms(
       }
     """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    encoder = EncoderClassifier.from_hparams(
-        source=encoder_path,
-        run_opts={"device": device.type}
-    )
+    muq = muq = MuQ.from_pretrained(encoder_path)
+    muq.eval()
+    encoder = MuQEncoderWrapper(muq_model=muq, muq_sr=24000, pooling="mean", debug=False).to(device)
+    encoder.eval()
     
     ckpt = torch.load(head_path, map_location=device)
     emb_dim = ckpt["emb_dim"] # 192
@@ -114,16 +114,11 @@ def predict_40ms(
 
         batch = torch.stack(batch_windows, 0)
         # ECAPA wants (B, T)
-        emb_main = encoder.encode_batch(batch).squeeze(1)
+        emb_main_b1, emb_ctx_b1 = encoder.encode_batch(batch, ctx_frac=0.25)
+        emb_main = emb_main_b1.squeeze(1)
+        emb_ctx  = emb_ctx_b1.squeeze(1)
         
-        # --- CONTEXT EMBEDDING ---
-        # 0.5 s center context per 2s window
-        wavs_3d = batch.unsqueeze(1) # (B, 1, T)
-        ctx_wavs = extract_center_context(wavs_3d, ctx_frac=0.25)  # (B, 1, T_ctx)
-        ctx_ecapa = ctx_wavs.squeeze(1)                    
-        emb_ctx = encoder.encode_batch(ctx_ecapa).squeeze(1)
-        
-        # fUSE + HEAD 
+        # Fuse + Head
         emb_fused = torch.cat([emb_main, emb_ctx], dim=1)
         
         out = head(emb_fused, emb_ctx)
@@ -336,8 +331,8 @@ def predict_40ms(
 
         labels_40ms.append({
             "main": main_name,
-            "harmony": harm_names,
-            "adlib": ad_names,
+            "harmony": [],
+            "adlib": [],
         })
 
     return labels_40ms

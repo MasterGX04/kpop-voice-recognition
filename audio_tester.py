@@ -164,7 +164,7 @@ class VoiceDetectionApp:
             os.makedirs("./predictions", exist_ok=True)
             try:
                 labels40 = predict_40ms(
-                    encoder_path="speechbrain/spkrec-ecapa-voxceleb",
+                    encoder_path="OpenMuQ/MuQ-large-msd-iter",
                     head_path=modelPath,
                     wav_path=vocalsOnlyPath,
                     output_dir=os.path.join(".", "predictions"), 

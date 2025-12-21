@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import os
 from PIL import Image, ImageTk
-from audio_processing import combineMemberVocals, getSongsFromSameAlbum, extractAndSaveHarmoniesFromSong
+from audio_processing import combineMemberVocals, getSongsFromSameAlbum
 from audio_tester import VoiceDetectionApp, loadMemberImages
 import sys
 
@@ -178,7 +178,7 @@ class VoiceTrainerGUI:
         When a song is clicked, the callback(songName) is triggered.
         """
         songDir = f"./training_data/{selectedGroup}"
-        songList = [f.replace(".mp3", "") for f in os.listdir(songDir) if f.endswith(".mp3") and "_vocals" not in f]
+        songList = [f.replace(".wav", "") for f in os.listdir(songDir) if f.endswith(".wav") and "_vocals" not in f]
 
         if not songList:
             print("❌ No songs available.")
@@ -236,11 +236,11 @@ class VoiceTrainerGUI:
     def testModel(self):
         selectedGroup = self.currentGroup.get()
         songDir = f"./training_data/{selectedGroup}"
-        modelPath = f"./models/{selectedGroup}_ecapa_head.pt"
+        modelPath = f"./models/{selectedGroup}_muq_head.pt"
 
         def launchVoiceApp(songName):
             testSongPath = os.path.join(songDir, f"{songName}.mp3")
-            vocalsOnlyPath = os.path.join(songDir, f"{songName}_vocals.mp3")
+            vocalsOnlyPath = os.path.join(songDir, f"{songName}_vocals.wav")
             
             if not os.path.exists(vocalsOnlyPath):
                 print(f"⚠️ Vocals-only file not found for {songName}")
@@ -307,10 +307,12 @@ class VoiceTrainerGUI:
             if f.endswith("_labels.json")
         ]
         
-        # Get all '_vocals.mp3' files
+        # Get all '_vocals.wav' files
         vocalsOnlySongs = [
             f for f in os.listdir(audioDir)
-            if f.endswith("_vocals.mp3")
+            if f.endswith("_vocals.wav")
+            and not f.endswith("_leading_vocals.wav")
+            and not f.endswith("_backing_vocals.wav")
         ]
         
         if not jsonFiles or not vocalsOnlySongs:
