@@ -51,18 +51,17 @@ class LyricBox:
         else:
             self.createLyricDisplay()
     
-    def loadMemberPhotos(self, memberNames, ):
+    def loadMemberPhotos(self, memberNames):
         """Load profile images for each member in a multi-member lyric."""
         if isinstance(memberNames, str):  # Convert single name to list for consistency
             memberNames = [memberNames]
         
         photos = []
-        songsFromSameAlbum = getSongsFromSameAlbum()
-        songName = os.path.splitext(os.path.basename(self.parent.testSongPath))[0]
+        songsFromSameAlbum = getSongsFromSameAlbum()[0]
         albumName = None
     
         for album, songs in songsFromSameAlbum[self.parent.selectedGroup].items():
-            if songName in songs:
+            if self.parent.songName in songs:
                 albumName = album
                 break  # Exit once we find the album
             

@@ -1,0 +1,183 @@
+[
+  {
+    "labels": [],
+    "description": "add start marker"
+  },
+  {
+    "labels": [],
+    "description": "add end marker"
+  },
+  {
+    "labels": [
+      [
+        "V",
+        259,
+        537,
+        true,
+        false
+      ]
+    ],
+    "description": "add start marker"
+  },
+  {
+    "labels": [
+      [
+        "V",
+        259,
+        537,
+        true,
+        false
+      ]
+    ],
+    "description": "add end marker"
+  },
+  {
+    "labels": [
+      [
+        "V",
+        259,
+        537,
+        true,
+        false
+      ],
+      [
+        "J-Hope",
+        275,
+        553,
+        false,
+        false
+      ]
+    ],
+    "description": "split gap 332-399"
+  },
+  {
+    "labels": [
+      [
+        "V",
+        259,
+        331,
+        true,
+        false
+      ],
+      [
+        "J-Hope",
+        275,
+        553,
+        false,
+        false
+      ],
+      [
+        "V",
+        400,
+        537,
+        true,
+        false
+      ]
+    ],
+    "description": "marker drag"
+  },
+  {
+    "labels": [
+      [
+        "V",
+        259,
+        331,
+        true,
+        false
+      ],
+      [
+        "J-Hope",
+        275,
+        553,
+        false,
+        false
+      ],
+      [
+        "V",
+        396,
+        537,
+        true,
+        false
+      ]
+    ],
+    "description": "marker drag"
+  },
+  {
+    "labels": [
+      [
+        "V",
+        259,
+        331,
+        true,
+        false
+      ],
+      [
+        "J-Hope",
+        275,
+        553,
+        false,
+        false
+      ],
+      [
+        "V",
+        396,
+        537,
+        true,
+        false
+      ]
+    ],
+    "description": "marker move left"
+  },
+  {
+    "labels": [
+      [
+        "V",
+        259,
+        331,
+        true,
+        false
+      ],
+      [
+        "J-Hope",
+        275,
+        553,
+        false,
+        false
+      ],
+      [
+        "V",
+        395,
+        537,
+        true,
+        false
+      ]
+    ],
+    "description": "marker drag"
+  },
+  {
+    "labels": [
+      [
+        "V",
+        259,
+        331,
+        true,
+        false
+      ],
+      [
+        "J-Hope",
+        275,
+        553,
+        false,
+        false
+      ],
+      [
+        "V",
+        395,
+        537,
+        true,
+        false
+      ]
+    ],
+    "description": "marker move left"
+  }
+]

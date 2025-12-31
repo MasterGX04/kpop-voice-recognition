@@ -34,6 +34,8 @@ Thumbs.db
 audits/
 pyannote-audio/
 Retrieval-based-Voice-Conversion/
+ultimatevocalremovergui/
+vocal_stem_separations/
 
 # --- Temporary data, training outputs ---
 checkpoints/
@@ -43,6 +45,7 @@ data/
 tmp/
 pitch_test/
 debug_harmonies/
+cache_audio/
 
 overfit_test.py
 voice_classifier.py

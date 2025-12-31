@@ -239,14 +239,16 @@ class VoiceTrainerGUI:
         modelPath = f"./models/{selectedGroup}_muq_head.pt"
 
         def launchVoiceApp(songName):
-            testSongPath = os.path.join(songDir, f"{songName}.mp3")
+            testSongPath = os.path.join(songDir, f"{songName}.wav")
             vocalsOnlyPath = os.path.join(songDir, f"{songName}_vocals.wav")
+            vocalsLeadPath = os.path.join(songDir, f"{songName}_leading_vocals.wav")
+            vocalsBackingPath =  os.path.join(songDir, f"{songName}_backing_vocals.wav")
             
             if not os.path.exists(vocalsOnlyPath):
                 print(f"⚠️ Vocals-only file not found for {songName}")
                 vocalsOnlyPath = testSongPath  # fallback
 
-            images = loadMemberImages(selectedGroup, self.groups[selectedGroup], testSongPath)
+            images = loadMemberImages(selectedGroup, self.groups[selectedGroup], songName)
             appWindow = tk.Toplevel(self.root)
             continueApp = [True]
             memberList = self.groups[selectedGroup][0]['name']
@@ -257,6 +259,7 @@ class VoiceTrainerGUI:
                     if hasattr(app, "videoTrackItem") and app.videoTrackItem:
                         app.videoTrackItem.pause()
                         app.videoTrackItem.stop()
+
                     continueApp[0] = False
                     root.destroy()
                     sys.exit()
@@ -271,6 +274,8 @@ class VoiceTrainerGUI:
                 images,
                 testSongPath,
                 vocalsOnlyPath,
+                vocalsLeadPath,
+                vocalsBackingPath,
                 selectedGroup
             )
             if hasattr(app, "videoTrackItem") and app.videoTrackItem and app.videoTrackItem.thread:

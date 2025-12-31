@@ -489,27 +489,56 @@ class TrackItem:
         )
         
         self.parent.canvas.tag_lower(self.progressBarCanvasImage, self.imageId)
-     
+    
+    def _shadeHex(self, hexColor: str, amount: float) -> str:
+        """
+        amount in [-1.0 .. 1.0]
+        < 0 → darken
+        > 0 → lighten
+        """
+        r = int(hexColor[1:3], 16)
+        g = int(hexColor[3:5], 16)
+        b = int(hexColor[5:7], 16)
+
+        if amount > 0:
+            r += (255 - r) * amount
+            g += (255 - g) * amount
+            b += (255 - b) * amount
+        else:
+            r *= (1 + amount)
+            g *= (1 + amount)
+            b *= (1 + amount)
+
+        return "#{:02x}{:02x}{:02x}".format(
+            int(max(0, min(255, r))),
+            int(max(0, min(255, g))),
+            int(max(0, min(255, b))),
+        )
+    
     def getColor(self) -> str:
         role = getattr(self, "currentRole", "none")
-        
+        base = self.progressBarColor  # always hex
+
         if role == "main":
-            color = self.progressBarColor
-        elif role == "harmony":
-            color = "#66ccff"
-        elif role == "adlib":
-            color = "#cc66ff" 
-        else: # none
-            color = "#ffffff"
-            
-        return color
+            return base
+        if role == "harmony":
+            return self._shadeHex(base, -0.35)  # darker
+        if role == "adlib":
+            return self._shadeHex(base, +0.35)  # lighter
+        return "#ffffff"
        
     def updateProgressBar(self, currentChunk, maxTime):
         currentTime = self.timeline[currentChunk]
         
-        if maxTime == 0 or currentTime == 0.0:
+        if maxTime == 0:
+            return
+        
+        if currentTime == 0.0:
+            if hasattr(self, "progressBarCanvasImage") and self.progressBarCanvasImage:
+                self.parent.canvas.itemconfig(self.progressBarCanvasImage, state="hidden")
             return
          
+        self.parent.canvas.itemconfig(self.progressBarCanvasImage, state="normal")
         progress = currentTime / maxTime
         xStart = 1920 * self.parent.scaleX * 1 / 16 - self.progressBarHeight // 2
         xEnd = min(xStart + progress * (self.timerX - xStart), self.timerX) # Update later

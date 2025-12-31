@@ -1,13 +1,11 @@
-import os, traceback
-import numpy as np
+import os, traceback, hashlib
 import time
 from PIL import Image, ImageTk
 import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
 from pydub import AudioSegment
 from TrackItem import TrackItem
-from collections import defaultdict
-import numpy as np
+from collections import defaultdict, Counter
 import pygame
 from VideoTrack import VideoTrackItem
 from navigation_arrows import NavigationArrows
@@ -20,10 +18,9 @@ from model_predictor import predict_40ms
 import math
 
 # Load images for member
-def loadMemberImages(groupName, members: dict, songPath):
+def loadMemberImages(groupName, members: dict, songName):
     images = {}
     songsFromSameAlbum = getSongsFromSameAlbum()
-    songName = os.path.splitext(os.path.basename(songPath))[0]
     albumName = None
     groupAlbums = songsFromSameAlbum.get(groupName, {})
     
@@ -61,19 +58,61 @@ def loadMemberImages(groupName, members: dict, songPath):
     return images
 # end loadMemberImages
 
+def cacheKeyForPath(path: str) -> str:
+    # key changes if the file changes (mtime + size)
+    st = os.stat(path)
+    s = f"{os.path.abspath(path)}|{st.st_mtime_ns}|{st.st_size}"
+    return hashlib.sha1(s.encode("utf-8")).hexdigest()
+
+def ensureAudioForPlayback(path: str, cacheDir: str = "cache_audio", targetSr: int = 22050):
+    """
+    Returns a cached path that is resampled to targetSr and stored as mp3 for size.
+    """
+    os.makedirs(cacheDir, exist_ok=True)
+    key = cacheKeyForPath(path)
+    outPath = os.path.join(cacheDir, f"{key}_sr{targetSr}.mp3")
+
+    if os.path.exists(outPath):
+        return outPath, False
+
+    audio = AudioSegment.from_file(path)  # wav/mp3/etc
+    audio = audio.set_frame_rate(targetSr)
+    # optional: force mono for smaller file + consistent timing
+    audio.export(outPath, format="mp3")
+    return outPath, True
+
 class VoiceDetectionApp:
-    def __init__(self, root, trainingMember, members, modelPath, images, testSongPath, vocalsOnlyPath, selectedGroup):
+    def __init__(self, root, trainingMember, members, modelPath, images, testSongPath, vocalsOnlyPath, vocalsLeadPath, vocalsBackingPath, selectedGroup):
         self.root = root
         self.trainingMember = trainingMember
         self.members = members
         self.images = images
-        self.testSongPath = testSongPath
         self.playbackThread = None
-        self.vocalsOnlyPath = vocalsOnlyPath
+        
+        self.cachedFiles = set()
+        self.songName = os.path.splitext(os.path.basename(testSongPath))[0]
+
+        # names for leading and backing vocal files
+        cachedMix, createdMix = ensureAudioForPlayback(testSongPath)
+        cachedVocals, createdVocals = ensureAudioForPlayback(vocalsOnlyPath)
+
+        self.testSongPath = cachedMix
+        self.vocalsOnlyPath = cachedVocals
+        self.vocalsLeadPath = vocalsLeadPath
+        self.vocalsBackingPath = vocalsBackingPath
+
+        if createdMix:
+            self.cachedFiles.add(self.testSongPath)
+        if createdVocals:
+            self.cachedFiles.add(self.vocalsOnlyPath)
+            
         self.selectedGroup = selectedGroup
         # Which audio file pyame should currently play
         self.currentAudioPath = self.testSongPath
         self.audioMode = "mix" # Or vocals
+        self.leadEnabled = True      # default: lead on
+        self.backEnabled = False     # default: backing off
+        self.panMode = "split"
 
         self.baseWidth = 1920
         self.baseHeight = 1080
@@ -148,7 +187,7 @@ class VoiceDetectionApp:
             self.updateElementPositions()
         
         # Initialize VideoTrack
-        videoPath = f"./training_data/{self.selectedGroup}/{os.path.basename(self.testSongPath).replace('.mp3', '.mp4')}"
+        videoPath = f"./training_data/{self.selectedGroup}/{self.songName}.mp4"
         if os.path.exists(videoPath):
             self.videoTrackItem = VideoTrackItem(self.canvas, self, videoPath, scale=100, scaleX=self.scaleX, position=(0,0), baseHeight=720)
         else:
@@ -233,12 +272,32 @@ class VoiceDetectionApp:
 
     def onClose(self):
         """Cleanly stop audio/video playback when this window is closed."""
+        self.isPlaying = False
+        self.isPaused = False
+        self.isManualUpdate = True
+        
         # Stop music if it's playing
         try:
-            if pygame.mixer.get_init() and pygame.mixer.music.get_busy():
-                pygame.mixer.music.stop()
+            if pygame.mixer.get_init():
+                try:
+                    pygame.mixer.music.stop()
+                except Exception:
+                    pass
+
+                # pygame 2.x has unload(); this is what actually releases the file handle
+                try:
+                    pygame.mixer.music.unload()
+                except Exception:
+                    # unload may not exist on very old pygame
+                    pass
+
+                # Quit mixer to be extra sure no handle remains
+                try:
+                    pygame.mixer.quit()
+                except Exception:
+                    pass
         except Exception as e:
-            print("Error stopping music on close:", e)
+            print("Error stopping/closing mixer on close:", e)
 
         # Stop video if present
         if hasattr(self, "videoTrackItem") and self.videoTrackItem:
@@ -247,11 +306,8 @@ class VoiceDetectionApp:
                 self.videoTrackItem.stop()
             except Exception as e:
                 print("Error stopping video on close:", e)
-
-        # Optional: reset flags
-        self.isPlaying = False
-        self.isPaused = False
-
+        
+        self.cleanupCachedAudio()
         # Destroy just this window (the UI window), not the whole app
         self.root.destroy()
       
@@ -268,7 +324,7 @@ class VoiceDetectionApp:
         self.initializePositions()
     
     def _getHistoryFilePath(self):
-        fileNameWithoutExtension = os.path.splitext(os.path.basename(self.testSongPath))[0]
+        fileNameWithoutExtension = self.songName
         return f"./saved_labels/{self.selectedGroup}/{fileNameWithoutExtension}_history.json"
         
     def setPredictedPointsFromMask(self, binaryMask, minSingingLength=3):
@@ -344,12 +400,11 @@ class VoiceDetectionApp:
     def createVideo(self, event):
         print("Video record function called!")
         if hasattr(self, "videoTrackItem"):
-            songNameWithoutExtension = os.path.splitext(os.path.basename(self.testSongPath))[0]
             self.toggleUIElements()
             if (self.videoTrackItem.isMusicVideo):
-                self.videoTrackItem.processVideoAndSave(outputPath=songNameWithoutExtension + ".mp4")
+                self.videoTrackItem.processVideoAndSave(outputPath=self.songName + ".mp4")
             else:
-                self.videoTrackItem.processVideoAndSave(outputPath=songNameWithoutExtension + ".mp4", fpsCap=30)
+                self.videoTrackItem.processVideoAndSave(outputPath=self.songName + ".mp4", fpsCap=30)
         # else:
         #     self.toggleUIElements()
                        
@@ -557,8 +612,7 @@ class VoiceDetectionApp:
         self.updateTimeMarkersDict()
 
         # --- Save updated labels back to JSON (sorted by start index for safety) ---
-        fileNameWithoutExtension = os.path.splitext(os.path.basename(self.testSongPath))[0]
-        labelFilePath = f"./saved_labels/{self.selectedGroup}/{fileNameWithoutExtension}_labels.json"
+        labelFilePath = f"./saved_labels/{self.selectedGroup}/{self.songName}_labels.json"
 
         try:
             sortedLabels = sorted(self.labels, key=lambda label: label[1])
@@ -889,8 +943,7 @@ class VoiceDetectionApp:
         self.initializePositions()
 
         # Also overwrite the main labels JSON so it matches this state
-        fileNameWithoutExtension = os.path.splitext(os.path.basename(self.testSongPath))[0]
-        labelFilePath = f"./saved_labels/{self.selectedGroup}/{fileNameWithoutExtension}_labels.json"
+        labelFilePath = f"./saved_labels/{self.selectedGroup}/{self.songName}_labels.json"
         try:
             with open(labelFilePath, "w") as f:
                 json.dump(self.labels, f, separators=(",", ":"))
@@ -954,8 +1007,7 @@ class VoiceDetectionApp:
             return
         
         print("Labels have been updated!")
-        fileNameWithoutExtension = os.path.splitext(os.path.basename(self.testSongPath))[0]
-        labelFilePath = f"./saved_labels/{self.selectedGroup}/{fileNameWithoutExtension}_labels.json"
+        labelFilePath = f"./saved_labels/{self.selectedGroup}/{self.songName}_labels.json"
         
         try:
             # with open(labelFilePath, "r") as file:
@@ -1163,6 +1215,22 @@ class VoiceDetectionApp:
         self.chunkIndexLabel = tk.Label(chunkIndexFrame, text=str(self.currentChunkIndex), bg="gray", fg="white", font=("Arial", 10))
         self.chunkIndexLabel.pack(side="top")
      
+    def cleanupCachedAudio(self):
+        # stop pygame playback first so Windows doesn't lock the file
+        try:
+            if pygame.mixer.get_init():
+                pygame.mixer.music.stop()
+        except Exception:
+            pass
+
+        for path in getattr(self, "cachedFiles", []):
+            try:
+                if path and os.path.exists(path):
+                    os.remove(path)
+                    print(f"🧹 Deleted temp audio: {os.path.basename(path)}")
+            except Exception as e:
+                print(f"⚠️ Failed to delete temp audio {path}: {e}")
+    
     def onCanvasResize(self, event):
         aspectRatio = self.baseWidth / self.baseHeight 
         newWidth = int(self.canvas.winfo_width() * 0.75)
@@ -1321,8 +1389,7 @@ class VoiceDetectionApp:
      
     def loadSavedLabels(self):
         """Load saved labels from a JSON file and update markers"""
-        songName = os.path.basename(self.testSongPath).replace(".mp3", "")
-        labelFilePath = f"./saved_labels/{self.selectedGroup}/{songName}_labels.json"
+        labelFilePath = f"./saved_labels/{self.selectedGroup}/{self.songName}_labels.json"
         
         if not os.path.exists(labelFilePath):
             print(f"No saved labels found at {labelFilePath}.") 
@@ -2020,8 +2087,7 @@ class VoiceDetectionApp:
             self.lyricPositions = {}
             self.initializeAllLyricPositions(self.lyrics)
             
-            fileNameWithoutExtension = os.path.splitext(os.path.basename(self.testSongPath))[0]
-            lyricsPath = f"./saved_labels/{self.selectedGroup}/{fileNameWithoutExtension}_lyrics.json"
+            lyricsPath = f"./saved_labels/{self.selectedGroup}/{self.songName}_lyrics.json"
             
             os.makedirs(os.path.dirname(lyricsPath), exist_ok=True)
             
@@ -2099,6 +2165,10 @@ class VoiceDetectionApp:
         self.root.bind_all("<space>", self.togglePlayPause)
         self.root.bind("<KeyPress-v>", self.toggleAudioMode)
         
+        self.canvas.bind("<Shift-L>", lambda e: self.toggleLeadBacking("lead", e))
+        self.canvas.bind("<Shift-B>", lambda e: self.toggleLeadBacking("back", e))
+        self.canvas.bind("<Shift-P>", self.togglePanMode)
+        
         # split current label at current chunk
         self.canvas.bind("<KeyPress-x>", self.handleSplitGapKey)
         self.canvas.bind("<Escape>", self.cancelSplitGap)
@@ -2109,8 +2179,7 @@ class VoiceDetectionApp:
         
     def loadLyricsFromFile(self):
         """Loads lyrics from a JSON file and adds them to self.lyrics."""
-        fileNameWithoutExtension = os.path.splitext(os.path.basename(self.testSongPath))[0]
-        lyricsFilePath = f"./saved_labels/{self.selectedGroup}/{fileNameWithoutExtension}_lyrics.json"
+        lyricsFilePath = f"./saved_labels/{self.selectedGroup}/{self.songName}_lyrics.json"
         
         if not os.path.exists(lyricsFilePath):
             print(f"Lyrics file not found: {lyricsFilePath}")
@@ -2202,7 +2271,7 @@ class VoiceDetectionApp:
                     
                     if not isBacking and not isAdlib:
                         trackItem.currentRole = "main"
-                    elif not isBacking and isAdlib:
+                    elif isAdlib:
                         trackItem.currentRole = "adlib"
                     else:
                         trackItem.currentRole = "harmony"
@@ -2333,43 +2402,57 @@ class VoiceDetectionApp:
     
     def getLabels(self):
         matchedPoints = []
-        usedPairs = set()  # Track used (start, end) pairs
-        usedEnds = set()
-        usedStarts = set()
 
         sortedStartPoints = sorted(self.startPoints)
         sortedEndPoints = sorted(self.endPoints)
 
-        usedPairs = set()  # Track used (start, end) pairs specifically
+        startCounts = Counter(sortedStartPoints)
+        endCounts = Counter(sortedEndPoints)
 
-        # Step 1: Add all labels directly from self.labels
+        # Pairs that exist in real labels (regardless of member)
+        realPairs = set()
+
+        # Step 1) Add all real labels (allow same (start,end) with different members)
         for label in self.labels:
             member, labelStart, labelEnd = label[:3]
             isBacking = label[3] if len(label) > 3 else False
             isAdLib = label[4] if len(label) > 4 else False
 
             matchedPoints.append((member, labelStart, labelEnd, isBacking, isAdLib))
-            usedPairs.add((labelStart, labelEnd))
-            usedStarts.add(labelStart)
-            usedEnds.add(labelEnd)
+            realPairs.add((labelStart, labelEnd))
 
-        # Step 2: Match any additional (unlabeled) start/end points
-        remainingStarts = [s for s in sortedStartPoints if s not in usedStarts or sortedStartPoints.count(s) > 1]
-        remainingEnds = [e for e in sortedEndPoints if e not in usedEnds or sortedEndPoints.count(e) > 1]
+            # Consume one start/end marker occurrence per label instance
+            if startCounts[labelStart] > 0:
+                startCounts[labelStart] -= 1
+            if endCounts[labelEnd] > 0:
+                endCounts[labelEnd] -= 1
 
-        matchedEndIndices = set()
-        
+        remainingStarts = sorted([s for s, c in startCounts.items() for _ in range(c)])
+        remainingEnds = sorted([e for e, c in endCounts.items() for _ in range(c)])
+
+        # Step 2) Pair leftover markers into placeholder labels (None member)
+        endIdx = 0
         for startPoint in remainingStarts:
-            # Allow duplicate startPoints if they haven't been used in that exact pairing
-            for i, endPoint in enumerate(remainingEnds):
-                if endPoint > startPoint and (startPoint, endPoint) not in usedPairs and i not in matchedEndIndices:
-                    matchedPoints.append((None, startPoint, endPoint, False, False))
-                    usedPairs.add((startPoint, endPoint))
-                    matchedEndIndices.add(i)
-                    break  # Move on to next startPoint
+            while endIdx < len(remainingEnds) and remainingEnds[endIdx] <= startPoint:
+                endIdx += 1
+            if endIdx >= len(remainingEnds):
+                break
 
-        # Final sort by start point
-        matchedPoints.sort(key=lambda x: x[1])
+            endPoint = remainingEnds[endIdx]
+            endIdx += 1
+
+            # IMPORTANT: only prevent placeholders that duplicate an existing real pair
+            if (startPoint, endPoint) in realPairs:
+                continue
+
+            matchedPoints.append((None, startPoint, endPoint, False, False))
+            # no need to track placeholder pairs unless you can generate same placeholder twice
+
+        # Stable sort:
+        # - by start
+        # - then end
+        # - then real labels before placeholders
+        matchedPoints.sort(key=lambda x: (x[1], x[2], 1 if x[0] is None else 0))
         return matchedPoints
 
     # Helper function to check if chunk is in any area
@@ -2708,9 +2791,8 @@ class VoiceDetectionApp:
         self.canvas.update()
         self.root.update_idletasks()
 
-        # Save to the same labels JSON you already use
-        fileNameWithoutExtension = os.path.splitext(os.path.basename(self.testSongPath))[0]
-        labelFilePath = f"./saved_labels/{self.selectedGroup}/{fileNameWithoutExtension}_labels.json"
+        # Save to the same labels JSON you already use=
+        labelFilePath = f"./saved_labels/{self.selectedGroup}/{self.songName}_labels.json"
         try:
             with open(labelFilePath, "w") as f:
                 json.dump(self.labels, f, indent=4)
@@ -2840,6 +2922,150 @@ class VoiceDetectionApp:
         # Start updating chunks
         updateChunk()
     # end playWIthSavedResults
+    def getPlaybackTimeMs(self):
+        if self.isPlaying and not self.isPaused and pygame.mixer.get_init():
+            pos = pygame.mixer.music.get_pos()
+            if pos < 0: pos = 0
+            return self.playbackOffset + pos
+        return self.currentChunkIndex * self.chunk_duration
+    
+    def _submixKey(self, leadOn: bool, backOn: bool, panMode: str) -> str:
+        # include source paths in key so changing files changes cache
+        leadPath = self.vocalsLeadPath or ""
+        backPath = self.vocalsBackingPath or ""
+        base = f"{leadPath}|{backPath}|lead={leadOn}|back={backOn}|pan={panMode}"
+        return hashlib.sha1(base.encode("utf-8")).hexdigest()
+    
+    def buildVocalsSubmixPath(self, leadOn: bool, backOn: bool, panMode: str = "mono",
+                          cacheDir: str = "cache_audio", targetSr: int = 22050) -> str:
+        """
+        Returns a cached path for the requested vocals submix.
+        Requires vocalsLeadPath / vocalsBackingPath to exist.
+        """
+        os.makedirs(cacheDir, exist_ok=True)
+
+        if not leadOn and not backOn:
+            # don't allow silence: fall back to normal vocals-only
+            return self.vocalsOnlyPath
+
+        key = self._submixKey(leadOn, backOn, panMode)
+        outPath = os.path.join(cacheDir, f"submix_{key}_sr{targetSr}.mp3")
+        if os.path.exists(outPath):
+            return outPath
+
+        # Load stems
+        lead = AudioSegment.from_file(self.vocalsLeadPath) if leadOn else None
+        back = AudioSegment.from_file(self.vocalsBackingPath) if backOn else None
+
+        # Make sure SR matches, and align duration
+        def norm(a):
+            return a.set_frame_rate(targetSr).set_sample_width(2)
+        if lead: lead = norm(lead)
+        if back: back = norm(back)
+
+        # Pad shorter one with silence so overlay doesn't truncate
+        maxLen = max(len(x) for x in [lead, back] if x is not None)
+        if lead and len(lead) < maxLen:
+            lead += AudioSegment.silent(duration=maxLen - len(lead), frame_rate=targetSr)
+        if back and len(back) < maxLen:
+            back += AudioSegment.silent(duration=maxLen - len(back), frame_rate=targetSr)
+
+        if panMode == "split":
+            # Build stereo where lead is left-only and backing is right-only.
+            # Use pan(-1) fully left, pan(+1) fully right, then overlay.
+            mix = AudioSegment.silent(duration=maxLen, frame_rate=targetSr).set_channels(2)
+
+            if lead:
+                mix = mix.overlay(lead.set_channels(2).pan(-1.0))
+            if back:
+                mix = mix.overlay(back.set_channels(2).pan(+1.0))
+        else:
+            # Normal mono mix (or stereo but centered)
+            # Start with lead/back whichever exists
+            if lead and back:
+                mix = lead.overlay(back)
+            else:
+                mix = lead if lead else back
+            # Keep mono for size/consistency
+            mix = mix.set_channels(1)
+
+        mix.export(outPath, format="mp3")
+        self.cachedFiles.add(outPath)
+        return outPath
+
+    def switchAudioPathPreserveTime(self, newPath: str, playbackTimeMs: int):
+        self.currentAudioPath = newPath
+        if self.isPlaying and not self.isPaused:
+            pygame.mixer.music.stop()
+            pygame.mixer.music.load(self.currentAudioPath)
+            pygame.mixer.music.play(start=playbackTimeMs / 1000.0)
+            self.playbackOffset = playbackTimeMs
+
+        # UI sync
+        self.currentChunkIndex = min(int(playbackTimeMs / self.chunk_duration), len(self.chunks) - 1)
+        self.updateChunkText(self.currentChunkIndex)
+        self.updateProgressBarHandle(playbackTimeMs)
+        self.updateDisplayedTime(playbackTimeMs)
+        self.updateCanvasForCurrentPosition(self.currentChunkIndex)
+        
+    def toggleLeadBacking(self, which: str, event=None):
+        """
+        which = "lead" or "back"
+        Only works when audioMode == "vocals".
+        """
+        if self.audioMode != "vocals":
+            print("ℹ️ Lead/back toggles only work in VOCALS mode (press V first).")
+            return
+
+        if not self.vocalsLeadPath or not os.path.exists(self.vocalsLeadPath):
+            print("⚠️ Missing lead-only vocals file; cannot toggle lead/back.")
+            return
+        if not self.vocalsBackingPath or not os.path.exists(self.vocalsBackingPath):
+            print("⚠️ Missing backing-only vocals file; cannot toggle lead/back.")
+            return
+
+        playbackTime = self.getPlaybackTimeMs()
+
+        if which == "lead":
+            self.leadEnabled = not self.leadEnabled
+        elif which == "back":
+            self.backEnabled = not self.backEnabled
+        else:
+            return
+
+        # Don't allow both off
+        if not self.leadEnabled and not self.backEnabled:
+            # if user toggled one off, keep the other on
+            if which == "lead":
+                self.backEnabled = True
+            else:
+                self.leadEnabled = True
+
+        submixPath = self.buildVocalsSubmixPath(
+            leadOn=self.leadEnabled,
+            backOn=self.backEnabled,
+            panMode=self.panMode
+        )
+
+        self.switchAudioPathPreserveTime(submixPath, playbackTime)
+
+        # Debug message
+        mode = []
+        if self.leadEnabled: mode.append("LEAD")
+        if self.backEnabled: mode.append("BACK")
+        print(f"🎛️ Vocals submix: {'+'.join(mode)} | pan={self.panMode}")
+    
+    def togglePanMode(self, event=None):
+        if self.audioMode != "vocals":
+            print("ℹ️ Pan mode only works in VOCALS mode.")
+            return
+        self.panMode = "split" if self.panMode == "mono" else "mono"
+        print(f"🎧 Pan mode: {self.panMode}")
+
+        # Rebuild current submix immediately
+        playbackTime = self.getPlaybackTimeMs()
+        submixPath = self.buildVocalsSubmixPath(self.leadEnabled, self.backEnabled, self.panMode)
+        self.switchAudioPathPreserveTime(submixPath, playbackTime)
     
     def toggleAudioMode(self, event=None):
         """
@@ -2932,10 +3158,8 @@ class VoiceDetectionApp:
         self.restackMarkersAtChunk(chunkIndex)
     
     def saveLabels(self, selectedGroup, testSongPath, clearExisting=False):
-        # Get file name without extension
-        fileNameWithoutExtension = os.path.splitext(os.path.basename(testSongPath))[0]
-        
-        labelFilePath = f"./saved_labels/{selectedGroup}/{fileNameWithoutExtension}_labels.json"
+        # Get file name without extension        
+        labelFilePath = f"./saved_labels/{selectedGroup}/{self.songName}_labels.json"
         directory = os.path.dirname(labelFilePath)
         if not os.path.exists(directory):
             os.makedirs(directory)

@@ -114,6 +114,7 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
         isBacking_arr = np.zeros((num_chunks, C), dtype=np.int32)
         isAdlib_arr  = np.zeros((num_chunks, C), dtype=np.int32)
         adlibPrimary = np.zeros((num_chunks, C), dtype=np.int32)
+        stemChoice = np.zeros((num_chunks, C), dtype=np.int8) # 0=vocals, 1=lead, 2=backing
         
         # Helper: choose lead per frame according hierarchy
         def choose_lead(valid_segments):
@@ -135,24 +136,29 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
             
             # If any non-gang exists, we never let gang be lead
             if non_gang:
-                # Priority A: non-gang, not ad-lib, not backing
-                candA = [
+                # Priority A: non-gang ad-lib that is lead present)
+                candA = [seg for seg in non_gang if seg[4] and seg[3]]  # adlib primary
+                if candA:
+                    return max(candA, key=lambda s: s[2])[1]
+                
+                # Priority B: non-gang, not ad-lib, not backing
+                candB = [
                     seg for seg in non_gang
                     if not seg[3] and (not seg[4]) # not backing or adlib     
                 ]
                 
-                if candA:
-                    return max(candA, key=lambda s: s[2])[1]  # idx
-                
-                # Priority B: non-gang ad-lib (no main vocals present)
-                candB = [seg for seg in non_gang if seg[4]]  # adlib only
                 if candB:
-                    return max(candB, key=lambda s: s[2])[1]
+                    return max(candB, key=lambda s: s[2])[1]  # idx
                 
-                # Priority C: non-gang, not ad-lib
-                candC = [seg for seg in non_gang if not seg[4]]  # not adlib
+                # Priority C: non-gang, background ad-lib
+                candC = [seg for seg in non_gang if seg[4] and (not seg[3])]
                 if candC:
                     return max(candC, key=lambda s: s[2])[1]
+                
+                # Priority D: non-gang, backing vocal
+                candD = [seg for seg in non_gang if seg[3] and not seg[4] ]  # not adlib
+                if candD:
+                    return max(candD, key=lambda s: s[2])[1]
                 
                 # Fallback: any non-gang
                 return max(non_gang, key=lambda s: s[2])[1]
@@ -192,7 +198,7 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
                     if isBacking:
                         adlibPrimary[chunkIdx, m_idx] = 1
                         
-                elif isBacking:
+                elif isBacking and not isAdlib:
                     # segment-level backing flag
                     isBacking_arr[chunkIdx, m_idx] = 1
 
@@ -201,9 +207,40 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
                 continue
 
             # Decide lead index using hierarchy + latest start
-            lead_idx = choose_lead(valid_segments)
-            if lead_idx is not None:
-                lead[chunkIdx, lead_idx] = 1
+            # foreground candidates (non-gang main voices)
+            foreground = [
+                (name, idx, startC, isBacking, isAdlib)
+                for (name, idx, startC, isBacking, isAdlib) in valid_segments
+                if (gang_name is None or name != gang_name) and (not isBacking) and (not isAdlib)
+            ]
+
+            if len(foreground) >= 2:
+                for (_, idx, _, _, _) in foreground:
+                    lead[chunkIdx, idx] = 1
+            else:
+                lead_idx = choose_lead(valid_segments)
+                if lead_idx is not None:
+                    lead[chunkIdx, lead_idx] = 1
+                    
+            VOCALS, LEADSTEM, BACKSTEM = 0, 1, 2
+                
+            has_non_gang = any(
+                (gang_name is None or name != gang_name)
+                for (name, _, _, _, _) in valid_segments
+            )
+            
+            for (memberName, m_idx, startChunk, isBacking, isAdlib) in valid_segments:
+                if gang_name is not None and memberName == gang_name:
+                    stemChoice[chunkIdx, m_idx] = VOCALS if not has_non_gang else BACKSTEM
+                else:
+                    if isAdlib and isBacking:
+                        stemChoice[chunkIdx, m_idx] = LEADSTEM   # your adlibPrimary override
+                    elif isAdlib and (not isBacking):
+                        stemChoice[chunkIdx, m_idx] = BACKSTEM   # default adlib source
+                    elif isBacking and (not isAdlib):
+                        stemChoice[chunkIdx, m_idx] = BACKSTEM
+                    else:
+                        stemChoice[chunkIdx, m_idx] = LEADSTEM
                         
         overlapRuns = buildOverlapRunsFromActivationMap(
             activationMap,
@@ -243,7 +280,8 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
             "lead": lead.tolist(),
             "isBacking": isBacking_arr.tolist(),
             "isAdlib": isAdlib_arr.tolist(),
-            "adlibPrimary": adlibPrimary.tolist()
+            "adlibPrimary": adlibPrimary.tolist(),
+            "stemChoice": stemChoice.tolist(),
         }
 
         with open(out_labels_path, "w", encoding="utf-8") as jf:
@@ -260,8 +298,12 @@ def getSongsFromSameAlbum():
             'Born To Be': ['Born To Be', 'Mr. Vampire']   
         },
         'BTS': {
-            'Proof': ['Epiphany[Jin]', 'Euphoria[Jungkook]', "Filter[Jimin]", "Love Me Again[V]", "Persona[RM]", "Stigma[V]", "First Love[Suga]", "Disease", "Mama[J-Hope]", "달려라 방탄"],
-            'Love_Yourself_Tear': ['Fake Love', 'Love Maze', 'Magic Shop']
+            'Proof': ['Epiphany[Jin]', 'Euphoria[Jungkook]', "Filter[Jimin]", "Love Me Again[V]", "Persona[RM]", "First Love[Suga]", "Disease", "Mama[J-Hope]", "달려라 방탄", "Zero O'Clock"],
+            'Love Yourself Tear': ['Fake Love', 'Love Maze', 'Magic Shop', 'Let Go'],
+            'Wings': ["Stigma[V]", 'Spring Day Studio'],
+            'Pre_2015': ['Path'],
+            'Dark And Wild': ['Danger'],
+            'Skool Luv Affair': ['Just One Day']
         },
         'Fifty Fifty': {
             'Day & Night': ['Cupid', 'Skittlez']
@@ -490,35 +532,7 @@ def estimatePitchRanges(audioChunks, sr=22050, groupSize=3, groupName='', savePa
     
     # Print count summary
     return pitchRanges
-    
-def generateUemFromRttm(rttm_path, uem_path):
-    with open(rttm_path, "r") as rttm_file:
-        lines = rttm_file.readlines()
-
-    uri = None
-    start_times = []
-    end_times = []
-
-    for line in lines:
-        parts = line.strip().split()
-        if parts[0] != "SPEAKER":
-            continue
-        uri = parts[1].replace(" ", "")  # clean the URI in case it's still spaced
-        start = float(parts[3])
-        duration = float(parts[4])
-        start_times.append(start)
-        end_times.append(start + duration)
-
-    if not start_times:
-        return
-
-    min_start = min(start_times)
-    max_end = max(end_times)
-
-    with open(uem_path, "w") as uem_file:
-        uem_file.write(f"{uri} 1 {min_start:.3f} {max_end:.3f}\n")
-    print(f"UEM saved to {uem_path} for URI: {uri}")
-        
+     
 def main():
     if len(sys.argv) < 2:
         print("Usage: python audio_processing.py <group_name> [-r] [--u]")

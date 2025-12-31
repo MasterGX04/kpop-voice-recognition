@@ -44,6 +44,8 @@ python train_kpop_singers.py `
 Bugs:
 - Lyrics look stupid now because I didn't change where they spawn based on window resizing
 - Fix bug where the progressbar handle goes over the song's length
+- Fix bug so that starting on the same startIndex doesn't cause endIndex misalignment
+- Finally remove white bar when time = 0.0
 
 - Bug: If you try to move section indices while trying to create new label, THE MARKER MOVES TO THE OTHER SECTION!!!!
 - why Leeseo is being oconfused as gang vocal
@@ -51,15 +53,10 @@ Bugs:
 - Ad lib starts way too early
 
 IVE Songs to Train:
-- Summer Liz (Because Liz doesn't sing deep usually)
-- Heroine (Gaeul and Rei High Notes)
-- Supernova Love
 - Crush (We need all of the Gaeul and Rei high notes but they're barely in the song)
 - I WANT (Important Rei singing high)
 - WAVE (Gaeul high notes and everyone raps)
-- Royal (high notes)? Actually not very useful
 - Shine With Me
-- I AM with INSANE HIGH NOTES
 
 Good IVE Songs to Test on:
 - Either Way
