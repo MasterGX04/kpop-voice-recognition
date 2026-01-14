@@ -4,6 +4,7 @@ python train_kpop_singers.py `
   --sr_in 22050 `
   --sr_ecapa 16000 `
   --chunk-sec 2.0 `
+  --short-chunk-sec `
   --epochs 12 `
   --batch-size 32 `
   --lr 5e-4 `
@@ -17,12 +18,14 @@ python train_kpop_singers.py `
   --sr_in 44100 `
   --sr_out 24000 `
   --chunk-sec 2.0 `
-  --epochs 22 `
+  --short-chunk-sec 0.4 `
+  --epochs 15 `
   --batch-size 32 `
   --lr 5e-4 `
   --val-split 0.15 `
   --num-workers 8 `
-  --save-dir "K:\Python Projects\Voice Recognition\models"
+  --save-dir "K:\Python Projects\Voice Recognition\models" `
+  --skip-stage1
 
 - Important: VERY BAD AT OVERLAP and Harmonies: EG. Leeseo sings with Liz before Liz ends, and model forgets Liz completely and can only switch between them binary
 - Model has issues with parts with a lot of pauses, like a lot of rests between long verses. It excels at long lines with no pauses so how can I fix that? It's improving
@@ -45,12 +48,11 @@ Bugs:
 - Lyrics look stupid now because I didn't change where they spawn based on window resizing
 - Fix bug where the progressbar handle goes over the song's length
 - Fix bug so that starting on the same startIndex doesn't cause endIndex misalignment
-- Finally remove white bar when time = 0.0
-
+- Find out why the labels are being duplicated (prob start index + end index as key 
+- Bug where we can't change singers after labels have been set
+- Prevent user from adding same singer as lead + backing
 - Bug: If you try to move section indices while trying to create new label, THE MARKER MOVES TO THE OTHER SECTION!!!!
 - why Leeseo is being oconfused as gang vocal
-- Include custom harmonies to combine singers together to "simulate" a harmony because I realized only Rei + Gaeul and Rei + Leeseo
-- Ad lib starts way too early
 
 IVE Songs to Train:
 - Crush (We need all of the Gaeul and Rei high notes but they're barely in the song)
@@ -63,8 +65,24 @@ Good IVE Songs to Test on:
 - Royal (Choppy notes)
 
 Important BTS songs:
-- 0:00
-- Ugh/Tear 
-- Just One Day for Jungkook ad-libs
-- Life Goes On (for modern V deep voice)
-- Heartbeat (Good Harmonization)
+- Butterfly
+
+Here’s the simplest upgrade path that keeps your existing logic style.
+
+Add a new function that is basically predict_40ms, but it accepts frame_mask: np.ndarray | None (length n_frames). When building windows, only include windows whose f0 = s // hop_len satisfies frame_mask[f0] == True. Everything else is skipped. This avoids full-song processing for refinement passes.
+
+Add a thin wrapper predict_song_selective(...) that does:
+
+baseline mix pass with 2.0s head, full mask (or VAD mask to skip silence),
+
+build mask_back, mask_lead from your labels,
+
+run phase2 (0.4s) on backing stem with mask_back,
+
+run phase2 (0.4s) on lead stem with mask_lead,
+
+build mask_unsure from baseline merged probs + VAD and run phase2 on mix (or lead) only on those frames,
+
+merge patches using a confidence rule.
+
+	

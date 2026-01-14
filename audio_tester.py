@@ -14,7 +14,7 @@ import codecs
 from lyrics_box import LyricBox
 from audio_processing import getSongsFromSameAlbum
 from zoom_functions import ZoomManager, ProgressBarHandle, ProgressBarNavigator
-from model_predictor import predict_40ms
+from model_predictor import predict_song_selective
 import math
 
 # Load images for member
@@ -197,18 +197,21 @@ class VoiceDetectionApp:
             self.videoTrackItem = VideoTrackItem(self.canvas, self, videoPath, scale=100, scaleX=self.scaleX, position=(0,0), baseHeight=720, isMusicVideo=False)
         
         # Voice detection results
-        memberList = [member['name'] for member in members] + ['Gang Vocal'] + ["silence"]
+        memberList = [member['name'] for member in members] + ['Gang Vocal']
         # print(f"Member list: {memberList}")
         if os.path.exists(modelPath):
             os.makedirs("./predictions", exist_ok=True)
             try:
-                labels40 = predict_40ms(
+                model2Path = f"./models/{self.selectedGroup}_muq_head_phase2.pt"
+                labels = predict_song_selective(
+                    group_name=self.selectedGroup, 
+                    song_name=self.songName, 
                     encoder_path="OpenMuQ/MuQ-large-msd-iter",
-                    head_path=modelPath,
-                    wav_path=vocalsOnlyPath,
-                    output_dir=os.path.join(".", "predictions"), 
-                    class_names=memberList
+                    head1_path=modelPath,
+                    head2_path=model2Path,
+                    member_names=memberList
                 )
+                labels40 = labels["labels_40ms"]
             except Exception as e:
                 print("❌ Error while running predict_40ms:")
                 print(f"   {e}")                  # short message
@@ -218,10 +221,10 @@ class VoiceDetectionApp:
             labels40 = []
 
         self.voiceDetectionResults = labels40
-        # print("Detection results:", labels40[100:200])
+        print("Detection results:", labels40[280:460])
             
         labels = self.loadSavedLabels() # Store labels (member, start, end)
-        if labels == [] and labels40 != []: 
+        if labels == [] and len(labels40) > 0: 
             self.labels = self.createLabelsFromPredictions(labels40)
         else:
             self.labels = labels
@@ -499,13 +502,13 @@ class VoiceDetectionApp:
         for i in range(numChunks):
             frameRoles = self.voiceDetectionResults[i]
             # union of all heads for accuracy
-            main_name = frameRoles.get("main", "") or ""
+            main_names = frameRoles.get("main", []) or []
             harm_names = frameRoles.get("harmony", []) or []
             adlib_names = frameRoles.get("adlib", []) or []
             
             predicted = set()
-            if main_name:
-                predicted.add(main_name)
+            for m in main_names:
+                predicted.add(m)
             for m in harm_names:
                 predicted.add(m)
             for m in adlib_names:
@@ -934,7 +937,7 @@ class VoiceDetectionApp:
         # Sync internal marker structures and redraw
         self.updateTimeMarkersDict()
         self.drawTimeMarkers()
-        self.drawMarkers(self.progressBarHandle.currentSectionIndex)
+        self.drawLabelMarkers(self.progressBarHandle.currentSectionIndex)
 
         # Refresh member timelines / positions so everything stays consistent
         for trackItem in self.memberImages.values():
@@ -1132,7 +1135,7 @@ class VoiceDetectionApp:
             markerId = self.canvas.create_line(
                 calculateX(newChunkIndex), y - 20,
                 calculateX(newChunkIndex), y,
-                fill="green", width=4
+                fill="green", width=4, tags=("marker", "start_marker")
             )
             self.startPointMarkers[newChunkIndex] = markerId
             self.startPoints.append(newChunkIndex)
@@ -1150,7 +1153,7 @@ class VoiceDetectionApp:
             markerId = self.canvas.create_line(
                 calculateX(newChunkIndex), y - 20,
                 calculateX(newChunkIndex), y,
-                fill="red", width=4
+                fill="red", width=4, tags=("marker", "end_marker")
             )
             self.endPointMarkers[newChunkIndex] = markerId
             self.endPoints.append(newChunkIndex)
@@ -1385,7 +1388,7 @@ class VoiceDetectionApp:
                 self.timeMarkers[sectionIndex] = []
             self.timeMarkers[sectionIndex].append(("end", chunkIndex))
         # Optionally redraw markers for the current section
-        self.drawMarkers(self.progressBarHandle.currentSectionIndex)
+        self.drawLabelMarkers(self.progressBarHandle.currentSectionIndex)
      
     def loadSavedLabels(self):
         """Load saved labels from a JSON file and update markers"""
@@ -1460,7 +1463,7 @@ class VoiceDetectionApp:
             progressRatio = timeInSection / visibleDuration
             x = (progressRatio * self.progressBarWidth) % self.progressBarWidth
             
-            self.drawMarkers(self.currentSectionIndex)
+            self.drawLabelMarkers(self.currentSectionIndex)
             self.drawTimeMarkers()
 
         # Wrap backward
@@ -1475,7 +1478,7 @@ class VoiceDetectionApp:
             progressRatio = timeInSection / visibleDuration
             x = (progressRatio * self.progressBarWidth) % self.progressBarWidth
 
-            self.drawMarkers(self.currentSectionIndex)
+            self.drawLabelMarkers(self.currentSectionIndex)
             self.drawTimeMarkers()
 
         self.progressBarHandle.move(x, self.currentSectionIndex)
@@ -1520,7 +1523,6 @@ class VoiceDetectionApp:
         """Draw time markers for current section"""
         if hasattr(self, "uiHidden") and self.uiHidden:
             return  # Skip drawing if UI is hidden
-        
         self.canvas.delete("time_marker")
         
         visibleDuration = self.zoomManager.currentChunksInView * self.chunk_duration
@@ -1579,7 +1581,7 @@ class VoiceDetectionApp:
         detectionResults: list[dict]
         Each element corresponds to a 40 ms chunk and has:
             {
-            "main":    str,        # member name or "" for silence
+            "main":    List[str],  # member name or [] for silence
             "harmony": List[str],  # member names (can be empty)
             "adlib":   List[str],  # member names (can be empty)
             }
@@ -1621,16 +1623,11 @@ class VoiceDetectionApp:
         
         # ---- 1) Fill memberRoles with per-chunk roles (no overlaps per member) ----
         for i, frame in enumerate(detectionResults):
-            main_name   = frame.get("main", "") or ""
-            harm_names  = set(frame.get("harmony", []) or [])
+            main_names = set(frame.get("main", []) or []) 
+            harm_names = set(frame.get("harmony", []) or [])
             adlib_names = set(frame.get("adlib", []) or [])
 
             # Prevent cross-head duplicates:
-            # If someone is main, don't also treat them as harmony/adlib.
-            if main_name in harm_names:
-                harm_names.discard(main_name)
-            if main_name in adlib_names:
-                adlib_names.discard(main_name)
 
             # If someone shows up in both harmony and adlib (shouldn't normally),
             # prefer adlib over harmony.
@@ -1640,7 +1637,7 @@ class VoiceDetectionApp:
 
             for member in memberNames:
                 role = "none"
-                if member == main_name and main_name != "":
+                if member in main_names:
                     role = "main"
                 elif member in adlib_names:
                     role = "adlib"
@@ -2290,7 +2287,7 @@ class VoiceDetectionApp:
             frameRoles = self.voiceDetectionResults[chunkIndex] if self.voiceDetectionResults else {}
             
              # main is a single name or ""
-            main_name = frameRoles.get("main", "") or ""
+            main_names = frameRoles.get("main", []) or []
             # harmony/adlib are lists
             harmony_names = frameRoles.get("harmony", []) or []
             adlib_names = frameRoles.get("adlib", []) or []
@@ -2300,7 +2297,7 @@ class VoiceDetectionApp:
                 imageId = self.memberImageIds[member]
                 trackItem.updateAndDrawTimer(chunkIndex)
                 
-                if member == main_name:
+                if member in main_names:
                     role = "main"
                 elif member in harmony_names:
                     role = "harmony"
@@ -2494,17 +2491,13 @@ class VoiceDetectionApp:
         """
         Clear all start and end markers from the canvas and reset marker dictionaries.
         """
-        # Remove all start markers
-        for marker in self.startPointMarkers.values():
-            self.canvas.delete(marker)
-        self.startPointMarkers.clear()
+        self.canvas.delete("marker")
 
-        # Remove all end markers
-        for marker in self.endPointMarkers.values():
-            self.canvas.delete(marker)
+        # Reset state
+        self.startPointMarkers.clear()
         self.endPointMarkers.clear()
         
-    def drawMarkers(self, sectionIndex):
+    def drawLabelMarkers(self, sectionIndex):
         """
         Draw start/end markers for the current section.
 
@@ -2554,7 +2547,8 @@ class VoiceDetectionApp:
                         x, yTop,
                         x, yBottom,
                         fill="green",
-                        width=4
+                        width=4,
+                        tags=("marker", "start_marker")
                     )
                     # last drawn start marker wins for this chunkIndex (OK: logic elsewhere
                     # assumes a single visual "start" line per chunkIndex)
@@ -2565,7 +2559,8 @@ class VoiceDetectionApp:
                         x, yTop,
                         x, yBottom,
                         fill="red",
-                        width=4
+                        width=4,
+                        tags=("marker", "end_marker")
                     )
                     self.endPointMarkers[chunkIndex] = markerId
     # end drawMarkers
@@ -2787,7 +2782,6 @@ class VoiceDetectionApp:
 
         # Update marker structures and redraw
         self.updateTimeMarkersDict()   # this also calls drawMarkers(...)
-        self.drawTimeMarkers()
         self.canvas.update()
         self.root.update_idletasks()
 
@@ -2938,55 +2932,54 @@ class VoiceDetectionApp:
     
     def buildVocalsSubmixPath(self, leadOn: bool, backOn: bool, panMode: str = "mono",
                           cacheDir: str = "cache_audio", targetSr: int = 22050) -> str:
-        """
-        Returns a cached path for the requested vocals submix.
-        Requires vocalsLeadPath / vocalsBackingPath to exist.
-        """
         os.makedirs(cacheDir, exist_ok=True)
 
         if not leadOn and not backOn:
-            # don't allow silence: fall back to normal vocals-only
             return self.vocalsOnlyPath
 
         key = self._submixKey(leadOn, backOn, panMode)
-        outPath = os.path.join(cacheDir, f"submix_{key}_sr{targetSr}.mp3")
-        if os.path.exists(outPath):
-            return outPath
+        # include effective sr in filename so cache stays correct
+        # we'll compute it after loading stems
+        # outPath = ...
 
-        # Load stems
         lead = AudioSegment.from_file(self.vocalsLeadPath) if leadOn else None
         back = AudioSegment.from_file(self.vocalsBackingPath) if backOn else None
 
-        # Make sure SR matches, and align duration
+        # Decide an effective SR that won't downsample below the weakest stem
+        stemSrs = [a.frame_rate for a in (lead, back) if a is not None]
+        minStemSr = min(stemSrs) if stemSrs else targetSr
+        effectiveSr = max(targetSr, minStemSr)
+
+        outPath = os.path.join(cacheDir, f"submix_{key}_sr{effectiveSr}.mp3")
+        if os.path.exists(outPath):
+            return outPath
+
         def norm(a):
-            return a.set_frame_rate(targetSr).set_sample_width(2)
+            # only resample if needed
+            if a.frame_rate != effectiveSr:
+                a = a.set_frame_rate(effectiveSr)
+            return a.set_sample_width(2)
+
         if lead: lead = norm(lead)
         if back: back = norm(back)
 
-        # Pad shorter one with silence so overlay doesn't truncate
         maxLen = max(len(x) for x in [lead, back] if x is not None)
         if lead and len(lead) < maxLen:
-            lead += AudioSegment.silent(duration=maxLen - len(lead), frame_rate=targetSr)
+            lead += AudioSegment.silent(duration=maxLen - len(lead), frame_rate=effectiveSr)
         if back and len(back) < maxLen:
-            back += AudioSegment.silent(duration=maxLen - len(back), frame_rate=targetSr)
+            back += AudioSegment.silent(duration=maxLen - len(back), frame_rate=effectiveSr)
 
         if panMode == "split":
-            # Build stereo where lead is left-only and backing is right-only.
-            # Use pan(-1) fully left, pan(+1) fully right, then overlay.
-            mix = AudioSegment.silent(duration=maxLen, frame_rate=targetSr).set_channels(2)
-
+            mix = AudioSegment.silent(duration=maxLen, frame_rate=effectiveSr).set_channels(2)
             if lead:
                 mix = mix.overlay(lead.set_channels(2).pan(-1.0))
             if back:
                 mix = mix.overlay(back.set_channels(2).pan(+1.0))
         else:
-            # Normal mono mix (or stereo but centered)
-            # Start with lead/back whichever exists
-            if lead and back:
+            if lead and back: 
                 mix = lead.overlay(back)
             else:
                 mix = lead if lead else back
-            # Keep mono for size/consistency
             mix = mix.set_channels(1)
 
         mix.export(outPath, format="mp3")
@@ -3140,6 +3133,7 @@ class VoiceDetectionApp:
                     self.progressBarCanvas.winfo_y(),
                     fill="green",
                     width=4,
+                    tags=("marker", "start_marker")
                 )
                 print(f"Start marker added at chunk {chunkIndex}.")
         elif markerType == "end":
@@ -3151,6 +3145,7 @@ class VoiceDetectionApp:
                     self.progressBarCanvas.winfo_y(),
                     fill="red",
                     width=4,
+                    tags=("marker", "end_marker")
                 )
                 print(f"End marker added at chunk {chunkIndex}.")
                 

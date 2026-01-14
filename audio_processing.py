@@ -306,7 +306,10 @@ def getSongsFromSameAlbum():
             'Skool Luv Affair': ['Just One Day']
         },
         'Fifty Fifty': {
-            'Day & Night': ['Cupid', 'Skittlez']
+            'Day & Night': ['Cupid', 'Skittlez', "Heartbreak"]
+        },
+        'NMIXX': {
+            'Blue Valentine': ['Blue Valentine', 'Shape Of Love', 'Phoenix', "Spinnin' On It"]
         }
     }
     

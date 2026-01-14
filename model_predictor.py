@@ -1,18 +1,269 @@
 import numpy as np
+import json
 import torch, torchaudio, math
 import itertools
 import torch.nn.functional as F
 from train_kpop_singers import MultiTaskHead, MuQEncoderWrapper
 from muq import MuQ
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
 from scipy.ndimage import median_filter
 import os, csv
+
+def _find_track_files(base_dir: Path, group_name: str, song_name: str) -> Dict[str, Path]:
+    group_dir = base_dir / group_name
+    if not group_dir.exists():
+        raise FileNotFoundError(f"Group folder not found: {group_dir}")
+    
+    stem = song_name.strip()
+    mix = group_dir / f"{stem}_vocals.wav"
+    lead = group_dir / f"{stem}_leading_vocals.wav"
+    back = group_dir / f"{stem}_backing_vocals.wav"
+    
+    missing = [p for p in [mix, lead, back] if not p.exists()]
+    if missing:
+        raise FileNotFoundError("Missing track(s):\n" + "\n".join(str(p) for p in missing))
+    
+    return {'mix': mix, 'lead': lead, 'back': back}
+
+def _resample_to_24k(in_path: Path, out_path: Path, sr_target: int=24000) -> Path:
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    wav, sr_in = torchaudio.load(str(in_path))
+    if sr_in != sr_target:
+        resampler = torchaudio.transforms.Resample(sr_in, sr_target)
+        wav = resampler(wav)
+    wav = wav.to(torch.float32)
+    torchaudio.save(str(out_path), wav, sr_target)
+    return out_path     
+
+def _stable_runs(series: List[str]) -> List[Tuple[int, int, str]]:
+    """
+    Convert a per-frame label sequence into contiguous "stable runs".
+
+    This groups consecutive identical labels into time segments so we can
+    reason in durations instead of noisy 40ms frames.
+
+    Example:
+        series = ["Yujin", "Yujin", "Liz", "Liz", "silence"]
+
+        returns:
+        [
+            (0, 2, "Yujin"),    # frames [0, 1]
+            (2, 4, "Liz"),      # frames [2, 3]
+            (4, 5, "silence")   # frame [4]
+        ]
+
+    Why this exists:
+      - lets us remove very short prediction spikes (e.g. 1–2 frames)
+      - lets us enforce minimum durations (e.g. backing must last ≥ 200ms)
+      - lets us reason about "segments" instead of individual frames
+
+    Returns:
+        List of (start_idx, end_idx_exclusive, label) tuples.
+        Indices follow Python slicing conventions.
+    """
+    if not series:
+        return []
+    runs = []
+    s = 0
+    cur = series[0]
+    for i in range(1, len(series)):
+        if series[i] != cur:
+            runs.append((s, i, cur))
+            s = i
+            cur = series[i]
+    runs.append((s, len(series), cur))
+    return runs
+
+def detect_uncertain_frames(
+    probs_main_np: np.ndarray,
+    rms_energy: np.ndarray,
+    prob_thr: float = 0.45,
+    energy_thr: float = 1e-4,
+):
+    """
+    Returns bool mask [T] where model is uncertain but audio is present.
+    """
+    max_p = probs_main_np.max(axis=1)
+    uncertain = (max_p < prob_thr) & (rms_energy > energy_thr)
+    return uncertain
+
+def load_difficult_masks(
+    group_name: str,
+    song_name: str,
+    n_frames: int,
+    labels_dir: str= "./saved_labels",
+):
+    """
+    Returns:
+      mask_lead, mask_back : bool arrays of shape (n_frames,)
+    """
+    mask_lead = np.zeros(n_frames, dtype=bool)
+    mask_back = np.zeros(n_frames, dtype=bool)
+
+    path = Path(labels_dir) / group_name / f"{song_name}_difficult.json"
+    if not path.exists():
+        return mask_lead, mask_back
+
+    labels = json.load(open(path, "r"))
+    
+    for label in labels:
+        start, end, isBacking, isAdlib = label
+        if isBacking or isAdlib:
+            mask_back[start:end] = True
+        
+        # Override for important adlib
+        if isBacking and isAdlib:
+            mask_lead[start:end] = True
+            mask_back[start:end] = False
+            
+    return mask_lead, mask_back
+
+def predict_song_selective(
+    group_name: str,
+    song_name: str,
+    encoder_path: str,
+    head1_path: str, # 2.0s model
+    head2_path: str, # 0.4s Phase 2 Model,
+    member_names,
+    base_dir: str = "./training_data",
+    cache_dirname: str = "prediction_cache_24k",
+    hop_sec: float = 0.04,
+    thr_main: float = 0.5,
+) -> Dict[str, object]:
+    """
+    End-to-end:
+      - find mix/lead/back wavs in ./training_data/{group_name}/
+      - resample each to 24k into ./training_data/{group_name}/{cache_dirname}/
+      - run predict_40ms on each
+      - fuse into per-frame member lists
+
+    Returns dict with:
+      {
+        "paths": {...},
+        "series": {"mix": [...], "lead": [...], "back": [...]},
+        "fused": [...],  # List[List[str]] per frame
+      }
+    """
+    base = Path(base_dir)
+    tracks = _find_track_files(base, group_name, song_name)
+    
+    group_dir = base / group_name
+    cache_dir = group_dir / cache_dirname
+    stem = song_name.strip()
+    
+    mix_24k  = _resample_to_24k(tracks["mix"],  cache_dir / f"{stem}_mix_24k.wav")
+    lead_24k = _resample_to_24k(tracks["lead"], cache_dir / f"{stem}_lead_24k.wav")
+    back_24k = _resample_to_24k(tracks["back"], cache_dir / f"{stem}_back_24k.wav")
+    
+    labels_mix, probs_mix, rms_energy = predict_40ms(
+        encoder_path=encoder_path,
+        head_path=head1_path,
+        wav_path=str(mix_24k),
+        output_dir=f"./predictions/{group_name}",
+        win_sec=2.0,
+        hop_sec=hop_sec,
+        thr_main=thr_main,
+        return_probs=True,
+        return_rms=True,
+    )
+    
+    n_frames = len(labels_mix)
+    
+    # ---- DIFFICULT REGIONS ----
+    mask_lead, mask_back = load_difficult_masks(
+        group_name, song_name, n_frames
+    )
+    
+    # ---- PASS 2a: backing stem (0.4s) ----
+    if mask_back.any():
+        labels_back, probs_back = predict_40ms(
+            encoder_path=encoder_path,
+            head_path=head2_path,
+            wav_path=str(back_24k),
+            output_dir=f"./predictions/{group_name}",
+            win_sec=0.4,
+            hop_sec=hop_sec,
+            thr_main=thr_main,
+            frame_mask=mask_back,
+            return_probs=True
+        )
+        probs_mix[mask_back] = np.maximum(
+            probs_mix[mask_back], probs_back[mask_back]
+        )
+        
+    # ---- PASS 2b: lead stem (0.4s) ----
+    if mask_lead.any():
+        labels_lead, probs_lead = predict_40ms(
+            encoder_path=encoder_path,
+            head_path=head2_path,
+            wav_path=str(lead_24k),
+            output_dir=f"./predictions/{group_name}",
+            win_sec=0.4,
+            hop_sec=hop_sec,
+            thr_main=thr_main,
+            frame_mask=mask_lead,
+            return_probs=True,
+        )
+        probs_mix[mask_lead] = np.maximum(
+            probs_mix[mask_lead], probs_lead[mask_lead]
+        )
+
+    # ---- PASS 3: uncertainty confirmation ----
+    mask_uncertain = detect_uncertain_frames(probs_mix, rms_energy)
+    
+    if mask_uncertain.any():
+        labels_conf, probs_conf = predict_40ms(
+            encoder_path=encoder_path,
+            head_path=head2_path,
+            wav_path=str(mix_24k),
+            output_dir=f"./predictions/{group_name}",
+            win_sec=0.4,
+            hop_sec=hop_sec,
+            thr_main=thr_main,
+            frame_mask=mask_uncertain,
+            return_probs=True,
+        )
+        probs_mix[mask_uncertain] = np.maximum(
+            probs_mix[mask_uncertain], probs_conf[mask_uncertain]
+        )
+        
+    # ---- FINAL DECODE ----
+    final_Y = decode_multilabel(
+        probs_mix,
+        per_class_thr=np.full(probs_mix.shape[1], thr_main),
+    )
+    
+    mask_backing_final = mask_back.copy()
+    mask_backing_final[mask_lead] = False
+
+    labels_40ms = multilabel_matrix_to_labels_40ms(
+        final_Y,
+        member_names=member_names,
+        backing_mask=mask_backing_final,
+        include_gang=True
+    )
+    
+    return {
+        "paths": {
+            "mix": str(tracks["mix"]),
+            "lead": str(tracks["lead"]),
+            "back": str(tracks["back"]),
+        },
+        "labels_40ms": labels_40ms,
+        "probs_main": probs_mix,
+    }
+
 
 @torch.no_grad()
 def predict_40ms(
     encoder_path: str, head_path: str, wav_path: str    ,
     sr_target=24000, win_sec=2.0, hop_sec=0.04, use_hann=True,
     output_dir=None, class_names=None, thr_main=0.5, 
-    thr_harm: float = 0.45, thr_adlib: float = 0.6
+    thr_harm: float = 0.45, thr_adlib: float = 0.6,
+    frame_mask: Optional[np.ndarray] = None, return_probs: bool = False,
+    return_rms: bool = False,
 ):
     """
     Returns labels_40ms: list of dicts, one per 40 ms frame:
@@ -32,8 +283,9 @@ def predict_40ms(
     muq.eval()
     encoder = MuQEncoderWrapper(muq_model=muq, muq_sr=24000, pooling="mean", debug=False).to(device)
     encoder.eval()
+    print("Loading head checkpoint:", head_path)
     
-    ckpt = torch.load(head_path, map_location=device)
+    ckpt = torch.load(head_path, map_location=device, weights_only=False)
     emb_dim = ckpt["emb_dim"] # 192
     model_classes = ckpt["classes"]
     if not class_names:
@@ -87,8 +339,33 @@ def predict_40ms(
         x = torch.cat([x, pad], 0)
         T = x.numel()
     
+    # -- Debug --
+    eps = 1e-9
+
+    rms = x.pow(2).mean().sqrt().item() + eps
+    peak = x.abs().max().item() + eps
+
+    rms_db = 20 * math.log10(rms)
+    peak_db = 20 * math.log10(peak)
+
+    print(
+        "AUDIO stats:",
+        f"rms={rms_db:.3f} dBFS,",
+        f"peak={peak_db:.3f} dBFS"
+    )
+
     # number of 40ms frames over the audio
-    n_frames = math.ceil(T / hop_len)
+    if frame_mask is not None:
+        n_frames = frame_mask.shape[0]
+    else:
+        n_frames = math.ceil(T / hop_len)
+    
+    if frame_mask is not None:
+        frame_mask = np.asarray(frame_mask).astype(bool)
+        if frame_mask.shape[0] != n_frames:
+            raise ValueError(f"frame_mask length {frame_mask.shape[0]} != n_frames {n_frames}")
+    else:
+        frame_mask = np.ones(n_frames, dtype=bool)
     
     # buffers: accumulate logits and coverage
     acc_main = torch.zeros(n_frames, num_main, device=device)
@@ -126,25 +403,21 @@ def predict_40ms(
         logits_harmony = out["harmony"] # (B, num_members)
         logits_adlib = out["adlib"] # (B, num_members)
         
-        n_win_frames = math.ceil(win_len / hop_len)
-        # Add into per-frame accumulators
         for i, f0 in enumerate(frame_starts):
+            if f0 >= n_frames:
+                continue
+
+            # Optional: weight by Hann at the window center (a single scalar)
             if w is None:
-                weights = torch.ones(n_win_frames, device=device)
+                ww = 1.0
             else:
-                # Approximate Hann weighting per 40 ms frame
-                j = torch.arange(n_win_frames, device=device)
-                centers = (j * hop_len + min(hop_len, win_len) // 2).clamp(max=win_len - 1)
-                weights = w[centers] + 1e-8  # avoid zeros
-                
-            end = min(f0 + n_win_frames, n_frames)
-            wf = end - f0
-            w_slice = weights[:wf].unsqueeze(1)
-            
-            acc_main[f0:end] += logits_main[i].unsqueeze(0)[:wf] * w_slice
-            acc_harm[f0:end] += logits_harmony[i].unsqueeze(0)[:wf] * w_slice
-            acc_ad[f0:end] += logits_adlib[i].unsqueeze(0)[:wf] * w_slice
-            cov[f0:end] += weights[:wf]
+                center_sample = win_len // 2
+                ww = float(w[center_sample].item() + 1e-8)
+
+            acc_main[f0] += logits_main[i] * ww
+            acc_harm[f0] += logits_harmony[i] * ww
+            acc_ad[f0]   += logits_adlib[i] * ww
+            cov[f0]      += ww
                 
         batch_windows.clear()
         frame_starts.clear()
@@ -152,6 +425,11 @@ def predict_40ms(
     # Assemble windows in small batches to speed up
     B = 64
     for s in starts:
+        f0 = s // hop_len
+        if f0 >= n_frames:
+            continue
+        if not frame_mask[f0]:
+            continue
         chunk = x[s:s + win_len]
         if chunk.numel() < win_len:
             pad = torch.zeros(win_len - chunk.numel(), device=device)
@@ -172,6 +450,27 @@ def predict_40ms(
     probs_harm_frame = torch.sigmoid(logits_harm_frame)
     probs_ad_frame   = torch.sigmoid(logits_ad_frame)
     
+    # ---- APPLY FRAME MASK BEFORE DECODE ----
+    if frame_mask is not None:
+        mask_t = torch.from_numpy(frame_mask).to(device=device)
+        skip = ~mask_t
+        if skip.any():
+            probs_main_frame[skip] = 0.0
+            probs_harm_frame[skip] = 0.0
+            probs_ad_frame[skip]   = 0.0
+    
+    mask_t = torch.from_numpy(frame_mask).to(device=device)
+    lm = logits_main_frame[:, :num_members]
+
+    lm_eval = lm[mask_t]  # only frames where model ran
+    print("LOGITS stats (eval frames):",
+        "mean_abs", lm_eval.abs().mean().item(),
+        "p95_abs",  torch.quantile(lm_eval.abs().flatten(), 0.95).item(),
+        "max_abs",  lm_eval.abs().max().item())
+
+    # Optional: also show how many frames were evaluated
+    print(f"[mask] evaluated {int(mask_t.sum().item())}/{len(frame_mask)} frames")
+
     # Move to CPU numpy for decode
     probs_main_np = probs_main_frame.cpu().numpy()
     probs_harm_np = probs_harm_frame.cpu().numpy()
@@ -220,7 +519,7 @@ def predict_40ms(
     # Reduces single-frame blips and bridges tiny silence gaps
     # main_idx_np = smooth_main_track(main_idx_np, silence_idx)
     pred_idx = torch.from_numpy(main_idx_np).to(device=device, dtype=torch.long)
-        
+    
     # ---- 4. Write predictions to .txt ----
     if output_dir is not None:
         os.makedirs(output_dir, exist_ok=True)
@@ -233,7 +532,6 @@ def predict_40ms(
                 "start_chunk", "start_time", "end_time",
                 "main_label", "main_confidence",
                 "active_labels", "active_confidences",
-                "harmonies", "harmony_probs",
                 "adlibs", "adlib_probs",
                 "probabilities_main",
             ]
@@ -292,8 +590,8 @@ def predict_40ms(
                     main_conf,
                     "|".join(active_main_names),
                     "[" + ", ".join(f"{c:.3f}" for c in active_main_confs) + "]",
-                    harm_names_str,
-                    harm_full_probs_str,
+                    # harm_names_str,
+                    # harm_full_probs_str,
                     ad_names_str,
                     ad_probs_str,
                     "[" + ", ".join(f"{x:.3f}" for x in p_main) + "]",
@@ -301,39 +599,35 @@ def predict_40ms(
                 writer.writerow(row)
         print(f"✅ Saved predictions to {csv_path}")
         
-    # Build segments
+    if return_rms:
+        rms_energy = np.zeros(n_frames)
+        for i in range(n_frames):
+            a = i * hop_len
+            b = min(a + hop_len, T)
+            rms_energy[i] = float(x[a:b].pow(2).mean().sqrt().cpu())
+
+    # ---- Build labels_40ms (final output) ----
     labels_40ms = []
+    multi_hot_main = decoded_main_np.astype(bool)
 
     for t in range(n_frames):
-        main_id = int(main_idx_np[t])
-
-        # --- Determine main name ---
-        if main_id == silence_idx:
-            main_name = "silence"
-            main_is_valid = False
-        else:
-            main_name = class_names[main_id]
-            main_is_valid = (main_name != "Gang Vocal")
-
-        # --- Harmony (members only) ---
-        if main_is_valid:
-            harm_mask = decoded_harm_np[t].astype(bool)
-            harm_ids = np.where(harm_mask)[0].tolist()
-            harm_names = [member_names[j] for j in harm_ids]
-        else:
-            # No main singer → harmony makes no sense
-            harm_names = []
-
-        # --- Ad-lib (can exist with or without main, your choice) ---
-        ad_mask = decoded_ad_np[t].astype(bool)
-        ad_ids = np.where(ad_mask)[0].tolist()
-        ad_names = [member_names[j] for j in ad_ids]
+        active_ids = np.where(multi_hot_main[t])[0].tolist()
+        active_member_ids = [i for i in active_ids if real_member_mask[i]]
 
         labels_40ms.append({
-            "main": main_name,
+            "main": [class_names[i] for i in active_member_ids],
             "harmony": [],
             "adlib": [],
         })
+
+    # ---- RETURN LOGIC ----
+    if return_probs or return_rms:
+        out = [labels_40ms]
+        if return_probs:
+            out.append(probs_main_frame[:, :num_members].cpu().numpy())
+        if return_rms:
+            out.append(rms_energy)
+        return tuple(out)
 
     return labels_40ms
 
@@ -454,6 +748,45 @@ def decode_multilabel(probs, per_class_thr=None, k_smooth=3, on_add=0.02, off_su
             Y[t] = Y[t] * keep.astype(np.int32)
 
     return Y
+
+def multilabel_matrix_to_labels_40ms(
+    Y: np.ndarray,
+    member_names: list,
+    *,
+    backing_mask: Optional[np.ndarray] = None,
+    include_gang: bool = False,
+):
+    """
+    Y: (T, C) int32 0/1 matrix. C should match len(member_names) (+optional extras if you include them).
+    member_names: list like ["Gaeul","Yujin","Rei","Wonyoung","Liz","Leeseo","Gang Vocal"]
+    backing_mask: (T,) bool array. True => put active labels into 'backing' instead of 'main'
+    """
+    T, C = Y.shape
+    if len(member_names) != C:
+        raise ValueError(f"member_names len {len(member_names)} != Y.shape[1] {C}")
+
+    if backing_mask is None:
+        backing_mask = np.zeros(T, dtype=bool)
+    else:
+        backing_mask = np.asarray(backing_mask).astype(bool)
+        if backing_mask.shape[0] != T:
+            raise ValueError(f"backing_mask len {backing_mask.shape[0]} != T {T}")
+
+    out = []
+    for t in range(T):
+        active_ids = np.where(Y[t] > 0)[0].tolist()
+        names = [member_names[i] for i in active_ids]
+
+        # Optional: drop "Gang Vocal" from outputs if you don't want it displayed
+        if not include_gang:
+            names = [n for n in names if n.lower() != "gang vocal"]
+
+        if backing_mask[t]:
+            out.append({"main": [], "harmony": names})
+        else:
+            out.append({"main": names, "harmony": []})
+
+    return out
 
 def smooth_main_track(main_idx, silence_idx=None, min_singer_len=3, 
                          min_silence_len=1, bridge_silence_len=2):

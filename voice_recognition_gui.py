@@ -388,6 +388,14 @@ if __name__ == "__main__":
                 {'name': 'Yewon', 'color': "#e98f11"},
                 {'name': 'Hana', 'color': "#32ffee"}, 
                 {'name': 'Athena', 'color': "#131dd7"}
+            ],
+            "NMIXX": [
+                {'name': 'Lily', 'color': '#8ab8e8'},
+                {'name': 'Haewon', 'color': '#959595'},
+                {'name': 'Sullyoon', 'color': '#0000ff'},
+                {'name': 'Bae', 'color': '#ffff00'},
+                {'name': 'Jiwoo', 'color': '#ff0000'},
+                {'name': 'Kyujin', 'color': '#f093bc'}
             ]
     }   
     

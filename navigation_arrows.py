@@ -68,7 +68,7 @@ class NavigationArrows:
         if self.parent.progressBarHandle.currentSectionIndex > 0:
             self.parent.progressBarHandle.currentSectionIndex -= 1
             self.parent.drawTimeMarkers()
-            self.parent.drawMarkers(self.parent.progressBarHandle.currentSectionIndex)
+            self.parent.drawLabelMarkers(self.parent.progressBarHandle.currentSectionIndex)
             
     def navigateRight(self, event):
         """Handle clicking right arrow"""
@@ -76,7 +76,7 @@ class NavigationArrows:
         if self.parent.currentSectionIndex < totalSections - 1:
             self.parent.progressBarHandle.currentSectionIndex += 1
             self.parent.drawTimeMarkers()
-            self.parent.drawMarkers(self.parent.progressBarHandle.currentSectionIndex)
+            self.parent.drawLabelMarkers(self.parent.progressBarHandle.currentSectionIndex)
         
     def updateArrows(self, progressBarCanvas):
         """Update the position of the arrows if the progress bar canvas is resized."""
