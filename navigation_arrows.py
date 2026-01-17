@@ -12,8 +12,8 @@ class NavigationArrows:
         self.arrowPadding = 10  # Padding around the progress bar
         self.arrows = {}
         
-        self.canvas.bind_all('<KeyPress-k>', lambda e: self.navigateLeft())
-        self.canvas.bind_all('<KeyPress-l>', lambda e: self.navigateRight())
+        self.canvas.bind_all('<KeyPress-[>', lambda e: self.navigateLeft)
+        self.canvas.bind_all('<KeyPress-]>', lambda e: self.navigateRight)
     
     def createArrows(self):
         self.progressBarCanvas.update_idletasks()
@@ -65,18 +65,18 @@ class NavigationArrows:
 
     def navigateLeft(self, event):
         """Handle clicking left arrow"""
-        if self.parent.progressBarHandle.currentSectionIndex > 0:
-            self.parent.progressBarHandle.currentSectionIndex -= 1
+        if self.parent.currentSectionIndex > 0:
+            self.parent.currentSectionIndex -= 1
             self.parent.drawTimeMarkers()
-            self.parent.drawLabelMarkers(self.parent.progressBarHandle.currentSectionIndex)
+            self.parent.drawLabelMarkers(self.parent.currentSectionIndex)
             
     def navigateRight(self, event):
         """Handle clicking right arrow"""
         totalSections = len(self.parent.chunks) // self.parent.zoomManager.currentChunksInView
         if self.parent.currentSectionIndex < totalSections - 1:
-            self.parent.progressBarHandle.currentSectionIndex += 1
+            self.parent.currentSectionIndex += 1
             self.parent.drawTimeMarkers()
-            self.parent.drawLabelMarkers(self.parent.progressBarHandle.currentSectionIndex)
+            self.parent.drawLabelMarkers(self.parent.currentSectionIndex)
         
     def updateArrows(self, progressBarCanvas):
         """Update the position of the arrows if the progress bar canvas is resized."""

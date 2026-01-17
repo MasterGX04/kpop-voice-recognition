@@ -15,6 +15,7 @@ from lyrics_box import LyricBox
 from audio_processing import getSongsFromSameAlbum
 from zoom_functions import ZoomManager, ProgressBarHandle, ProgressBarNavigator
 from model_predictor import predict_song_selective
+from label_overlay import LabelOverlayController
 import math
 
 # Load images for member
@@ -81,6 +82,33 @@ def ensureAudioForPlayback(path: str, cacheDir: str = "cache_audio", targetSr: i
     audio.export(outPath, format="mp3")
     return outPath, True
 
+def normalizeLabel(label):
+            # supports [member, start, end] or [member, start, end, isBacking, isAdLib]
+            member, start, end = label[0], int(label[1]), int(label[2])
+            isBacking = bool(label[3]) if len(label) > 3 else False
+            isAdLib  = bool(label[4]) if len(label) > 4 else False
+            if end < start:
+                start, end = end, start  # or raise, depending on your UI constraints
+            return [member, start, end, isBacking, isAdLib]
+
+def labelKey(label):
+    # identity key (your compromise rule)
+    labelKey = (label[0], int(label[1]))
+
+    return  labelKey # (member, start)\
+        
+def dedupeLabelsByKey(labels):
+        # overwrite strategy: last one wins (or choose max end, your call)
+        byKey = {}
+        for lbl in labels:
+            nl = normalizeLabel(lbl)
+            k = labelKey(nl)
+            if k not in byKey or nl[2] > byKey[k][2]:
+                byKey[k] = nl
+        out = list(byKey.values())
+        out.sort(key=lambda l: (l[1], l[2], l[0]))
+        return out
+
 class VoiceDetectionApp:
     def __init__(self, root, trainingMember, members, modelPath, images, testSongPath, vocalsOnlyPath, vocalsLeadPath, vocalsBackingPath, selectedGroup):
         self.root = root
@@ -88,7 +116,8 @@ class VoiceDetectionApp:
         self.members = members
         self.images = images
         self.playbackThread = None
-        
+        self.labels = []
+        self.selectedMarker = None
         self.cachedFiles = set()
         self.songName = os.path.splitext(os.path.basename(testSongPath))[0]
 
@@ -138,7 +167,7 @@ class VoiceDetectionApp:
         self.isManualUpdate = False
         self.skipNextAutoUpdate = False
         # self.root.after(100, self.loadSavedLabels) 
-        self.timeMarkers = {}
+        self.labelMarkers = {}
         self.lyrics = {}
         pygame.mixer.init()
             
@@ -146,6 +175,7 @@ class VoiceDetectionApp:
         self.endPoints = []            
             
         self.startPointMarkers = {}
+        self.openStartChunk = None
         self.endPointMarkers = {}
         
         self.canvasFrame = tk.Frame(root)
@@ -223,11 +253,16 @@ class VoiceDetectionApp:
         self.voiceDetectionResults = labels40
         print("Detection results:", labels40[280:460])
             
-        labels = self.loadSavedLabels() # Store labels (member, start, end)
-        if labels == [] and len(labels40) > 0: 
+        self.labels = self.loadSavedLabels() # Store labels (member, start, end)
+        if self.labels == [] and len(labels40) > 0: 
             self.labels = self.createLabelsFromPredictions(labels40)
-        else:
-            self.labels = labels
+        
+        self.labelOverlay = LabelOverlayController(
+            root=self.root,
+            canvas=self.canvas,
+            getLabelsFn=self.getLabels,
+            members=self.members
+        )
         
         self.root.after(100, startLayout)
         
@@ -239,14 +274,15 @@ class VoiceDetectionApp:
             self.evaluateVoiceDetectionAccuracy()
             
         self.lastKeyPressTime = 0
-        self.updateTimer = 0
         self.enableRootKeybinds()
         self.canvas.focus_set() 
-        self.selectedMarker = None
         
         # Dragging state
         self.selectedLabel = None
         self.isDraggingMarker = False
+        self.isPendingDrag = False
+        self.dragStartXY = None
+        self.dragThreshold = 4 # px
         
         self.root.after(50, self.addBackgroundImage)
         # self.root.after(50, self.initializeArrows)
@@ -319,8 +355,10 @@ class VoiceDetectionApp:
         self.selectedLabel = None
         self.startPoints = []
         self.endPoints = []
+        self.startPointMarkers = {}
+        self.endPointMarkers = {}
         self.labels = self.loadSavedLabels()
-        for trackItem in    self.memberImages.values():
+        for trackItem in self.memberImages.values():
             if trackItem:
                 trackItem.initializeTimeline()
         
@@ -365,7 +403,7 @@ class VoiceDetectionApp:
                     self.startPoints.append(start)
                     self.endPoints.append(end)
 
-        self.updateTimeMarkersDict()
+        self.updateLabelMarkersDict()
         self.drawTimeMarkers()
         self.canvas.update()
         self.root.update_idletasks()     
@@ -396,7 +434,7 @@ class VoiceDetectionApp:
             if self.uiHidden:
                 self.timeDisplayLabel.place_forget()  # Hides the label
             else:
-                self.timeDisplayLabel.place(relx=0.5, rely=0.85, anchor="center")
+                self.timeDisplayLabel.place(relx=0.5, rely=0.95, anchor="center")
                 
         self.zoomManager.toggleZoomUI()
     
@@ -563,9 +601,6 @@ class VoiceDetectionApp:
             self.pushUndoState("marker move right")
         self.moveMarker(1)
         
-    def updateLabels(self, event):
-        self.updateLabelInJSON()
-        
     def updateChunkText(self, newIndex):
         """Update the chunk index value displayed."""
         self.currentChunkIndex = newIndex
@@ -575,101 +610,155 @@ class VoiceDetectionApp:
         self.navigationArrows = NavigationArrows(self.canvas, self, self.progressBarCanvas)
     
     def selectMarker(self, chunkIndex, markerType):
-        self.selectedMarker = {"chunkIndex": chunkIndex, "type": markerType}
         print(f"Marker selected at {chunkIndex} with type {markerType}")
-        if markerType == "start":
-            self.canvas.itemconfig(self.startPointMarkers[chunkIndex], fill="turquoise")
-        elif markerType == "end":
-            self.canvas.itemconfig(self.endPointMarkers[chunkIndex], fill="pink")
-        
+        self.setSelectedMarker(chunkIndex, markerType)
         self.canvas.bind("<Delete>", self.deleteSelectedMarker)
        
     def deleteLabelAndMarkers(self, label):
         """
-        Given a full label [member, startChunk, endChunk],
-        delete both markers, update arrays, and update JSON.
+        Given a full label [member, startChunk, endChunk, isBacking, isAdlib],
+        delete ONE start marker instance + ONE end marker instance for that label,
+        update arrays, and update JSON.
         """
-        member, startChunk, endChunk = label
-        
-        # Remove start marker
-        if startChunk in self.startPointMarkers:
-            self.canvas.delete(self.startPointMarkers[startChunk])
-            del self.startPointMarkers[startChunk]
+        member, startChunk, endChunk, _, _ = label
+
+        def _deleteOneMarkerAtChunk(markerDict, chunk, defaultColorType):
+            """
+            Remove and delete exactly one canvas markerId from markerDict[chunk] (multiset-safe).
+            Returns the deleted markerId or None.
+            """
+            ids = self._getMarkerIdsAtChunk(markerDict, chunk)
+            if not ids:
+                return None
+
+            # pick one to delete (last drawn is usually topmost; any single is fine)
+            markerId = ids.pop()  # removes ONE instance
+            self._setMarkerIdsAtChunk(markerDict, chunk, ids)
+
+            # remove overlay tracking for that one id
+            if getattr(self, "labelOverlay", None):
+                if hasattr(self.labelOverlay, "forgetMarker"):
+                    self.labelOverlay.forgetMarker(markerId)
+
+            # delete actual canvas item
+            try:
+                self.canvas.delete(markerId)
+            except tk.TclError:
+                pass
+
+            return markerId
+
+        # --- Remove exactly one start marker instance ---
+        _deleteOneMarkerAtChunk(self.startPointMarkers, startChunk, "start")
         if startChunk in self.startPoints:
+            # remove ONE occurrence
             self.startPoints.remove(startChunk)
-            
-        # --- Remove end marker ---
-        if endChunk in self.endPointMarkers:
-            self.canvas.delete(self.endPointMarkers[endChunk])
-            del self.endPointMarkers[endChunk]
+
+        # --- Remove exactly one end marker instance ---
+        _deleteOneMarkerAtChunk(self.endPointMarkers, endChunk, "end")
         if endChunk in self.endPoints:
             self.endPoints.remove(endChunk)
 
-        # --- Update internal labels list ---
-        self.labels = [
-            l for l in self.labels
-            if not (l[0] == member and l[1] == startChunk and l[2] == endChunk)
-        ]
+        # --- Update internal labels list (remove exactly this label) ---
+        removed = False
+        newLabels = []
+        for l in self.labels:
+            if (not removed) and (l[0] == member and l[1] == startChunk and l[2] == endChunk):
+                removed = True
+                continue
+            newLabels.append(l)
+        self.labels = newLabels
 
-        # --- Rebuild timeMarkers from startPoints/endPoints ---
-        self.updateTimeMarkersDict()
+        # --- Rebuild marker timeline dict from labels (recommended) ---
+        self.updateLabelMarkersDict()
 
-        # --- Save updated labels back to JSON (sorted by start index for safety) ---
+        # --- Save updated labels back to JSON ---
         labelFilePath = f"./saved_labels/{self.selectedGroup}/{self.songName}_labels.json"
-
         try:
-            sortedLabels = sorted(self.labels, key=lambda label: label[1])
+            sortedLabels = sorted(self.labels, key=lambda lab: lab[1])
             with open(labelFilePath, "w") as file:
                 json.dump(sortedLabels, file, indent=4)
         except Exception as e:
             print(f"Error updating labels in {labelFilePath}: {e}")
-    
+
         # Optional: refresh timelines now that labels changed
         for trackItem in self.memberImages.values():
             trackItem.initializeTimeline()
-        
+      
     def deleteSelectedMarker(self, event=None):
         """
-        Delete the selected marker. 
-        If it is part of a label, remove BOTH start and end markers and the label from JSON.
+        Delete the selected marker.
+
+        Rules:
+        - If a label is currently selected (self.selectedLabel), delete that label and its boundary markers.
+        - Otherwise, delete ONLY the selected markerId (stray / not tied to selectedLabel).
         """
         if not self.selectedMarker:
             return
-        
-        chunkIndex = self.selectedMarker["chunkIndex"]
-        markerType = self.selectedMarker["type"]
-        
-        # Check to see if this marker brelongs to a label
-        labelToDelete = None
-        for label in self.labels:
-            _, start, end = label[:3]
-            if ((markerType == "start" and start == chunkIndex) or
-                (markerType == "end" and end == chunkIndex)):
-                labelToDelete = label[:3]
-                break
-        
-        if labelToDelete:
-            # 2) Delete BOTH markers + label
+
+        markerId   = self.selectedMarker.get("id")          # MUST be a single canvas id (int)
+        chunkIndex = self.selectedMarker.get("chunkIndex")
+        markerType = self.selectedMarker.get("type")
+
+        if markerId is None:
+            # nothing safe to delete
+            return
+
+        # ---- Overlay cleanup (always by markerId) ----
+        if getattr(self, "labelOverlay", None):
+            if hasattr(self.labelOverlay, "hideNow"):
+                self.labelOverlay.hideNow()
+            if hasattr(self.labelOverlay, "forgetMarker"):
+                self.labelOverlay.forgetMarker(markerId)
+
+        # ---- Case 1: a label is selected -> delete the whole label (preferred, avoids ambiguity) ----
+        if self.selectedLabel is not None:
             self.pushUndoState("delete-label")
-            
-            # Delete BOTH markers + label
-            self.deleteLabelAndMarkers(labelToDelete)
-        else:
-            self.pushUndoState("delete stray marker")
-            
-            if markerType == "start":
-                if chunkIndex in self.startPointMarkers:
-                    self.canvas.delete(self.startPointMarkers[chunkIndex])
-                    del self.startPointMarkers[chunkIndex]
-                    if chunkIndex in self.startPoints:
-                        self.startPoints.remove(chunkIndex)  # Remove from startPoints
-            elif markerType == "end":
-                if chunkIndex in self.endPointMarkers:
-                    self.canvas.delete(self.endPointMarkers[chunkIndex])
-                    del self.endPointMarkers[chunkIndex]
-                    if chunkIndex in self.endPoints:
-                        self.endPoints.remove(chunkIndex)  # Remove from endPoints
-                    
+            # Your existing function should remove the label from self.labels and delete BOTH boundary markers
+            # (and update JSON, timeMarkers, etc.)
+            self.deleteLabelAndMarkers(self.selectedLabel)
+
+            self.selectedMarker = None
+            self.selectedLabel = None
+            self.originalLabel = None
+            return
+
+        # ---- Case 2: no selectedLabel -> delete ONLY the selected markerId ----
+        self.pushUndoState("delete stray marker")
+
+        # Remove markerId from the chunk's id list (multiset-safe)
+        if markerType == "start":
+            ids = self._getMarkerIdsAtChunk(self.startPointMarkers, chunkIndex)
+            if markerId in ids:
+                ids.remove(markerId)
+            self._setMarkerIdsAtChunk(self.startPointMarkers, chunkIndex, ids)
+
+            # remove ONE occurrence in startPoints (multiset-safe)
+            if chunkIndex in self.startPoints:
+                self.startPoints.remove(chunkIndex)
+
+            if getattr(self, "openStartChunk", None) == chunkIndex:
+                self.openStartChunk = None
+
+        elif markerType == "end":
+            ids = self._getMarkerIdsAtChunk(self.endPointMarkers, chunkIndex)
+            if markerId in ids:
+                ids.remove(markerId)
+            self._setMarkerIdsAtChunk(self.endPointMarkers, chunkIndex, ids)
+
+            if chunkIndex in self.endPoints:
+                self.endPoints.remove(chunkIndex)
+
+        # Delete the actual canvas item
+        try:
+            self.canvas.delete(markerId)
+        except tk.TclError:
+            pass
+
+        # re-stack visuals at this chunk (optional but usually correct)
+        self.restackMarkersAtChunk(chunkIndex)
+
+        # Clear selection
         self.selectedMarker = None
         self.selectedLabel = None
         self.originalLabel = None
@@ -681,50 +770,83 @@ class VoiceDetectionApp:
         if not self.selectedMarker:
             return
 
-        chunkIndex = self.selectedMarker["chunkIndex"]
-        markerType = self.selectedMarker["type"]
+        markerId = self.selectedMarker.get("id")
+        markerType = self.selectedMarker.get("type")
 
-        if markerType == "start" and chunkIndex in self.startPointMarkers:
-            self.canvas.itemconfig(self.startPointMarkers[chunkIndex], fill="green")
-        elif markerType == "end" and chunkIndex in self.endPointMarkers:
-            self.canvas.itemconfig(self.endPointMarkers[chunkIndex], fill="red")
+        if markerId is not None:
+            try:
+                self.canvas.itemconfig(markerId, fill=self._defaultMarkerColor(markerType))
+            except tk.TclError:
+                # marker might have been deleted/redrawn
+                pass
+
         self.selectedMarker = None
+    
+    def _getClickedMarkerId(self, event):
+        # Don't use find_closest by itself; it can "select" something even if you clicked empty space.
+        # Use a small hitbox around the cursor.
+        hit = self.canvas.find_overlapping(event.x-3, event.y-3, event.x+3, event.y+3)
+        if not hit:
+            return None
+        # Prefer topmost item
+        return hit[-1]
     
     def onMarkerClick(self, event):
         """
         Detect if a marker is clicked and darken its color.
         """
         self.resetMarkerColor()
+        self.isDraggingMarker = False
+        self.pendingDrag = False
+        self.dragStartXY = (event.x, event.y)
+        self.dragStartLabels = None
         self.selectedMarker = None
-        clickedItem = self.canvas.find_closest(event.x, event.y)
+       
+        clickedId = self._getClickedMarkerId(event)
+        if clickedId is None:
+            self.selectedMarker = None
+            self.selectedLabel = None
+            self.originalLabel = None
+            return
         
-        for chunkIndex, marker in self.startPointMarkers.items():
-            if marker == clickedItem[0]:
-                if self.selectedMarker and self.selectedMarker["type"] == "start" and self.selectedMarker["chunkIndex"] != chunkIndex:
-                    self.updateLabelInJSON()
-                
-                self.selectMarker(chunkIndex, "start")
+        # --- START markers ---
+        for chunkIndex, markerVal in self.startPointMarkers.items():
+            ids = markerVal if isinstance(markerVal, list) else [markerVal]
+            if clickedId in ids:
+                self.setSelectedMarker(chunkIndex, "start", markerId=clickedId)
                 self.prepareLabelUpdate(chunkIndex, "start")
-                self.isDraggingMarker = True 
-                # Snapshot label state before drag
+                self.pendingDrag = True
                 self.dragStartLabels = copy.deepcopy(self.labels)
                 return
-        
-        for chunkIndex, marker in self.endPointMarkers.items():
-            if marker == clickedItem[0]:
-                if self.selectedMarker and self.selectedMarker["type"] == "end" and self.selectedMarker["chunkIndex"] != chunkIndex:
-                    self.updateLabelInJSON()
-                    
-                self.selectMarker(chunkIndex, "end")
+
+        # --- END markers ---
+        for chunkIndex, markerVal in self.endPointMarkers.items():
+            ids = markerVal if isinstance(markerVal, list) else [markerVal]
+            if clickedId in ids:
+                self.setSelectedMarker(chunkIndex, "end", markerId=clickedId)
                 self.prepareLabelUpdate(chunkIndex, "end")
-                self.isDraggingMarker = True
+                self.pendingDrag = True
                 self.dragStartLabels = copy.deepcopy(self.labels)
                 return
             
         self.selectedMarker = None
         self.originalLabel = None
         self.isDraggingMarker = False
-        self.dragStartLabels = None
+        
+    def onMarkerMotion(self, event):
+        # Not interacting with a marker → ignore
+        if not self.pendingDrag or not self.selectedMarker or not self.dragStartXY:
+            return
+
+        dx = event.x - self.dragStartXY[0]
+        dy = event.y - self.dragStartXY[1]
+        if not self.isDraggingMarker:
+            if (dx*dx + dy*dy) < (self.dragThreshold * self.dragThreshold):
+                return
+            self.isDraggingMarker = True  # <-- becomes a real drag only after threshold
+
+        # Now run your existing drag logic
+        self.onMarkerDrag(event)
         
     def onMarkerDrag(self, event):
         """
@@ -737,7 +859,7 @@ class VoiceDetectionApp:
         markerType = self.selectedMarker['type']
         oldChunkIndex = self.selectedMarker['chunkIndex']
         chunksInView = self.zoomManager.currentChunksInView
-        sectionIndex = self.progressBarHandle.currentSectionIndex
+        markerSectionIndex = oldChunkIndex // chunksInView
         
         # Progress bar geometry (in canvas coordinates)
         barX = self.progressBarCanvas.winfo_x()
@@ -750,7 +872,7 @@ class VoiceDetectionApp:
         # Convert x to chunk offset within current section
         relative = (x - barX) / float(barWidth)
         chunkOffset = int(round(relative * (chunksInView - 1)))
-        newChunkIndex = sectionIndex * chunksInView + chunkOffset
+        newChunkIndex = markerSectionIndex * chunksInView + chunkOffset
         
         # Clamp to valid range 
         newChunkIndex = max(0, min(len(self.chunks) - 1, newChunkIndex))
@@ -778,8 +900,7 @@ class VoiceDetectionApp:
 
         if oldChunkIndex in pointsList:
             pointsList.remove(oldChunkIndex)
-        if newChunkIndex not in pointsList:
-            pointsList.append(newChunkIndex)
+        pointsList.append(newChunkIndex)
 
         self.selectedMarker["chunkIndex"] = newChunkIndex
         
@@ -797,21 +918,21 @@ class VoiceDetectionApp:
         oldSection = oldChunkIndex // chunksInView
         newSection = newChunkIndex // chunksInView
         
-        if hasattr(self, "timeMarkers"):
+        if hasattr(self, "labelMarkers"):
             # Remove tuple from oldSection
-            if oldSection in self.timeMarkers:
+            if oldSection in self.labelMarkers:
                 try:
-                    self.timeMarkers[oldSection].remove((markerType, oldChunkIndex))
-                    if not self.timeMarkers[oldSection]:
-                        del self.timeMarkers[oldSection]
+                    self.labelMarkers[oldSection].remove((markerType, oldChunkIndex))
+                    if not self.labelMarkers[oldSection]:
+                        del self.labelMarkers[oldSection]
                 except ValueError:
                     pass  # out of sync? ignore
                 
                 # Add tuple to newSection
-            self.timeMarkers.setdefault(newSection, []).append((markerType, newChunkIndex))
+            self.labelMarkers.setdefault(newSection, []).append((markerType, newChunkIndex))
         
         # --- Move the actual canvas line to the new X (before stacking) ---
-        markerId = markerDict.get(oldChunkIndex)
+        markerId = self.selectedMarker.get("id")
         if markerId is not None:
             # Compute new X for newChunkIndex
             relativeX = barX + (newChunkIndex % chunksInView / chunksInView) * barWidth
@@ -830,9 +951,9 @@ class VoiceDetectionApp:
             del markerDict[oldChunkIndex]
             markerDict[newChunkIndex] = markerId
         else:
-            # Fallback: if marker not found, you *could* regenerate via updateTimeMarkersDict,
+            # Fallback: if marker not found, you *could* regenerate via updateLabelMarkers,
             # but this should normally not happen.
-            print(f"Warning: canvas marker for {markerType} at {oldChunkIndex} not found.")
+            print(f"Warning: canvas maifrker for {markerType} at {oldChunkIndex} not found.")
         
         # --- Re-stack only at the old and new chunks ---
         self.restackMarkersAtChunk(oldChunkIndex)
@@ -851,13 +972,14 @@ class VoiceDetectionApp:
         newTimeMs = newChunkIndex * self.chunk_duration
 
         # Make the handle follow the drag and show time
-        self.currentSectionIndex = sectionIndex
+        self.currentSectionIndex = markerSectionIndex
         self.updateDisplayedTime(newTimeMs)
         self.updateProgressBarHandle(newTimeMs)
 
         if hasattr(self, "videoTrackItem"):
             self.videoTrackItem.seek(newTimeMs)
 
+        self.labelOverlay.updateBoundaryMarker(markerId, chunkIndex=newChunkIndex)
         self.isManualUpdate = True
         
     def onMarkerRelease(self, event):
@@ -865,10 +987,19 @@ class VoiceDetectionApp:
         When the user releases the mouse after dragging a marker,
         we save labels once to JSON to avoid per-frame lag.
         """
+        # If we never crossed threshold, it's a click-select only
+        if self.pendingDrag and not self.isDraggingMarker:
+            self.pendingDrag = False
+            self.dragStartXY = None
+            # keep selection, but do NOT save JSON/undo/etc.
+            return
+
         if not self.isDraggingMarker:
             return
         
+        self.pendingDrag = False
         self.isDraggingMarker = False
+        self.dragStartXY = None
         
         # only save if marker corresponds to an actual label
         if self.selectedLabel:
@@ -881,6 +1012,10 @@ class VoiceDetectionApp:
                 self.undoStack.append(snapshot)
                 self.redoStack.clear()
                 self.appendHistoryToFile(snapshot)
+                labelMember = self.selectedLabel[0]
+                trackItem = self.memberImages.get(labelMember)
+                if trackItem:
+                    trackItem.initializeTimeline()
                 self.dragStartLabels = None
 
             # now save the new labels to JSON, update timelines, etc.
@@ -935,9 +1070,9 @@ class VoiceDetectionApp:
                 self.endPoints.append(end)
                 
         # Sync internal marker structures and redraw
-        self.updateTimeMarkersDict()
+        self.updateLabelMarkersDict()
         self.drawTimeMarkers()
-        self.drawLabelMarkers(self.progressBarHandle.currentSectionIndex)
+        self.drawLabelMarkers(self.currentSectionIndex)
 
         # Refresh member timelines / positions so everything stays consistent
         for trackItem in self.memberImages.values():
@@ -1001,7 +1136,7 @@ class VoiceDetectionApp:
         self.originalLabel = None
     # end
     
-    def updateLabelInJSON(self):
+    def updateLabelInJSON(self, event=None):
         """
         Save updated labels to JSON file
         """
@@ -1013,20 +1148,13 @@ class VoiceDetectionApp:
         labelFilePath = f"./saved_labels/{self.selectedGroup}/{self.songName}_labels.json"
         
         try:
-            # with open(labelFilePath, "r") as file:
-            #     savedLabels = json.load(file)
-            # for i, label in enumerate(savedLabels):
-            #     if label[0] == self.originalLabel[0] and label[1] == self.originalLabel[1] and label[2] == self.originalLabel[2]:    
-            #         savedLabels[i] = self.selectedLabel
-            #         self.originalLabel = self.selectedLabel
-            #         break
-            sortedLabels = sorted(self.labels, key=lambda label: label[1])
+            self.labels = dedupeLabelsByKey(self.labels)  # critical
             with open(labelFilePath, "w") as file:
-                json.dump(sortedLabels, file, separators=(",", ":"))
-                
-            # print(f"Labels saved to {labelFilePath}.")
-            self.updateTimeMarkersDict()
+                json.dump(self.labels, file, separators=(",", ":"))
+
+            self.updateLabelMarkersDict()
             self.initializePositions()
+
         except Exception as e:
             print(f"Error saving labels to {labelFilePath}: {e}")
              
@@ -1094,6 +1222,20 @@ class VoiceDetectionApp:
                 x, baseY - height,
                 x, baseY
             )
+     
+    def _getMarkerIdsAtChunk(self, markerDict, chunkIndex):
+        v = markerDict.get(chunkIndex)
+        if v is None:
+            return []
+        if isinstance(v, list):
+            return v
+        return [v]  # backward compatibility if old code stored an int
+    
+    def _setMarkerIdsAtChunk(self, markerDict, chunkIndex, ids):
+        if not ids:
+            markerDict.pop(chunkIndex, None)
+        else:
+            markerDict[chunkIndex] = ids
                             
     def moveMarker(self, direction):
         """
@@ -1111,53 +1253,98 @@ class VoiceDetectionApp:
             # print("No marker selected.")
             return
         
-        chunkIndex = self.selectedMarker["chunkIndex"]
+        oldChunkIndex = self.selectedMarker["chunkIndex"]
         markerType = self.selectedMarker["type"]
         
-        newChunkIndex = chunkIndex + direction
+        chunksInView = self.zoomManager.currentChunksInView
+        markerSectionIndex = oldChunkIndex // chunksInView
+        
+        visibleSectionIndex = self.currentSectionIndex
+        
+        # If marker isn't in the current drawn section, jump UI first
+        if markerSectionIndex != visibleSectionIndex:
+            self.jumpToSection(markerSectionIndex)
+            
+            # after redraw, canvas ids changed; refresh markerId from dict
+            if markerType == "start":
+                self.selectedMarker["id"] = self.startPointMarkers.get(oldChunkIndex)
+            else:
+                self.selectedMarker["id"] = self.endPointMarkers.get(oldChunkIndex)
+                
+            # If still missing, bail safely (keeps selection but prevents coruption)
+            if self.selectedMarker["id"] is None:
+                print("Marker exists logically but isn't drawable in this section right now.")
+                return
+          
+        markerId = self.selectedMarker.get("id")  
+        newChunkIndex = oldChunkIndex + direction
         # print(f"Old chunk index: {chunkIndex}, New: {newChunkIndex}")
         if newChunkIndex < 0 or newChunkIndex >= len(self.chunks):
             print("Cannot move marker beyond bounds.")
             return
         
+        if self.selectedLabel:
+            startIdx, endIdx = self.selectedLabel[1], self.selectedLabel[2]
+            if markerType == "start":
+                newChunkIndex = min(newChunkIndex, endIdx - 1)
+            else:
+                newChunkIndex = max(newChunkIndex, startIdx + 1)
+
+        if newChunkIndex == oldChunkIndex:
+            return
+
+        if markerType == "start" and getattr(self, "openStartChunk", None) == oldChunkIndex:
+            self.openStartChunk = newChunkIndex
+    
         y = self.progressBarCanvas.winfo_y()
+        
+        # Find markerId if missing (fallback, keeps code resilient)
+        if markerId is None:
+            if markerType == "start":
+                markerId = self.startPointMarkers.get(oldChunkIndex)
+            else:
+                markerId = self.endPointMarkers.get(oldChunkIndex)
+
+        if markerId is None:
+            print(f"Warning: {markerType} marker at chunkIndex {oldChunkIndex} not found.")
+            return
+        
+        # ---- Update canvas item position WITHOUT deleting it ----
+        xNew = calculateX(newChunkIndex)
+        self.canvas.coords(markerId, xNew, y - 20, xNew, y)
         
         # --- Remove old marker + index from the appropriate structures -
         if markerType == "start":
-            if chunkIndex in self.startPointMarkers:
-                self.canvas.delete(self.startPointMarkers[chunkIndex])
-                del self.startPointMarkers[chunkIndex]
-                if chunkIndex in self.startPoints:
-                    self.startPoints.remove(chunkIndex)
-            else:
-                print(f"Warning: Start marker at chunkIndex {chunkIndex} not found.")
-        
-            markerId = self.canvas.create_line(
-                calculateX(newChunkIndex), y - 20,
-                calculateX(newChunkIndex), y,
-                fill="green", width=4, tags=("marker", "start_marker")
-            )
-            self.startPointMarkers[newChunkIndex] = markerId
+            # remove markerId from old chunk list
+            oldIds = self._getMarkerIdsAtChunk(self.startPointMarkers, oldChunkIndex)
+            if markerId in oldIds:
+                oldIds.remove(markerId)
+            self._setMarkerIdsAtChunk(self.startPointMarkers, oldChunkIndex, oldIds)
+
+            # add markerId to new chunk list
+            newIds = self._getMarkerIdsAtChunk(self.startPointMarkers, newChunkIndex)
+            newIds.append(markerId)
+            self._setMarkerIdsAtChunk(self.startPointMarkers, newChunkIndex, newIds)
+
+            # multiset list update: remove ONE occurrence, add ONE occurrence
+            if oldChunkIndex in self.startPoints:
+                self.startPoints.remove(oldChunkIndex)
             self.startPoints.append(newChunkIndex)
-            
+
         elif markerType == "end":
-            if chunkIndex in self.endPointMarkers:
-                self.canvas.delete(self.endPointMarkers[chunkIndex])
-                del self.endPointMarkers[chunkIndex]
-                if chunkIndex in self.endPoints:
-                    self.endPoints.remove(chunkIndex)
-            else:
-                print(f"Warning: End marker at chunkIndex {chunkIndex} not found.")
-            
-            # Create new end marker at newChunkIndex
-            markerId = self.canvas.create_line(
-                calculateX(newChunkIndex), y - 20,
-                calculateX(newChunkIndex), y,
-                fill="red", width=4, tags=("marker", "end_marker")
-            )
-            self.endPointMarkers[newChunkIndex] = markerId
+            oldIds = self._getMarkerIdsAtChunk(self.endPointMarkers, oldChunkIndex)
+            if markerId in oldIds:
+                oldIds.remove(markerId)
+            self._setMarkerIdsAtChunk(self.endPointMarkers, oldChunkIndex, oldIds)
+
+            newIds = self._getMarkerIdsAtChunk(self.endPointMarkers, newChunkIndex)
+            newIds.append(markerId)
+            self._setMarkerIdsAtChunk(self.endPointMarkers, newChunkIndex, newIds)
+
+            if oldChunkIndex in self.endPoints:
+                self.endPoints.remove(oldChunkIndex)
             self.endPoints.append(newChunkIndex)
-            
+
         # Update label in self.labels if applicable
         if self.selectedLabel:
             # Update the label directly in self.labels if it's stored as a list
@@ -1171,10 +1358,24 @@ class VoiceDetectionApp:
                     break
         
         # Restack locally at old and new chunk Positions
-        self.restackMarkersAtChunk(chunkIndex)
+        self.restackMarkersAtChunk(oldChunkIndex)
         self.restackMarkersAtChunk(newChunkIndex)    
         
-        self.selectedMarker["chunkIndex"] = newChunkIndex # This is run 
+        # Update selectedMarker state
+        self.selectedMarker["chunkIndex"] = newChunkIndex
+        self.selectedMarker["id"] = markerId
+        
+        self.labelOverlay.updateBoundaryMarker(markerId, chunkIndex=newChunkIndex)
+    
+    def jumpToSection(self, sectionIndex: int):
+        sectionIndex = max(0, sectionIndex)
+        
+        self.currentSectionIndex = sectionIndex
+        self.progressBarHandle.currentSectionIndex = sectionIndex
+
+        # Redraw only what depends on the section
+        self.drawLabelMarkers(sectionIndex)
+        self.drawTimeMarkers()
     
     def addControls(self, root):
         buttonFrame = tk.Frame(root, bg="blue")  # Light gray background for visibility
@@ -1373,23 +1574,40 @@ class VoiceDetectionApp:
             trackItem.setMaxTime(max(memberTimes))
     #end initializeMemberImages 
      
-    def updateTimeMarkersDict(self):
-        self.timeMarkers = {}
-        for chunkIndex in self.startPoints:
-            sectionIndex = chunkIndex // self.zoomManager.currentChunksInView
-            if sectionIndex not in self.timeMarkers:
-                self.timeMarkers[sectionIndex] = []
-            self.timeMarkers[sectionIndex].append(("start", chunkIndex))
+    def updateLabelMarkersDict(self):
+        """
+        Rebuild labelMarkers from self.labels (source of truth) + stray markers.
+        Avoid double-adding stray markers that sit on committed label boundaries.
+        """
+        self.labelMarkers = {}
+        chunksInView = self.zoomManager.currentChunksInView
 
-        # Process endPointMarkers
-        for chunkIndex in self.endPoints:
-            sectionIndex = chunkIndex // self.zoomManager.currentChunksInView
-            if sectionIndex not in self.timeMarkers:
-                self.timeMarkers[sectionIndex] = []
-            self.timeMarkers[sectionIndex].append(("end", chunkIndex))
-        # Optionally redraw markers for the current section
-        self.drawLabelMarkers(self.progressBarHandle.currentSectionIndex)
-     
+        def add(markerType, chunkIndex):
+            sectionIndex = chunkIndex // chunksInView
+            self.labelMarkers.setdefault(sectionIndex, []).append((markerType, chunkIndex))
+
+        # 1) Committed labels + record their boundaries
+        committed = set()  # (markerType, chunkIndex)
+        for lab in self.labels:
+            if len(lab) < 3:
+                continue
+            _, startChunk, endChunk = lab[:3]
+            add("start", startChunk)
+            add("end", endChunk)
+            committed.add(("start", startChunk))
+            committed.add(("end", endChunk))
+
+        # 2) Pending / stray markers: only add if NOT already a committed boundary
+        for chunkIndex in getattr(self, "startPoints", []):
+            if ("start", chunkIndex) not in committed:
+                add("start", chunkIndex)
+
+        for chunkIndex in getattr(self, "endPoints", []):
+            if ("end", chunkIndex) not in committed:
+                add("end", chunkIndex)
+
+        self.drawLabelMarkers(self.currentSectionIndex)
+        
     def loadSavedLabels(self):
         """Load saved labels from a JSON file and update markers"""
         labelFilePath = f"./saved_labels/{self.selectedGroup}/{self.songName}_labels.json"
@@ -1406,14 +1624,12 @@ class VoiceDetectionApp:
                 for label in savedLabels:
                     start = label[1]
                     end = label[2]
-                    if start not in self.startPoints:
-                        self.startPoints.append(start)
-                    if end not in self.endPoints:
-                        self.endPoints.append(end)
+                    self.startPoints.append(start)
+                    self.endPoints.append(end)
                 
                 # Update startPoints, endPoints, and markers
-                self.updateTimeMarkersDict()
-                self.drawTimeMarkers()
+                self.updateLabelMarkersDict()
+                self.drawLabelMarkers(self.currentSectionIndex)
                 
                 self.canvas.update()
                 self.root.update_idletasks()
@@ -1439,48 +1655,38 @@ class VoiceDetectionApp:
     # Works properly
     def updateProgressBarHandle(self, timeMs): 
         """Update the progress bar handle position based on the current time."""
+        visibleDuration = self.zoomManager.currentChunksInView * self.chunk_duration
+        totalDuration   = len(self.chunks) * self.chunk_duration
         maxTime = (len(self.chunks) - 1) * self.chunk_duration
         if timeMs >= maxTime:
             timeMs = maxTime
-
-        visibleDuration = self.zoomManager.currentChunksInView * self.chunk_duration
-        totalDuration   = len(self.chunks) * self.chunk_duration
-
-        # Compute x for current section
-        timeInSection = timeMs - (self.currentSectionIndex * visibleDuration)
-        progressRatio = timeInSection / visibleDuration
-        x = (progressRatio * self.progressBarWidth) % self.progressBarWidth
-
-        # Wrap forward
-        if self.previousX > self.progressBarWidth - 50 and x < 50:
-            self.currentSectionIndex += 1
-            if self.currentSectionIndex * visibleDuration >= totalDuration:
-                self.currentSectionIndex = max(0, (totalDuration - 1) // visibleDuration)
-            self.progressBarHandle.currentSectionIndex = self.currentSectionIndex
-
-            # recompute for new section
-            timeInSection = timeMs - (self.currentSectionIndex * visibleDuration)
-            progressRatio = timeInSection / visibleDuration
-            x = (progressRatio * self.progressBarWidth) % self.progressBarWidth
             
-            self.drawLabelMarkers(self.currentSectionIndex)
-            self.drawTimeMarkers()
+        maxSectionIndex = max(0, (totalDuration - 1) // visibleDuration)
+        newPlayheadSection = int(timeMs // visibleDuration)
+        newPlayheadSection = max(0, min(newPlayheadSection, maxSectionIndex))
+        
+        oldPlayheadSection = self.progressBarHandle.currentSectionIndex
+        viewSection = self.currentSectionIndex
+        
+        # update playhead section always
+        self.progressBarHandle.currentSectionIndex = newPlayheadSection
 
-        # Wrap backward
-        elif self.previousX < 50 and x > self.progressBarWidth - 50:
-            self.currentSectionIndex -= 1
-            if self.currentSectionIndex < 0:
-                self.currentSectionIndex = 0
-            self.progressBarHandle.currentSectionIndex = self.currentSectionIndex
+        # "sticky follow": only advance the view if the user was following BEFORE the boundary change
+        if newPlayheadSection != oldPlayheadSection:
+            if viewSection == oldPlayheadSection:
+                self.currentSectionIndex = newPlayheadSection
+                self.drawLabelMarkers(self.currentSectionIndex)
+                self.drawTimeMarkers()
+            else:
+                # user browsed away, do not jump view
+                pass
 
-            # recompute for new section
-            timeInSection = timeMs - (self.currentSectionIndex * visibleDuration)
-            progressRatio = timeInSection / visibleDuration
-            x = (progressRatio * self.progressBarWidth) % self.progressBarWidth
+        # compute x within the playhead section
+        timeInSection = timeMs - (newPlayheadSection * visibleDuration)
+        progressRatio = (timeInSection / visibleDuration) if visibleDuration > 0 else 0.0
+        x = progressRatio * self.progressBarWidth
 
-            self.drawLabelMarkers(self.currentSectionIndex)
-            self.drawTimeMarkers()
-
+        # show/hide handle based on whether view matches playhead
         self.progressBarHandle.move(x, self.currentSectionIndex)
         self.previousX = x
     
@@ -1516,7 +1722,7 @@ class VoiceDetectionApp:
     def updateProgressBar(self):
         """Redraw progress bar based on visible range"""
         playbackTime = self.playbackOffset + pygame.mixer.music.get_pos()
-        self.updateTimeMarkersDict()
+        self.updateLabelMarkersDict()
         self.updateProgressBarHandle(playbackTime)
                     
     def drawTimeMarkers(self):
@@ -1527,7 +1733,7 @@ class VoiceDetectionApp:
         
         visibleDuration = self.zoomManager.currentChunksInView * self.chunk_duration
         # Determines start of current section
-        startTimeMs = self.progressBarHandle.currentSectionIndex * visibleDuration
+        startTimeMs = self.currentSectionIndex * visibleDuration
         
         progressBarX = self.progressBarCanvas.winfo_x()
         progressBarY = self.progressBarCanvas.winfo_y()
@@ -1733,150 +1939,232 @@ class VoiceDetectionApp:
         
         rowToLabelIndex = [] 
         labelKeys = []  # index -> (memberFromGetLabels, start, end)
+        
+        # Keep references to row widgets so we update their UI immediately
+        rowWidgets = {} # i -> {"labelCb": widget, "backCb": widget, "adCb": widget}
+        # Mark deletions safely without shifting indices mid-session
+        deletedLabelIndices = set()
+        
+        # Utility: find the labelIndex in self.labels for this (start,end) pair (ignores member)
+        def findLabelIndexBySpan(startPoint, endPoint, member=None):
+            for j, lab in enumerate(self.labels):
+                if j in deletedLabelIndices:
+                    continue
+                if len(lab) >= 3 and lab[1] == startPoint and lab[2] == endPoint:
+                    if member is None or lab[0] == member:
+                        return j
+            return None
+        
+        # Utility: after any delete that would shift indices, we re-scan and rebuild rowToLabelIndex
+        def rebuildRowToLabelIndex():
+            for i, (_m, s, e) in enumerate(labelKeys):
+                rowToLabelIndex[i] = findLabelIndexBySpan(s, e, member=_m)
+                
+        # Utility: refresh the displayed text/color for a row
+        def refreshRowUI(i):
+            labelIndex = rowToLabelIndex[i]
+            _oldMember, startPoint, endPoint = labelKeys[i]
+
+            member = None
+            isBacking = False
+            isAdLib = False
+            if labelIndex is not None and labelIndex not in deletedLabelIndices:
+                lab = self.labels[labelIndex]
+                while len(lab) < 5:
+                    lab.append(False)
+                member, _, _, isBacking, isAdLib = lab[0], lab[1], lab[2], lab[3], lab[4]
+
+            memberText = f" -> {member}" if member else ""
+            text = f"Start: {startPoint}, End: {endPoint}{memberText}"
+            color = self.getMemberColor(member) if member else "black"
+
+            rowWidgets[i]["labelCb"].configure(text=text, fg=color)
+
+            backingVars[i].set(bool(isBacking))
+            adLibVars[i].set(bool(isAdLib))
+            
+        # per-row edit dialog (double-click a row)
+        def openEditDialog(i):
+            labelIndex = rowToLabelIndex[i]
+            _oldMember, startPoint, endPoint = labelKeys[i]
+            
+            currentMember = None
+            currentBacking = False
+            currentAdLib = False
+            if labelIndex is not None and labelIndex not in deletedLabelIndices:
+                lab = self.labels[labelIndex]
+                while len(lab) < 5:
+                    lab.append(False)
+                currentMember = lab[0]
+                currentBacking = bool(lab[3])
+                currentAdLib = bool(lab[4])
+            
+            editWin = tk.Toplevel(labelMenu)
+            editWin.title(f"Edit label ({startPoint}–{endPoint})")
+            editWin.transient(labelMenu)
+            editWin.grab_set()
+            editWin.geometry("360x200")
+            
+            tk.Label(editWin, text=f"Start: {startPoint}   End: {endPoint}").pack(pady=8)
+
+            memberMapping = {m['name']: m for m in self.members}
+            memberMapping["Gang Vocal"] = {"name": "Gang Vocal", "id": "gang"}
+            memberNames = list(memberMapping.keys())
+            
+            memberVarRow = tk.StringVar(value=currentMember if currentMember in memberMapping else (memberNames[0] if memberNames else ""))
+            ttk.Combobox(editWin, textvariable=memberVarRow, values=memberNames, state="readonly").pack(pady=5)
+
+            backingVarRow = tk.BooleanVar(value=currentBacking)
+            adLibVarRow = tk.BooleanVar(value=currentAdLib)
+
+            tk.Checkbutton(editWin, text="Backing vocals", variable=backingVarRow).pack(pady=3)
+            tk.Checkbutton(editWin, text="Ad Lib", variable=adLibVarRow).pack(pady=3)
+        
+            def applyEdit():
+                nonlocal labelIndex
+                chosenMember = memberVarRow.get()
+
+                # Track oldMember if we’re editing an existing label
+                oldMember = None
+                # If this span already exists (even if member differs), update it instead of appending duplicates.
+                if labelIndex is None or labelIndex in deletedLabelIndices:
+                    labelIndex = findLabelIndexBySpan(startPoint, endPoint, member=chosenMember)
+
+                if labelIndex is None:
+                    newLabel = [chosenMember, startPoint, endPoint, backingVarRow.get(), adLibVarRow.get()]
+                    self.labels.append(newLabel)
+                    rowToLabelIndex[i] = len(self.labels) - 1
+                else:
+                    lab = self.labels[labelIndex]
+                    while len(lab) < 5:
+                        lab.append(False)
+                    
+                    if oldMember is None:
+                        oldMember = lab[0]
+                    lab[0] = chosenMember
+                    lab[3] = backingVarRow.get()
+                    lab[4] = adLibVarRow.get()
+                    rowToLabelIndex[i] = labelIndex
+
+                # Refresh both old and new members’ timelines
+                membersToUpdate = set()
+                if oldMember and oldMember != chosenMember and oldMember != "Gang Vocal":
+                    membersToUpdate.add(oldMember)
+                if chosenMember and chosenMember != "Gang Vocal":
+                    membersToUpdate.add(chosenMember)
+                    
+                for m in membersToUpdate:
+                    trackItem = self.memberImages.get(m)
+                    if trackItem:
+                        trackItem.initializeTimeline()
+                    
+                refreshRowUI(i)
+                editWin.destroy()
+
+            def deleteLabel():
+                nonlocal labelIndex
+                if labelIndex is None:
+                    # Nothing to delete; just clear row UI.
+                    rowToLabelIndex[i] = None
+                    refreshRowUI(i)
+                    editWin.destroy()
+                    return
+
+                lab = self.labels[labelIndex]
+                oldMember = lab[0] if lab and len(lab) >= 1 else None
+
+                # Remove the label from the list
+                del self.labels[labelIndex]
+                
+                rowToLabelIndex[i] = None
+                refreshRowUI(i)
+                
+                # Update that member's timeline
+                if oldMember and oldMember != "Gang Vocal":
+                    trackItem = self.memberImages.get(oldMember)
+                    if trackItem:
+                        trackItem.initializeTimeline()
+
+                # Save new label set to JSON
+                self.saveLabels(self.selectedGroup, True)
+                editWin.destroy()
+
+            btnFrame = tk.Frame(editWin)
+            btnFrame.pack(pady=10)
+
+            tk.Button(btnFrame, text="Apply", command=applyEdit).pack(side="left", padx=6)
+            tk.Button(btnFrame, text="Delete", command=deleteLabel).pack(side="left", padx=6)
+            tk.Button(btnFrame, text="Cancel", command=editWin.destroy).pack(side="left", padx=6)
+
+        # Build rows
         for i, (member, startPoint, endPoint, isBacking, isAdLib) in enumerate(self.getLabels()):
             var = tk.BooleanVar()
-            isBacking = tk.BooleanVar(value=isBacking)
-            adLibVar = tk.BooleanVar(value=isAdLib)
-            checkboxesByIndex.append((var, isBacking, adLibVar))
-            labelKeys.append((member, startPoint, endPoint)) 
-            
-            labelIndex = None
-            if member is not None:
-                for j, lab in enumerate(self.labels):
-                    if len(lab) >= 3 and lab[0] == member and lab[1] == startPoint and lab[2] == endPoint:
-                        labelIndex = j
-                        break
+            backingVar = tk.BooleanVar(value=bool(isBacking))
+            adLibVar = tk.BooleanVar(value=bool(isAdLib))
+            checkboxesByIndex.append((var, backingVar, adLibVar))
+            labelKeys.append((member, startPoint, endPoint))
+
+            labelIndex = findLabelIndexBySpan(startPoint, endPoint, member=member)
             rowToLabelIndex.append(labelIndex)
-    
-            # Init checkbox arrays
+
             checkboxes[i] = var
-            backingVars[i] = isBacking
+            backingVars[i] = backingVar
             adLibVars[i] = adLibVar
-            
+
             memberText = f" -> {member}" if member is not None else ""
             text = f"Start: {startPoint}, End: {endPoint}{memberText}"
             color = self.getMemberColor(member) if member else "black"
-            
+
             labelCheckbox = tk.Checkbutton(
-                scrollFrame,
-                text=text,
-                variable=var,
-                anchor="w",
-                bg="lightgray",
-                fg=color,
-                selectcolor="darkgrey"
+                scrollFrame, text=text, variable=var,
+                anchor="w", bg="lightgray", fg=color, selectcolor="darkgrey"
             )
             labelCheckbox.grid(row=i, column=0, sticky="w", padx=5, pady=2)
 
             backingCheckbox = tk.Checkbutton(
-                scrollFrame,
-                text="Are they backing vocals?",
-                variable=isBacking,
-                anchor="w",
-                bg="lightgray",
-                fg="darkblue",
-                selectcolor="darkgrey"
+                scrollFrame, text="Are they backing vocals?",
+                variable=backingVar, anchor="w",
+                bg="lightgray", fg="darkblue", selectcolor="darkgrey"
             )
             backingCheckbox.grid(row=i, column=1, padx=5, pady=2)
-             
+
             adLibCheckBox = tk.Checkbutton(
-                scrollFrame,
-                text="Ad Lib",
-                variable=adLibVar,
-                anchor="w",
-                bg="lightgray",
-                fg="purple",
-                selectcolor="darkgrey"
+                scrollFrame, text="Ad Lib",
+                variable=adLibVar, anchor="w",
+                bg="lightgray", fg="purple", selectcolor="darkgrey"
             )
             adLibCheckBox.grid(row=i, column=2, padx=5, pady=2)
+
+            rowWidgets[i] = {"labelCb": labelCheckbox, "backCb": backingCheckbox, "adCb": adLibCheckBox}
+
+            # Shift-click selection logic hooks
             labelCheckbox.bind("<Button-1>", lambda event, index=i: onCheckboxClick(event, index, "main"))
             backingCheckbox.bind("<Button-1>", lambda event, index=i: onCheckboxClick(event, index, "repeat"))
             adLibCheckBox.bind("<Button-1>", lambda event, index=i: onCheckboxClick(event, index, "adlib"))
-            
+
+            # NEW: double-click opens editor (much harder to do accidentally than single click)
+            labelCheckbox.bind("<Double-Button-1>", lambda event, index=i: (openEditDialog(index), "break"))
+
             if member:
                 def createAddLyricsCallback(startPoint=startPoint, memberName=''):
                     return lambda: self.addLyricBox(startChunk=startPoint - 9, memberName=memberName)
-                
-                addLyricButton = tk.Button(
-                    scrollFrame,
-                    text="Add Lyrics",
-                    command=createAddLyricsCallback(startPoint, member),
-                    bg="lightblue"
-                )
+
+                addLyricButton = tk.Button(scrollFrame, text="Add Lyrics",
+                                        command=createAddLyricsCallback(startPoint, member),
+                                        bg="lightblue")
                 addLyricButton.grid(row=i, column=3, padx=5, pady=2)
-        
+
         memberLabel = tk.Label(labelMenu, text="Choose Member:")
         memberLabel.pack(pady=5)
+
         memberMapping = {member['name']: member for member in self.members}
-        # Adds gang vocal as option
-        gangVocalLabel = {"name": "Gang Vocal", "id": "gang"}  # id can be anything unique
-        memberMapping["Gang Vocal"] = gangVocalLabel
+        memberMapping["Gang Vocal"] = {"name": "Gang Vocal", "id": "gang"}
         memberNames = list(memberMapping.keys())
         memberVar = tk.StringVar(value=memberNames[0] if memberNames else "")
         memberDropdown = ttk.Combobox(labelMenu, textvariable=memberVar, values=memberNames, state="readonly")
         memberDropdown.pack(pady=5)
-        
-        def saveSelectedLabels():
-            selectedLabels = []
-            mainCheckboxSelected = any(var.get() for var in checkboxes.values())
-            print(f"Main checkbox select: {mainCheckboxSelected}")
 
-            if mainCheckboxSelected:
-                for i, var in checkboxes.items():
-                    if var.get():
-                        chosenMember = memberVar.get()
-                        _, startPoint, endPoint = labelKeys[i]
-                        
-                        isBacking = backingVars[i].get()
-                        isAdLib = adLibVars[i].get()
-                        
-                        if chosenMember:
-                            label = [chosenMember, startPoint, endPoint, isBacking, isAdLib]
-                            self.labels.append(label)
-                            selectedLabels.append(label)
-                            print(f"Label saved: {label}")
-                            if chosenMember != "Gang Vocal":
-                                trackItem = self.memberImages[chosenMember]
-                                if trackItem:
-                                    trackItem.initializeTimeline()
-
-                if selectedLabels:
-                    self.saveLabels(self.selectedGroup, self.testSongPath)
-                
-            else:
-                # Update backing/adlib flags on EXISTING labels only
-                changed = 0
-
-                for i in range(len(labelKeys)):
-                    labelIndex = rowToLabelIndex[i]
-                    if labelIndex is None:
-                        continue  # this UI row is an unlabeled (None, start, end) pair
-
-                    label = self.labels[labelIndex]
-
-                    # Ensure length
-                    while len(label) < 5:
-                        label.append(False)
-
-                    oldB, oldA = label[3], label[4]
-                    newB = backingVars[i].get()
-                    newA = adLibVars[i].get()
-
-                    label[3] = newB
-                    label[4] = newA
-
-                    if (oldB, oldA) != (newB, newA):
-                        changed += 1
-                        print(f"[UPDATE] row={i} -> self.labels[{labelIndex}] {label[:3]} backing {oldB}->{newB} adlib {oldA}->{newA}")
-
-                print(f"[UPDATE] changedLabels={changed}")
-
-                if changed > 0:
-                    # clearExisting=True means "write self.labels as truth"
-                    self.saveLabels(self.selectedGroup, self.testSongPath, True)
-            labelMenu.destroy()
-                
-        # Track shift-click logic
+        # Track shift-click logic (your existing code; unchanged)
         lastClicked = {"main": -1, "repeat": -1, "adlib": -1}
         shiftRange = {"main": (-1, -1), "repeat": (-1, -1), "adlib": (-1, -1)}
         def onCheckboxClick(event, index, checkboxType):
@@ -1884,8 +2172,8 @@ class VoiceDetectionApp:
                 if lastClicked[checkboxType] != -1:
                     start = min(lastClicked[checkboxType], index)
                     end = max(lastClicked[checkboxType], index)
-                    for i in range(start, end + 1):
-                        varMain, varRepeat, varAdLib = checkboxesByIndex[i]
+                    for k in range(start, end + 1):
+                        varMain, varRepeat, varAdLib = checkboxesByIndex[k]
                         if checkboxType == "main":
                             varMain.set(True)
                         elif checkboxType == "repeat":
@@ -1895,11 +2183,10 @@ class VoiceDetectionApp:
                     shiftRange[checkboxType] = (start, end)
                 return "break"
             else:
-                # Clear previous range if needed
                 s, e = shiftRange[checkboxType]
                 if s != -1 and e != -1:
-                    for i in range(s, e + 1):
-                        varMain, varRepeat, varAdLib = checkboxesByIndex[i]
+                    for k in range(s, e + 1):
+                        varMain, varRepeat, varAdLib = checkboxesByIndex[k]
                         if checkboxType == "main":
                             varMain.set(False)
                         elif checkboxType == "repeat":
@@ -1908,16 +2195,89 @@ class VoiceDetectionApp:
                             varAdLib.set(False)
                     shiftRange[checkboxType] = (-1, -1)
                 lastClicked[checkboxType] = index
-        # end onCheckboxClick
+        
+        def saveSelectedLabels():
+            # Apply deletes first (and avoid index chaos by rebuilding at the end)
+            if deletedLabelIndices:
+                self.labels = [lab for idx, lab in enumerate(self.labels) if idx not in deletedLabelIndices]
+                deletedLabelIndices.clear()
+                rebuildRowToLabelIndex()
+
+            membersToUpdate = set()
+            
+            # Now handle "main checkbox" adds exactly like before, but never duplicate spans
+            anyMain = any(var.get() for var in checkboxes.values())
+            if anyMain:
+                for i, var in checkboxes.items():
+                    if not var.get():
+                        continue
+
+                    chosenMember = memberVar.get()
+                    _, startPoint, endPoint = labelKeys[i]
+                    isBacking = backingVars[i].get()
+                    isAdLib = adLibVars[i].get()
+
+                    # If span exists, update; else append
+                    idx = findLabelIndexBySpan(startPoint, endPoint, member=chosenMember)
+                    if idx is None:
+                        self.labels.append([chosenMember, startPoint, endPoint, isBacking, isAdLib])
+                        rowToLabelIndex[i] = len(self.labels) - 1
+                    else:
+                        lab = self.labels[idx]
+                        while len(lab) < 5:
+                            lab.append(False)
+
+                        oldMember = lab[0]
+                        # In the current logic oldMember == chosenMember,
+                        # but we still handle the general case cleanly.
+                        lab[0] = chosenMember
+                        lab[3] = isBacking
+                        lab[4] = isAdLib
+                        rowToLabelIndex[i] = idx
+
+                        if oldMember and oldMember != chosenMember and oldMember != "Gang Vocal":
+                            membersToUpdate.add(oldMember)
+
+                    refreshRowUI(i)
+
+                    if chosenMember and chosenMember != "Gang Vocal":
+                        membersToUpdate.add(chosenMember)
+                        
+                # Now refresh all affected members' timelines once
+                for m in membersToUpdate:
+                    trackItem = self.memberImages.get(m)
+                    if trackItem:
+                        trackItem.initializeTimeline()
+                self.saveLabels(self.selectedGroup, True)
+                
+            else:
+                # No main checkbox selected: only update backing/adlib flags for existing rows
+                changed = 0
+                for i in range(len(labelKeys)):
+                    idx = rowToLabelIndex[i]
+                    if idx is None:
+                        continue
+                    lab = self.labels[idx]
+                    while len(lab) < 5:
+                        lab.append(False)
+
+                    oldB, oldA = lab[3], lab[4]
+                    newB, newA = backingVars[i].get(), adLibVars[i].get()
+                    lab[3], lab[4] = newB, newA
+
+                    if (oldB, oldA) != (newB, newA):
+                        changed += 1
+
+                if changed > 0:
+                    self.saveLabels(self.selectedGroup, True)
+
+            labelMenu.destroy()
         
         buttonFrame = tk.Frame(labelMenu)
         buttonFrame.pack(pady=10)
         
-        saveButton = tk.Button(buttonFrame, text="Save Labels", command=saveSelectedLabels)
-        saveButton.pack(side="left", padx=5)
-        
-        closeButton = tk.Button(buttonFrame, text="Close", command=labelMenu.destroy)
-        closeButton.pack(side="left", padx=5)
+        tk.Button(buttonFrame, text="Save Labels", command=saveSelectedLabels).pack(side="left", padx=5)
+        tk.Button(buttonFrame, text="Close", command=labelMenu.destroy).pack(side="left", padx=5)
     
     def addLyricBox(self, event=None, startChunk=None, memberName=None):
         """Opens a new window to input lyric details and add it to the canvas."""
@@ -2146,15 +2506,15 @@ class VoiceDetectionApp:
         """Rebind all root-level keybindings after the lyric window is closed."""
         self.root.bind("<Left>", self.moveBackwardByChunks)
         self.root.bind("<Right>", self.moveForwardByChunks) 
-        self.canvas.bind("<Button-1>", self.onMarkerClick)
         
         # Drag / release for markers on the main canvas
-        self.canvas.bind("<B1-Motion>", self.onMarkerDrag)
+        self.canvas.bind("<ButtonPress-1>", self.onMarkerClick)
+        self.canvas.bind("<B1-Motion>", self.onMarkerMotion)
         self.canvas.bind("<ButtonRelease-1>", self.onMarkerRelease)
         
         self.canvas.bind("<KeyPress-a>", self.moveMarkerLeft)
         self.canvas.bind("<KeyPress-d>", self.moveMarkerRight)
-        self.canvas.bind("<Return>", self.updateLabels)
+        self.canvas.bind("<Return>", self.updateLabelInJSON)
         self.canvas.bind("<KeyPress-s>", self.showAddLabelsMenu)
         self.canvas.bind("<KeyPress-q>", self.addStartPoint)
         self.canvas.bind("<KeyPress-w>", self.addEndPoint)
@@ -2474,18 +2834,48 @@ class VoiceDetectionApp:
         seconds = (timeMs % 60000) // 1000
         milliseconds = timeMs % 1000
         self.timeDisplayVar.set(f"{minutes:02}:{seconds:02}.{milliseconds:03}")
-        
+    
+    def _recomputeOpenStartChunk(self):
+        """
+        Recompute openStartChunk from current marker lists.
+        This keeps the gate sane after deletes/undo/reset/etc.
+        """
+        if len(self.startPoints) > len(self.endPoints):
+            # treat the most recently added start as the open one
+            self.openStartChunk = self.startPoints[-1] if self.startPoints else None
+        else:
+            self.openStartChunk = None
+
     def addStartPoint(self, event=None): 
+        if self.openStartChunk is not None or len(self.startPoints) > len(self.endPoints):
+            print(f"open start: {self.openStartChunk}, is start > end? {len(self.startPoints) > len(self.endPoints)}")
+            print("Add end marker first.")
+            return
         self.pushUndoState("add start marker")
         self.startPoints.append(self.currentChunkIndex)
+        # Make sure this is changed if marker is moved
+        self.openStartChunk = self.currentChunkIndex
         self.addMarkerToSection(self.currentChunkIndex, "start")
         print(f"Start point set at chunk {self.currentChunkIndex}.")
 
     def addEndPoint(self, event=None):
+        # gate: must have an unmatched start
+        if self.openStartChunk is None and len(self.startPoints) <= len(self.endPoints):
+            print("Add a start marker first.")
+            return
+        
+        # (start and end *can* share a chunk across different labels, but not as the immediate pair)
+        if self.openStartChunk == self.currentChunkIndex:
+            print("End point cannot be the same chunk as the start point.")
+            return
+    
         self.pushUndoState("add end marker")
         self.endPoints.append(self.currentChunkIndex)
         self.addMarkerToSection(self.currentChunkIndex, "end")
         print(f"End point set at chunk {self.currentChunkIndex}.")
+        
+        # close the open segment
+        self.openStartChunk = None
     
     def clearAllMarkers(self):
         """
@@ -2508,19 +2898,19 @@ class VoiceDetectionApp:
         Up to 3 markers are stacked per chunkIndex.
         """
         self.clearAllMarkers()
-        
-        if sectionIndex not in self.timeMarkers:
-            # print(f"No markers to draw for sectionIndex {sectionIndex}.")
+
+        if sectionIndex not in self.labelMarkers:
             return
-        
+
         # Group markers by chunkIndex for this section
         markersByChunk = {}
-        for markerType, chunkIndex in self.timeMarkers[sectionIndex]:
+        for markerType, chunkIndex in self.labelMarkers[sectionIndex]:
             markersByChunk.setdefault(chunkIndex, []).append(markerType)
-        
+
         chunksInView = self.zoomManager.currentChunksInView
-        # print(f"Current chunks in view: {chunksInView}")
-        
+
+        selectedId = self.selectedMarker.get("id") if self.selectedMarker else None
+
         for chunkIndex, typeList in markersByChunk.items():
             relativeX = (
                 self.progressBarCanvas.winfo_x()
@@ -2530,39 +2920,43 @@ class VoiceDetectionApp:
             baseY = self.progressBarCanvas.winfo_y()
 
             if x < 0 or x > self.canvas.winfo_width():
-                # print(f"Marker at chunk {chunkIndex} is out of bounds (x={x}).")
                 continue
 
-            # Stack up to 3 markers per chunkIndex
             maxStack = 3
             for stackIndex, markerType in enumerate(typeList[:maxStack]):
-                # Each stacked marker is shifted slightly upward
-                stackOffset = stackIndex * 20  # pixels between markers
+                stackOffset = stackIndex * 20
                 yTop = baseY - 20 - stackOffset
                 yBottom = baseY - stackOffset
 
-                if markerType == "start":
-                    # We still keep one entry per chunkIndex in this dict
-                    markerId = self.canvas.create_line(
-                        x, yTop,
-                        x, yBottom,
-                        fill="green",
-                        width=4,
-                        tags=("marker", "start_marker")
-                    )
-                    # last drawn start marker wins for this chunkIndex (OK: logic elsewhere
-                    # assumes a single visual "start" line per chunkIndex)
-                    self.startPointMarkers[chunkIndex] = markerId
+                # default color first
+                defaultColor = "green" if markerType == "start" else "red"
 
-                elif markerType == "end":
-                    markerId = self.canvas.create_line(
-                        x, yTop,
-                        x, yBottom,
-                        fill="red",
-                        width=4,
-                        tags=("marker", "end_marker")
-                    )
-                    self.endPointMarkers[chunkIndex] = markerId
+                markerId = self.canvas.create_line(
+                    x, yTop,
+                    x, yBottom,
+                    fill=defaultColor,
+                    width=4,
+                    tags=("marker", "start_marker" if markerType == "start" else "end_marker")
+                )
+
+                # record in multiset dict
+                if markerType == "start":
+                    ids = self._getMarkerIdsAtChunk(self.startPointMarkers, chunkIndex)
+                    ids.append(markerId)
+                    self._setMarkerIdsAtChunk(self.startPointMarkers, chunkIndex, ids)
+                    self.labelOverlay.bindBoundaryMarker(markerId, chunkIndex, "start")
+                else:
+                    ids = self._getMarkerIdsAtChunk(self.endPointMarkers, chunkIndex)
+                    ids.append(markerId)
+                    self._setMarkerIdsAtChunk(self.endPointMarkers, chunkIndex, ids)
+                    self.labelOverlay.bindBoundaryMarker(markerId, chunkIndex, "end")
+
+                # apply highlight ONLY if this exact id is selected
+                if selectedId is not None and markerId == selectedId:
+                    self.canvas.itemconfig(markerId, fill=("turquoise" if markerType == "start" else "pink"))
+                    # keep chunk/type consistent after redraw
+                    self.selectedMarker["chunkIndex"] = chunkIndex
+                    self.selectedMarker["type"] = markerType
     # end drawMarkers
     
     def updateCurrentTime(self, newTimeMs):
@@ -2781,7 +3175,7 @@ class VoiceDetectionApp:
                 self.endPoints.append(end)
 
         # Update marker structures and redraw
-        self.updateTimeMarkersDict()   # this also calls drawMarkers(...)
+        self.updateLabelMarkersDict()   # this also calls drawMarkers(...)
         self.canvas.update()
         self.root.update_idletasks()
 
@@ -3113,64 +3507,147 @@ class VoiceDetectionApp:
             self.updateDisplayedTime(playbackTime)
             self.updateCanvasForCurrentPosition(self.currentChunkIndex)
     
+    def _defaultMarkerColor(self, markerType: str) -> str:
+        return "green" if markerType == "start" else "red"
+
+    def _selectedMarkerColor(self, markerType: str) -> str:
+        return "turquoise" if markerType == "start" else "pink"
+    
+    def setSelectedMarker(self, chunkIndex, markerType, markerId=None):
+        # 1) Unhighlight old selection
+        if self.selectedMarker and self.selectedMarker.get("id") is not None:
+            oldId = self.selectedMarker["id"]
+            oldType = self.selectedMarker["type"]
+            try:
+                self.canvas.itemconfig(oldId, fill=self._defaultMarkerColor(oldType))
+            except tk.TclError:
+                # marker might have been deleted/redrawn
+                pass
+
+        # 2) Resolve markerId if caller didn't provide it
+        if markerId is None:
+            if markerType == "start":
+                ids = self._getMarkerIdsAtChunk(self.startPointMarkers, chunkIndex)
+            else:
+                ids = self._getMarkerIdsAtChunk(self.endPointMarkers, chunkIndex)
+
+            markerId = ids[-1] if ids else None
+
+        if markerId is None:
+            print(f"[WARN] setSelectedMarker: markerId not found for {markerType}@{chunkIndex}")
+            self.selectedMarker = None
+            return
+
+        # 3) Highlight new selection + store it
+        self.canvas.itemconfig(markerId, fill=self._selectedMarkerColor(markerType))
+        self.selectedMarker = {"chunkIndex": chunkIndex, "type": markerType, "id": markerId}
+        self.canvas.bind("<Delete>", self.deleteSelectedMarker)
+    
     def addMarkerToSection(self, chunkIndex, markerType):
         """
         Add a single marker to the appropriate sectionIndex key in timeMarkers and update marker dictionaries.
         """
         sectionIndex = chunkIndex // self.zoomManager.currentChunksInView
-        if sectionIndex not in self.timeMarkers:
-            self.timeMarkers[sectionIndex] = []
+        if sectionIndex not in self.labelMarkers:
+            self.labelMarkers[sectionIndex] = []
             
-        self.timeMarkers[sectionIndex].append((markerType, chunkIndex))
+        self.labelMarkers[sectionIndex].append((markerType, chunkIndex))
+        markerId = None
         
-        # Draw the marker and update the respective marker dictionary
+        x = self.progressBarCanvas.winfo_x() + (
+            (chunkIndex % self.zoomManager.currentChunksInView)
+            / self.zoomManager.currentChunksInView
+        ) * self.progressBarWidth
+        yTop = self.progressBarCanvas.winfo_y() - 20
+        yBottom = self.progressBarCanvas.winfo_y()
+
         if markerType == "start":
-            if chunkIndex not in self.startPointMarkers:
-                self.startPointMarkers[chunkIndex] = self.canvas.create_line(
-                    self.progressBarCanvas.winfo_x() + (chunkIndex % self.zoomManager.currentChunksInView / self.zoomManager.currentChunksInView) * self.progressBarWidth,
-                    self.progressBarCanvas.winfo_y() - 20,
-                    self.progressBarCanvas.winfo_x() + (chunkIndex % self.zoomManager.currentChunksInView / self.zoomManager.currentChunksInView) * self.progressBarWidth,
-                    self.progressBarCanvas.winfo_y(),
-                    fill="green",
-                    width=4,
-                    tags=("marker", "start_marker")
-                )
-                print(f"Start marker added at chunk {chunkIndex}.")
+            markerId = self.canvas.create_line(
+                x, yTop, x, yBottom,
+                fill=self._defaultMarkerColor(markerType),
+                width=4,
+                tags=("marker", "start_marker")
+            )
+            self.labelOverlay.bindBoundaryMarker(markerId, chunkIndex, "start")
+
+            ids = self._getMarkerIdsAtChunk(self.startPointMarkers, chunkIndex)
+            ids.append(markerId)
+            self._setMarkerIdsAtChunk(self.startPointMarkers, chunkIndex, ids)
+
+            print(f"Start marker added at chunk {chunkIndex}.")
+
         elif markerType == "end":
-            if chunkIndex not in self.endPointMarkers:
-                self.endPointMarkers[chunkIndex] = self.canvas.create_line(
-                    self.progressBarCanvas.winfo_x() + (chunkIndex % self.zoomManager.currentChunksInView / self.zoomManager.currentChunksInView) * self.progressBarWidth,
-                    self.progressBarCanvas.winfo_y() - 20,
-                    self.progressBarCanvas.winfo_x() + (chunkIndex % self.zoomManager.currentChunksInView / self.zoomManager.currentChunksInView) * self.progressBarWidth,
-                    self.progressBarCanvas.winfo_y(),
-                    fill="red",
-                    width=4,
-                    tags=("marker", "end_marker")
-                )
-                print(f"End marker added at chunk {chunkIndex}.")
-                
-        # MAKE SURE TO DOUBLE CHECK THIS
+            markerId = self.canvas.create_line(
+                x, yTop, x, yBottom,
+                fill=self._defaultMarkerColor(markerType),
+                width=4,
+                tags=("marker", "end_marker")
+            )
+            self.labelOverlay.bindBoundaryMarker(markerId, chunkIndex, "end")
+
+            ids = self._getMarkerIdsAtChunk(self.endPointMarkers, chunkIndex)
+            ids.append(markerId)
+            self._setMarkerIdsAtChunk(self.endPointMarkers, chunkIndex, ids)
+
+            print(f"End marker added at chunk {chunkIndex}.")
+         
+        self.selectedLabel = None
+        self.setSelectedMarker(chunkIndex, markerType, markerId=markerId)
         self.restackMarkersAtChunk(chunkIndex)
     
-    def saveLabels(self, selectedGroup, testSongPath, clearExisting=False):
+    def upsertLabel(self, updatedLabel, originalLabel=None):    
+        updatedLabel = normalizeLabel(updatedLabel)
+        updatedK = labelKey(updatedLabel)
+
+        # If the edit changed the start chunk, you must delete the old key
+        if originalLabel is not None:
+            originalLabel = normalizeLabel(originalLabel)
+            originalK = labelKey(originalLabel)
+            if originalK != updatedK:
+                self.labels = [
+                    lbl for lbl in self.labels
+                    if labelKey(normalizeLabel(lbl)) != originalK
+                ]
+
+        # Now overwrite by updated key
+        out = []
+        replaced = False
+        for lbl in self.labels:
+            nl = normalizeLabel(lbl)
+            if labelKey(nl) == updatedK:
+                out.append(updatedLabel)
+                replaced = True
+            else:
+                out.append(nl)
+
+        if not replaced:
+            out.append(updatedLabel)
+
+        self.labels = sorted(out, key=lambda l: (l[1], l[2], l[0]))
+    
+    def saveLabels(self, selectedGroup, clearExisting=False):
         # Get file name without extension        
         labelFilePath = f"./saved_labels/{selectedGroup}/{self.songName}_labels.json"
         directory = os.path.dirname(labelFilePath)
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-            
-        if clearExisting:
-            combinedLabels = sorted(self.labels, key=lambda label: label[1])
-        else:
-            existingLabels = []
-            if os.path.exists(labelFilePath):
-                with open(labelFilePath, 'r') as f:
-                    existingLabels = json.load(f)
+        os.makedirs(directory, exist_ok=True)
 
-            uniqueExistingLabels = {tuple(label) for label in existingLabels}
-            newLabels = [label for label in self.labels if tuple(label) not in uniqueExistingLabels]
-            combinedLabels = existingLabels + newLabels
-            combinedLabels = sorted(combinedLabels, key=lambda label: label[1])
-        
+        existing = []
+        if (not clearExisting) and os.path.exists(labelFilePath):
+            with open(labelFilePath, "r") as f:
+                existing = json.load(f)
+
+        # normalize + dedupe by identity, existing first then overwrite with current session labels
+        byKey = {}
+        for lbl in existing:
+            nl = normalizeLabel(lbl)
+            byKey[labelKey(nl)] = nl
+
+        for lbl in self.labels:
+            nl = normalizeLabel(lbl)
+            byKey[labelKey(nl)] = nl
+
+        combined = list(byKey.values())
+        combined.sort(key=lambda l: (l[1], l[2], l[0]))
+
         with open(labelFilePath, "w") as f:
-            json.dump(combinedLabels, f, separators=(",", ":"))
+            json.dump(combined, f, separators=(",", ":"))

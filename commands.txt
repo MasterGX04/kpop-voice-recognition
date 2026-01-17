@@ -52,7 +52,27 @@ Bugs:
 - Bug where we can't change singers after labels have been set
 - Prevent user from adding same singer as lead + backing
 - Bug: If you try to move section indices while trying to create new label, THE MARKER MOVES TO THE OTHER SECTION!!!!
-- why Leeseo is being oconfused as gang vocal
+- Create way to change label so you don't have to rely on Ctrl-S bandaid fix
+- You can press a button to recalculate positions and timers (idk why I haven't done that haha)
+- let user switch between counting backing vocals and not (looking at you Jungkook in Mgic Shop)
+- Change history to account for everything and to save startPoint/endpoint markers so the user doesn't nuke existing pre-labels
+- Don't let user insert consecutive start/end markers to avoid weird conjunctions and there should be a unintrusive visual warning
+- If you hide timer it hides the timer markers so fix the placement. Also make sure let user DRAG timer
+- Selected marker should change if you create a new label and be set to the new label by default
+- Fix audio lag if there's a higher quality music video with many frames and sync to audio. Then when recording, switch to actual high quality video to avoid lag
+- Fix weird windowed mode glitch where if you once again decrease size of window then return to full screen, the member positions get broken
+- Don't let markers appear without sufficient zoom so the user doesn't accidentally drag it to a completely different part of the song
+- Must change how images are found, and how songs are found because the user can customize directories. However we can't let them have custom group icons because they're built in how I made it.
+- Create a window with commands and their shortcuts because even I forget which is which
+
+Crucial:
+If you ever write this in your paper, this is the line:
+
+“The model’s apparent ‘errors’ were often rational adaptations to inconsistent supervision rather than failures of representation.”
+
+Or in human terms:
+
+“I did exactly what you asked. You just asked the wrong thing.”
 
 IVE Songs to Train:
 - Crush (We need all of the Gaeul and Rei high notes but they're barely in the song)
@@ -67,22 +87,32 @@ Good IVE Songs to Test on:
 Important BTS songs:
 - Butterfly
 
-Here’s the simplest upgrade path that keeps your existing logic style.
+1) Boundary ambiguity + 2s context is manufacturing false positives (very likely).
+Even in clean songs, there are micro-gaps and transitions. Your own labels show lots of tight boundaries and occasional 1-frame overlaps 
 
-Add a new function that is basically predict_40ms, but it accepts frame_mask: np.ndarray | None (length n_frames). When building windows, only include windows whose f0 = s // hop_len satisfies frame_mask[f0] == True. Everything else is skipped. This avoids full-song processing for refinement passes.
+Mine_labels
 
-Add a thin wrapper predict_song_selective(...) that does:
+. A 2s window centered on “gap” frames still contains strong evidence of the previous/next singer, so the model predicts them. This is not “wrong” for a vocal-presence task, but it looks wrong if your ground truth treats those frames as “nobody.”
+Elimination test: take your “Mine” label segments and create a boundary mask: mark frames within ±3 frames (±120ms) of any segment boundary as “don’t score.” Evaluate spam rate only on the interior frames. If the spam collapses inside segments but stays high near boundaries, it’s mostly a label-definition mismatch + context effect.
 
-baseline mix pass with 2.0s head, full mask (or VAD mask to skip silence),
+2) Your decoder is turning small spikes into long spam (very likely).
+You’re doing smoothing, hysteresis, minimum-on duration, and gap filling. Those steps can absolutely make “a few frames where Yujin is a close runner-up” become “Yujin is active across the pause.” The fact that you see spam between members is classic “gap fill + hysteresis” behavior.
+Elimination test: run inference on Mine with “raw-ish” decode: k_smooth=1, min_on_frames=1, max_gap_frames=0, topk=1. If spam drops a lot, it’s decoder amplification, not the model hallucinating.
 
-build mask_back, mask_lead from your labels,
+3) Training prior/imbalance makes Yujin the default attractor (plausible and common).
+If Yujin has more clean, high-SNR examples, or your weighting makes her positives “easier,” then in ambiguous frames the model defaults to her. That explains “Yujin looks perfect on her lines and shows up elsewhere,” plus “Wonyoung/Liz are allergic.”
+Elimination test: compute per-member average probability across a song restricted to interior frames of other members. If Yujin’s baseline is systematically higher than everyone else’s, that’s a calibration/prior issue. Then fix with per-class thresholds (you don’t need retraining to prove this).
 
-run phase2 (0.4s) on backing stem with mask_back,
+4) Mic-distance / filtered parts harming Wonyoung/Liz identity (plausible).
+If Wonyoung/Liz have more “off-mic” or filtered segments in your training set (or your isolated stems), their embeddings may drift, causing low confidence and more confusion. But this alone doesn’t create spam everywhere; it mainly creates “model refuses to commit,” and your decoder/fusion then fills the vacuum with the dominant class.
+Elimination test: compare RMS and spectral centroid (or just your printed RMS) between members’ labeled segments on Mine and a couple other songs. If Wonyoung/Liz segments are consistently quieter or more “air-filtered,” you’ll see it.
 
-run phase2 (0.4s) on lead stem with mask_lead,
+- Not 2 so far
 
-build mask_unsure from baseline merged probs + VAD and run phase2 on mix (or lead) only on those frames,
+Label stuff:
+2. Add lane stacking (like a DAW): when up to 4 labels overlap, assign each visible label bar to one of 4 fixed vertical lanes (lane 0..3) above the bar. Use a simple interval graph greedy assignment: sort by start, place each into the first lane whose lastEnd < start, else spill into the next lane. This makes overlaps readable without relying on start/end line stacking. For bonus, also include length in seconds of label
 
-merge patches using a confidence rule.
+4. When the user hovers near any start/end marker, highlight the full label bar(s) that share that boundary: brighten the corresponding colored bar and dim others. This keeps your existing markers but instantly answers “which label does this marker belong to?” even when multiple markers stack at the same x.
 
+9. Show continuity across sections with edge glyphs: if a bar continues past the left edge, draw a small left-pointing triangle at x=0 in the same color; if it continues past the right edge, draw a right-pointing triangle at x=width. This is a super clean “this label wraps” signal without needing to see the other section.
 	

@@ -26,16 +26,27 @@ def _find_track_files(base_dir: Path, group_name: str, song_name: str) -> Dict[s
     
     return {'mix': mix, 'lead': lead, 'back': back}
 
-def _resample_to_24k(in_path: Path, out_path: Path, sr_target: int=24000) -> Path:
+def _resample_to_24k(in_path: Path, out_path: Path, sr_target: int = 24000) -> Path:
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     wav, sr_in = torchaudio.load(str(in_path))
+
+    # Convert to float early (safer for transforms)
+    wav = wav.to(torch.float32)
+
     if sr_in != sr_target:
         resampler = torchaudio.transforms.Resample(sr_in, sr_target)
         wav = resampler(wav)
-    wav = wav.to(torch.float32)
+
+    # ---- Peak-safe scaling (prevents >0 dBFS overshoot after resample) ----
+    peak = wav.abs().max().item()
+    if peak > 0:
+        target_peak = 0.99  # ~ -0.087 dBFS, safe headroom
+        if peak > target_peak:
+            wav = wav * (target_peak / peak)
+
     torchaudio.save(str(out_path), wav, sr_target)
-    return out_path     
+    return out_path  
 
 def _stable_runs(series: List[str]) -> List[Tuple[int, int, str]]:
     """

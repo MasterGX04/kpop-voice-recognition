@@ -71,7 +71,7 @@ class ZoomManager:
         self.parent.updateProgressBar()
         # Update progress bar range
         
-        self.parent.updateTimeMarkersDict()
+        self.parent.updateLabelMarkersDict()
         self.parent.drawTimeMarkers()
         
     def toggleZoomUI(self):
@@ -118,12 +118,8 @@ class ProgressBarHandle:
             self.canvas.itemconfig(self.handle, state="hidden")
         
     def jump(self, x, rootSectionIndex):
-        if rootSectionIndex == self.currentSectionIndex:
-            self.move(x, rootSectionIndex)
-        else:
-            self.parent.currentSectionIndex = self.currentSectionIndex
-            self.parent.drawLabelMarkers(self.currentSectionIndex)
-            self.move(x, self.currentSectionIndex)
+        self.currentSectionIndex = rootSectionIndex
+        self.move(x, rootSectionIndex)
             
     def updatePosition(self, currentTimeMs, totalDurationMs, rootSectionIndex, visibleDuration):
         if self.currentSectionIndex != rootSectionIndex:
