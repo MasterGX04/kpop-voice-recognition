@@ -8,10 +8,11 @@ import os
 import subprocess
 from tqdm import tqdm
 import pygame
+import queue
 
 class VideoTrackItem(TrackItem):
-    def __init__(self, canvas, parent, videoPath, scale=100, scaleX=1.0, position=(0,0), baseHeight=720, isMusicVideo=True):
-        super().__init__(scale, position, sourceImages={}, animations=[], type="video")
+    def __init__(self, canvas, parent, videoPath, scale=100, scaleX=1.0, baseHeight=720, isMusicVideo=True):
+        super().__init__(scale, sourceImages={}, animations=[], type="video")
         self.canvas = canvas
         self.videoPath = videoPath
         self.parent = parent
@@ -26,6 +27,11 @@ class VideoTrackItem(TrackItem):
         self.baseHeight = baseHeight
         self.currentFrame = None
         
+        self.frameQueue = queue.Queue(maxsize=3) # keep only freshest frames
+        self.renderAfterId = None
+        self.decodeStop = threading.Event()
+        self.lastSeekFrameIndex = 0
+        
         # Get video dimensions
         if self.cap.isOpened():
             self.frameWidth = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -34,7 +40,7 @@ class VideoTrackItem(TrackItem):
             raise FileNotFoundError(f"Video file not found: {videoPath}")
         
         self.adjustScale(baseHeight)
-        self.setPosition()
+        self.position = self.setPosition()
         # Sets video fps
         fps = self.cap.get(cv2.CAP_PROP_FPS)
         print(f"Current fps: {fps}")
@@ -58,11 +64,16 @@ class VideoTrackItem(TrackItem):
     def play(self):
         self.isPlaying = True
         self.isPaused = False
+        self.decodeStop.clear()
+        
+        # Start decode thread once
         if not self.thread or not self.thread.is_alive():  # Check if the thread is not already running
-            self.thread = threading.Thread(target=self._playVideo, daemon=True)
+            self.thread = threading.Thread(target=self._decodeLoop, daemon=True)
             self.thread.start()
-        else:
-            self.isPaused = False
+        
+        # Start render loop on Tk main thread
+        if self.renderAfterId is None:
+            self._renderTick()
         
     def pause(self):
         self.isPaused = True
@@ -70,8 +81,14 @@ class VideoTrackItem(TrackItem):
     def stop(self):
         self.isPlaying = False
         self.isPaused = False
-        if self.thread and self.thread.is_alive():
-            self.thread.join(timeout=1)  # Wait briefly for the thread to terminate
+        self.decodeStop.set()
+
+        if self.renderAfterId is not None:
+            try:
+                self.canvas.after_cancel(self.renderAfterId)
+            except Exception:
+                pass
+            self.renderAfterId = None
     
     def resize(self, currentHeight):
         """Resize video dimensions dynamically."""
@@ -125,9 +142,106 @@ class VideoTrackItem(TrackItem):
             
         self.isPlaying = False
 
+    def _audioTimeMs(self) -> int:
+        # pygame get_pos() is ms since playback/unpause; can be -1 briefly.
+        pos = pygame.mixer.music.get_pos()
+        if pos < 0:
+            pos = 0
+        return int(self.parent.playbackOffset + pos)
+    
+    def _decodeLoop(self):
+        # One-time setup: jump close to current audio time ONCE
+        fps = self.effective_fps if self.effective_fps > 0 else 30.0
+    
+        while self.isPlaying and self.cap.isOpened() and not self.decodeStop.is_set():
+            if self.isPaused:
+                time.sleep(0.01)
+                continue
+            
+            audio_ms = self._audioTimeMs()
+            target_frame = int((audio_ms / 1000.0) * fps)
+            if target_frame < 0:
+                target_frame = 0
+                
+            # Only do expensive seeks when we're WAY off (resync), not EVERY Frame
+            with self.cap_lock:
+                current_frame = int(self.cap.get(cv2.CAP_PROP_POS_FRAMES))
+                drift_frames = target_frame - current_frame
+                
+                # If we're behind audio by a lot, skip frames cheaply by reading forward
+                if drift_frames > 3:
+                    # if it's huge drift, do one seek, then continue sequentially
+                    if drift_frames > int(fps * 0.5): # ~ 0.5s f
+                        self.cap.set(cv2.CAP_PROP_POS_FRAMES, target_frame)
+                    else:
+                        # Skip forward by reading and discarding
+                        for _ in range(drift_frames - 1):
+                            self.cap.read()
+                            
+                # If video is ahead of audio, just wait
+                elif drift_frames < -3:
+                    time.sleep(0.005)
+                    continue
+                
+                ret, frame = self.cap.read()
+            
+            if not ret:
+                break
+            
+            # Preprocess frame (still in worker thread)
+            frame = cv2.resize(frame, (self.newWidth, self.newHeight))
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            
+            # Keep only newest frame
+            try:
+                while True:
+                    self.frameQueue.get_nowait()
+            except Exception:
+                pass
+            
+            try:
+                self.frameQueue.put_nowait(frame)
+            except Exception:
+                pass
+            
+            # Aim for fps
+            time.sleep(max(0.0, (1.0 / fps) * 0.5))
+            
+        self.isPlaying = False            
+    
+    def _renderTick(self):
+        # Run ONLY on the Tk main thread via after()
+        if not self.isPlaying:
+            self.renderAfterId = None
+            return
+        
+        if not self.isPaused:
+            try:
+                frame = self.frameQueue.get_nowait()
+            except Exception:
+                frame = None
+            
+            if frame is not None:
+                img = ImageTk.PhotoImage(image=Image.fromarray(frame))
+
+                if self.videoFrameId:
+                    self.canvas.itemconfig(self.videoFrameId, image=img)
+                else:
+                    self.videoFrameId = self.canvas.create_image(
+                        self.position[0], self.position[1], image=img, anchor="nw"
+                    )
+                    self.canvas.tag_lower(self.videoFrameId)
+
+                self.canvas.coords(self.videoFrameId, self.position[0], self.position[1])
+
+                # IMPORTANT: store reference so Tk doesn't GC it
+                self.canvas.image = img
+        
+        self.renderAfterId = self.canvas.after(33, self._renderTick)
+    
     def setPosition(self):
         x = 300 / 1920 * 1920 * self.scaleX - (self.newWidth / 2)
-        self.position = (x, 0)
+        return (x, 0)
             
     def seek(self, timeMs):
         """Calculate the frame index based on the time in milliseconds"""
@@ -137,6 +251,13 @@ class VideoTrackItem(TrackItem):
                 frameIndex = 0
             with self.cap_lock:
                 self.cap.set(cv2.CAP_PROP_POS_FRAMES, frameIndex)
+                
+        # flush queued frames
+        try:
+            while True:
+                self.frameQueue.get_nowait()
+        except Exception:
+            pass
     
     def captureCanvas(self, canvas):
         canvas.update()

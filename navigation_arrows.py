@@ -23,7 +23,7 @@ class NavigationArrows:
         progressBarY = self.progressBarCanvas.winfo_y() if self.progressBarCanvas.winfo_y() >= 0 else 640
         progressBarWidth = self.progressBarCanvas.winfo_width() 
         progressBarHeight = self.progressBarCanvas.winfo_height()
-        print(f"Progress Bar X: {progressBarX}, Y: {progressBarY}, width: {progressBarWidth}, height: {progressBarHeight}")
+        # print(f"Progress Bar X: {progressBarX}, Y: {progressBarY}, width: {progressBarWidth}, height: {progressBarHeight}")
         centerY = progressBarY + progressBarHeight // 2
         
         self.canvas.delete("nav_arrow")

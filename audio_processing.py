@@ -300,7 +300,7 @@ def getSongsFromSameAlbum():
         'BTS': {
             'Proof': ['Epiphany[Jin]', 'Euphoria[Jungkook]', "Filter[Jimin]", "Love Me Again[V]", "Persona[RM]", "First Love[Suga]", "Disease", "Mama[J-Hope]", "달려라 방탄", "Zero O'Clock"],
             'Love Yourself Tear': ['Fake Love', 'Love Maze', 'Magic Shop', 'Let Go'],
-            'Wings': ["Stigma[V]", 'Spring Day Studio'],
+            'Wings': ["Stigma[V]", 'Spring Day Studio', "Blood Sweat & Tears", "Butterfly"],
             'Pre_2015': ['Path'],
             'Dark And Wild': ['Danger'],
             'Skool Luv Affair': ['Just One Day']

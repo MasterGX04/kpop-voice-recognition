@@ -250,6 +250,12 @@ class VoiceTrainerGUI:
 
             images = loadMemberImages(selectedGroup, self.groups[selectedGroup], songName)
             appWindow = tk.Toplevel(self.root)
+            appWindow.title("Line Distribution Labeler")
+            appWindow.geometry("960x540")
+            
+            # Please stop having a stroke app
+            appWindow.update_idletasks()
+            appWindow.minsize(960, 540)
             continueApp = [True]
             memberList = self.groups[selectedGroup][0]['name']
             app = None

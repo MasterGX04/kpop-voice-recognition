@@ -16,6 +16,7 @@ from audio_processing import getSongsFromSameAlbum
 from zoom_functions import ZoomManager, ProgressBarHandle, ProgressBarNavigator
 from model_predictor import predict_song_selective
 from label_overlay import LabelOverlayController
+from label_lanes import LabelLaneRenderer
 import math
 
 # Load images for member
@@ -210,21 +211,17 @@ class VoiceDetectionApp:
         self.progressBarCanvas.bind("<ButtonRelease-1>", self.onProgressBarRelease)
         
         self.progressBarHandle = ProgressBarHandle(self.progressBarCanvas, self, self.progressBarWidth, self.chunk_duration)
-        
-        def startLayout():
-            self.initializeMemberImages()
-            self.initializePositions()
-            self.updateElementPositions()
-        
+        self.includeBacking = True
+
         # Initialize VideoTrack
         videoPath = f"./training_data/{self.selectedGroup}/{self.songName}.mp4"
         if os.path.exists(videoPath):
-            self.videoTrackItem = VideoTrackItem(self.canvas, self, videoPath, scale=100, scaleX=self.scaleX, position=(0,0), baseHeight=720)
+            self.videoTrackItem = VideoTrackItem(self.canvas, self, videoPath, scale=100, scaleX=self.scaleX, baseHeight=720)
         else:
             print(f"No music video in {videoPath}")
             # self.createThumbnail()
             videoPath = "./looping_background.mp4"
-            self.videoTrackItem = VideoTrackItem(self.canvas, self, videoPath, scale=100, scaleX=self.scaleX, position=(0,0), baseHeight=720, isMusicVideo=False)
+            self.videoTrackItem = VideoTrackItem(self.canvas, self, videoPath, scale=100, scaleX=self.scaleX, baseHeight=720, isMusicVideo=False)
         
         # Voice detection results
         memberList = [member['name'] for member in members] + ['Gang Vocal']
@@ -252,10 +249,6 @@ class VoiceDetectionApp:
 
         self.voiceDetectionResults = labels40
         print("Detection results:", labels40[280:460])
-            
-        self.labels = self.loadSavedLabels() # Store labels (member, start, end)
-        if self.labels == [] and len(labels40) > 0: 
-            self.labels = self.createLabelsFromPredictions(labels40)
         
         self.labelOverlay = LabelOverlayController(
             root=self.root,
@@ -263,8 +256,21 @@ class VoiceDetectionApp:
             getLabelsFn=self.getLabels,
             members=self.members
         )
+            
+        self.labels = self.loadSavedLabels() # Store labels (member, start, end)
+        if self.labels == [] and len(labels40) > 0: 
+            self.labels = self.createLabelsFromPredictions(labels40)
         
-        self.root.after(100, startLayout)
+        self.labelLaneRenderer = LabelLaneRenderer(
+            canvas=self.canvas,
+            zoomManager=self.zoomManager,
+            progressBarCanvas=self.progressBarCanvas,
+            getLabelsFn=lambda: self.labels,
+            getMemberColorFn=self.getMemberColor,  # you already have this
+            maxLanes=4
+        )
+        
+        self.root.after_idle(self.startLayout)
         
         self.addControls(root)
         self.root.after(100, self.drawTimeMarkers)
@@ -360,7 +366,7 @@ class VoiceDetectionApp:
         self.labels = self.loadSavedLabels()
         for trackItem in self.memberImages.values():
             if trackItem:
-                trackItem.initializeTimeline()
+                trackItem.initializeTimeline(includeBacking=self.includeBacking)
         
         self.initializePositions()
     
@@ -437,6 +443,13 @@ class VoiceDetectionApp:
                 self.timeDisplayLabel.place(relx=0.5, rely=0.95, anchor="center")
                 
         self.zoomManager.toggleZoomUI()
+    
+    def startLayout(self):
+        self.initializeMemberImages()
+        self.initializePositions()
+        for t in self.memberImages.values():
+            t.rescalePositionTimeline(self.scaleY)
+        self.updateElementPositions() 
     
     def createVideo(self, event):
         print("Video record function called!")
@@ -683,7 +696,7 @@ class VoiceDetectionApp:
 
         # Optional: refresh timelines now that labels changed
         for trackItem in self.memberImages.values():
-            trackItem.initializeTimeline()
+            trackItem.initializeTimeline(includeBacking=self.includeBacking)
       
     def deleteSelectedMarker(self, event=None):
         """
@@ -1015,7 +1028,7 @@ class VoiceDetectionApp:
                 labelMember = self.selectedLabel[0]
                 trackItem = self.memberImages.get(labelMember)
                 if trackItem:
-                    trackItem.initializeTimeline()
+                    trackItem.initializeTimeline(includeBacking=self.includeBacking)
                 self.dragStartLabels = None
 
             # now save the new labels to JSON, update timelines, etc.
@@ -1077,7 +1090,7 @@ class VoiceDetectionApp:
         # Refresh member timelines / positions so everything stays consistent
         for trackItem in self.memberImages.values():
             if trackItem:
-                trackItem.initializeTimeline()
+                trackItem.initializeTimeline(includeBacking=self.includeBacking)
         self.initializePositions()
 
         # Also overwrite the main labels JSON so it matches this state
@@ -1267,11 +1280,15 @@ class VoiceDetectionApp:
             
             # after redraw, canvas ids changed; refresh markerId from dict
             if markerType == "start":
-                self.selectedMarker["id"] = self.startPointMarkers.get(oldChunkIndex)
+                ids = self._getMarkerIdsAtChunk(self.startPointMarkers, oldChunkIndex)
             else:
-                self.selectedMarker["id"] = self.endPointMarkers.get(oldChunkIndex)
+                ids = self._getMarkerIdsAtChunk(self.endPointMarkers, oldChunkIndex)
                 
             # If still missing, bail safely (keeps selection but prevents coruption)
+            # Choose an id deterministically.
+            # If you don't yet track which stacked lane was selected, choose the topmost/last-drawn.
+            self.selectedMarker["id"] = ids[-1] if ids else None
+
             if self.selectedMarker["id"] is None:
                 print("Marker exists logically but isn't drawable in this section right now.")
                 return
@@ -1400,8 +1417,8 @@ class VoiceDetectionApp:
         self.forwardButton = tk.Button(buttonFrame, text="Forward", command=self.forward, bg="white", fg="black")
         self.forwardButton.pack(side="left", padx=10, pady=10)
         
-        self.restartButton = tk.Button(buttonFrame, text="Restart", command=self.restart, bg="white", fg="black")
-        self.restartButton.pack(side="left", padx=10, pady=10) 
+        self.backingToggle = tk.Button(buttonFrame, text="Count Backing", command=self.countBacking, bg="white", fg="black")
+        self.backingToggle.pack(side="left", padx=10, pady=10) 
         
         self.startPointButton = tk.Button(buttonFrame, text="Set Start Point", command=self.addStartPoint)
         self.startPointButton.pack(side="left", padx=10, pady=10)
@@ -1470,30 +1487,26 @@ class VoiceDetectionApp:
     
     def updateElementPositions(self):
         """Update the position and size of all canvas elements based on the new scale."""
+        currentChunk = getattr(self, "currentChunkIndex", 0)
+        
         for member, trackItem in self.memberImages.items():
-            # Get current placement ratios
-            scaledX, scaledY = trackItem.position
-            
-            newX = scaledX * self.scaleX * self.baseWidth
-            newY = int(scaledY * self.scaleY * self.baseHeight)
-            
-            effectiveScale = trackItem.scale * self.scaleX 
-            
+            # Resize portrait
+            effectiveScale = trackItem.scale * min(self.scaleX, self.scaleY)
             trackItem.resizeImages(effectiveScale)
-             
-            # Update the canvas image and position
+            
+            if 0 <= currentChunk < len(trackItem.positionTimeline):
+                newY = trackItem.positionTimeline[currentChunk]
+                
             imageId = self.memberImageIds[member]
             imageKey = trackItem.currentImageKey
-            trackItem.setImageId(imageId)
-            
             self.canvas.itemconfig(imageId, image=trackItem.sourceImages[imageKey])
-            self.canvas.coords(imageId, newX, newY)
+            self.canvas.coords(imageId, 0, newY)
         
     def initializePositions(self):
         """Initializes the positions each member should be at for a specific chunk index"""
         n = len(self.chunks)
         # Run swap/animation logic only where it's safe to do so
-        for currentChunk in range(len(self.chunks)):
+        for currentChunk in range(n):
             for trackItem in self.memberImages.values():
                 if currentChunk < len(self.chunks) - 4:
                     trackItem.checkAndSwap(currentChunk)
@@ -1510,7 +1523,7 @@ class VoiceDetectionApp:
         numMembers = len(groupMembers)
         
         # Base window dimensions
-        canvasHeight = self.baseHeight * self.scaleY
+        canvasHeight = self.baseHeight
         maxScale = 40
         
         # Estimate initial image height at max scale
@@ -1518,13 +1531,15 @@ class VoiceDetectionApp:
         imgBaseHeight = sampleImg.height
 
         # Step 1: calculate max scaled height per member
-        maxScaledHeight = int((imgBaseHeight * maxScale / 100) * self.scaleY)
-        totalStackedHeight = numMembers * maxScaledHeight
-        #print(f"Canvas height: {canvasHeight}\nTotal stacked height: {totalStackedHeight}")
+        canvasHeight = self.baseHeight
+        maxScaledHeightBase = int(imgBaseHeight * maxScale / 100)
+        totalStackedHeight = numMembers * maxScaledHeightBase
+        # This is actually expected
+        # print(f"Img height: {imgBaseHeight}\nTotal stacked height: {totalStackedHeight}, Canvas Height: {canvasHeight}")
         
         # Adjust scale if it exceeds canvas height
         if totalStackedHeight > canvasHeight:
-            scale = (canvasHeight / (imgBaseHeight * numMembers * self.scaleY)) * 100
+            scale = (canvasHeight / (imgBaseHeight * numMembers)) * 100
             scale = min(scale, maxScale)
             print(f"New scale: {scale}")
         else:
@@ -1534,7 +1549,7 @@ class VoiceDetectionApp:
         scaledPixelHeight = math.floor(imgBaseHeight * scale / 100)
         # Change this later
         # initialYOffset = int((scaledPixelHeight * numMembers) - canvasHeight)
-        initialYOffset = 10 * self.scaleY
+        initialYOffset = 10
         # Step 4: Compute where to start stacking so last member lands exactly at bottom
         self.memberImages = {}
         self.memberImageIds = {}
@@ -1544,26 +1559,27 @@ class VoiceDetectionApp:
             darkImage = self.images[memberName]["dark"]
             lightImage = self.images[memberName]["light"]
             self.slotMap[memberName] = index
-
-            yOffset = initialYOffset + index * scaledPixelHeight
-
+            
+            initialYBase = initialYOffset + index * scaledPixelHeight
+                    
             trackItem = TrackItem(
                 scale=scale,
-                position=(0, yOffset),
                 sourceImages={'dark': darkImage, 'light': lightImage},
                 animations=[],
                 parent=self,
                 trackMember=memberName,
             )
-
+            
+            trackItem.initializeTimeline(self.includeBacking)
             self.memberImages[memberName] = trackItem
             trackItem.resizeImages(scale)
             trackItem.currentSlotIndex = index
-
+            # startPosition = trackItem.positionTimeline[self.currentChunkIndex]
+            # print(f"Current position: {startPosition}")
+            
             imageId = self.canvas.create_image(
-                0, yOffset, image=trackItem.sourceImages["dark"], anchor="nw"
+                0, initialYBase, image=trackItem.sourceImages["dark"], anchor="nw"
             )
-
             trackItem.setImageId(imageId)
             self.memberImageIds[memberName] = imageId
             trackItem.initializeProgressBar()
@@ -2056,7 +2072,7 @@ class VoiceDetectionApp:
                 for m in membersToUpdate:
                     trackItem = self.memberImages.get(m)
                     if trackItem:
-                        trackItem.initializeTimeline()
+                        trackItem.initializeTimeline(includeBacking=self.includeBacking)
                     
                 refreshRowUI(i)
                 editWin.destroy()
@@ -2083,7 +2099,7 @@ class VoiceDetectionApp:
                 if oldMember and oldMember != "Gang Vocal":
                     trackItem = self.memberImages.get(oldMember)
                     if trackItem:
-                        trackItem.initializeTimeline()
+                        trackItem.initializeTimeline(includeBacking=self.includeBacking)
 
                 # Save new label set to JSON
                 self.saveLabels(self.selectedGroup, True)
@@ -2247,7 +2263,7 @@ class VoiceDetectionApp:
                 for m in membersToUpdate:
                     trackItem = self.memberImages.get(m)
                     if trackItem:
-                        trackItem.initializeTimeline()
+                        trackItem.initializeTimeline(includeBacking=self.includeBacking)
                 self.saveLabels(self.selectedGroup, True)
                 
             else:
@@ -2829,8 +2845,6 @@ class VoiceDetectionApp:
     def updateDisplayedTime(self, timeMs):
         """Update time display based on milliseconds"""
         minutes = timeMs // 60000
-        if minutes > 3:
-            print(f"Display time error with timeMs {timeMs}")
         seconds = (timeMs % 60000) // 1000
         milliseconds = timeMs % 1000
         self.timeDisplayVar.set(f"{minutes:02}:{seconds:02}.{milliseconds:03}")
@@ -2898,6 +2912,9 @@ class VoiceDetectionApp:
         Up to 3 markers are stacked per chunkIndex.
         """
         self.clearAllMarkers()
+        
+        if hasattr(self, "labelLaneRenderer") and self.labelLaneRenderer:
+            self.labelLaneRenderer.drawSection(sectionIndex, self.progressBarWidth)
 
         if sectionIndex not in self.labelMarkers:
             return
@@ -3206,8 +3223,6 @@ class VoiceDetectionApp:
                 self.isPaused = False
                 
                 if hasattr(self, "videoTrackItem"):
-                    currentAudioTimeMs = pygame.mixer.music.get_pos() + self.playbackOffset
-                    self.videoTrackItem.seek(self.currentChunkIndex * self.chunk_duration)
                     self.videoTrackItem.play()
                 self.playWithSavedResults(self.currentChunkIndex * self.chunk_duration)
             return
@@ -3227,15 +3242,26 @@ class VoiceDetectionApp:
         
             # print(f"Current chunk index {self.currentChunkIndex}")
             
-    def restart(self):
-        """Restart playback from the beginning."""
-        self.currentChunkIndex = 0
-        self.playbackOffset = 0
-        self.currentSectionIndex = 0
-        self.progressBarHandle.currentSectionIndex = 0
-        self.previousX = 0  # important!
-        self.updateCanvasForCurrentPosition()
-        pygame.mixer.music.rewind()
+    def countBacking(self):
+        """
+        Toggle whether backing-only labels should contribute to timelines,
+        then rebuild member images + timelines + position timelines.
+        """
+        self.includeBacking = not getattr(self, "includeBacking", True)
+        
+        # Clean up exisitng member UI
+        for trackItem in self.memberImages.values():
+            # Delete member image
+            self.canvas.delete(trackItem.imageId)
+            self.canvas.delete(trackItem.timerTextId)
+            self.canvas.delete(trackItem.progressBarCanvasImage)
+        
+        self.memberImages = {}
+        self.memberImageIds = {}
+        self.slotMap = {}
+        
+        # Recreate TrackItems and their widgets (images + progress bars)
+        self.startLayout()
         
     def rewind(self):
         self.currentChunkIndex = max(0, self.currentChunkIndex - 1)

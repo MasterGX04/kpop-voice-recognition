@@ -3,7 +3,7 @@ import tkinter as tk
 import tkinter.font as tkFont
 
 class TrackItem:
-    def __init__(self, scale=40, position=(0, 0), sourceImages=None, animations=None, parent=None, trackMember=None,  type="image"):
+    def __init__(self, scale=40, sourceImages=None, animations=None, parent=None, trackMember=None,  type="image"):
         """
         Initialize a TrackItem instance.
 
@@ -13,7 +13,6 @@ class TrackItem:
         """
         self.trackMember = trackMember
         self.scale = max(0, min(scale, 1000))
-        self.position = self._scalePosition(position)
         self.originalImages = sourceImages if sourceImages is not None else {}  # Store original PIL.Image objects
         self.sourceImages = {
             key: ImageTk.PhotoImage(img) for key, img in self.originalImages.items()
@@ -40,8 +39,6 @@ class TrackItem:
             numChunks = len(self.parent.chunks)
             self.timeline = [0.0] * numChunks
             self.positionTimeline = [0.0] * numChunks
-            if self.parent.labels != []:
-                self.initializeTimeline()
             self.memberColor = self.parent.getMemberColor(self.trackMember)
             clearImage = self.chromaKeyImage(self.originalImages["dark"], self.memberColor)
             self.originalImages["clear"] = clearImage  
@@ -134,7 +131,7 @@ class TrackItem:
         """
         Update the member's vertical animation for the current chunk.
         Animations operate entirely in BASE Y-COORDS (not scaled).
-        Scaling is applied later in updateElementPositions().
+        Scaling is applied later in updateElementResizing().
         """
         for anim in self.animations[:]:
             if currentChunk < anim["startChunk"]:
@@ -162,25 +159,20 @@ class TrackItem:
                 #self.parent.canvas.coords(self.imageId, x, interpolatedY)
                 self.animations.remove(anim)
     
+    def _basePortraitHeight(self):
+        # base-space height at design scale (40% etc)
+        pil = self.originalImages[self.currentImageKey]  # PIL Image
+        return int(pil.size[1] * (self.scale / 100.0))
+    
     def getSlotOffsetForSlot(self, slotIndex):
         """
         Computes the vertical offset of this member based on slot index and scale.
         Replaces heightOffset[0] and heightOffset[1].
+        I realized THIS IS STATIC
         """
-        imgHeight = self.sourceImages[self.currentImageKey].height()
-        baseOffset = int(10 * self.parent.scaleY)  # or 0 if you keep baseY independent
-        return imgHeight * slotIndex + baseOffset
-    
-    def getHeightOffset(self):
-        """
-        Compute vertical offset dynamically from scaling and slot index.
-        This guarantees it always exists and matches the current UI scale.
-        """
-        imgHeight = self.sourceImages[self.currentImageKey].height() # scaled image
-        slot = self.currentSlotIndex
-        spacing = int(15 * self.parent.scaleY)
-        
-        return imgHeight * slot + spacing
+        imgHeightBase = self._basePortraitHeight()
+        baseOffset = int(10 * self.parent.scaleY)
+        return imgHeightBase * slotIndex + baseOffset
         
     def getMostRecentY(self, currentChunk):
         for c in range(currentChunk, -1, -1):
@@ -258,17 +250,24 @@ class TrackItem:
         baseY = self.getMostRecentY(currentChunk)
         self.positionTimeline[currentChunk] = baseY
     
-    def initializeTimeline(self):
-        numChunks = len(self.parent.chunks) # Double check this
+    def initializeTimeline(self, includeBacking: bool = True):
+        numChunks = len(self.parent.chunks)
         self.timeline = [0.0] * numChunks
         
         rawRanges = []
         for label in self.parent.labels:
-            member, start, end = label[:3]
-            if member == self.trackMember:
-                rawRanges.append((start, end))
+            member, start, end, isBacking, isAdlib = label
+            
+            if member != self.trackMember:
+                continue
+        
+            if (not includeBacking) and (isBacking and not isAdlib):
+                continue
+            
+            rawRanges.append((start, end))
         
         if not rawRanges:
+            self.lastUpdateChunk = 0
             return
         
         # Sort and merge overlapping/adjacent ranges
@@ -357,7 +356,7 @@ class TrackItem:
         """
         Resize all images ('dark' and 'light') to the new scale.
         :param scale: Scale factor (0-1000, where 100 is the normal size).
-        """
+        """        
         for key in self.originalImages:
             originalImage = self.originalImages[key]
             baseWidth, baseHeight = originalImage.size
