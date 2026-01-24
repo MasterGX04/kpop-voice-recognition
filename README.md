@@ -66,6 +66,63 @@ Solo→mixed-stage training
 7. Smooth predictions for temporal consistency  
 8. Visualize predictions live in the UI  
 
+
+# Model & Architecture (MuQ Encoder)
+
+The current pipeline uses **MuQ** as the audio **encoder** (feature extractor) and a lightweight trainable **classification head** on top for singer identity. MuQ is a self-supervised music representation model trained to produce strong general-purpose embeddings from music audio (the MuQ repo describes it as “Self-Supervised Music Representation Learning with Mel Residual Vector Quantization”).  
+We use MuQ embeddings as the input features for downstream multi-label singer classification instead of hand-crafted MFCC/spectral features.
+
+**High-level idea:** MuQ converts a short audio window into a dense embedding sequence; the head then predicts which member(s) are present in that window. This makes the model more robust to real-world pop mixing because the encoder is pretrained on large-scale music data.
+
+# Stem Separation for Inference (UVR GUI)
+
+For prediction on full songs, the system relies on **Ultimate Vocal Remover GUI (UVR)** to create vocal stems. UVR is an open-source GUI that runs state-of-the-art source-separation models to remove vocals from audio files and generate stems.
+
+In this project, we use UVR in two steps:
+
+First, split the song into a **vocal stem** (vocals) and **instrumental stem** (optional, mainly for checking separation quality).  
+Second, run a *vocal-splitting / karaoke-style* separation on the vocal stem to get two vocal layers:
+
+- **Lead vocals** (dominant/main line)
+- **Backing vocals** (harmonies, ad-libs, doubles, stacks)
+
+This produces three vocal tracks used by the predictor:
+
+1) **Mix vocals** (full vocal stem)  
+2) **Lead vocals**  
+3) **Backing vocals**
+
+# Inference: Three-Track Prediction + Fusion Heuristic
+
+The predictor runs the same model on each of the three vocal tracks, then fuses the outputs into a single frame-by-frame result.
+
+At a high level, `predict_song_three_tracks(...)` does this:
+
+It finds the three stems on disk, resamples each to a consistent sample rate (24 kHz), and runs the per-frame predictor (2.0s context window, 40ms hop by default). That yields three time-aligned prediction series: one from the full vocal mix, one from the lead stem, and one from the backing stem. Finally, it calls `fuse_three_tracks_main(...)` to decide **who is singing “main” vs “backing”** on each frame.
+
+### What `fuse_three_tracks_main(...)` is doing (in plain English)
+
+Think of each time frame as a tiny “vote” from three different microphones:
+
+- **Mix** prediction: “who is present anywhere in the vocal stem?”
+- **Lead** prediction: “who sounds like the front / main voice?”
+- **Backing** prediction: “who sounds like harmonies / stacked layers?”
+
+For each frame, the fusion logic:
+
+It first **removes `silence`** from all predictions so silence can’t accidentally become a singer label. Then it tries to decide the **main singer(s)** by comparing **mix vs lead**.
+
+If mix and lead agree on a singer, that agreement is treated as the most reliable answer. If they don’t agree, it falls back to whichever side is non-empty, and if both are non-empty it keeps the union (meaning: “the model is unsure, so keep both candidates for now”). To stop chaos in dense sections, it caps the main list to a small number (default: 2 members per frame) in a deterministic way.
+
+After choosing the main singer(s), it looks at the **backing stem**. If backing predicts an additional member that is *not already in main*, it adds them into a separate `backing` list. This is important because harmonies/ad-libs can be present in the backing stem even when the mix/lead predictor doesn’t surface them clearly.
+
+The output per frame is a small structured object like:
+
+`{"main": [...], "backing": [...], "adlib": []}`
+
+(We keep `adlib` empty for now, but the structure is ready for a dedicated ad-lib head later.)
+
+
 **Core Ideas (High-Level)**
 Multi-label classification handles overlapping voices  
 Temporal context allows the model to “hear transitions”  
