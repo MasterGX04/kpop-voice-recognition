@@ -1,0 +1,521 @@
+{
+    "IVE": {
+        "members": [
+            {
+                "name": "Gaeul",
+                "color": "#0000ff"
+            },
+            {
+                "name": "Yujin",
+                "color": "#ff00ff"
+            },
+            {
+                "name": "Rei",
+                "color": "#65bd2b"
+            },
+            {
+                "name": "Wonyoung",
+                "color": "#ff0000"
+            },
+            {
+                "name": "Liz",
+                "color": "#00c3f5"
+            },
+            {
+                "name": "Leeseo",
+                "color": "#ffff00"
+            }
+        ],
+        "albums": {
+            "ive_switch": {
+                "displayName": "IVE SWITCH",
+                "albumArtCachePath": "member_images\\IVE\\_album_art\\ive_switch.png",
+                "albumArtUrl": "",
+                "songs": [
+                    "Accendio"
+                ]
+            },
+            "ive_empathy": {
+                "displayName": "IVE Empathy",
+                "albumArtCachePath": "member_images\\IVE\\_album_art\\ive_empathy.png",
+                "albumArtUrl": "",
+                "songs": [
+                    "ATTITUDE",
+                    "Flu",
+                    "Rebel Heart",
+                    "TKO",
+                    "You Wanna Cry"
+                ]
+            },
+            "i_ve_ive": {
+                "displayName": "I'VE IVE",
+                "albumArtCachePath": "member_images\\IVE\\_album_art\\i_ve_ive.png",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Ive_-_I%27ve_Ive.png/500px-Ive_-_I%27ve_Ive.png",
+                "songs": [
+                    "I AM",
+                    "Heroine",
+                    "Hypnosis",
+                    "Blue Blood",
+                    "Mine"
+                ]
+            }
+        },
+        "songToAlbum": {
+            "Accendio": "ive_switch",
+            "ATTITUDE": "ive_empathy",
+            "I AM": "i_ve_ive",
+            "Flu": "ive_empathy",
+            "Heroine": "i_ve_ive",
+            "Hypnosis": "i_ve_ive",
+            "Blue Blood": "i_ve_ive",
+            "Mine": "i_ve_ive",
+            "Rebel Heart": "ive_empathy",
+            "TKO": "ive_empathy",
+            "You Wanna Cry": "ive_empathy"
+        },
+        "defaultAlbumId": "ive_switch"
+    },
+    "aespa": {
+        "members": [
+            {
+                "name": "Karina",
+                "color": "#0000ff"
+            },
+            {
+                "name": "Giselle",
+                "color": "#faa87e"
+            },
+            {
+                "name": "Winter",
+                "color": "#ff00f7"
+            },
+            {
+                "name": "Ningning",
+                "color": "#00ff00"
+            }
+        ],
+        "albums": {
+            "whiplash": {
+                "displayName": "Whiplash",
+                "albumArtCachePath": "member_images\\aespa\\_album_art\\whiplash.jpg",
+                "albumArtUrl": "https://static.wikia.nocookie.net/aespa/images/b/ba/Whiplash_Digital_Cover.jpg",
+                "songs": [
+                    "Whiplash"
+                ]
+            }
+        },
+        "songToAlbum": {
+            "Whiplash": "whiplash"
+        },
+        "defaultAlbumId": "whiplash"
+    },
+    "BTS": {
+        "members": [
+            {
+                "name": "Jin",
+                "color": "#0000ff",
+                "imageCachePath": "",
+                "imageUrl": ""
+            },
+            {
+                "name": "Suga",
+                "color": "#46eb7d",
+                "imageCachePath": "",
+                "imageUrl": ""
+            },
+            {
+                "name": "J-Hope",
+                "color": "#eb46b4",
+                "imageCachePath": "",
+                "imageUrl": ""
+            },
+            {
+                "name": "RM",
+                "color": "#eb7d46",
+                "imageCachePath": "",
+                "imageUrl": ""
+            },
+            {
+                "name": "Jimin",
+                "color": "#46b4eb",
+                "imageCachePath": "",
+                "imageUrl": ""
+            },
+            {
+                "name": "V",
+                "color": "#7d46eb",
+                "imageCachePath": "",
+                "imageUrl": ""
+            },
+            {
+                "name": "Jungkook",
+                "color": "#ff0000",
+                "imageCachePath": "",
+                "imageUrl": ""
+            }
+        ],
+        "albums": {
+            "love_yourself_tear": {
+                "displayName": "Love Yourself Tear",
+                "albumArtCachePath": "member_images\\BTS\\_album_art\\love_yourself_tear.png",
+                "albumArtUrl": "",
+                "songs": [
+                    "134340"
+                ]
+            },
+            "wings": {
+                "displayName": "Wings",
+                "albumArtCachePath": "member_images\\BTS\\_album_art\\wings.png",
+                "albumArtUrl": "",
+                "songs": [
+                    "Blood Sweat & Tears"
+                ]
+            },
+            "skool_luv_affair": {
+                "displayName": "Skool Luv Affair",
+                "albumArtCachePath": "member_images\\BTS\\_album_art\\skool_luv_affair.png",
+                "albumArtUrl": "",
+                "songs": [
+                    "Just One Day"
+                ]
+            },
+            "dark_and_wild": {
+                "displayName": "Dark and WIld",
+                "albumArtCachePath": "member_images\\BTS\\_album_art\\dark_and_wild.png",
+                "albumArtUrl": "",
+                "songs": [
+                    "Danger"
+                ]
+            },
+            "the_most_beautiful_moment_in_life_part_2": {
+                "displayName": "The Most Beautiful Moment In Life Part 2",
+                "albumArtCachePath": "member_images\\BTS\\_album_art\\the_most_beautiful_moment_in_life_part_2.jpg",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/0/0b/BTS_The_Most_Beautiful_Moment_In_Life%2C_Part_2_album_cover.jpg",
+                "songs": [
+                    "Baepsae",
+                    "Butterfly"
+                ]
+            }
+        },
+        "songToAlbum": {
+            "Baepsae": "the_most_beautiful_moment_in_life_part_2",
+            "Blood Sweat & Tears": "wings",
+            "Just One Day": "skool_luv_affair",
+            "Danger": "dark_and_wild",
+            "Butterfly": "the_most_beautiful_moment_in_life_part_2",
+            "134340": "love_yourself_tear"
+        },
+        "defaultAlbumId": "love_yourself_tear"
+    },
+    "Fifty Fifty": {
+        "members": [
+            {
+                "name": "Keena",
+                "color": "#00852c"
+            },
+            {
+                "name": "Chanelle",
+                "color": "#8f69db"
+            },
+            {
+                "name": "Yewon",
+                "color": "#e98f11"
+            },
+            {
+                "name": "Hana",
+                "color": "#32ffee"
+            },
+            {
+                "name": "Athena",
+                "color": "#131dd7"
+            }
+        ],
+        "albums": {
+            "love_tune": {
+                "displayName": "Love Tune",
+                "albumArtCachePath": "member_images\\Fifty Fifty\\_album_art\\love_tune.png",
+                "albumArtUrl": "https://static.wikia.nocookie.net/kpop/images/7/7d/FIFTY_FIFTY_Love_Tune_album_cover.png",
+                "songs": [
+                    "Gravity"
+                ]
+            },
+            "day___night": {
+                "displayName": "Day & Night",
+                "albumArtCachePath": "member_images\\Fifty Fifty\\_album_art\\day___night.png",
+                "albumArtUrl": "",
+                "songs": [
+                    "Heartbreak",
+                    "Midnight Special",
+                    "Perfect Crime"
+                ]
+            },
+            "too_much_pt__1": {
+                "displayName": "Too Much Pt. 1",
+                "albumArtCachePath": "member_images\\Fifty Fifty\\_album_art\\too_much_pt__1.png",
+                "albumArtUrl": "https://images.genius.com/77f65583cda2ca9e8a85aa2491f0612f.1000x1000x1.png",
+                "songs": [
+                    "Skittlez"
+                ]
+            }
+        },
+        "songToAlbum": {
+            "Gravity": "love_tune",
+            "Heartbreak": "day___night",
+            "Midnight Special": "day___night",
+            "Perfect Crime": "day___night",
+            "Skittlez": "too_much_pt__1"
+        },
+        "defaultAlbumId": "love_tune"
+    },
+    "ITZY": {
+        "members": [
+            {
+                "name": "Chaeryeong",
+                "color": "#3232ff",
+                "imageCachePath": "",
+                "imageUrl": ""
+            },
+            {
+                "name": "Lia",
+                "color": "#eb7d46",
+                "imageCachePath": "",
+                "imageUrl": ""
+            },
+            {
+                "name": "Ryujin",
+                "color": "#7d46eb",
+                "imageCachePath": "",
+                "imageUrl": ""
+            },
+            {
+                "name": "Yeji",
+                "color": "#ffff00",
+                "imageCachePath": "",
+                "imageUrl": ""
+            },
+            {
+                "name": "Yuna",
+                "color": "#46eb7d",
+                "imageCachePath": "",
+                "imageUrl": ""
+            }
+        ],
+        "albums": {},
+        "songToAlbum": {},
+        "defaultAlbumId": ""
+    },
+    "NMIXX": {
+        "members": [
+            {
+                "name": "Lily",
+                "color": "#8ab8e8"
+            },
+            {
+                "name": "Haewon",
+                "color": "#959595"
+            },
+            {
+                "name": "Sullyoon",
+                "color": "#0000ff"
+            },
+            {
+                "name": "Bae",
+                "color": "#ffff00"
+            },
+            {
+                "name": "Jiwoo",
+                "color": "#ff0000"
+            },
+            {
+                "name": "Kyujin",
+                "color": "#f093bc"
+            }
+        ],
+        "albums": {
+            "blue_valentine": {
+                "displayName": "Blue Valentine",
+                "albumArtCachePath": "member_images\\NMIXX\\_album_art\\blue_valentine.png",
+                "albumArtUrl": "",
+                "songs": [
+                    "Blue Valentine"
+                ]
+            },
+            "expergo": {
+                "displayName": "Expergo",
+                "albumArtCachePath": "member_images\\NMIXX\\_album_art\\expergo.png",
+                "albumArtUrl": "",
+                "songs": [
+                    "Love Me Like This"
+                ]
+            }
+        },
+        "songToAlbum": {
+            "Blue Valentine": "blue_valentine",
+            "Love Me Like This": "expergo"
+        },
+        "defaultAlbumId": "blue_valentine"
+    },
+    "TWICE": {
+        "members": [
+            {
+                "name": "Nayeon",
+                "color": "#46b4eb",
+                "imageCachePath": "",
+                "imageUrl": ""
+            },
+            {
+                "name": "Jeongyeon",
+                "color": "#b4eb46",
+                "imageCachePath": "",
+                "imageUrl": ""
+            },
+            {
+                "name": "Momo",
+                "color": "#eb46b4",
+                "imageCachePath": "",
+                "imageUrl": ""
+            },
+            {
+                "name": "Sana",
+                "color": "#7d46eb",
+                "imageCachePath": "",
+                "imageUrl": ""
+            },
+            {
+                "name": "Jihyo",
+                "color": "#ffd688",
+                "imageCachePath": "",
+                "imageUrl": ""
+            },
+            {
+                "name": "Mina",
+                "color": "#46eb7d",
+                "imageCachePath": "",
+                "imageUrl": ""
+            },
+            {
+                "name": "Dahyun",
+                "color": "#8a8a8a",
+                "imageCachePath": "",
+                "imageUrl": ""
+            },
+            {
+                "name": "Chaeyoung",
+                "color": "#ff0000",
+                "imageCachePath": "",
+                "imageUrl": ""
+            },
+            {
+                "name": "Tzuyu",
+                "color": "#0000ff",
+                "imageCachePath": "",
+                "imageUrl": ""
+            }
+        ],
+        "albums": {
+            "fancy_you": {
+                "displayName": "Fancy You",
+                "albumArtCachePath": "member_images\\TWICE\\_album_art\\fancy_you.png",
+                "albumArtUrl": "",
+                "songs": [
+                    "Stuck In My Head"
+                ]
+            },
+            "feel_special": {
+                "displayName": "Feel Special",
+                "albumArtCachePath": "member_images\\TWICE\\_album_art\\feel_special.png",
+                "albumArtUrl": "https://static.wikia.nocookie.net/kpop/images/8/8a/TWICE_Feel_Special_digital_album_cover_%28original%29.png",
+                "songs": [
+                    "Feel Special"
+                ]
+            }
+        },
+        "songToAlbum": {
+            "Stuck In My Head": "fancy_you",
+            "Feel Special": "feel_special"
+        },
+        "defaultAlbumId": "fancy_you"
+    },
+    "Le Sserafim": {
+        "members": [
+            {
+                "name": "Sakura",
+                "color": "#ee0fe7"
+            },
+            {
+                "name": "Chaewon",
+                "color": "#00ff51"
+            },
+            {
+                "name": "Yunjin",
+                "color": "#00551b"
+            },
+            {
+                "name": "Kazuha",
+                "color": "#0000ff"
+            },
+            {
+                "name": "Eunchae",
+                "color": "#ff0000"
+            }
+        ],
+        "albums": {
+            "hot": {
+                "displayName": "HOT",
+                "albumArtCachePath": "member_images\\Le Sserafim\\_album_art\\hot.png",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/7/75/Le_Sserafim_-_Hot.png",
+                "songs": [
+                    "Ash"
+                ]
+            },
+            "easy": {
+                "displayName": "Easy",
+                "albumArtCachePath": "member_images\\Le Sserafim\\_album_art\\easy.png",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/3/31/Le_Sserafim_-_Easy.png",
+                "songs": [
+                    "Swan Song"
+                ]
+            }
+        },
+        "songToAlbum": {
+            "Ash": "hot",
+            "Swan Song": "easy"
+        },
+        "defaultAlbumId": "hot"
+    },
+    "Dreamcatcher": {
+        "members": [
+            {
+                "name": "JiU",
+                "color": "#aa0000"
+            },
+            {
+                "name": "SuA",
+                "color": "#8a5de3"
+            },
+            {
+                "name": "Siyeon",
+                "color": "#eb7d46"
+            },
+            {
+                "name": "Handong",
+                "color": "#aaff00"
+            },
+            {
+                "name": "Yoohyeon",
+                "color": "#46eb7d"
+            },
+            {
+                "name": "Dami",
+                "color": "#00ffff"
+            },
+            {
+                "name": "Gahyeon",
+                "color": "#eb46b4"
+            }
+        ],
+        "albums": {},
+        "songToAlbum": {},
+        "defaultAlbumId": ""
+    }
+}

@@ -1,0 +1,33 @@
+{
+    "group": "aespa",
+    "activeTheme": "Whiplash",
+    "members": [
+        {
+            "name": "Karina",
+            "color": "#0000ff"
+        },
+        {
+            "name": "Giselle",
+            "color": "#faa87e"
+        },
+        {
+            "name": "Winter",
+            "color": "#ff00f7"
+        },
+        {
+            "name": "Ningning",
+            "color": "#00ff00"
+        }
+    ],
+    "ageOrder": [
+        "Karina",
+        "Giselle",
+        "Winter",
+        "Ningning"
+    ],
+    "templates": {
+        "dark": "Dark {member}.png",
+        "light": "{member}.png",
+        "circle": "{member} Circle.png"
+    }
+}

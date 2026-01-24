@@ -145,7 +145,7 @@ class LabelOverlayController:
         oldChunk, oldType = old
         self._markerInfo[markerId] = (
             oldChunk if chunkIndex is None else chunkIndex,
-            oldType if markerType is None else markerType
+            oldType if markerType is None else markerType,
         )
 
     # Optional cleanup if you delete markers
@@ -154,3 +154,6 @@ class LabelOverlayController:
             self._hide(None)
             self._activeMarkerId = None
         self._markerInfo.pop(markerId, None)
+        
+    def getMarkerInfo(self, markerId):
+        return self._markerInfo.get(markerId)

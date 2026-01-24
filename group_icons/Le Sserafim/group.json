@@ -1,0 +1,38 @@
+{
+    "group": "Le Sserafim",
+    "activeTheme": "Easy",
+    "members": [
+        {
+            "name": "Sakura",
+            "color": "#ee0fe7"
+        },
+        {
+            "name": "Chaewon",
+            "color": "#00ff51"
+        },
+        {
+            "name": "Yunjin",
+            "color": "#00551b"
+        },
+        {
+            "name": "Kazuha",
+            "color": "#0000ff"
+        },
+        {
+            "name": "Eunchae",
+            "color": "#ff0000"
+        }
+    ],
+    "ageOrder": [
+        "Sakura",
+        "Chaewon",
+        "Yunjin",
+        "Kazuha",
+        "Eunchae"
+    ],
+    "templates": {
+        "dark": "Dark {member}.png",
+        "light": "{member}.png",
+        "circle": "{member} Circle.png"
+    }
+}

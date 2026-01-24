@@ -12,53 +12,13 @@ from navigation_arrows import NavigationArrows
 import json, copy
 import codecs
 from lyrics_box import LyricBox
-from audio_processing import getSongsFromSameAlbum
-from zoom_functions import ZoomManager, ProgressBarHandle, ProgressBarNavigator
+from zoom_functions import ZoomManager, ProgressBarHandle
+from color_utils import ensureReadableOnBackground
 from model_predictor import predict_song_selective
 from label_overlay import LabelOverlayController
 from label_lanes import LabelLaneRenderer
+from cut_clip_manager import CutClipManager
 import math
-
-# Load images for member
-def loadMemberImages(groupName, members: dict, songName):
-    images = {}
-    songsFromSameAlbum = getSongsFromSameAlbum()
-    albumName = None
-    groupAlbums = songsFromSameAlbum.get(groupName, {})
-    
-    for album, songs in groupAlbums.items():
-        if songName in songs:
-            albumName = album
-            break  # Exit once we find the album
-    
-    # If not found, fall back to the first album key
-    if albumName is None:
-        if groupAlbums:
-            # Get first key
-            albumName = next(iter(groupAlbums.keys()))
-        else:
-            albumName = None  # or set a default if preferred
-    
-    for memberObject in members:
-        memberName = memberObject['name']
-        darkImgPath = f"./group_icons/{groupName}/{albumName}/Dark {memberName}.png"
-        lightImgPath = f"./group_icons/{groupName}/{albumName}/{memberName}.png"
-        
-        if os.path.exists(darkImgPath):  # Check if the file exists
-            darkImg = Image.open(darkImgPath)
-        else:
-            print(f"Error: Dark image not found: {darkImgPath}")
-
-        if os.path.exists(lightImgPath): # Check if the file exists
-            lightImg = Image.open(lightImgPath)
-        else:
-            print(f"Error: Light image not found: {lightImgPath}")
-            # Handle the error
-            
-        images[memberName] = {"dark": darkImg, "light": lightImg}
-        
-    return images
-# end loadMemberImages
 
 def cacheKeyForPath(path: str) -> str:
     # key changes if the file changes (mtime + size)
@@ -111,7 +71,11 @@ def dedupeLabelsByKey(labels):
         return out
 
 class VoiceDetectionApp:
-    def __init__(self, root, trainingMember, members, modelPath, images, testSongPath, vocalsOnlyPath, vocalsLeadPath, vocalsBackingPath, selectedGroup):
+    def __init__(
+            self, *, root, trainingMember, members, modelPath, 
+            images, testSongPath, vocalsOnlyPath, vocalsLeadPath, 
+            vocalsBackingPath, selectedGroup
+        ):
         self.root = root
         self.trainingMember = trainingMember
         self.members = members
@@ -119,22 +83,18 @@ class VoiceDetectionApp:
         self.playbackThread = None
         self.labels = []
         self.selectedMarker = None
-        self.cachedFiles = set()
         self.songName = os.path.splitext(os.path.basename(testSongPath))[0]
+        self.bannedNames = ["Gang Vocal", "Cut"]
 
         # names for leading and backing vocal files
-        cachedMix, createdMix = ensureAudioForPlayback(testSongPath)
-        cachedVocals, createdVocals = ensureAudioForPlayback(vocalsOnlyPath)
+        cachedMix, _ = ensureAudioForPlayback(testSongPath)
+        cachedVocals, _ = ensureAudioForPlayback(vocalsOnlyPath)
+        self._buildActiveLyricIds = []
 
         self.testSongPath = cachedMix
         self.vocalsOnlyPath = cachedVocals
         self.vocalsLeadPath = vocalsLeadPath
         self.vocalsBackingPath = vocalsBackingPath
-
-        if createdMix:
-            self.cachedFiles.add(self.testSongPath)
-        if createdVocals:
-            self.cachedFiles.add(self.vocalsOnlyPath)
             
         self.selectedGroup = selectedGroup
         # Which audio file pyame should currently play
@@ -149,6 +109,9 @@ class VoiceDetectionApp:
         
         self.scaleX = 1.0
         self.scaleY = 1.0
+        
+        self.viewportOffsetX = 0
+        self.viewportOffsetY = 0
         
         if os.path.exists(self.vocalsOnlyPath):
             self.audio = AudioSegment.from_file(self.vocalsOnlyPath)
@@ -179,10 +142,16 @@ class VoiceDetectionApp:
         self.openStartChunk = None
         self.endPointMarkers = {}
         
-        self.canvasFrame = tk.Frame(root)
+        self.canvasFrame = tk.Frame(root, bd=0, highlightthickness=0, relief="flat")
         self.canvasFrame.pack(fill="both", expand=True)
-        
-        self.canvas = tk.Canvas(self.canvasFrame, bg="white")
+
+        self.canvas = tk.Canvas(
+            self.canvasFrame,
+            bg="white",
+            highlightthickness=0,   # <- kills the 1px focus ring
+            bd=0,
+            relief="flat"
+        )
         self.canvas.pack(fill="both", expand=True)
         self.canvas.bind("<Configure>", self.onCanvasResize)
         
@@ -269,12 +238,22 @@ class VoiceDetectionApp:
             getMemberColorFn=self.getMemberColor,  # you already have this
             maxLanes=4
         )
-        
+        self.clipManager = CutClipManager(self.chunk_duration, jumpCallback=self.jumpToMs)
+        self.clipManager.rebuild(self.labels, len(self.chunks))
         self.root.after_idle(self.startLayout)
         
         self.addControls(root)
         self.root.after(100, self.drawTimeMarkers)
-        self.root.after(50, self.loadLyricsFromFile)
+        
+        self.startEvents = {}
+        self.activeLyricIds = set()
+        
+        self.root.after(50, self.addBackgroundImage)
+        def handleLyrics():
+            self.loadLyricsFromFile()
+            self.buildLyricStartEvents()
+            
+        self.root.after(50, handleLyrics)
         
         if len(self.voiceDetectionResults) > 0:
             self.evaluateVoiceDetectionAccuracy()
@@ -287,10 +266,10 @@ class VoiceDetectionApp:
         self.selectedLabel = None
         self.isDraggingMarker = False
         self.isPendingDrag = False
+        self.pendingDrag = False
         self.dragStartXY = None
         self.dragThreshold = 4 # px
         
-        self.root.after(50, self.addBackgroundImage)
         # self.root.after(50, self.initializeArrows)
         self.uiHidden = False
         
@@ -352,7 +331,6 @@ class VoiceDetectionApp:
             except Exception as e:
                 print("Error stopping video on close:", e)
         
-        self.cleanupCachedAudio()
         # Destroy just this window (the UI window), not the whole app
         self.root.destroy()
       
@@ -412,7 +390,14 @@ class VoiceDetectionApp:
         self.updateLabelMarkersDict()
         self.drawTimeMarkers()
         self.canvas.update()
-        self.root.update_idletasks()     
+        self.root.update_idletasks()   
+        
+    def buildLyricStartEvents(self):
+        self.startEvents = {}
+        self.activeLyricIds = set()
+
+        for startChunk in self.lyrics.keys():
+            self.startEvents.setdefault(startChunk, []).append(startChunk)  
     
     def toggleUIElements(self, event=None):
         """Toggle visibility of navigation arrows, progress bar handle, progress bar canvas, and time markers."""
@@ -443,6 +428,10 @@ class VoiceDetectionApp:
                 self.timeDisplayLabel.place(relx=0.5, rely=0.95, anchor="center")
                 
         self.zoomManager.toggleZoomUI()
+        
+        # Hide/Show labels
+        if self.uiHidden:
+            self.clearAllMarkers()
     
     def startLayout(self):
         self.initializeMemberImages()
@@ -496,6 +485,8 @@ class VoiceDetectionApp:
             print("Mode switched to Test!")
     
     def addBackgroundImage(self):
+        if hasattr(self, "lyricsBackgroundId"):
+            self.canvas.delete(self.lyricsBackgroundId)
         whiteImagePath = os.path.join("./training_data", "White.jpg")
         try:
             whiteImage = Image.open(whiteImagePath)
@@ -521,6 +512,35 @@ class VoiceDetectionApp:
 
         # Raise to top
         self.canvas.tag_raise(self.lyricsBackgroundId)
+        self.syncLyricBoxToBackground()
+        
+    def syncLyricBoxToBackground(self):
+        def getLyricsBackgroundLeftX():
+            bgId = getattr(self, "lyricsBackgroundId", None)
+            if not bgId:
+                return None
+
+            bbox = self.canvas.bbox(bgId)  # (x1, y1, x2, y2) or None
+            if not bbox:
+                return None
+
+            x1, _, _, _ = bbox
+            return x1
+
+        leftX = getLyricsBackgroundLeftX()
+        print(f"Left x for white: {leftX}")
+
+        padding = int(10 * self.scaleX)  # optional, tweak to taste
+        targetCanvasX = leftX + padding
+        
+        offX = getattr(self, "viewportOffsetX", 0)
+        scaleX = getattr(self, "scaleX", 1.0)
+        if scaleX <= 0:
+            scaleX = 1.0
+    
+        targetBaseX = int(round((targetCanvasX - offX) / scaleX))
+
+        self.targetLyricsX = targetBaseX
     
     def evaluateVoiceDetectionAccuracy(self):
         if not hasattr(self, "labels") or not self.labels:
@@ -842,7 +862,7 @@ class VoiceDetectionApp:
                 self.dragStartLabels = copy.deepcopy(self.labels)
                 return
             
-        self.selectedMarker = None
+        self.selectedMarker = None 
         self.originalLabel = None
         self.isDraggingMarker = False
         
@@ -1070,22 +1090,11 @@ class VoiceDetectionApp:
         Replace self.labels with provided labels and refresh all marker-related state.
         """
         self.labels = copy.deepcopy(labels)
+        self.onLabelsChanged(redrawSection=self.currentSectionIndex) 
         
-        # Rebuild start/endPoints from labels
-        self.startPoints.clear()
-        self.endPoints.clear()
-        for label in self.labels:
-            start = label[1]
-            end = label[2]
-            if start not in self.startPoints:
-                self.startPoints.append(start)
-            if end not in self.endPoints:
-                self.endPoints.append(end)
-                
+        self.clipManager.rebuild(self.labels, len(self.chunks))       
         # Sync internal marker structures and redraw
-        self.updateLabelMarkersDict()
         self.drawTimeMarkers()
-        self.drawLabelMarkers(self.currentSectionIndex)
 
         # Refresh member timelines / positions so everything stays consistent
         for trackItem in self.memberImages.values():
@@ -1154,7 +1163,6 @@ class VoiceDetectionApp:
         Save updated labels to JSON file
         """
         if not self.selectedLabel:
-            print("Label not selected")
             return
         
         print("Labels have been updated!")
@@ -1162,6 +1170,7 @@ class VoiceDetectionApp:
         
         try:
             self.labels = dedupeLabelsByKey(self.labels)  # critical
+            self.clipManager.rebuild(self.labels, len(self.chunks)) 
             with open(labelFilePath, "w") as file:
                 json.dump(self.labels, file, separators=(",", ":"))
 
@@ -1249,7 +1258,19 @@ class VoiceDetectionApp:
             markerDict.pop(chunkIndex, None)
         else:
             markerDict[chunkIndex] = ids
-                            
+    
+    def _replaceOneOccurrence(self, pointsList, oldValue, newValue):
+        """
+        Replace ONE occurrence of oldValue with newValue in pointsList.
+        If oldValue isn't found (shouldn't happen, but stay resilient), append newValue.
+        This preserves the multiset counts without deleting "other" points.
+        """
+        try:
+            i = pointsList.index(oldValue)  # O(n), fine at your scale
+            pointsList[i] = newValue
+        except ValueError:
+            pointsList.append(newValue)
+                           
     def moveMarker(self, direction):
         """
         Move the selected marker left (-1) or right (+1) by one chunkIndex.
@@ -1344,10 +1365,8 @@ class VoiceDetectionApp:
             self._setMarkerIdsAtChunk(self.startPointMarkers, newChunkIndex, newIds)
 
             # multiset list update: remove ONE occurrence, add ONE occurrence
-            if oldChunkIndex in self.startPoints:
-                self.startPoints.remove(oldChunkIndex)
-            self.startPoints.append(newChunkIndex)
-
+            self._replaceOneOccurrence(self.startPoints, oldChunkIndex, newChunkIndex)
+            
         elif markerType == "end":
             oldIds = self._getMarkerIdsAtChunk(self.endPointMarkers, oldChunkIndex)
             if markerId in oldIds:
@@ -1358,10 +1377,7 @@ class VoiceDetectionApp:
             newIds.append(markerId)
             self._setMarkerIdsAtChunk(self.endPointMarkers, newChunkIndex, newIds)
 
-            if oldChunkIndex in self.endPoints:
-                self.endPoints.remove(oldChunkIndex)
-            self.endPoints.append(newChunkIndex)
-
+            self._replaceOneOccurrence(self.endPoints, oldChunkIndex, newChunkIndex)
         # Update label in self.labels if applicable
         if self.selectedLabel:
             # Update the label directly in self.labels if it's stored as a list
@@ -1371,6 +1387,7 @@ class VoiceDetectionApp:
                         label[1] = newChunkIndex  # Update the start index
                     elif markerType == "end":
                         label[2] = newChunkIndex  # Update the end index
+                    # self.upsertLabel(label, self.selectedLabel)
                     self.selectedLabel = label  # Update the reference to the modified label
                     break
         
@@ -1382,7 +1399,9 @@ class VoiceDetectionApp:
         self.selectedMarker["chunkIndex"] = newChunkIndex
         self.selectedMarker["id"] = markerId
         
+        # Not working
         self.labelOverlay.updateBoundaryMarker(markerId, chunkIndex=newChunkIndex)
+        self.updateLabelInJSON()
     
     def jumpToSection(self, sectionIndex: int):
         sectionIndex = max(0, sectionIndex)
@@ -1411,13 +1430,30 @@ class VoiceDetectionApp:
         self.pauseButton = tk.Button(buttonFrame, text="Pause", command=self.pause, bg="white", fg="black")
         self.pauseButton.pack(side="left", padx=10, pady=10)
         
-        self.rewindButton = tk.Button(buttonFrame, text="Rewind", command=self.rewind, bg="white", fg="black")
-        self.rewindButton.pack(side="left", padx=10, pady=10)
+        def onToggleEditing():
+            # Toggle the underlying state
+            self.clipManager.toggleEnabled()
+
+            # Update button color based on new state
+            if self.clipManager.enabled:
+                self.toggleEditButton.config(bg="red", fg="white")
+            else:
+                self.toggleEditButton.config(bg="white", fg="black")
+        # end
         
-        self.forwardButton = tk.Button(buttonFrame, text="Forward", command=self.forward, bg="white", fg="black")
+        self.toggleEditButton = tk.Button(
+            buttonFrame,
+            text="Toggle Editing",
+            command=onToggleEditing,
+            bg="white",
+            fg="black"
+        )
+        self.toggleEditButton.pack(side="left", padx=10, pady=10)
+        
+        self.forwardButton = tk.Button(buttonFrame, text="Reset Positions", command=lambda: self.countBacking(False), bg="white", fg="black")
         self.forwardButton.pack(side="left", padx=10, pady=10)
         
-        self.backingToggle = tk.Button(buttonFrame, text="Count Backing", command=self.countBacking, bg="white", fg="black")
+        self.backingToggle = tk.Button(buttonFrame, text="Count Backing", command=lambda: self.countBacking(True), bg="white", fg="black")
         self.backingToggle.pack(side="left", padx=10, pady=10) 
         
         self.startPointButton = tk.Button(buttonFrame, text="Set Start Point", command=self.addStartPoint)
@@ -1435,22 +1471,11 @@ class VoiceDetectionApp:
         tk.Label(chunkIndexFrame, text="Chunk Index:", bg="turquoise", fg="white", font=("Arial", 10)).pack(side="top")
         self.chunkIndexLabel = tk.Label(chunkIndexFrame, text=str(self.currentChunkIndex), bg="gray", fg="white", font=("Arial", 10))
         self.chunkIndexLabel.pack(side="top")
-     
-    def cleanupCachedAudio(self):
-        # stop pygame playback first so Windows doesn't lock the file
-        try:
-            if pygame.mixer.get_init():
-                pygame.mixer.music.stop()
-        except Exception:
-            pass
-
-        for path in getattr(self, "cachedFiles", []):
-            try:
-                if path and os.path.exists(path):
-                    os.remove(path)
-                    print(f"🧹 Deleted temp audio: {os.path.basename(path)}")
-            except Exception as e:
-                print(f"⚠️ Failed to delete temp audio {path}: {e}")
+    
+    def refreshLyricsLayout(self):
+        # 1) Rebuild each lyric box’s canvas items at the new scale
+        for lyricBox in self.lyrics.values():
+            lyricBox.rebuildForResize()  # you'll add this method
     
     def onCanvasResize(self, event):
         aspectRatio = self.baseWidth / self.baseHeight 
@@ -1466,6 +1491,9 @@ class VoiceDetectionApp:
             newWidth = event.width
             newHeight = int(newWidth / aspectRatio)
         
+        self.viewportOffsetX = int((event.width  - newWidth) / 2)
+        self.viewportOffsetY = int((event.height - newHeight) / 2)
+        
         self.scaleX = newWidth / self.baseWidth
         self.scaleY = newHeight / self.baseHeight
         
@@ -1478,7 +1506,12 @@ class VoiceDetectionApp:
         self.navigationArrows.updateArrows(self.progressBarCanvas)
         self.updateElementPositions()
         
+        # Reset lyrics layout for new scale
+        if hasattr(self, "lyrics") and self.lyrics:
+            self.refreshLyricsLayout()
+        
         self.progressBarHandle.progressBarWidth = newWidth
+        self.updateLabelMarkersDict()
         self.root.after(50, self.drawTimeMarkers)
         
         if hasattr(self, "videoTrackItem"):
@@ -1529,9 +1562,9 @@ class VoiceDetectionApp:
         # Estimate initial image height at max scale
         sampleImg = next(iter(self.images.values()))["dark"]
         imgBaseHeight = sampleImg.height
-
+ 
         # Step 1: calculate max scaled height per member
-        canvasHeight = self.baseHeight
+        canvasHeight = self.baseHeight - 10
         maxScaledHeightBase = int(imgBaseHeight * maxScale / 100)
         totalStackedHeight = numMembers * maxScaledHeightBase
         # This is actually expected
@@ -1549,7 +1582,6 @@ class VoiceDetectionApp:
         scaledPixelHeight = math.floor(imgBaseHeight * scale / 100)
         # Change this later
         # initialYOffset = int((scaledPixelHeight * numMembers) - canvasHeight)
-        initialYOffset = 10
         # Step 4: Compute where to start stacking so last member lands exactly at bottom
         self.memberImages = {}
         self.memberImageIds = {}
@@ -1560,7 +1592,7 @@ class VoiceDetectionApp:
             lightImage = self.images[memberName]["light"]
             self.slotMap[memberName] = index
             
-            initialYBase = initialYOffset + index * scaledPixelHeight
+            initialYBase = index * scaledPixelHeight
                     
             trackItem = TrackItem(
                 scale=scale,
@@ -1574,8 +1606,6 @@ class VoiceDetectionApp:
             self.memberImages[memberName] = trackItem
             trackItem.resizeImages(scale)
             trackItem.currentSlotIndex = index
-            # startPosition = trackItem.positionTimeline[self.currentChunkIndex]
-            # print(f"Current position: {startPosition}")
             
             imageId = self.canvas.create_image(
                 0, initialYBase, image=trackItem.sourceImages["dark"], anchor="nw"
@@ -1642,7 +1672,7 @@ class VoiceDetectionApp:
                     end = label[2]
                     self.startPoints.append(start)
                     self.endPoints.append(end)
-                
+                    
                 # Update startPoints, endPoints, and markers
                 self.updateLabelMarkersDict()
                 self.drawLabelMarkers(self.currentSectionIndex)
@@ -1789,10 +1819,14 @@ class VoiceDetectionApp:
                 tags="time_marker"
             )
             
-    def getMemberColor(self, name):
+    def getMemberColor(self, name, forLyrics=False):
         for member in self.members:
             if member['name'] == name:
-                return member['color']
+                base = member["color"]
+                if forLyrics:
+                    return ensureReadableOnBackground(base, bgHex="#ffffff", minContrast=3.0)
+                else:
+                    return base
         return None
     # end getMemberColor
     
@@ -1913,13 +1947,29 @@ class VoiceDetectionApp:
         labels.sort(key=lambda lab: lab[1])
         
         return labels
+    
+    def onLabelsChanged(self, *, redrawSection=None):
+        # 1) keep marker state sane
+        self._syncPointsFromLabels()
+        self._recomputeOpenStartChunk()
+
+        # 2) make sure geometry is valid for x/y math
+        self.root.update_idletasks()
+
+        # 3) boundary markers
+        self.updateLabelMarkersDict()  # ends by drawing current section in your code :contentReference[oaicite:5]{index=5}
+        self.drawLabelMarkers(self.currentSectionIndex)
         
+        # 4) label lanes
+        if getattr(self, "labelLaneRenderer", None):
+            sec = self.currentSectionIndex if redrawSection is None else redrawSection
+            self.labelLaneRenderer.drawSection(sec, self.progressBarWidth)
         
     def showAddLabelsMenu(self, event):            
         # Create menu window
         labelMenu = tk.Toplevel(self.root)
         labelMenu.title("Add labels")
-        labelMenu.geometry("500x600")
+        labelMenu.geometry("700x600")
         labelMenu.transient(self.root)  # Make it a child of the root window
         labelMenu.grab_set()
         
@@ -2025,6 +2075,7 @@ class VoiceDetectionApp:
 
             memberMapping = {m['name']: m for m in self.members}
             memberMapping["Gang Vocal"] = {"name": "Gang Vocal", "id": "gang"}
+            memberMapping["Cut"] = {"name": "Cut", "id": 'cut"'}
             memberNames = list(memberMapping.keys())
             
             memberVarRow = tk.StringVar(value=currentMember if currentMember in memberMapping else (memberNames[0] if memberNames else ""))
@@ -2062,11 +2113,13 @@ class VoiceDetectionApp:
                     lab[4] = adLibVarRow.get()
                     rowToLabelIndex[i] = labelIndex
 
+                self.clipManager.rebuild(self.labels, len(self.chunks)) 
+                
                 # Refresh both old and new members’ timelines
                 membersToUpdate = set()
-                if oldMember and oldMember != chosenMember and oldMember != "Gang Vocal":
+                if oldMember and oldMember != chosenMember and oldMember not in self.bannedNames:
                     membersToUpdate.add(oldMember)
-                if chosenMember and chosenMember != "Gang Vocal":
+                if chosenMember and chosenMember not in self.bannedNames:
                     membersToUpdate.add(chosenMember)
                     
                 for m in membersToUpdate:
@@ -2075,6 +2128,8 @@ class VoiceDetectionApp:
                         trackItem.initializeTimeline(includeBacking=self.includeBacking)
                     
                 refreshRowUI(i)
+                self.onLabelsChanged(redrawSection=self.currentSectionIndex)
+                self.saveLabels(self.selectedGroup, True) 
                 editWin.destroy()
 
             def deleteLabel():
@@ -2093,16 +2148,18 @@ class VoiceDetectionApp:
                 del self.labels[labelIndex]
                 
                 rowToLabelIndex[i] = None
+                self.clipManager.rebuild(self.labels, len(self.chunks)) 
                 refreshRowUI(i)
                 
                 # Update that member's timeline
-                if oldMember and oldMember != "Gang Vocal":
+                if oldMember and oldMember not in self.bannedNames:
                     trackItem = self.memberImages.get(oldMember)
                     if trackItem:
                         trackItem.initializeTimeline(includeBacking=self.includeBacking)
 
                 # Save new label set to JSON
                 self.saveLabels(self.selectedGroup, True)
+                self.onLabelsChanged(self.currentSectionIndex) 
                 editWin.destroy()
 
             btnFrame = tk.Frame(editWin)
@@ -2163,7 +2220,7 @@ class VoiceDetectionApp:
 
             if member:
                 def createAddLyricsCallback(startPoint=startPoint, memberName=''):
-                    return lambda: self.addLyricBox(startChunk=startPoint - 9, memberName=memberName)
+                    return lambda: self.addLyricBox(startChunk=startPoint - 11, memberName=memberName)
 
                 addLyricButton = tk.Button(scrollFrame, text="Add Lyrics",
                                         command=createAddLyricsCallback(startPoint, member),
@@ -2175,6 +2232,7 @@ class VoiceDetectionApp:
 
         memberMapping = {member['name']: member for member in self.members}
         memberMapping["Gang Vocal"] = {"name": "Gang Vocal", "id": "gang"}
+        memberMapping["Cut"] = {"name": "Cut", "id": 'cut"'}
         memberNames = list(memberMapping.keys())
         memberVar = tk.StringVar(value=memberNames[0] if memberNames else "")
         memberDropdown = ttk.Combobox(labelMenu, textvariable=memberVar, values=memberNames, state="readonly")
@@ -2251,12 +2309,12 @@ class VoiceDetectionApp:
                         lab[4] = isAdLib
                         rowToLabelIndex[i] = idx
 
-                        if oldMember and oldMember != chosenMember and oldMember != "Gang Vocal":
+                        if oldMember and oldMember != chosenMember and oldMember not in self.bannedNames:
                             membersToUpdate.add(oldMember)
-
+                    self.clipManager.rebuild(self.labels, len(self.chunks)) 
                     refreshRowUI(i)
 
-                    if chosenMember and chosenMember != "Gang Vocal":
+                    if chosenMember and chosenMember not in self.bannedNames:
                         membersToUpdate.add(chosenMember)
                         
                 # Now refresh all affected members' timelines once
@@ -2294,6 +2352,50 @@ class VoiceDetectionApp:
         
         tk.Button(buttonFrame, text="Save Labels", command=saveSelectedLabels).pack(side="left", padx=5)
         tk.Button(buttonFrame, text="Close", command=labelMenu.destroy).pack(side="left", padx=5)
+    
+    def _getCircleImages(self, selectedMembers):
+        circleImages = [
+            self.images[member]["circle"]
+            for member in selectedMembers
+            if member in self.images and "circle" in self.images[member]
+        ]
+        
+        return circleImages\
+
+    def rebuildLyricsAnimations(self):
+        # Clear runtime structures
+        self.startEvents = {}
+        self.activeLyricIds = set()
+
+        # Clear all lyric animations/cursors
+        for lb in self.lyrics.values():
+            lb.animations = []
+            if hasattr(lb, "resetAnimCursor"):
+                lb.resetAnimCursor()
+
+        # Rebuild startEvents from lyrics dict
+        # startEvents[chunk] = [startChunkId, ...]
+        startEvents = {}
+        for startChunk in self.lyrics.keys():
+            startEvents.setdefault(startChunk, []).append(startChunk)
+        self.startEvents = startEvents
+
+        # Now rebuild the stacking/push-down logic in chronological order.
+        # We simulate “building” from earliest to latest.
+        sortedIds = sorted(self.lyrics.keys())
+        self._buildActiveLyricIds = []  # ordered list of ids already placed
+
+        def getActiveLyricBoxesAtChunk_builder(_chunk):
+            # during rebuild, “active” means “already inserted before this lyric”
+            return [self.lyrics[lid] for lid in self._buildActiveLyricIds if lid in self.lyrics]
+
+        # Temporarily expose the builder method expected by LyricBox.initializeLyricPosition
+        self.getActiveLyricBoxesAtChunk = getActiveLyricBoxesAtChunk_builder
+
+        for lid in sortedIds:
+            lb = self.lyrics[lid]
+            lb.initializeLyricPosition()
+            self._buildActiveLyricIds.append(lid)
     
     def addLyricBox(self, event=None, startChunk=None, memberName=None):
         """Opens a new window to input lyric details and add it to the canvas."""
@@ -2385,7 +2487,7 @@ class VoiceDetectionApp:
         # Dropdown for duplicating lyrics
         tk.Label(scrollFrame, text="Duplicate Existing Lyrics:").pack(pady=5)
         duplicateVar = tk.StringVar(value="None")
-        lyricOptions = ["None"] + [f"{lyric.memberName} -> {lyric.startChunk}" for lyric in self.lyrics.values()]  
+        lyricOptions = ["None"] + [f"{lyric.memberNames} -> {lyric.startChunk}" for lyric in self.lyrics.values()]  
         duplicateDropdown = tk.OptionMenu(scrollFrame, duplicateVar, *lyricOptions)
         duplicateDropdown.pack(padx=5)
         
@@ -2441,9 +2543,9 @@ class VoiceDetectionApp:
         duplicateVar.trace("w", fillFromDuplicate)
             
         def submit():
-            members = [var.get() for var in memberVars]
+            selectedMembers = [var.get() for var in memberVars]
             
-            if len(members) != len(set(members)):
+            if len(selectedMembers) != len(set(selectedMembers)):
                 messagebox.showwarning("Duplicate Members", "Each member must be unique. Please select different members.")
                 return 
             
@@ -2452,16 +2554,18 @@ class VoiceDetectionApp:
             englishTrans = engEntry.get("1.0", "end").strip()
             startChunkValue = int(chunkEntry.get())
             
-            # membersData = members if len(members) > 1 else members[0]
+            # Gets the circle image
+            circleImages = self._getCircleImages(selectedMembers)
             
-            lyricBox = LyricBox(self.canvas, self, members, koreanLyric, romanization, englishTrans, startChunkValue, langVar.get())
-            self.lyrics[startChunk] = lyricBox
-            
-            self.lyricPositions = {}
-            self.initializeAllLyricPositions(self.lyrics)
+            lyricBox = LyricBox(
+                self.canvas, self, selectedMembers, circleImages,
+                koreanLyric, romanization, englishTrans, 
+                startChunkValue, langVar.get()
+            )
+            self.lyrics[startChunkValue] = lyricBox
+            self.rebuildLyricsAnimations()
             
             lyricsPath = f"./saved_labels/{self.selectedGroup}/{self.songName}_lyrics.json"
-            
             os.makedirs(os.path.dirname(lyricsPath), exist_ok=True)
             
             existingLyrics = []
@@ -2474,7 +2578,7 @@ class VoiceDetectionApp:
             
             newLyricEntry = {
                 "language": langVar.get(),
-                "memberName": members,
+                "memberName": selectedMembers,
                 "korean": koreanLyric,
                 "romanization": romanization,
                 "english": englishTrans,
@@ -2573,55 +2677,68 @@ class VoiceDetectionApp:
             romanization = lyric.get("romanization", "")
             englishTrans = lyric.get("english", "")
             
-            lyricBox = LyricBox(self.canvas, self, memberName, koreanLyric, romanization, englishTrans, startChunk, language)
+            circleImages = self._getCircleImages(memberName)
             
+            lyricBox = LyricBox(canvas=self.canvas, parent=self, memberNames=memberName, circleImages=circleImages, koreanLyric=koreanLyric, romanization=romanization, englishTrans=englishTrans, startChunk=startChunk, language=language)
             self.lyrics[startChunk] = lyricBox
-            
-        self.initializeAllLyricPositions(self.lyrics)
-    
-    def initializeAllLyricPositions(self, lyrics):
-        """Precompute the positions for all lyric boxes before playback starts."""
-        if not hasattr(self, "lyricPositions"):
-            self.lyricPositions = {}  # Ensure lyricPositions exists
-        
-        for startChunk, lyricBox in lyrics.items():
-            lyricBox.initializeLyricPosition()
-        
-        # print('Lyric positions:', self.lyricPositions)
         
     def hideAllLyrics(self):
         """Hides all lyric box objects stored in self.lyrics."""
         for _, lyricBox in self.lyrics.items():
-            lyricBox.hide()    
-        
-    def renderLyrics(self, chunkIndex):
-        """Render lyrics based on the most recent chunkIndex if the exact one is missing."""
-        if chunkIndex not in self.lyricPositions:
-            availableChunks = sorted(self.lyricPositions.keys())
-            recentChunk = max((c for c in availableChunks if c <= chunkIndex), default=None)
-            if recentChunk is None:
-                return  # No previous lyrics to display
-            chunkIndex = recentChunk  # Use the most recent chunkIndex
-        
-        currentLyrics = self.lyricPositions.get(chunkIndex, [])
-        if currentLyrics:
-            visibleStartChunks = set(startChunk for startChunk, _ in currentLyrics)
-
-            # Hide lyrics that are no longer visible
-            for startChunk in list(self.lyrics.keys()):
-                if startChunk not in visibleStartChunks:
-                    self.lyrics[startChunk].hide()
-
-            previousPositions = {startChunk: yPos for startChunk, yPos in self.lyricPositions.get(chunkIndex - 1, [])}
+            lyricBox.hide()
             
-            # Show and reposition the correct lyrics
-            for startChunk, yPos in currentLyrics:
-                if startChunk in self.lyrics:
-                    lyricBox = self.lyrics[startChunk]
-                    lyricBox.show()
-                    if previousPositions.get(startChunk) != yPos:
-                        lyricBox.setPosition(yPos)
+    def getActiveLyricBoxesAtChunk(self, chunkIndex):
+        boxes = []
+        for sc, lb in self.lyrics.items():
+            if sc == chunkIndex:
+                # this is usually the new lyric starting now; skip
+                continue
+            baseY = lb.getBaseYAt(chunkIndex)
+            if baseY is not None:
+                boxes.append(lb)
+        return boxes  
+            
+    def renderLyrics(self, chunkIndex):
+        # Activate any new lyrics starting now
+        for lid in self.startEvents.get(chunkIndex, []):
+            self.activeLyricIds.add(lid)
 
+        scaleY = getattr(self, "scaleY", 1.0)
+        offY = getattr(self, "viewportOffsetY", 0)
+        canvasH = self.canvas.winfo_height()
+
+        toRemove = []
+
+        for lid in list(self.activeLyricIds):
+            lb = self.lyrics.get(lid)
+            if not lb:
+                toRemove.append(lid)
+                continue
+
+            baseY = lb.getBaseYAt(chunkIndex)
+            if baseY is None:
+                # not started yet or no timeline -> hide but keep active if you want
+                lb.hide()
+                continue
+
+            canvasY = offY + baseY * scaleY
+            top = canvasY
+            bottom = canvasY + lb.totalHeight
+
+            onScreen = (bottom > 0) and (top < canvasH)
+
+            if onScreen:
+                lb.show()
+                lb.setPosition(baseY)  # your setPosition expects baseY :contentReference[oaicite:2]{index=2}
+            else:
+                lb.hide()
+                # If it's below screen for good, you can stop tracking it
+                if top >= canvasH:
+                    toRemove.append(lid)
+
+        for lid in toRemove:
+            self.activeLyricIds.discard(lid)
+        
     def updateCanvasForCurrentPosition(self, chunkIndex):
         """Highlight the corresponding member's image if their voice matches the current time."""
         if self.testOrVideo == "Video":
@@ -2656,8 +2773,7 @@ class VoiceDetectionApp:
                     
                 self.canvas.itemconfig(imageId, image=trackItem.sourceImages[trackItem.currentImageKey]) 
             
-            if hasattr(self, "lyricPositions"):  
-                self.renderLyrics(chunkIndex)
+            self.renderLyrics(chunkIndex)
         else:
             # voiceDetectionResults[chunkIndex] is now a dict with heads
             frameRoles = self.voiceDetectionResults[chunkIndex] if self.voiceDetectionResults else {}
@@ -2708,22 +2824,52 @@ class VoiceDetectionApp:
         newTimeMs = int(visibleDuration * (self.currentSectionIndex + progressRatio))
         
         # Updates the chunk index
-        self.currentChunkIndex = min(
-            int(newTimeMs / self.chunk_duration),
+        newChunkIndex = min(
+            int(newTimeMs // self.chunk_duration),
             len(self.chunks) - 1
         )
+        self.seekToChunk(newChunkIndex)
         self.updateChunkText(self.currentChunkIndex)
         # print(f"Released at {newTimeMs}")
         
         self.updateCurrentTime(newTimeMs)
         # self.updateProgressBarHandle(newTimeMs)
         # Restart playback at the new position => This is normal
+            
         if hasattr(self, "videoTrackItem"):
             self.videoTrackItem.seek(newTimeMs)
             
         if not self.isPaused:
             self.playWithSavedResults(newTimeMs) # Annoying issue
         # Sync music playback with the new chunk index
+      
+    def resetLyricsToChunk(self, chunkIndex: int):
+        # 1) Hide everything immediately (prevents the “stacking on top” visual garbage)
+        for lb in self.lyrics.values():
+            lb.hide()
+
+        # 2) Reset active set
+        self.activeLyricIds = set()
+
+        # 3) Reset each lyric’s animation cursor so getBaseYAt works when time moves backwards
+        for lb in self.lyrics.values():
+            lb.resetAnimCursor()
+
+        # 4) Rebuild which lyrics should be “active” at this chunk.
+        # Rule of thumb: anything with startChunk <= chunkIndex is eligible to be active.
+        # (renderLyrics will still hide it if it’s off-screen.)
+        for startChunk in self.lyrics.keys():
+            if startChunk <= chunkIndex:
+                self.activeLyricIds.add(startChunk)
+      
+    def seekToChunk(self, newChunkIndex):
+        # reset per-lyric cursors so getBaseYAt works from scratch at this chunk
+        self.currentChunkIndex = newChunkIndex
+
+        self.resetLyricsToChunk(self.currentChunkIndex)
+
+        # render immediately at the new chunk
+        self.renderLyrics(self.currentChunkIndex)
         
     def moveBackwardByChunks(self, event):
         """Move backward by five frames."""
@@ -2848,6 +2994,18 @@ class VoiceDetectionApp:
         seconds = (timeMs % 60000) // 1000
         milliseconds = timeMs % 1000
         self.timeDisplayVar.set(f"{minutes:02}:{seconds:02}.{milliseconds:03}")
+    
+    def _syncPointsFromLabels(self):
+        self.startPoints = []
+        self.endPoints = []
+        for lab in self.labels:
+            if len(lab) < 3:
+                continue
+            self.startPoints.append(lab[1])
+            self.endPoints.append(lab[2])
+
+        # you just committed, so no “open” marker should remain
+        self.openStartChunk = None
     
     def _recomputeOpenStartChunk(self):
         """
@@ -3142,8 +3300,8 @@ class VoiceDetectionApp:
         
         # Compute new ranges, leaving a gap
         leftStart = start
-        leftEnd = gapStart - 1 # last chunk before the breath
-        rightStart = gapEnd + 1 # first chunk after the breath
+        leftEnd = gapStart # last chunk before the breath
+        rightStart = gapEnd  # first chunk after the breath
         rightEnd = end
         
         newLabels = []
@@ -3179,17 +3337,7 @@ class VoiceDetectionApp:
         self.labels = newLabels
 
         # Rebuild startPoints and endPoints
-        self.startPoints.clear()
-        self.endPoints.clear()
-        for label in self.labels:
-            if len(label) < 3:
-                continue
-            start = label[1]
-            end = label[2]
-            if start not in self.startPoints:
-                self.startPoints.append(start)
-            if end not in self.endPoints:
-                self.endPoints.append(end)
+        self.onLabelsChanged(redrawSection=self.currentSectionIndex) 
 
         # Update marker structures and redraw
         self.updateLabelMarkersDict()   # this also calls drawMarkers(...)
@@ -3204,7 +3352,27 @@ class VoiceDetectionApp:
             print(f"[SplitGap] Labels saved to {labelFilePath}.")
         except Exception as e:
             print(f"[SplitGap] Error saving labels: {e}")
-                
+    
+    def jumpToMs(self, targetMs):
+        if targetMs is None:
+            self.pause()
+            return
+        
+        self.playbackOffset = targetMs
+
+        try:
+            pygame.mixer.music.stop()
+            pygame.mixer.music.load(self.currentAudioPath)
+            pygame.mixer.music.play(start=targetMs / 1000.0)
+        except Exception as e:
+            print("Jump failed:", e)
+            return
+
+        if hasattr(self, "videoTrackItem") and self.videoTrackItem:
+            self.videoTrackItem.seek(targetMs)
+            
+        self.syncVisualsToTime(targetMs)
+            
     def play(self):
         # Play from saved detection results
         if not self.isPlaying and self.currentChunkIndex >= len(self.chunks) - 1:
@@ -3239,15 +3407,14 @@ class VoiceDetectionApp:
             pygame.mixer.music.pause()
             if hasattr(self, "videoTrackItem"):
                 self.videoTrackItem.pause()
-        
-            # print(f"Current chunk index {self.currentChunkIndex}")
-            
-    def countBacking(self):
+     
+    def countBacking(self, switch=True):
         """
         Toggle whether backing-only labels should contribute to timelines,
         then rebuild member images + timelines + position timelines.
         """
-        self.includeBacking = not getattr(self, "includeBacking", True)
+        if switch:
+            self.includeBacking = not getattr(self, "includeBacking", True)
         
         # Clean up exisitng member UI
         for trackItem in self.memberImages.values():
@@ -3263,14 +3430,30 @@ class VoiceDetectionApp:
         # Recreate TrackItems and their widgets (images + progress bars)
         self.startLayout()
         
-    def rewind(self):
-        self.currentChunkIndex = max(0, self.currentChunkIndex - 1)
-        self.updateCanvasForCurrentPosition()
-        
     def forward(self):
         """Skip forward by one second (one chunk)."""
         self.currentChunkIndex = min(len(self.chunks) - 1, self.currentChunkIndex + 1)
         self.updateCanvasForCurrentPosition()
+    
+    def syncVisualsToTime(self, timeMs: int):
+        """
+        Force UI state (chunk index, section index, progress bar, labels)
+        to reflect a given playback time, without touching audio/video playback.
+        """
+
+        timeMs = max(0, min(timeMs, (len(self.chunks) - 1) * self.chunk_duration))
+
+        newChunkIndex = min(
+            int(timeMs // self.chunk_duration),
+            len(self.chunks) - 1
+        )
+        self.seekToChunk(newChunkIndex)
+
+        # These are the SAME calls updateChunk() normally does
+        self.updateChunkText(self.currentChunkIndex)
+        self.updateProgressBarHandle(timeMs)
+        self.updateDisplayedTime(timeMs)
+        self.updateCanvasForCurrentPosition(self.currentChunkIndex)
     
     def playWithSavedResults(self, startTimeMs):
         """Replay the audio with saved detection results synced to the audio."""
@@ -3303,16 +3486,23 @@ class VoiceDetectionApp:
             if playbackPos == -1:
                 print("Playback not started or stopped unexpectedly.")
                 self.isPlaying = False
-                return
+                return 
+            
             playbackTime = self.playbackOffset + playbackPos
             self.currentChunkIndex = min(
                 int(playbackTime / self.chunk_duration),
                 len(self.chunks) - 1
             )
-            self.updateChunkText(self.currentChunkIndex)
-            self.updateProgressBarHandle(playbackTime) # This was working
-            self.updateDisplayedTime(playbackTime)
-            self.updateCanvasForCurrentPosition(self.currentChunkIndex)
+            
+            # ✅ CLIP SKIP HERE (playback-only)
+            if hasattr(self, "clipManager") and self.clipManager.enabled:
+                # Use maybeSkipNext for Skip cut
+                jumped = self.clipManager.maybeSkipNext(self.currentChunkIndex)
+                if jumped:
+                    self.root.after(self.chunk_duration, updateChunk)
+                    return
+                
+            self.syncVisualsToTime(playbackTime)
             
             # Update UI for voice detection
             if len(self.detectionResults) > 0:
@@ -3403,7 +3593,6 @@ class VoiceDetectionApp:
             mix = mix.set_channels(1)
 
         mix.export(outPath, format="mp3")
-        self.cachedFiles.add(outPath)
         return outPath
 
     def switchAudioPathPreserveTime(self, newPath: str, playbackTimeMs: int):
@@ -3651,7 +3840,7 @@ class VoiceDetectionApp:
 
         self.labels = sorted(out, key=lambda l: (l[1], l[2], l[0]))
     
-    def saveLabels(self, selectedGroup, clearExisting=False):
+    def saveLabels(self, selectedGroup: str, clearExisting: bool = False) -> None: 
         # Get file name without extension        
         labelFilePath = f"./saved_labels/{selectedGroup}/{self.songName}_labels.json"
         directory = os.path.dirname(labelFilePath)
@@ -3675,5 +3864,9 @@ class VoiceDetectionApp:
         combined = list(byKey.values())
         combined.sort(key=lambda l: (l[1], l[2], l[0]))
 
+        self.clipManager.rebuild(self.labels, len(self.chunks)) 
         with open(labelFilePath, "w") as f:
             json.dump(combined, f, separators=(",", ":"))
+            
+        if hasattr(self, "labelLaneRenderer") and self.labelLaneRenderer:
+            self.labelLaneRenderer.drawSection(self.currentSectionIndex, self.progressBarWidth)

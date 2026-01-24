@@ -1,0 +1,38 @@
+{
+    "group": "Fifty Fifty",
+    "activeTheme": "Day & Night",
+    "members": [
+        {
+            "name": "Keena",
+            "color": "#00852c"
+        },
+        {
+            "name": "Chanelle",
+            "color": "#8f69db"
+        },
+        {
+            "name": "Yewon",
+            "color": "#e98f11"
+        },
+        {
+            "name": "Hana",
+            "color": "#32ffee"
+        },
+        {
+            "name": "Athena",
+            "color": "#131dd7"
+        }
+    ],
+    "templates": {
+        "dark": "Dark {member}.png",
+        "light": "{member}.png",
+        "circle": "{member} Circle.png"
+    },
+    "ageOrder": [
+        "Keena",
+        "Chanelle",
+        "Yewon",
+        "Hana",
+        "Athena"
+    ]
+}

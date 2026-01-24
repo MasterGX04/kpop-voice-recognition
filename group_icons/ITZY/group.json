@@ -1,0 +1,31 @@
+{
+    "group": "ITZY",
+    "activeTheme": "Born To Be",
+    "members": [
+        {
+            "name": "Chaeryeong",
+            "color": "#3232ff"
+        },
+        {
+            "name": "Lia",
+            "color": "#eb7d46"
+        },
+        {
+            "name": "Ryujin",
+            "color": "#7d46eb"
+        },
+        {
+            "name": "Yeji",
+            "color": "#ffff00"
+        },
+        {
+            "name": "Yuna",
+            "color": "#46eb7d"
+        }
+    ],
+    "namingConvention": {
+        "active": "{member}.png",
+        "inactive": "Dark {member}.png",
+        "circle": "{member} Circle.png"
+    }
+}

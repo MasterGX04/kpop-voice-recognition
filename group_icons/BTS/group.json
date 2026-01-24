@@ -1,0 +1,48 @@
+{
+    "group": "BTS",
+    "activeTheme": "Dark And Wild",
+    "members": [
+        {
+            "name": "Jin",
+            "color": "#0000ff"
+        },
+        {
+            "name": "Suga",
+            "color": "#46eb7d"
+        },
+        {
+            "name": "J-Hope",
+            "color": "#eb46b4"
+        },
+        {
+            "name": "RM",
+            "color": "#eb7d46"
+        },
+        {
+            "name": "Jimin",
+            "color": "#46b4eb"
+        },
+        {
+            "name": "V",
+            "color": "#7d46eb"
+        },
+        {
+            "name": "Jungkook",
+            "color": "#ff0000"
+        }
+    ],
+    "templates": {
+        "dark": "Dark {member}.png",
+        "light": "{member}.png",
+        "circle": "{member} Circle.png"
+    },
+    "ageOrder": [
+        "Jin",
+        "Suga",
+        "J-Hope",
+        "RM",
+        "Jimin",
+        "V",
+        "Jungkook"
+    ]
+}

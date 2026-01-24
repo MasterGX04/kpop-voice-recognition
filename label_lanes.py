@@ -94,14 +94,15 @@ class LabelLaneRenderer:
             # intersect check: [start,end) intersects [windowStart, windowEnd)
             if end <= windowStart or start >= windowEnd:
                 continue
-
-            intervals.append({
+            
+            interval = {
                 "member": member,
                 "start": start,
                 "end": end,
                 "isBacking": isBacking,
                 "isAdlib": isAdlib,
-            })
+            }   
+            intervals.append(interval)
 
         if not intervals:
             return

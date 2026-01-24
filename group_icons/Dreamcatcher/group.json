@@ -1,0 +1,48 @@
+{
+    "group": "Dreamcatcher",
+    "activeTheme": "VillainS",
+    "members": [
+        {
+            "name": "JiU",
+            "color": "#aa0000"
+        },
+        {
+            "name": "SuA",
+            "color": "#8a5de3"
+        },
+        {
+            "name": "Siyeon",
+            "color": "#eb7d46"
+        },
+        {
+            "name": "Handong",
+            "color": "#aaff00"
+        },
+        {
+            "name": "Yoohyeon",
+            "color": "#46eb7d"
+        },
+        {
+            "name": "Dami",
+            "color": "#00ffff"
+        },
+        {
+            "name": "Gahyeon",
+            "color": "#eb46b4"
+        }
+    ],
+    "ageOrder": [
+        "JiU",
+        "SuA",
+        "Siyeon",
+        "Handong",
+        "Yoohyeon",
+        "Dami",
+        "Gahyeon"
+    ],
+    "templates": {
+        "dark": "Dark {member}.png",
+        "light": "{member}.png",
+        "circle": "{member} Circle.png"
+    }
+}

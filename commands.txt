@@ -109,8 +109,4 @@ Elimination test: compare RMS and spectral centroid (or just your printed RMS) b
 
 - Not 2 so far
 
-Label stuff:
-2. Add lane stacking (like a DAW): when up to 4 labels overlap, assign each visible label bar to one of 4 fixed vertical lanes (lane 0..3) above the bar. Use a simple interval graph greedy assignment: sort by start, place each into the first lane whose lastEnd < start, else spill into the next lane. This makes overlaps readable without relying on start/end line stacking. For bonus, also include length in seconds of label
-
-
-9. Show continuity across sections with edge glyphs: if a bar continues past the left edge, draw a small left-pointing triangle at x=0 in the same color; if it continues past the right edge, draw a right-pointing triangle at x=width. This is a super clean “this label wraps” signal without needing to see the other section.
+But then if the UI stays the same wouldn't there be a bug where the user could drag the progress bar handle into a cut region and then the program freaks out? How do we consider that edge case

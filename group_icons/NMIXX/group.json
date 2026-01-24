@@ -1,0 +1,43 @@
+{
+    "group": "NMIXX",
+    "activeTheme": "Blue Valentine",
+    "members": [
+        {
+            "name": "Lily",
+            "color": "#8ab8e8"
+        },
+        {
+            "name": "Haewon",
+            "color": "#959595"
+        },
+        {
+            "name": "Sullyoon",
+            "color": "#0000ff"
+        },
+        {
+            "name": "Bae",
+            "color": "#ffff00"
+        },
+        {
+            "name": "Jiwoo",
+            "color": "#ff0000"
+        },
+        {
+            "name": "Kyujin",
+            "color": "#f093bc"
+        }
+    ],
+    "templates": {
+        "dark": "Dark {member}.png",
+        "light": "{member}.png",
+        "circle": "{member} Circle.png"
+    },
+    "ageOrder": [
+        "Lily",
+        "Haewon",
+        "Sullyoon",
+        "Bae",
+        "Jiwoo",
+        "Kyujin"
+    ]
+}

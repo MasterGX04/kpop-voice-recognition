@@ -1,5 +1,6 @@
 from PIL import ImageTk, Image, ImageDraw
 import tkinter as tk 
+import math
 import tkinter.font as tkFont
 
 class TrackItem:
@@ -49,20 +50,6 @@ class TrackItem:
             lightImage = self.originalImages["light"]
             self.progressBarColor = self._getBarColor(lightImage)
             self.currentSlotIndex = None
-        
-        
-    @staticmethod
-    def _scalePosition(position):
-        """
-        Scale the position values relative to a base width and height.
-
-        :param position: Tuple (x, y) representing raw x and y coordinates.
-        :return: Tuple (scaled_x, scaled_y) with scaled values.
-        """
-        baseWidth = 1920
-        baseHeight = 1080
-        x, y = position
-        return x / baseWidth, y / baseHeight
     
     @staticmethod
     def _getBarColor(image):
@@ -98,7 +85,7 @@ class TrackItem:
             return
 
         self.positionTimeline = [
-            y * scaleY if y != 0.0 else 0.0
+            math.floor(y * scaleY) if y != 0.0 else 0.0
             for y in self.basePositionTimeline
         ]
         
@@ -389,7 +376,7 @@ class TrackItem:
         safeIndex = min(chunkIndex, len(self.timeline) - 1)
         value = self.timeline[safeIndex]
         
-        timerText = f"{value:.1f}" if value > 0.0 else ''
+        timerText = f"{round(value, 1)}" if value > 0.0 else ''
         # print(f"Timer text: {timerText}")
         
         x, y = self.parent.canvas.coords(self.imageId)

@@ -66,17 +66,19 @@ class NavigationArrows:
     def navigateLeft(self, event):
         """Handle clicking left arrow"""
         if self.parent.currentSectionIndex > 0:
-            self.parent.currentSectionIndex -= 1
+            newSectionIdx = self.parent.currentSectionIndex - 1
+            self.parent.currentSectionIndex = newSectionIdx
             self.parent.drawTimeMarkers()
-            self.parent.drawLabelMarkers(self.parent.currentSectionIndex)
+            self.parent.updateLabelMarkersDict()
             
     def navigateRight(self, event):
         """Handle clicking right arrow"""
         totalSections = len(self.parent.chunks) // self.parent.zoomManager.currentChunksInView
         if self.parent.currentSectionIndex < totalSections - 1:
-            self.parent.currentSectionIndex += 1
+            newSectionIdx = self.parent.currentSectionIndex + 1
+            self.parent.currentSectionIndex = newSectionIdx
             self.parent.drawTimeMarkers()
-            self.parent.drawLabelMarkers(self.parent.currentSectionIndex)
+            self.parent.updateLabelMarkersDict()
         
     def updateArrows(self, progressBarCanvas):
         """Update the position of the arrows if the progress bar canvas is resized."""

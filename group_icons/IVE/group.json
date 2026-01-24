@@ -1,0 +1,43 @@
+{
+    "group": "IVE",
+    "activeTheme": "Ive_Empathy",
+    "templates": {
+        "dark": "Dark {member}.png",
+        "light": "{member}.png",
+        "circle": "{member} Circle.png"
+    },
+    "members": [
+        {
+            "name": "Gaeul",
+            "color": "#0000ff"
+        },
+        {
+            "name": "Yujin",
+            "color": "#ff00ff"
+        },
+        {
+            "name": "Rei",
+            "color": "#65bd2b"
+        },
+        {
+            "name": "Wonyoung",
+            "color": "#ff0000"
+        },
+        {
+            "name": "Liz",
+            "color": "#00c3f5"
+        },
+        {
+            "name": "Leeseo",
+            "color": "#ffff00"
+        }
+    ],
+    "ageOrder": [
+        "Gaeul",
+        "Yujin",
+        "Rei",
+        "Wonyoung",
+        "Liz",
+        "Leeseo"
+    ]
+}
