@@ -1,6 +1,6 @@
 {
     "group": "IVE",
-    "activeTheme": "Ive_Empathy",
+    "activeTheme": "IVE Switch",
     "templates": {
         "dark": "Dark {member}.png",
         "light": "{member}.png",
@@ -39,5 +39,6 @@
         "Wonyoung",
         "Liz",
         "Leeseo"
-    ]
+    ],
+    "mediaDir": "K:\\Python Projects\\Voice Recognition\\training_data\\IVE"
 }

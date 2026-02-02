@@ -110,3 +110,5 @@ Elimination test: compare RMS and spectral centroid (or just your printed RMS) b
 - Not 2 so far
 
 But then if the UI stays the same wouldn't there be a bug where the user could drag the progress bar handle into a cut region and then the program freaks out? How do we consider that edge case
+
+Fairness score: 1 - (std/mean x 2/sqrt(n))

@@ -61,8 +61,6 @@ class NavigationArrows:
         self.canvas.tag_bind(self.arrows["right"], "<Enter>", lambda e: self.canvas.config(cursor="hand2"))
         self.canvas.tag_bind(self.arrows["right"], "<Leave>", lambda e: self.canvas.config(cursor=""))
 
-        self.canvas.tag_raise("nav_arrow")
-
     def navigateLeft(self, event):
         """Handle clicking left arrow"""
         if self.parent.currentSectionIndex > 0:

@@ -1,4 +1,5 @@
 import tkinter as tk
+from util_functions import pickTextColorForBg
 
 class LabelLaneRenderer:
     """
@@ -36,6 +37,7 @@ class LabelLaneRenderer:
         self.topPadding = topPadding
         self.barOutline = barOutline
         self.tag = tag
+        self.visible = True
         
     def clear(self):
         self.canvas.delete(self.tag)
@@ -75,6 +77,9 @@ class LabelLaneRenderer:
         """
         Draw label bars for labels that intersect the visible chunk window for sectionIndex.
         """
+        if not self.visible:
+            return
+        
         self.clear()
 
         chunksInView = self.zoomManager.currentChunksInView
@@ -161,7 +166,7 @@ class LabelLaneRenderer:
                 roleSuffix = " (B)"
 
             text = f"{it['member']} {dur:.2f}s{roleSuffix}"
-
+            textFill = pickTextColorForBg(fill)
             # Only draw text if there's enough room
             if (x2 - x1) >= 60:
                 self.canvas.create_text(
@@ -169,7 +174,7 @@ class LabelLaneRenderer:
                     (y1 + y2) / 2,
                     text=text,
                     anchor="w",
-                    fill="white",
+                    fill=textFill,
                     font=("Arial", 8),
                     tags=(self.tag,)
                 )
@@ -205,3 +210,14 @@ class LabelLaneRenderer:
                 pts, fill=fill, outline="", tags=(self.tag,)
             )            
     
+    def show(self):
+        self.visible = True
+
+    def hide(self):
+        self.visible = False
+        self.clear()
+
+    def toggle(self):
+        self.visible = not self.visible
+        if not self.visible:
+            self.clear()

@@ -28,7 +28,7 @@
         ],
         "albums": {
             "ive_switch": {
-                "displayName": "IVE SWITCH",
+                "displayName": "IVE Switch",
                 "albumArtCachePath": "member_images\\IVE\\_album_art\\ive_switch.png",
                 "albumArtUrl": "",
                 "songs": [
@@ -58,6 +58,23 @@
                     "Blue Blood",
                     "Mine"
                 ]
+            },
+            "ive_secret": {
+                "displayName": "IVE Secret",
+                "albumArtCachePath": "member_images\\IVE\\_album_art\\ive_secret.png",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/5/54/Ive_-_Ive_Secret.png",
+                "songs": [
+                    "XOXZ"
+                ]
+            },
+            "i_ve_mine": {
+                "displayName": "I've Mine",
+                "albumArtCachePath": "member_images\\IVE\\_album_art\\i_ve_mine.png",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/5/5b/Ive_-_I%27ve_Mine.png",
+                "songs": [
+                    "Off The Record",
+                    "Payback"
+                ]
             }
         },
         "songToAlbum": {
@@ -71,7 +88,10 @@
             "Mine": "i_ve_ive",
             "Rebel Heart": "ive_empathy",
             "TKO": "ive_empathy",
-            "You Wanna Cry": "ive_empathy"
+            "You Wanna Cry": "ive_empathy",
+            "XOXZ": "ive_secret",
+            "Off The Record": "i_ve_mine",
+            "Payback": "i_ve_mine"
         },
         "defaultAlbumId": "ive_switch"
     },
@@ -168,7 +188,8 @@
                 "albumArtCachePath": "member_images\\BTS\\_album_art\\wings.png",
                 "albumArtUrl": "",
                 "songs": [
-                    "Blood Sweat & Tears"
+                    "Blood Sweat & Tears",
+                    "Arirang"
                 ]
             },
             "skool_luv_affair": {
@@ -195,6 +216,24 @@
                     "Baepsae",
                     "Butterfly"
                 ]
+            },
+            "proof": {
+                "displayName": "Proof",
+                "albumArtCachePath": "member_images\\BTS\\_album_art\\proof.jpg",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/6/6f/BTS_Proof_album_cover_art.jpg",
+                "songs": [
+                    "달려라 방탄"
+                ]
+            },
+            "be": {
+                "displayName": "Be",
+                "albumArtCachePath": "member_images\\BTS\\_album_art\\be.png",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/a/a2/BTS_-_Be_Cover.png",
+                "songs": [
+                    "Blue & Grey",
+                    "Disease",
+                    "Telepathy"
+                ]
             }
         },
         "songToAlbum": {
@@ -203,7 +242,12 @@
             "Just One Day": "skool_luv_affair",
             "Danger": "dark_and_wild",
             "Butterfly": "the_most_beautiful_moment_in_life_part_2",
-            "134340": "love_yourself_tear"
+            "134340": "love_yourself_tear",
+            "Arirang": "wings",
+            "Blue & Grey": "be",
+            "달려라 방탄": "proof",
+            "Disease": "be",
+            "Telepathy": "be"
         },
         "defaultAlbumId": "love_yourself_tear"
     },
@@ -236,7 +280,8 @@
                 "albumArtCachePath": "member_images\\Fifty Fifty\\_album_art\\love_tune.png",
                 "albumArtUrl": "https://static.wikia.nocookie.net/kpop/images/7/7d/FIFTY_FIFTY_Love_Tune_album_cover.png",
                 "songs": [
-                    "Gravity"
+                    "Gravity",
+                    "Push Your Love"
                 ]
             },
             "day___night": {
@@ -263,7 +308,8 @@
             "Heartbreak": "day___night",
             "Midnight Special": "day___night",
             "Perfect Crime": "day___night",
-            "Skittlez": "too_much_pt__1"
+            "Skittlez": "too_much_pt__1",
+            "Push Your Love": "love_tune"
         },
         "defaultAlbumId": "love_tune"
     },
@@ -428,11 +474,35 @@
                 "songs": [
                     "Feel Special"
                 ]
+            },
+            "eyes_wide_open": {
+                "displayName": "Eyes Wide Open",
+                "albumArtCachePath": "member_images\\TWICE\\_album_art\\eyes_wide_open.png",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/9/90/Twice_-_Eyes_Wide_Open.png",
+                "songs": [
+                    "I Can't Stop Me",
+                    "Cry For Me",
+                    "Queen",
+                    "Up No More"
+                ]
+            },
+            "the_story_begins": {
+                "displayName": "The Story Begins",
+                "albumArtCachePath": "member_images\\TWICE\\_album_art\\the_story_begins.jpg",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/1/17/TheStoryBegins.jpg",
+                "songs": [
+                    "Like Ooh-Ahh"
+                ]
             }
         },
         "songToAlbum": {
             "Stuck In My Head": "fancy_you",
-            "Feel Special": "feel_special"
+            "Feel Special": "feel_special",
+            "I Can't Stop Me": "eyes_wide_open",
+            "Cry For Me": "eyes_wide_open",
+            "Queen": "eyes_wide_open",
+            "Up No More": "eyes_wide_open",
+            "Like Ooh-Ahh": "the_story_begins"
         },
         "defaultAlbumId": "fancy_you"
     },
@@ -473,13 +543,15 @@
                 "albumArtCachePath": "member_images\\Le Sserafim\\_album_art\\easy.png",
                 "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/3/31/Le_Sserafim_-_Easy.png",
                 "songs": [
-                    "Swan Song"
+                    "Swan Song",
+                    "We got so much"
                 ]
             }
         },
         "songToAlbum": {
             "Ash": "hot",
-            "Swan Song": "easy"
+            "Swan Song": "easy",
+            "We got so much": "easy"
         },
         "defaultAlbumId": "hot"
     },
@@ -512,6 +584,33 @@
             {
                 "name": "Gahyeon",
                 "color": "#eb46b4"
+            }
+        ],
+        "albums": {},
+        "songToAlbum": {},
+        "defaultAlbumId": ""
+    },
+    "TXT": {
+        "members": [
+            {
+                "name": "Yeonjun",
+                "color": "#00ffff"
+            },
+            {
+                "name": "Soobin",
+                "color": "#52f086"
+            },
+            {
+                "name": "Beomgyu",
+                "color": "#eb7d46"
+            },
+            {
+                "name": "Taehyun",
+                "color": "#ff6ecf"
+            },
+            {
+                "name": "Huening Kai",
+                "color": "#ffff00"
             }
         ],
         "albums": {},

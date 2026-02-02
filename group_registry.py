@@ -117,6 +117,36 @@ class GroupRegistry:
             print(f"[GroupRegistry] Failed to read manifest {manifestPath}: {type(e).__name__}: {e}")
         return None
     
+    def getGroupMediaDir(self, groupName: str) -> str:
+        """
+        Returns the media directory for a group.
+        If not set in group.json, defaults to ./training_data/{groupName}.
+        """
+        groupDir = self.getGroupDir(groupName)
+        manifest = self._loadGroupManifest(groupDir) or {}
+        mediaDir = manifest.get("mediaDir")
+
+        if isinstance(mediaDir, str) and mediaDir.strip():
+            return mediaDir.strip()
+
+        return os.path.join(".", "training_data", groupName)
+    
+    def setGroupMediaDir(self, groupName: str, mediaDir: str) -> None:
+        """
+        Persists a group's media directory into ./group_icons/{groupName}/group.json
+        """
+        groupDir = self.getGroupDir(groupName)
+        manifestPath = os.path.join(groupDir, "group.json")
+
+        manifest = self._loadGroupManifest(groupDir) or {}
+
+        # Normalize path (optional, but nice)
+        manifest["mediaDir"] = os.path.normpath(mediaDir)
+
+        os.makedirs(groupDir, exist_ok=True)
+        with open(manifestPath, "w", encoding="utf-8") as f:
+            json.dump(manifest, f, indent=4, ensure_ascii=False)
+    
     def _saveGroupManifest(self, groupDir: Path, manifest: dict) -> None:
         manifestPath = groupDir / "group.json"
         try:

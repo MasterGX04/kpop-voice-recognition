@@ -14,6 +14,9 @@ class ZoomManager:
         self.maxChunksInView = int(songDuration / chunkDuration) # Max chunks in view
         self.currentChunksInView = self.maxChunksInView
         
+        self.zoomEnabled = False      # toggleable command
+        self.zoomStep = 0.3           # how much one wheel notch changes zoom
+        
         # Zoom Slider UI
         self.zoomFrame = tk.Frame(self.canvas, bg="black")
         self.zoomFrame.place(relx=1, rely=1, anchor="se")
@@ -82,8 +85,61 @@ class ZoomManager:
             self.zoomFrame.place_forget()  # Hide frame and all elements
         else:
             self.zoomFrame.place(relx=1, rely=1, anchor="se")  # Restore position
-        
     
+    def enableScrollZoom(self, root):
+        """Enable mouse-wheel zoom globally (scroll anywhere)."""
+        if self.zoomEnabled:
+            return
+        self.zoomEnabled = True
+        self._rootForWheel = root
+
+        # Windows / macOS
+        root.bind_all("<MouseWheel>", self._onMouseWheel)
+
+        # Linux (many distros send Button-4/5 instead of MouseWheel)
+        root.bind_all("<Button-4>", self._onMouseWheelLinux)
+        root.bind_all("<Button-5>", self._onMouseWheelLinux)
+        
+    def disableScrollZoom(self, root=None):
+        """Disable global mouse-wheel zoom."""
+        if not self.zoomEnabled:
+            return
+        self.zoomEnabled = False
+        r = root or self._rootForWheel
+        if r is None:
+            return
+
+        r.unbind_all("<MouseWheel>")
+        r.unbind_all("<Button-4>")
+        r.unbind_all("<Button-5>")
+        
+    def _onMouseWheel(self, event):
+        if not self.zoomEnabled or not self.parent.isPlaying:
+            return
+
+        direction = 1 if event.delta > 0 else -1
+        self._applyZoomDelta(direction)
+
+    def _onMouseWheelLinux(self, event):
+        if not self.zoomEnabled or not self.parent.isPlaying:
+            return
+
+        direction = 1 if event.num == 4 else -1
+        self._applyZoomDelta(direction)
+        
+    def _applyZoomDelta(self, direction):
+        current = self.zoomVar.get()
+        newZoom = current + direction * self.zoomStep
+
+        # Clamp to slider bounds
+        minZoom = float(self.zoomSlider.cget("from"))
+        maxZoom = float(self.zoomSlider.cget("to"))
+        newZoom = max(minZoom, min(maxZoom, newZoom))
+
+        if newZoom != current:
+            self.zoomVar.set(newZoom)
+            self.updateZoomLevel(newZoom)
+        
     def onZoomChange(self, newZoom):
         if not self.parent.isPlaying:
             self.zoomVar.set(1.0)  # Reset zoom level to default
@@ -103,7 +159,10 @@ class ProgressBarHandle:
         self.progressBarWidth = progressBarWidth
         self.chunkDuration = chunkDuration
         self.handleWidth = 10
-        self.handle = self.canvas.create_rectangle(0, 0, self.handleWidth, 20, fill="green", outline="white")
+        self.handle = self.canvas.create_rectangle(
+            0, 0, self.handleWidth, 20, 
+            fill="green", outline="white", tags="progress_handle"
+            )
         self.currentSectionIndex = 0
     
     def move(self, x, rootSectionIndex):

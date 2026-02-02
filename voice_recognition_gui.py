@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, messagebox, filedialog, simpledialog
+from tkinter import ttk, messagebox, filedialog, simpledialog, colorchooser
 import os
 import json
 from PIL import Image, ImageTk
@@ -11,6 +11,7 @@ from urllib.parse import urlparse, urlunparse, quote
 import urllib.request
 import io, shutil, math
 from audio_tester import VoiceDetectionApp
+from image_generator import make_member_card, make_dark_member_card
 
 class VoiceTrainerGUI:
     def __init__(self, root):
@@ -32,6 +33,8 @@ class VoiceTrainerGUI:
         
         self.root.title("Voice Trainer")
         self.setResponsiveGeometry(self.root)
+        self.generateImagesMenuIndex = None
+        self.setMediaFolderMenuIndex = None
         
         self.createMenuBar()
         self.createWidgets()
@@ -56,6 +59,20 @@ class VoiceTrainerGUI:
             command = self.openEditGroupDialog,
             state="disabled"
         )
+        
+        self.groupMenu.add_command(
+            label="Set Media Folder...",
+            command=self.openSetMediaFolderDialog,
+            state="disabled"
+        )
+        self.setMediaFolderMenuIndex = self.groupMenu.index("end")
+        
+        self.groupMenu.add_command(
+            label="Generate Bright/Dark Member Images...",
+            command=self.openGenerateMemberImagesDialog,
+            state="disabled"
+        )
+        self.generateImagesMenuIndex = self.groupMenu.index("end")
         
         self.groupMenu.add_separator()
         self.groupMenu.add_command(label="Rescan Groups", command=self.rescanGroups)
@@ -82,6 +99,18 @@ class VoiceTrainerGUI:
             1,
             state="normal" if hasGroup else "disabled"
         )
+        
+        if self.generateImagesMenuIndex is not None:
+            self.groupMenu.entryconfig(
+                self.generateImagesMenuIndex,
+                state="normal" if hasGroup else "disabled"
+            )
+            
+        if self.setMediaFolderMenuIndex is not None:
+            self.groupMenu.entryconfig(
+                self.setMediaFolderMenuIndex,
+                state="normal" if hasGroup else "disabled"
+            )
         
     def getActiveDialogParent(self):
         # Prefer song picker if it exists; otherwise fall back to root
@@ -169,16 +198,9 @@ class VoiceTrainerGUI:
         bottomFrame = tk.Frame(self.root)
         bottomFrame.pack(pady=10)
         
-        tk.Button(bottomFrame, text="Train", command=self.trainModel).pack(side=tk.LEFT, padx=10)
-        tk.Button(bottomFrame, text="Test", command=self.testModel).pack(side=tk.LEFT, padx=10)
-        tk.Button(bottomFrame, text="Get Vocals Chart", command=self.visualizeMemberVocals).pack(side=tk.LEFT, padx=10)
-        tk.Button(bottomFrame, text="Extract Member Vocals", command=self.combineAllVocalsFromGroup).pack(side=tk.LEFT, padx=10)
-        tk.Button(
-            bottomFrame,
-            text="Extract Harmonies",
-            command=self.chooseSongForHarmonyExtraction,
-            font=("Helvetica", 12)
-        ).pack(side=tk.LEFT, padx=10)
+        #tk.Button(bottomFrame, text="Train", command=self.trainModel).pack(side=tk.LEFT, padx=10)
+        tk.Button(bottomFrame, text="Select Song", command=self.selectSong).pack(side=tk.LEFT, padx=10)
+        # tk.Button(bottomFrame, text="Extract Member Vocals", command=self.combineAllVocalsFromGroup).pack(side=tk.LEFT, padx=10)
         
         self.statusVar = tk.StringVar(
             value="Tip: double-click a singer’s image to set a custom image URL (.png/.jpg)."
@@ -1180,9 +1202,9 @@ class VoiceTrainerGUI:
         finally:
             self.refreshCacheMenuLabel()
         
-    def testModel(self):
+    def selectSong(self):
         selectedGroup = self.currentGroup.get()
-        songDir = f"./training_data/{selectedGroup}"
+        songDir = self.groupRegistry.getGroupDir(selectedGroup)
         modelPath = f"./models/{selectedGroup}_muq_head.pt"
         
         def onSongPicked(songName):
@@ -1248,6 +1270,246 @@ class VoiceTrainerGUI:
             title=f"Choose a song for {selectedGroup}",
             callback=onSongPicked
         )    
+    
+    def openGenerateMemberImagesDialog(self):
+        groupName = self.currentGroup.get().strip()
+        if not groupName:
+            messagebox.showerror("Generate Images", "No group selected.", parent=self.root)
+            return
+
+        # Load group manifest (group.json) from ./group_icons/<group>/group.json
+        groupDir = self.groupRegistry.getGroupDir(groupName)
+        manifest = self.groupRegistry._loadGroupManifest(groupDir)
+        if not manifest:
+            messagebox.showerror(
+                "Generate Images",
+                f"No group.json found for '{groupName}'.\n\n"
+                "Create or rescan the group first.",
+                parent=self.root
+            )
+            return
+
+        win = tk.Toplevel(self.root)
+        win.title(f"Generate Member Images — {groupName}")
+        win.transient(self.root)
+        win.grab_set()
+
+        frm = ttk.Frame(win, padding=12)
+        frm.pack(fill="both", expand=True)
+        frm.columnconfigure(1, weight=1)
+
+        # Directory that contains "{member} Circle.png"
+        dirVar = tk.StringVar(value="")
+        # Square color (background block behind circle)
+        squareVar = tk.StringVar(value="#1A1A1A")   # Bright square color (user)
+        ringVar = tk.StringVar(value="#ffffff")     # Bright ring override (user)
+        # Font path (you can default to your Hiragino path if you want)
+        fontVar = tk.StringVar(
+            value=r"C:\Users\elvin\AppData\Local\Microsoft\Windows\Fonts\Hiragino Sans GB W3.ttf"
+        )
+
+        ttk.Label(frm, text="Circle images folder:").grid(row=0, column=0, sticky="w")
+        ttk.Entry(frm, textvariable=dirVar).grid(row=0, column=1, sticky="ew", padx=(8, 0))
+
+        def chooseDir():
+            selected = filedialog.askdirectory(
+                parent=win,
+                title="Select folder containing '{member} Circle.png' files"
+            )
+            if selected:
+                dirVar.set(selected)
+
+        ttk.Button(frm, text="Browse...", command=chooseDir).grid(row=0, column=2, padx=(8, 0))
+
+        def pickHexColor(targetVar: tk.StringVar, title: str):
+            initial = targetVar.get().strip() or "#ffffff"
+            rgb, hexStr = colorchooser.askcolor(color=initial, title=title, parent=win)
+            if hexStr:
+                targetVar.set(hexStr.lower())
+        
+        # Bright square color
+        ttk.Label(frm, text="Bright square color (hex):").grid(row=1, column=0, sticky="w", pady=(10, 0))
+        ttk.Entry(frm, textvariable=squareVar).grid(row=1, column=1, sticky="ew", padx=(8, 0), pady=(10, 0))
+        ttk.Button(frm, text="Pick…", command=lambda: pickHexColor(squareVar, "Pick bright square color")).grid(
+            row=1, column=2, padx=(8, 0), pady=(10, 0)
+        )
+
+        # Bright ring color override
+        ttk.Label(frm, text="Bright ring color (hex):").grid(row=2, column=0, sticky="w", pady=(10, 0))
+        ttk.Entry(frm, textvariable=ringVar).grid(row=2, column=1, sticky="ew", padx=(8, 0), pady=(10, 0))
+        ttk.Button(frm, text="Pick…", command=lambda: pickHexColor(ringVar, "Pick bright ring color")).grid(
+            row=2, column=2, padx=(8, 0), pady=(10, 0)
+        )
+
+        ttk.Label(frm, text="Font file (.ttf/.otf):").grid(row=3, column=0, sticky="w", pady=(10, 0))
+        ttk.Entry(frm, textvariable=fontVar).grid(row=3, column=1, sticky="ew", padx=(8, 0), pady=(10, 0))
+
+        def chooseFont():
+            selected = filedialog.askopenfilename(
+                parent=win,
+                title="Select font file",
+                filetypes=[("Font files", "*.ttf *.otf"), ("All files", "*.*")]
+            )
+            if selected:
+                fontVar.set(selected)
+
+        ttk.Button(frm, text="Browse...", command=chooseFont).grid(row=3, column=2, padx=(8, 0), pady=(10, 0))
+
+        statusVar = tk.StringVar(value="Pick a folder containing circle PNGs, then click Create.")
+        ttk.Label(frm, textvariable=statusVar).grid(row=4, column=0, columnspan=3, sticky="w", pady=(12, 0))
+
+        btnRow = ttk.Frame(frm)
+        btnRow.grid(row=5, column=0, columnspan=3, sticky="e", pady=(12, 0))
+
+        def onCreate():
+            outDir = dirVar.get().strip()
+            squareColor = squareVar.get().strip()
+            ringColor = ringVar.get().strip()
+            fontPath = fontVar.get().strip()
+
+            if not outDir or not os.path.isdir(outDir):
+                messagebox.showerror("Generate Images", "Please choose a valid folder.", parent=win)
+                return
+
+            if not fontPath or not os.path.exists(fontPath):
+                messagebox.showerror("Generate Images", "Please choose a valid font file path.", parent=win)
+                return
+
+            try:
+                createdBright, createdDark, missing = self.generateMemberImagesFromManifest(
+                    groupName=groupName,
+                    manifest=manifest,
+                    circlesDir=outDir,
+                    outputDir=outDir,
+                    squareColorY=squareColor,
+                    ringOverride=ringColor,
+                    fontPath=fontPath
+                )
+
+                statusVar.set(f"Done. Bright: {createdBright}, Dark: {createdDark}, Missing circles: {missing}")
+
+                messagebox.showinfo(
+                    "Generate Images",
+                    f"Success for {groupName}.\n\n"
+                    f"Created bright images: {createdBright}\n"
+                    f"Created dark images: {createdDark}\n"
+                    f"Missing circle images: {missing}\n\n"
+                    f"Output folder:\n{outDir}",
+                    parent=win
+                )
+
+                # Optional: if your GUI displays from member_images/<group>, you might copy outputs there.
+                # For now, we just generate into chosen folder as requested.
+
+            except Exception as e:
+                messagebox.showerror("Generate Images Failed", f"{type(e).__name__}: {e}", parent=win)
+
+        ttk.Button(btnRow, text="Cancel", command=win.destroy).pack(side="right")
+        ttk.Button(btnRow, text="Create", command=onCreate).pack(side="right", padx=(8, 0))
+    
+    def generateMemberImagesFromManifest(
+        self,
+        groupName: str,
+        manifest: dict,
+        circlesDir: str,
+        outputDir: str,
+        squareColorY: str,
+        ringOverride: str,
+        fontPath: str
+    ):
+        """
+        Uses group manifest format like TWICE example:
+        manifest["members"] = [{"name": "...", "color": "#rrggbb"}, ...]
+        manifest["templates"] optionally specifies naming templates.
+        Searches for "{member} Circle.png" (or template-driven) in circlesDir.
+        Writes bright + dark outputs into outputDir.
+        """
+        templates = manifest.get("templates") or {}
+        circleTpl = templates.get("circle", "{member} Circle.png")
+        lightTpl = templates.get("light", "{member}.png")
+        darkTpl = templates.get("dark", "Dark {member}.png")
+
+        members = manifest.get("members", [])
+        if not isinstance(members, list):
+            raise ValueError("Manifest 'members' must be a list.")
+
+        createdBright = 0
+        createdDark = 0
+        missing = 0
+
+        os.makedirs(outputDir, exist_ok=True)
+
+        for m in members:
+            if not isinstance(m, dict):
+                continue
+
+            memberName = (m.get("name") or "").strip()
+            memberColor = (m.get("color") or "").strip()
+
+            if not memberName:
+                continue
+            if not memberColor:
+                memberColor = "#ffffff"  # fallback
+
+            circleFilename = circleTpl.format(member=memberName)
+            circlePath = os.path.join(circlesDir, circleFilename)
+
+            if not os.path.exists(circlePath):
+                print(f"[WARN] Missing circle image for {groupName}/{memberName}: {circleFilename}")
+                missing += 1
+                continue
+
+            # Bright
+            make_member_card(
+                member_name=memberName,
+                color_x=ringOverride,
+                color_y=squareColorY,
+                circles_dir=circlesDir,
+                output_dir=outputDir,
+                output_path=lightTpl.format(member=memberName),
+                font_path=fontPath,
+            )
+            createdBright += 1
+
+            # Dark
+            make_dark_member_card(
+                member_name=memberName,
+                color_y=memberColor,
+                circles_dir=circlesDir,
+                output_dir=outputDir,
+                output_path=darkTpl.format(member=memberName),
+                font_path=fontPath,
+            )
+            createdDark += 1
+
+        return createdBright, createdDark, missing
+    
+    def openSetMediaFolderDialog(self):
+        groupName = self.currentGroup.get().strip()
+        if not groupName:
+            messagebox.showerror("Set Media Folder", "No group selected.", parent=self.root)
+            return
+        
+        # Start in current folder if set, else default
+        currentDir = self.groupRegistry.getGroupMediaDir(groupName)
+        initialDir = currentDir if os.path.isdir(currentDir) else os.path.join(".", "training_data", groupName)
+
+        selected = filedialog.askdirectory(
+            parent=self.root,
+            title=f"Select media folder for {groupName}",
+            initialdir=initialDir
+        )
+        if not selected:
+            return
+
+        self.groupRegistry.setGroupMediaDir(groupName, selected)
+        
+        messagebox.showinfo(
+            "Media Folder Set",
+            f"Media folder for {groupName} is now:\n{selected}\n\n"
+            "Put all media files for this group in that folder (e.g. .mp3, .wav, .mp4, etc).",
+            parent=self.root
+        )
     
     def visualizeMemberVocals(self):
         from sklearn.metrics import adjusted_rand_score

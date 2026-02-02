@@ -39,7 +39,7 @@ class TrackItem:
         if type == "image":
             numChunks = len(self.parent.chunks)
             self.timeline = [0.0] * numChunks
-            self.positionTimeline = [0.0] * numChunks
+            self.positionTimeline = [None] * numChunks
             self.memberColor = self.parent.getMemberColor(self.trackMember)
             clearImage = self.chromaKeyImage(self.originalImages["dark"], self.memberColor)
             self.originalImages["clear"] = clearImage  
@@ -85,7 +85,7 @@ class TrackItem:
             return
 
         self.positionTimeline = [
-            math.floor(y * scaleY) if y != 0.0 else 0.0
+            (math.floor(y * scaleY) if y is not None else None)
             for y in self.basePositionTimeline
         ]
         
@@ -158,14 +158,14 @@ class TrackItem:
         I realized THIS IS STATIC
         """
         imgHeightBase = self._basePortraitHeight()
-        baseOffset = int(10 * self.parent.scaleY)
-        return imgHeightBase * slotIndex + baseOffset
+        return imgHeightBase * slotIndex
         
     def getMostRecentY(self, currentChunk):
         for c in range(currentChunk, -1, -1):
-            if self.positionTimeline[c] != 0.0:
-                return self.positionTimeline[c]
-        return self.parent.canvas.coords(self.imageId)[1]  # fallback
+            y = self.positionTimeline[c]
+            if y is not None:
+                return y
+        return self.parent.canvas.coords(self.imageId)[1]
                 
     def checkAndSwap(self, currentChunk):
         """

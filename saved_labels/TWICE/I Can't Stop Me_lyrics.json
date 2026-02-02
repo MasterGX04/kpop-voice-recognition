@@ -1,0 +1,62 @@
+[
+    {
+        "language": "Korean",
+        "memberName": [
+            "Nayeon"
+        ],
+        "korean": "알람이 울려대 Ring ring a ling\n서로의 눈길이 닿을 때마다",
+        "romanization": "allami ollyeodae Ring ring a ling\nseoroye nungiri daheul ttaemada",
+        "english": "The alarm goes off Ring ring a ling\nWhenever our eyes meet",
+        "startChunk": 372
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "알면서 빙빙 도는데\n점점 다가가잖아 I know it’s too late",
+        "romanization": "almyeonseo bingbing doneunde\njeomjeom dagagajana I know it's too late",
+        "english": "알면서 빙빙 도는데\n점점 다가가잖아 I know it’s too late",
+        "startChunk": 542
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Sana"
+        ],
+        "korean": "마음속으로는 다 알고 있잖아\n결국에는 선을 넘게 될 거라는 걸",
+        "romanization": "maeumsogeuroneun da algo itjana\ngyeolgugeneun seoneul neomge dwel georaneun geol",
+        "english": "In my heart I already know\nSooner or later I’ll step over the line",
+        "startChunk": 702
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Chaeyoung"
+        ],
+        "korean": "I’m warning to myself\n너 그러면 안 돼",
+        "romanization": "I'm warning to myself\nneo geureomyeon an dwae",
+        "english": "I’m warning to myself\nYou shouldn’t be doing this",
+        "startChunk": 863
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Jeongyeon"
+        ],
+        "korean": "매분, 매초, 내 맘이 내 맘을 추월해\nOut of control",
+        "romanization": "maebun, maecho, nae mami nae mameul chuweolhae\nOut of control",
+        "english": "Every minute, every second, my heart goes ahead of me\nOut of control",
+        "startChunk": 942
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Jihyo"
+        ],
+        "korean": "나를 감시하는 저 Spot spot spotlight\n비출수록 어둠 속으로 빨려 들어\n끝이 보이는데 I know it’s not right",
+        "romanization": "nareul gamshihaneun jeo Spot spot spotlight\nbichulsurok eodum sogeuro ppallyeo deureo\nkkeuchi boineunde I know it's not right",
+        "english": "I’m surrounded by that Spot spot spotlight\nAs it shines on me, I’m swept into the darkness\nI see the end, I know it’s not right",
+        "startChunk": 1052
+    }
+]

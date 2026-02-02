@@ -1,0 +1,38 @@
+{
+    "group": "TXT",
+    "activeTheme": "The Name Chapter Freefall",
+    "members": [
+        {
+            "name": "Yeonjun",
+            "color": "#00ffff"
+        },
+        {
+            "name": "Soobin",
+            "color": "#52f086"
+        },
+        {
+            "name": "Beomgyu",
+            "color": "#eb7d46"
+        },
+        {
+            "name": "Taehyun",
+            "color": "#ff6ecf"
+        },
+        {
+            "name": "Huening Kai",
+            "color": "#ffff00"
+        }
+    ],
+    "ageOrder": [
+        "Yeonjun",
+        "Soobin",
+        "Beomgyu",
+        "Taehyun",
+        "Huening Kai"
+    ],
+    "templates": {
+        "dark": "Dark {member}.png",
+        "light": "{member}.png",
+        "circle": "{member} Circle.png"
+    }
+}
