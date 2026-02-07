@@ -4,6 +4,7 @@ import codecs
 import tkinter as tk
 from tkinter import messagebox
 from lyrics_box import LyricBox
+from util_functions import ModalGuard
 
 def _truncate(text: str, maxChars: int = 80) -> str:
     text = (text or "").strip().replace("\n", " ")
@@ -118,7 +119,9 @@ class LyricsEditor:
         """
         mode: "add" or "edit"
         existingStartChunk: only used in edit mode to identify the original lyric key
-        """
+        """ 
+        if not ModalGuard.try_open("lyrics_menu"):
+            return
         app = self.app
 
         # Prefill from existing lyric if editing
@@ -429,7 +432,7 @@ class LyricsEditor:
                 anchorMode="startChunk",
             )
             app.enableRootKeybinds()
-            inputWindow.destroy()
+            onClose()
 
         submitFrame = tk.Frame(inputWindow)
         submitFrame.pack(side="bottom")
@@ -437,12 +440,16 @@ class LyricsEditor:
 
         def onClose():
             app.enableRootKeybinds()
+            ModalGuard.close("lyrics_menu")
             inputWindow.destroy()
 
         inputWindow.protocol("WM_DELETE_WINDOW", onClose)
         app.root.wait_window(inputWindow)
     
     def openLyricsEditorMenu(self, event=None):
+        if not ModalGuard.try_open("lyrics_edit_menu"):
+            return
+        
         app = self.app
         
         # Decide width = min(windowSize//2, rootWidth//2), with safe fallbacks
@@ -476,29 +483,37 @@ class LyricsEditor:
         
         scrollbar.pack(side="right", fill="y")
         canvas.pack(side="left", fill="both", expand=True)
-        canvas.create_window((0, 0), window=scrollFrame, anchor="nw")
+        innerWindowId = canvas.create_window((0, 0), window=scrollFrame, anchor="nw")
         
         def updateScrollRegion(_event=None):
             canvas.configure(scrollregion=canvas.bbox("all"))
 
         def onMouseWheel(evt):
-            if win.winfo_exists() and evt.delta:
+            if not win.winfo_exists():
+                return "break"
+            if evt.delta:
                 canvas.yview_scroll(-1 * int(evt.delta / 120), "units")
+            return "break"
 
         def onLinuxWheel(evt):
             if not win.winfo_exists():
-                return
+                return "break"
             if evt.num == 4:
                 canvas.yview_scroll(-1, "units")
             elif evt.num == 5:
                 canvas.yview_scroll(1, "units")
+            return "break"
 
-        canvas.bind("<MouseWheel>", onMouseWheel)
-        canvas.bind("<Button-4>", onLinuxWheel)
-        canvas.bind("<Button-5>", onLinuxWheel)
-        canvas.bind("<Enter>", lambda _e: canvas.focus_set())
+        def bindWheel(widget):
+            widget.bind("<MouseWheel>", onMouseWheel)
+            widget.bind("<Button-4>", onLinuxWheel)
+            widget.bind("<Button-5>", onLinuxWheel)
 
         scrollFrame.bind("<Configure>", updateScrollRegion)
+        bindWheel(win)
+        bindWheel(body)
+        bindWheel(canvas)
+        bindWheel(scrollFrame)
         
         # Render list + refresh helper
         def clearFrame(frame):
@@ -547,13 +562,15 @@ class LyricsEditor:
                 # Row container
                 row = tk.Frame(scrollFrame, bd=1, relief="solid")
                 row.pack(fill="x", pady=6)
+                bindWheel(row)
 
                 # Top line: Start Chunk + Members (with per-member color)
                 titlePrefix = f"Start Chunk: {startChunk}  —  "
 
                 titleFrame = tk.Frame(row)
                 titleFrame.pack(fill="x", padx=10, pady=(8, 2))
-
+                bindWheel(titleFrame)
+                
                 titleText = tk.Text(
                     titleFrame,
                     height=1,
@@ -564,6 +581,8 @@ class LyricsEditor:
                     pady=0
                 )
                 titleText.pack(fill="x", expand=True)
+                
+                bindWheel(titleText)
 
                 # Make it look like a label
                 titleText.configure(font=("Arial", 11, "bold"))
@@ -652,6 +671,7 @@ class LyricsEditor:
                 )
                 previewWidget.pack(fill="x", padx=10, pady=(0, 8))
                 previewWidget.insert("1.0", previewText)
+                bindWheel(previewWidget)
 
                 previewTag = f"previewColor_{startChunk}"
                 previewWidget.tag_add(previewTag, "1.0", "end-1c")
@@ -661,6 +681,7 @@ class LyricsEditor:
                 # Buttons
                 btns = tk.Frame(row)
                 btns.pack(fill="x", padx=10, pady=(0, 10))
+                bindWheel(btns)
 
                 def onEdit(sc=startChunk):
                     # Opens editor in edit mode
@@ -709,6 +730,7 @@ class LyricsEditor:
 
         def onClose():
             app.enableRootKeybinds()
+            ModalGuard.close("lyrics_edit_menu")
             win.destroy()
 
         win.protocol("WM_DELETE_WINDOW", onClose)

@@ -144,3 +144,29 @@ def getCached720pVideo(videoPath, cacheDir="./cache_audio"):
 
     subprocess.run(cmd, check=True)
     return cachedPath
+
+class ModalGuard:
+    _open_modals = set()
+
+    @classmethod
+    def try_open(cls, key: str) -> bool:
+        """
+        Attempt to open a modal identified by `key`.
+        Returns True if allowed, False if already open.
+        """
+        if key in cls._open_modals:
+            return False
+        cls._open_modals.add(key)
+        return True
+
+    @classmethod
+    def close(cls, key: str):
+        """Mark a modal as closed."""
+        if key in cls._open_modals:
+            cls._open_modals.discard(key)
+        else:
+            print(f"Warning: Attempted to close modal '{key}' which was not open.")
+
+    @classmethod
+    def is_open(cls, key: str) -> bool:
+        return key in cls._open_modals

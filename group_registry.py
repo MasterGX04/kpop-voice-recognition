@@ -24,7 +24,7 @@ class GroupRegistry:
         didChange = False
         didChange |= self._migrateGroupsShape()
         didChange |= self._ensureAlbumFields()
-        print(f"Did the group change?: {didChange}")
+        # print(f"Did the group change?: {didChange}")
         
         if didChange:
             self.saveGroupsToJson()

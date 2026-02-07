@@ -1,4 +1,5 @@
 import tkinter as tk
+from util_functions import pickTextColorForBg
 
 class LabelOverlayController:
     def __init__(self, root, canvas, getLabelsFn, members):
@@ -34,7 +35,7 @@ class LabelOverlayController:
         win.overrideredirect(True)
         win.attributes("-topmost", True)
         win.withdraw()
-
+         
         lbl = tk.Label(
             win,
             bg="#111",
@@ -50,12 +51,12 @@ class LabelOverlayController:
         self._tooltipWin = win
         self._tooltipLabel = lbl
         
-    def _show(self, event, text, bg=None):
+    def _show(self, event, text, bg=None, textColor="white"):
         self._ensureTooltip()
         
         # Dynamic background
         bg = bg or "#111"
-        self._tooltipLabel.config(text=text, bg=bg)
+        self._tooltipLabel.config(text=text, bg=bg, fg=textColor)
         try:
             self._tooltipWin.config(bg=bg)
         except tk.TclError:
@@ -126,7 +127,8 @@ class LabelOverlayController:
             # Look up the latest chunkIndex at hover time (no stale closure)
             ci, mt = self._markerInfo.get(markerId, (chunkIndex, markerType))
             txt, bg = self.formatText(ci, mt)
-            self._show(e, txt, bg=bg)
+            textColor = pickTextColorForBg(bg)
+            self._show(e, txt, bg=bg, textColor=textColor)
             
         def on_leave(e):
             # only clear if we're leaving the same marker
@@ -147,13 +149,15 @@ class LabelOverlayController:
             oldChunk if chunkIndex is None else chunkIndex,
             oldType if markerType is None else markerType,
         )
-
-    # Optional cleanup if you delete markers
+        
     def forgetMarker(self, markerId):
         if getattr(self, "_activeMarkerId", None) == markerId:
-            self._hide(None)
-            self._activeMarkerId = None
+            self.hide()
         self._markerInfo.pop(markerId, None)
+        
+    def hide(self):
+        self._activeMarkerId = None
+        self._hide(None)
         
     def getMarkerInfo(self, markerId):
         return self._markerInfo.get(markerId)

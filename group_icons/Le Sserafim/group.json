@@ -34,5 +34,6 @@
         "dark": "Dark {member}.png",
         "light": "{member}.png",
         "circle": "{member} Circle.png"
-    }
+    },
+    "mediaDir": "K:\\Python Projects\\Voice Recognition\\training_data\\Le Sserafim"
 }

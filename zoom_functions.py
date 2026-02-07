@@ -76,15 +76,21 @@ class ZoomManager:
         
         self.parent.updateLabelMarkersDict()
         self.parent.drawTimeMarkers()
+    
+    def show(self):
+        self.zoomHidden = False
+        self.zoomFrame.place(relx=1, rely=1, anchor="se")
         
-    def toggleZoomUI(self):
+    def hide(self):
+        self.zoomHidden = True
+        self.zoomFrame.place_forget()
+    
+    def setVisibility(self, isHidden):
         """Toggle visibility of the zoom UI elements."""
-        self.zoomHidden = not self.zoomHidden  # Toggle state
-
-        if self.zoomHidden:
-            self.zoomFrame.place_forget()  # Hide frame and all elements
+        if isHidden:
+            self.hide()
         else:
-            self.zoomFrame.place(relx=1, rely=1, anchor="se")  # Restore position
+            self.show()
     
     def enableScrollZoom(self, root):
         """Enable mouse-wheel zoom globally (scroll anywhere)."""

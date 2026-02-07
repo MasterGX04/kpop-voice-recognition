@@ -4,13 +4,14 @@ import os
 import json
 from PIL import Image, ImageTk
 from pathlib import Path
-from audio_processing import combineMemberVocals, getSongsFromSameAlbum
+from audio_processing import combineMemberVocals
 from group_registry import GroupRegistry
 import sys
 from urllib.parse import urlparse, urlunparse, quote
 import urllib.request
-import io, shutil, math
+import io, shutil
 from audio_tester import VoiceDetectionApp
+from util_functions import ModalGuard
 from image_generator import make_member_card, make_dark_member_card
 
 class VoiceTrainerGUI:
@@ -203,7 +204,7 @@ class VoiceTrainerGUI:
         # tk.Button(bottomFrame, text="Extract Member Vocals", command=self.combineAllVocalsFromGroup).pack(side=tk.LEFT, padx=10)
         
         self.statusVar = tk.StringVar(
-            value="Tip: double-click a singer’s image to set a custom image URL (.png/.jpg)."
+            value="Tip: right-click a singer’s image to set a custom image URL (.png/.jpg)."
         )
         statusFrame = tk.Frame(self.root)
         statusFrame.pack(fill="x", padx=10, pady=(0, 8))
@@ -278,7 +279,7 @@ class VoiceTrainerGUI:
             labelImage.pack(side="left")
             
             labelImage.bind(
-                "<Double-Button-1>",
+                "<Button-3>",
                 lambda e, g=groupName, m=member: self.openMemberImageMenu(e, g, m)
             )
 
@@ -421,7 +422,7 @@ class VoiceTrainerGUI:
             path = urlparse(s).path.lower()
         except Exception:
             path = (s or "").lower()
-        return path.endswith(".png") or path.endswith(".jpg") or path.endswith(".jpeg")
+        return any(ext in path for ext in (".png", ".jpg", ".jpeg"))
     
     def _normalizeUnicodeUrl(self, url: str) -> str:
         """
@@ -968,7 +969,6 @@ class VoiceTrainerGUI:
             except Exception:
                 pass
 
-        # Create the window + scroll scaffolding once
         self.albumImageRefs = []
 
         songWindow = tk.Toplevel(self.root)
@@ -976,21 +976,42 @@ class VoiceTrainerGUI:
         songWindow.title(title)
         songWindow.geometry(self.root.winfo_geometry())
 
-        canvas = tk.Canvas(songWindow)
-        frame = tk.Frame(canvas)
-        scrollbar = tk.Scrollbar(songWindow, orient="vertical", command=canvas.yview)
+        # ---- Layout: top bar + scrollable list below ----
+        top = tk.Frame(songWindow)
+        top.pack(fill="x", padx=8, pady=6)
+
+        listContainer = tk.Frame(songWindow)
+        listContainer.pack(fill="both", expand=True)
+
+        canvas = tk.Canvas(listContainer, highlightthickness=0, bd=0, relief="flat")
+        scrollbar = tk.Scrollbar(listContainer, orient="vertical", command=canvas.yview)
         canvas.configure(yscrollcommand=scrollbar.set)
 
         scrollbar.pack(side="right", fill="y")
         canvas.pack(side="left", fill="both", expand=True)
-        canvas.create_window((0, 0), window=frame, anchor="nw")
 
+        frame = tk.Frame(canvas)
+        windowId = canvas.create_window((0, 0), window=frame, anchor="nw")
+        self.songPickerFrameWindowId = windowId
+
+        # Make the embedded frame always match canvas width -> no dead unscrollable margins
+        def _onCanvasConfigure(e):
+            try:
+                canvas.itemconfig(windowId, width=e.width)
+            except Exception:
+                pass
+
+        canvas.bind("<Configure>", _onCanvasConfigure)
+
+        # Update scrollregion whenever content changes size
         frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-        self.enableGlobalScroll(canvas, songWindow)
 
         # Store references for refresh
         self.songPickerCanvas = canvas
         self.songPickerFrame = frame
+
+        # Ensure scroll works no matter what widget your cursor is over
+        self._bindScrollEverywhere(songWindow, canvas)
 
         # If the user closes it, clear references so the next open recreates cleanly
         def _onClose():
@@ -1000,12 +1021,47 @@ class VoiceTrainerGUI:
                 self.songPickerWindow = None
                 self.songPickerCanvas = None
                 self.songPickerFrame = None
+                self.songPickerFrameWindowId = None
 
         songWindow.protocol("WM_DELETE_WINDOW", _onClose)
 
+        # --- song picker: selected background / MV video ---
+        self.songPickerVideoPathVar = tk.StringVar(value="")
+        self.songPickerIsMusicVideoVar = tk.BooleanVar(value=False)
+
+        videoLabel = tk.Label(top, text="Video: (none)", anchor="w")
+        videoLabel.pack(side="left", fill="x", expand=True)
+
+        def _setVideoLabel():
+            vp = self.songPickerVideoPathVar.get().strip()
+            if not vp:
+                videoLabel.config(text="Video: (none)")
+            else:
+                videoLabel.config(text=f"Video: {os.path.basename(vp)}")
+
+        def onChooseVideo():
+            songDir = self.groupRegistry.getGroupMediaDir(self.songPickerSelectedGroup)
+            chosen = filedialog.askopenfilename(
+                parent=songWindow,
+                title="Choose a video file (.mp4/.mov/.mkv)",
+                initialdir=songDir if os.path.isdir(songDir) else ".",
+                filetypes=[
+                    ("Video files", "*.mp4 *.mov *.mkv *.webm"),
+                    ("MP4", "*.mp4"),
+                    ("All files", "*.*"),
+                ],
+            )
+            if not chosen:
+                return
+            self.songPickerVideoPathVar.set(chosen)
+            _setVideoLabel()
+
+        tk.Button(top, text="Choose Video…", command=onChooseVideo).pack(side="right", padx=(8, 0))
+
         # First render
         self.refreshSongPickerUI()
-        
+        _setVideoLabel()
+    
     def refreshSongPickerUI(self):
         """
         Rebuilds the song list UI inside the existing song picker window.
@@ -1019,7 +1075,6 @@ class VoiceTrainerGUI:
         selectedGroup = getattr(self, "songPickerSelectedGroup", None)
         title = getattr(self, "songPickerTitle", "Choose Song")
         callback = getattr(self, "songPickerCallback", None)
-
         if not selectedGroup or callback is None:
             return
 
@@ -1039,13 +1094,16 @@ class VoiceTrainerGUI:
             w.destroy()
 
         # Recompute song list
-        songDir = f"./training_data/{selectedGroup}"
+        songDir = self.groupRegistry.getGroupMediaDir(selectedGroup)
         try:
-            songList = [
-                f.replace(".wav", "")
-                for f in os.listdir(songDir)
-                if f.endswith(".wav") and "_vocals" not in f
-            ]
+            songList = sorted(
+                [
+                    f.replace(".wav", "")
+                    for f in os.listdir(songDir)
+                    if f.endswith(".wav") and "_vocals" not in f
+                ],
+                key=str.lower
+            )
         except Exception as e:
             print(f"❌ Could not list songs in {songDir}: {e}")
             songList = []
@@ -1059,47 +1117,56 @@ class VoiceTrainerGUI:
         # Keep image refs alive
         self.albumImageRefs = []
 
-        albums = self.groupRegistry.getAlbums(selectedGroup)
+        albums = self.groupRegistry.getAlbums(selectedGroup) or {}
+
+        # ---- Group songs by album, and collect truly-unclaimed ones ----
+        defaultAlbumId = self._getDefaultAlbumId(albums)
+
+        albumToSongs = {}   # albumId -> [songName...]
+        unclaimed = []
 
         for songName in songList:
-            songFrame = tk.Frame(frame, pady=0)
-            songFrame.pack(fill="x", padx=5)
-
-            songIcon = self.placeholderIcon  # default
-
             albumId = self.getAlbumForSong(selectedGroup, songName)
-            if albumId:
-                album = albums.get(albumId, {})
-                albumArtPath = album.get("albumArtCachePath", "")
 
-                if albumArtPath and os.path.exists(albumArtPath):
-                    try:
-                        image = Image.open(albumArtPath).resize((100, 100))
-                        songIcon = ImageTk.PhotoImage(image)
-                    except Exception as e:
-                        print(f"[⚠️] Couldn't load album art {albumArtPath}: {e}")
-                        songIcon = self.placeholderIcon
+            # If missing / invalid, treat as unclaimed (failsafe section)
+            if (not albumId) or (albumId not in albums):
+                # If you *want* missing mappings to still fall into the default album, flip this:
+                albumId = defaultAlbumId if defaultAlbumId in albums else None
+                if albumId is None:
+                    unclaimed.append(songName)
+                continue
 
-            self.albumImageRefs.append(songIcon)
+            albumToSongs.setdefault(albumId, []).append(songName)
 
-            imgLabel = tk.Label(songFrame, image=songIcon)
-            imgLabel.pack(side="left", padx=5)
+        # Sort albums by displayName then id (stable, human-friendly)
+        def _albumSortKey(aid: str):
+            meta = albums.get(aid, {})
+            display = (meta.get("displayName") or aid).strip()
+            return (display.lower(), aid.lower())
 
-            # Double-click album icon to open album actions menu
-            imgLabel.bind(
-                "<Double-Button-1>",
-                lambda e, g=selectedGroup, s=songName: self.openSongAlbumMenu(e, g, s)
-            )
+        orderedAlbumIds = sorted(albumToSongs.keys(), key=_albumSortKey)
 
-            button = tk.Button(
-                songFrame,
-                text=songName,
-                font=("Helvetica", 14),
-                anchor="w",
-                justify="left",
-                command=lambda name=songName: [self.songPickerWindow.destroy(), callback(name)]
-            )
-            button.pack(side="left", fill="x", expand=True)
+        # ---- Render UI sections ----
+        headerFont = ("Helvetica", 16, "bold")
+        sectionPadY = 10
+
+        for albumId in orderedAlbumIds:
+            meta = albums.get(albumId, {})
+            displayName = (meta.get("displayName") or albumId).strip()
+
+            hdr = tk.Label(frame, text=displayName, font=headerFont, anchor="w")
+            hdr.pack(fill="x", padx=10, pady=(sectionPadY, 6))
+
+            songs = sorted(albumToSongs.get(albumId, []), key=str.lower)
+            for songName in songs:
+                self._addSongRow(frame, selectedGroup, songName, albums, callback)
+
+        if unclaimed:
+            hdr = tk.Label(frame, text="Unclaimed", font=headerFont, anchor="w", fg="#aa2222")
+            hdr.pack(fill="x", padx=10, pady=(sectionPadY, 6))
+
+            for songName in sorted(unclaimed, key=str.lower):
+                self._addSongRow(frame, selectedGroup, songName, albums, callback)
 
         # Update scroll region and restore scroll
         canvas.configure(scrollregion=canvas.bbox("all"))
@@ -1107,7 +1174,104 @@ class VoiceTrainerGUI:
             canvas.yview_moveto(yview[0])
         except Exception:
             pass
-       
+
+        # Rebind scroll to everything we just created (so buttons/labels don't “eat” scrolling)
+        self._bindScrollEverywhere(self.songPickerWindow, canvas)
+    
+    def _getDefaultAlbumId(self, albumsDict):
+        """
+        Failsafe default album. If you store a default album id in your registry later,
+        read it here. For now we try common keys, then fall back to "defaultTheme".
+        """
+        # If you later add group-level config like groups[group]["defaultAlbumId"],
+        # plug it in here.
+        for candidate in ("defaultTheme", "default", "main"):
+            if candidate in (albumsDict or {}):
+                return candidate
+        # If there is at least one album, pick the first alphabetically as fallback
+        if albumsDict:
+            return sorted(albumsDict.keys(), key=str.lower)[0]
+        return "defaultTheme"
+
+
+    def _addSongRow(self, parentFrame, selectedGroup, songName, albums, callback):
+        def _onPickSong(name):
+            videoPath = self.songPickerVideoPathVar.get().strip() or None
+            try:
+                self.songPickerWindow.destroy()
+            except Exception:
+                pass
+            callback(name, videoPath)
+
+        songFrame = tk.Frame(parentFrame, pady=0)
+        songFrame.pack(fill="x", padx=5)
+
+        songIcon = self.placeholderIcon  # default
+
+        albumId = self.getAlbumForSong(selectedGroup, songName)
+        if albumId and albumId in (albums or {}):
+            album = albums.get(albumId, {})
+            albumArtPath = album.get("albumArtCachePath", "")
+            if albumArtPath and os.path.exists(albumArtPath):
+                try:
+                    image = Image.open(albumArtPath).resize((100, 100))
+                    songIcon = ImageTk.PhotoImage(image)
+                except Exception as e:
+                    print(f"[⚠️] Couldn't load album art {albumArtPath}: {e}")
+                    songIcon = self.placeholderIcon
+
+        self.albumImageRefs.append(songIcon)
+
+        imgLabel = tk.Label(songFrame, image=songIcon)
+        imgLabel.pack(side="left", padx=5)
+
+        imgLabel.bind(
+            "<Button-3>",
+            lambda e, g=selectedGroup, s=songName: self.openSongAlbumMenu(e, g, s)
+        )
+
+        button = tk.Button(
+            songFrame,
+            text=songName,
+            font=("Helvetica", 14),
+            anchor="w",
+            justify="left",
+            command=lambda name=songName: _onPickSong(name),
+        )
+        button.pack(side="left", fill="x", expand=True)
+
+
+    def _bindScrollEverywhere(self, rootWidget, canvas):
+        """
+        Make mouse-wheel scrolling work no matter what child widget the mouse is over.
+        This fixes the “only some areas scroll” issue (buttons/labels often swallow it).
+        """
+        def _onMouseWheel(event):
+            # Windows / macOS
+            try:
+                canvas.yview_scroll(-1 * int(event.delta / 120), "units")
+            except Exception:
+                pass
+            return "break"
+
+        def _onMouseWheelLinux(event):
+            # Linux: Button-4 up, Button-5 down
+            if event.num == 4:
+                canvas.yview_scroll(-1, "units")
+            elif event.num == 5:
+                canvas.yview_scroll(1, "units")
+            return "break"
+
+        # Bind to the toplevel AND also bind_all while this window has focus/hover.
+        # Using bind_all is the “I don’t care what widget you’re on” solution.
+        try:
+            rootWidget.bind("<Enter>", lambda e: canvas.bind_all("<MouseWheel>", _onMouseWheel))
+            rootWidget.bind("<Leave>", lambda e: canvas.unbind_all("<MouseWheel>"))
+            rootWidget.bind("<Button-4>", _onMouseWheelLinux)
+            rootWidget.bind("<Button-5>", _onMouseWheelLinux)
+        except Exception:
+            pass
+    
     # -------- Cache helpers --------   
     def getCacheDir(self) -> Path:
         # Always use ./cache_audio
@@ -1204,16 +1368,20 @@ class VoiceTrainerGUI:
         
     def selectSong(self):
         selectedGroup = self.currentGroup.get()
-        songDir = self.groupRegistry.getGroupDir(selectedGroup)
+        songDir = self.groupRegistry.getGroupMediaDir(selectedGroup)
+        #print(f"Current songDir: {songDir}")
         modelPath = f"./models/{selectedGroup}_muq_head.pt"
         
-        def onSongPicked(songName):
+        def onSongPicked(songName, videoPath):
             groupDir = self.groupRegistry.getGroupDir(selectedGroup)
             groupManifest = self.groupRegistry._loadGroupManifest(groupDir)
             memberImages = self.groupRegistry.loadMemberImages(selectedGroup, groupManifest, songName)
-            launchVoiceApp(songName, memberImages)
+            video = videoPath if videoPath and os.path.exists(videoPath) else None
+            launchVoiceApp(songName, memberImages, video)
             
-        def launchVoiceApp(songName, memberImages):
+        def launchVoiceApp(songName, memberImages, videoPath):
+            if not ModalGuard.try_open("voice_app"):
+                return  # another modal is open
             testSongPath = os.path.join(songDir, f"{songName}.wav")
             vocalsOnlyPath = os.path.join(songDir, f"{songName}_vocals.wav")
             vocalsLeadPath = os.path.join(songDir, f"{songName}_leading_vocals.wav")
@@ -1241,15 +1409,15 @@ class VoiceTrainerGUI:
                         app.videoTrackItem.stop()
 
                     continueApp[0] = False
-                    root.destroy()
+                    appWindow.destroy()
+                    
                     sys.exit()
 
-            root.protocol("WM_DELETE_WINDOW", onClose)
+            appWindow.protocol("WM_DELETE_WINDOW", onClose)
 
             memberList = self.groups[selectedGroup]["members"]
             app = VoiceDetectionApp(
                 root=appWindow,
-                trainingMember=firstMember,
                 members=memberList,
                 modelPath=modelPath,
                 images=memberImages,
@@ -1257,7 +1425,9 @@ class VoiceTrainerGUI:
                 vocalsOnlyPath=vocalsOnlyPath,
                 vocalsLeadPath=vocalsLeadPath,
                 vocalsBackingPath=vocalsBackingPath,
+                videoPath=videoPath,
                 selectedGroup=selectedGroup,
+                songDir=songDir
             )
             if hasattr(app, "videoTrackItem") and app.videoTrackItem and app.videoTrackItem.thread:
                 app.videoTrackItem.thread.daemon = True

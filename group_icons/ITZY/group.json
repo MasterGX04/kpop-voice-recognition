@@ -3,8 +3,8 @@
     "activeTheme": "Born To Be",
     "members": [
         {
-            "name": "Chaeryeong",
-            "color": "#3232ff"
+            "name": "Yeji",
+            "color": "#ffff00"
         },
         {
             "name": "Lia",
@@ -15,8 +15,8 @@
             "color": "#7d46eb"
         },
         {
-            "name": "Yeji",
-            "color": "#ffff00"
+            "name": "Chaeryeong",
+            "color": "#3232ff"
         },
         {
             "name": "Yuna",
@@ -27,5 +27,17 @@
         "active": "{member}.png",
         "inactive": "Dark {member}.png",
         "circle": "{member} Circle.png"
-    }
+    },
+    "templates": {
+        "dark": "Dark {member}.png",
+        "light": "{member}.png",
+        "circle": "{member} Circle.png"
+    },
+    "ageOrder": [
+        "Yeji",
+        "Lia",
+        "Ryujin",
+        "Chaeryeong",
+        "Yuna"
+    ]
 }

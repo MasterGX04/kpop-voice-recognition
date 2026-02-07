@@ -54,5 +54,6 @@
         "Dahyun",
         "Chaeyoung",
         "Tzuyu"
-    ]
+    ],
+    "mediaDir": "K:\\Python Projects\\Voice Recognition\\training_data\\TWICE"
 }

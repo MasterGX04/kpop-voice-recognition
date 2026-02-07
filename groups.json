@@ -64,7 +64,8 @@
                 "albumArtCachePath": "member_images\\IVE\\_album_art\\ive_secret.png",
                 "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/5/54/Ive_-_Ive_Secret.png",
                 "songs": [
-                    "XOXZ"
+                    "XOXZ",
+                    "Midnight Kiss"
                 ]
             },
             "i_ve_mine": {
@@ -74,6 +75,14 @@
                 "songs": [
                     "Off The Record",
                     "Payback"
+                ]
+            },
+            "revive": {
+                "displayName": "REVIVE+",
+                "albumArtCachePath": "",
+                "albumArtUrl": "",
+                "songs": [
+                    "Summer[Liz]"
                 ]
             }
         },
@@ -91,7 +100,9 @@
             "You Wanna Cry": "ive_empathy",
             "XOXZ": "ive_secret",
             "Off The Record": "i_ve_mine",
-            "Payback": "i_ve_mine"
+            "Payback": "i_ve_mine",
+            "Summer[Liz]": "revive",
+            "Midnight Kiss": "ive_secret"
         },
         "defaultAlbumId": "ive_switch"
     },
@@ -234,6 +245,14 @@
                     "Disease",
                     "Telepathy"
                 ]
+            },
+            "o_rul8_2": {
+                "displayName": "O!RUL8,2",
+                "albumArtCachePath": "",
+                "albumArtUrl": "",
+                "songs": [
+                    "Path"
+                ]
             }
         },
         "songToAlbum": {
@@ -247,7 +266,8 @@
             "Blue & Grey": "be",
             "달려라 방탄": "proof",
             "Disease": "be",
-            "Telepathy": "be"
+            "Telepathy": "be",
+            "Path": "o_rul8_2"
         },
         "defaultAlbumId": "love_yourself_tear"
     },
@@ -316,39 +336,40 @@
     "ITZY": {
         "members": [
             {
-                "name": "Chaeryeong",
-                "color": "#3232ff",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "name": "Yeji",
+                "color": "#ffff00"
             },
             {
                 "name": "Lia",
-                "color": "#eb7d46",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "color": "#eb7d46"
             },
             {
                 "name": "Ryujin",
-                "color": "#7d46eb",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "color": "#7d46eb"
             },
             {
-                "name": "Yeji",
-                "color": "#ffff00",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "name": "Chaeryeong",
+                "color": "#3232ff"
             },
             {
                 "name": "Yuna",
-                "color": "#46eb7d",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "color": "#46eb7d"
             }
         ],
-        "albums": {},
-        "songToAlbum": {},
-        "defaultAlbumId": ""
+        "albums": {
+            "gold": {
+                "displayName": "GOLD",
+                "albumArtCachePath": "member_images\\ITZY\\_album_art\\gold.jpg",
+                "albumArtUrl": "https://static.wikia.nocookie.net/itzy/images/2/20/GOLD_Digital_Cover.jpg",
+                "songs": [
+                    "Imaginary Friend"
+                ]
+            }
+        },
+        "songToAlbum": {
+            "Imaginary Friend": "gold"
+        },
+        "defaultAlbumId": "gold"
     },
     "NMIXX": {
         "members": [
@@ -493,6 +514,14 @@
                 "songs": [
                     "Like Ooh-Ahh"
                 ]
+            },
+            "summer_nights": {
+                "displayName": "Summer Nights",
+                "albumArtCachePath": "member_images\\TWICE\\_album_art\\summer_nights.jpg",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/b/bf/Twice_Summer_Nights.jpg",
+                "songs": [
+                    "Dance The Night Away"
+                ]
             }
         },
         "songToAlbum": {
@@ -502,7 +531,8 @@
             "Cry For Me": "eyes_wide_open",
             "Queen": "eyes_wide_open",
             "Up No More": "eyes_wide_open",
-            "Like Ooh-Ahh": "the_story_begins"
+            "Like Ooh-Ahh": "the_story_begins",
+            "Dance The Night Away": "summer_nights"
         },
         "defaultAlbumId": "fancy_you"
     },
@@ -586,9 +616,49 @@
                 "color": "#eb46b4"
             }
         ],
-        "albums": {},
-        "songToAlbum": {},
-        "defaultAlbumId": ""
+        "albums": {
+            "apocalypse__save_us": {
+                "displayName": "Apocalypse: Save us",
+                "albumArtCachePath": "member_images\\Dreamcatcher\\_album_art\\apocalypse__save_us.png",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/e/e0/Dreamcatcher_-_Apocalypse_Save_Us.png",
+                "songs": [
+                    "Starlight"
+                ]
+            },
+            "apocalypse___follow_us": {
+                "displayName": "Apocalypse : Follow us",
+                "albumArtCachePath": "member_images\\Dreamcatcher\\_album_art\\apocalypse___follow_us.png",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/c/cf/Dreamcatcher_-_Apocalypse_-_Follow_Us.png",
+                "songs": [
+                    "Fairytale"
+                ]
+            },
+            "summer_holiday": {
+                "displayName": "Summer Holiday",
+                "albumArtCachePath": "member_images\\Dreamcatcher\\_album_art\\summer_holiday.png",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/b/b1/Dreamcatcher_-_Summer_Holiday.png",
+                "songs": [
+                    "BEcause",
+                    "Whistle"
+                ]
+            },
+            "raid_of_dream": {
+                "displayName": "Raid of Dream",
+                "albumArtCachePath": "member_images\\Dreamcatcher\\_album_art\\raid_of_dream.jpg",
+                "albumArtUrl": "https://static.wikia.nocookie.net/kpop/images/9/9d/Dreamcatcher_Raid_of_Dream_album_cover.png/revision/latest/scale-to-width-down/1000?cb=20190919032646",
+                "songs": [
+                    "Deja Vu"
+                ]
+            }
+        },
+        "songToAlbum": {
+            "Starlight": "apocalypse__save_us",
+            "Fairytale": "apocalypse___follow_us",
+            "BEcause": "summer_holiday",
+            "Whistle": "summer_holiday",
+            "Deja Vu": "raid_of_dream"
+        },
+        "defaultAlbumId": "apocalypse__save_us"
     },
     "TXT": {
         "members": [
@@ -613,8 +683,19 @@
                 "color": "#ffff00"
             }
         ],
-        "albums": {},
-        "songToAlbum": {},
-        "defaultAlbumId": ""
+        "albums": {
+            "minisode1___blue_hour": {
+                "displayName": "minisode1 : Blue Hour",
+                "albumArtCachePath": "member_images\\TXT\\_album_art\\minisode1___blue_hour.jpg",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/e/e0/Minisode1_-_Blue_Hour.jpg",
+                "songs": [
+                    "Blue Hour"
+                ]
+            }
+        },
+        "songToAlbum": {
+            "Blue Hour": "minisode1___blue_hour"
+        },
+        "defaultAlbumId": "minisode1___blue_hour"
     }
 }

@@ -1,9 +1,10 @@
 import os, traceback, hashlib
-from pathlib import Path
+from thumbnail_functions import ThumbnailManager
 import time
 from PIL import Image, ImageTk
 import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
+import cv2
 import threading
 from lyrics_editor import LyricsEditor
 from pydub import AudioSegment
@@ -16,7 +17,7 @@ import json, copy
 import codecs
 from lyrics_box import LyricBox
 from zoom_functions import ZoomManager, ProgressBarHandle
-from util_functions import ensureReadableOnBackground, getCached720pVideo
+from util_functions import ensureReadableOnBackground, getCached720pVideo, ModalGuard
 from model_predictor import predict_song_selective
 from label_overlay import LabelOverlayController
 from label_lanes import LabelLaneRenderer
@@ -28,6 +29,21 @@ def cacheKeyForPath(path: str) -> str:
     st = os.stat(path)
     s = f"{os.path.abspath(path)}|{st.st_mtime_ns}|{st.st_size}"
     return hashlib.sha1(s.encode("utf-8")).hexdigest()
+
+def getOrCreateMenubar(root: tk.Tk) -> tk.Menu:
+        """
+        Returns the existing menubar if root already has one, otherwise creates it.
+        """
+        existing = root.cget("menu")
+        if existing:
+            try:
+                return root.nametowidget(existing)
+            except Exception:
+                pass
+
+        menubar = tk.Menu(root)
+        root.config(menu=menubar)
+        return menubar
 
 def ensureAudioForPlayback(path: str, cacheDir: str = "cache_audio", targetSr: int = 22050):
     """
@@ -72,15 +88,33 @@ def dedupeLabelsByKey(labels):
         out = list(byKey.values())
         out.sort(key=lambda l: (l[1], l[2], l[0]))
         return out
+    
+def getVideoDurationMs(videoPath: str) -> int:
+    cap = cv2.VideoCapture(videoPath)
+    if not cap.isOpened():
+        return None
+
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    frames = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+    cap.release()
+
+    if fps <= 0 or frames <= 0:
+        return None
+
+    return int((frames / fps) * 1000)
+
+def isMatchingMusicVideoMs(videoMs: int, audioMs: int, toleranceMs=750) -> bool:
+    return abs(videoMs - audioMs) <= toleranceMs
 
 class VoiceDetectionApp:
     def __init__(
-            self, *, root, trainingMember, members, modelPath, 
+            self, *, root, members, modelPath, 
             images, testSongPath, vocalsOnlyPath, vocalsLeadPath, 
-            vocalsBackingPath, selectedGroup
+            vocalsBackingPath, videoPath, selectedGroup, songDir
         ):
         self.root = root
-        self.trainingMember = trainingMember
+        
+        self.initChunkIndexInTitle(self.root)
         self.members = members
         self.images = images
         self.playbackThread = None
@@ -92,13 +126,15 @@ class VoiceDetectionApp:
         self.isExportingVideo = False
         self.exportStopEvent = threading.Event()
         self.root.bind_all("<Escape>", self._onCancelExport) 
-        self.abortExportVideo = False
+        self.songDir = songDir
         
         # names for leading and backing vocal files
         cachedMix, _ = ensureAudioForPlayback(testSongPath)
         cachedVocals, _ = ensureAudioForPlayback(vocalsOnlyPath)
         self._buildActiveLyricIds = []
         self.lyricsLayerDirty = False
+        self.lyricsSuppressed = False
+        self.slotHeightBase = 0
 
         self.testSongPath = cachedMix
         self.vocalsOnlyPath = cachedVocals
@@ -122,14 +158,13 @@ class VoiceDetectionApp:
         self.viewportOffsetX = 0
         self.viewportOffsetY = 0
         
-        if os.path.exists(self.vocalsOnlyPath):
-            self.audio = AudioSegment.from_file(self.vocalsOnlyPath)
+        if os.path.exists(self.testSongPath):
+            self.audio = AudioSegment.from_file(self.testSongPath)
         else:
-            print("Vocals path does not exist:", self.vocalsOnlyPath)
+            print("Test song path does not exist:", self.testSongPath)
         self.chunk_duration = 40
         self.totalDurationMs = len(self.audio)
         self.chunks = [self.audio[i:i + self.chunk_duration] for i in range(0, len(self.audio), int(self.chunk_duration))]
-        print(f"Length of chunks: {len(self.chunks)}")
         self.detectionResults = []
         self.currentChunkIndex = 0  # Track current playback position
         self.playbackOffset = 0
@@ -139,7 +174,6 @@ class VoiceDetectionApp:
         self.isProcessed = False
         self.isManualUpdate = False
         self.skipNextAutoUpdate = False
-        # self.root.after(100, self.loadSavedLabels) 
         self.labelMarkers = {}
         self.lyrics = {}
         pygame.mixer.init()
@@ -157,7 +191,7 @@ class VoiceDetectionApp:
         self.canvas = tk.Canvas(
             self.canvasFrame,
             bg="white",
-            highlightthickness=0,   # <- kills the 1px focus ring
+            highlightthickness=0,  
             bd=0,
             relief="flat"
         )
@@ -176,6 +210,7 @@ class VoiceDetectionApp:
         self.progressBarCanvas.place(relx=0.5, rely=0.9, anchor="center")
         self.navigationArrows = NavigationArrows(self.canvas, self, self.progressBarCanvas)
         
+        self.initStatusMessage()
         self.currentSectionIndex = 0
         self.progressBarCanvas.place(relx=0.5, rely=0.9, anchor="center") # creates horizontal scale widget
         
@@ -192,24 +227,51 @@ class VoiceDetectionApp:
         self.includeBacking = True
 
         # Initialize VideoTrack
-        videoPath = f"./training_data/{self.selectedGroup}/{self.songName}.mp4"
-        if os.path.exists(videoPath):
+        safeVideoPath = None
+        isMusicVideo = False
+        # 1) User-provided video takes priority
+        if videoPath and os.path.exists(videoPath):
             safeVideoPath = getCached720pVideo(videoPath)
-
-            self.videoTrackItem = VideoTrackItem(
-                self.canvas,
-                self,
-                safeVideoPath,
-                scale=100,
-                scaleX=self.scaleX,
-                baseHeight=720
-            )
-        else:
-            print(f"No music video in {videoPath}")
-            # self.createThumbnail()
-            videoPath = "./looping_background.mp4"
-            self.videoTrackItem = VideoTrackItem(self.canvas, self, videoPath, scale=100, scaleX=self.scaleX, baseHeight=720, isMusicVideo=False)
         
+        # 2) Song-named fallback
+        if not safeVideoPath:
+            candidate = os.path.join(self.songDir, f"{self.songName}.mp4")
+            if os.path.exists(candidate):
+                safeVideoPath = getCached720pVideo(candidate)
+
+        # 3) Final fallback
+        if not safeVideoPath:
+            print("No valid video found, using default looping background.")
+            safeVideoPath = "./looping_background.mp4"
+            isMusicVideo = False
+        else:
+            videoMs = getVideoDurationMs(safeVideoPath)
+            audioMs = self.totalDurationMs  # <-- from len(self.audio)
+
+            if videoMs is None:
+                print("Could not read video duration, treating as background.")
+                isMusicVideo = False
+            else:
+                isMusicVideo = isMatchingMusicVideoMs(videoMs, audioMs)
+
+                if not isMusicVideo:
+                    print(
+                        f"Video/audio length mismatch "
+                        f"(video={videoMs}ms, audio={audioMs}ms). "
+                        f"Using looping background behavior."
+                    )
+
+        self.videoPath = safeVideoPath
+
+        self.videoTrackItem = VideoTrackItem(
+            self.canvas,
+            self,
+            safeVideoPath,
+            scale=100,
+            scaleX=self.scaleX,
+            baseHeight=720,
+            isMusicVideo=isMusicVideo
+        )
         # Voice detection results
         memberList = [member['name'] for member in members] + ['Gang Vocal']
         # print(f"Member list: {memberList}")
@@ -261,7 +323,6 @@ class VoiceDetectionApp:
         self.root.after_idle(self.startLayout)
         self.lyricsEditor = LyricsEditor(self)
         self.lastChunkSeen = -1
-        self.addControls(root)
         self.root.after(100, self.drawTimeMarkers)
         
         self.startEvents = {}
@@ -279,6 +340,7 @@ class VoiceDetectionApp:
         self.lastKeyPressTime = 0
         self.enableRootKeybinds()
         self.canvas.focus_set() 
+        self.setupMenubar(self.root)
         
         # Dragging state
         self.selectedLabel = None
@@ -303,12 +365,11 @@ class VoiceDetectionApp:
         self.root.protocol("WM_DELETE_WINDOW", self.onClose)
         
         self.root.bind("<Control-h>", self.toggleUIElements)
-        self.root.bind("<Control-r>", self.startExportVideo)
-        self.root.bind("<Control-t>", self.setThumbnail)
         self.root.bind("<Control-s>", self.resetLabels)
         self.root.bind("<Control-Shift-B>", self.changeMode)
         
         self.root.after(50, self.enforceCanvasLayering)
+        self.thumbnailManager = ThumbnailManager(self, menubar=self.menubar)
     # end init
 
     def onClose(self):
@@ -316,6 +377,7 @@ class VoiceDetectionApp:
         self.isPlaying = False
         self.isPaused = False
         self.isManualUpdate = True
+        ModalGuard.close("voice_app")
         
         # Stop music if it's playing
         try:
@@ -349,8 +411,67 @@ class VoiceDetectionApp:
                 print("Error stopping video on close:", e)
         
         # Destroy just this window (the UI window), not the whole app
+        ModalGuard.close("lyrics_menu")
+        ModalGuard.close("labels_menu")
         self.root.destroy()
-      
+    
+    def initStatusMessage(self):
+        self._statusVisible = False
+        self.statusMessageId = self.canvas.create_text(
+            10, self.canvas.winfo_height() - 20,
+            anchor="sw",
+            text="",
+            fill="#cccccc",
+            font=("Helvetica", 12),
+            state="hidden"
+        )
+        self._statusClearJob = None
+
+        # keep it pinned on resize
+        def _reposition(_=None):
+            h = self.canvas.winfo_height()
+            if h <= 2:
+                return
+            self.canvas.coords(self.statusMessageId, 10, h - 10)
+
+        self.canvas.bind("<Configure>", _reposition, add="+")
+        self.root.after(0, _reposition)
+        
+    def showStatus(self, message, level="info", timeout=2000):
+        """
+        Show a non-intrusive status message on the canvas.
+        level: info | warn | error
+        """
+        color = {
+            "info": "#cfd8dc",
+            "warn": "#ffcc80",
+            "error": "#ef9a9a"
+        }.get(level, "#cfd8dc")
+        
+        self._statusVisible = True
+
+        self.canvas.itemconfig(
+            self.statusMessageId,
+            text=message,
+            fill=color,
+            state="normal"
+        )
+
+        # cancel previous clear
+        if self._statusClearJob:
+            try:
+                self.root.after_cancel(self._statusClearJob)
+            except Exception:
+                pass
+
+        # auto-clear
+        self._statusClearJob = self.root.after(timeout, self._clearStatus)
+
+    def _clearStatus(self):
+        self._statusVisible = False
+        self.canvas.itemconfig(self.statusMessageId, state="hidden")
+        self._statusClearJob = None
+    
     def resetLabels(self, event):
         self.labels = []
         self.selectedLabel = None
@@ -416,97 +537,124 @@ class VoiceDetectionApp:
         for startChunk in self.lyrics.keys():
             self.startEvents.setdefault(startChunk, []).append(startChunk)  
     
-    def toggleUIElements(self, event=None):
-        """Toggle visibility of navigation arrows, progress bar handle, progress bar canvas, and time markers."""
-        self.uiHidden = not self.uiHidden  # Toggle visibility state
-        newState = "hidden" if self.uiHidden else "normal"
-        
-        if hasattr(self.navigationArrows, "arrows"):
-            self.navigationArrows.updateArrows(self.progressBarCanvas)
-            for arrow in self.navigationArrows.arrows.values():
-                self.canvas.itemconfig(arrow, state=newState)
-        
-        # Hide/Show Progress Bar Handle
-        if hasattr(self.progressBarHandle, "progress_handle"):
-            self.canvas.itemconfig(self.progressBarHandle.handle, state=newState)
-        
-        if hasattr(self, "progressBarCanvas"):
-            if self.uiHidden:
-                self.progressBarCanvas.place_forget()  # Hides the canvas
-            else:
-                self.progressBarCanvas.place(relx=0.5, rely=0.9, anchor="center")  # Restores the canvas
+    def setUIHidden(self, hidden: bool):
+        """
+        Explicitly set UI visibility state.
+        hidden=True  -> UI hidden
+        hidden=False -> UI visible
+        """
+        self.uiHidden = hidden
+        newState = "hidden" if hidden else "normal"
 
-        if hasattr(self, "labelLaneRenderer"):
-            self.labelLaneRenderer.toggle()
-            self.labelLaneRenderer.drawSection(self.currentSectionIndex , self.progressBarWidth)
+        # --- Navigation arrows ---
+        self.navigationArrows.updateArrows(self.progressBarCanvas)
+        for arrow in self.navigationArrows.arrows.values():
+            self.canvas.itemconfig(arrow, state=newState)
+
+        # --- Progress bar handle ---
+        self.canvas.itemconfig(self.progressBarHandle.handle, state=newState)
+
+        # --- Progress bar canvas ---
+        if hidden:
+            self.progressBarCanvas.place_forget()
+        else:
+            self.progressBarCanvas.place(relx=0.5, rely=0.9, anchor="center")
+
+        # --- Label lane renderer ---
+        if hidden:
+            self.labelLaneRenderer.hide()
+        else:
+            self.labelLaneRenderer.show()
         
-        # Hide/Show Time Markers
+        self.labelLaneRenderer.drawSection(
+            self.currentSectionIndex,
+            self.progressBarWidth
+        )
+
+        # --- Time markers ---
         self.canvas.itemconfig("time_marker", state=newState)
-        
-        if hasattr(self, "timeDisplayLabel"):
-            if self.uiHidden:
-                self.timeDisplayLabel.place_forget()  # Hides the label
-            else:
-                self.timeDisplayLabel.place(relx=0.5, rely=0.95, anchor="center")
-                
-        self.zoomManager.toggleZoomUI()
-        
-        # Hide/Show labels
-        if self.uiHidden:
+
+        # --- Time display label ---
+        if hidden:
+            self.timeDisplayLabel.place_forget()
+        else:
+            self.timeDisplayLabel.place(relx=0.5, rely=0.95, anchor="center")
+
+        # --- Zoom UI ---
+        self.zoomManager.setVisibility(hidden)
+
+        # --- Label markers ---
+        if hidden:
             self.clearAllMarkers()
         else:
             self.updateLabelMarkersDict()
-            # Create function to hide label lanes
+            
+        # --- Status message ---
+        self.canvas.itemconfig(
+            self.statusMessageId,
+            state="normal" if self._statusVisible else "hidden"
+        )
+    
+    def toggleUIElements(self, event=None):
+        self.setUIHidden(not self.uiHidden)
     
     def startLayout(self):
         self.initializeMemberImages()
         self.initializePositions()
+        self.slotHeightPx = int(round(self.slotHeightBase * self.scaleY))
         for t in self.memberImages.values():
             t.rescalePositionTimeline(self.scaleY)
         self.updateElementPositions() 
     
-    def startExportVideo(self, event):
+    def startExportVideo(self, event=None):
         print("Video record function called!")
-        folderName = "training_data"
-        
-        videoPath = str(
-            Path(folderName) / self.selectedGroup / f"{self.songName}.mp4"
-        )
-
-        originalWavPath = str(
-            Path(folderName) / self.selectedGroup / f"{self.songName}.wav"
-        )
-        
         if self.isExportingVideo:
             return
+        
+        videoPath = os.path.join(
+            self.songDir, f"{self.songName}.mp4"
+        )
+
+        originalWavPath = os.path.join(
+            self.songDir, f"{self.songName}.wav"
+        )
+        
+        savedChunk = int(self.currentChunkIndex)
+        savedSection = int(self.currentSectionIndex)
+        savedUIHidden = bool(self.uiHidden)
+        
         self.isExportingVideo = True
-        self.abortExportVideo = False
-        self.enableRootKeybinds()
-        if hasattr(self, "videoTrackItem"):
-            self.toggleUIElements()
-            if (self.videoTrackItem.isMusicVideo):
-                self.videoTrackItem.processVideoAndSave(songName=self.songName, originalAudioPath=originalWavPath, originalVideoPath=videoPath)
-            else:
-                self.videoTrackItem.processVideoAndSave(outputPath=self.songName + ".mp4", fpsCap=30)
-                
-        self.toggleUIElements()
-        self.currentChunkIndex = 0
-        self.currentSectionIndex = 0
-        self.seekToChunk(0)
+        
+        try:
+            # If you want UI hidden during export, do it deterministically:
+            self.setUIHidden(True)
+
+            # IMPORTANT: ensure export starts from current chunk
+            # (processVideoAndSave will use self.currentChunkIndex after the change above)
+            self.videoTrackItem.processVideoAndSave(
+                songName=self.songName,
+                originalAudioPath=originalWavPath,
+                originalVideoPath=(videoPath if self.videoTrackItem.isMusicVideo else self.videoPath),
+                fpsCap=(0 if self.videoTrackItem.isMusicVideo else 24),
+            )
+        finally:
+            self.isExportingVideo = False
+
+            # restore UI + position exactly
+            self.setUIHidden(savedUIHidden)
+            self.currentSectionIndex = savedSection
+            self.seekToChunk(savedChunk)
      
     def _onCancelExport(self, event=None):
         if getattr(self, "isExportingVideo", False):
             print("🛑 Export cancel requested...")
             self.exportStopEvent.set()
-            
-    def cancelExportVideo(self):
-        if not self.isExportingVideo:
-            return
-        self.abortExportVideo = True
+            self.setUIHidden(False)
         
     def _finishExportVideo(self):
         self.isExportingVideo = False
-        self.abortExportVideo = False
+        self.exportStopEvent.clear()
+        self.activeLyricIds.clear()
         self.enableRootKeybinds()
         self.toggleUIElements()
                         
@@ -548,15 +696,9 @@ class VoiceDetectionApp:
             if c.find_withtag(below) and c.find_withtag(above):
                 c.tag_raise(above, below)
             
-    def setThumbnail(self, event):
-        print("Thumbnail function called!")
-        if hasattr(self.videoTrackItem, "videoFrameId"):
-            self.canvas.delete(self.videoTrackItem.videoFrameId)
-        if hasattr(self, "lyricsBackgroundId"):
-            self.canvas.delete(self.lyricsBackgroundId)
-            
-        self.createThumbnail()
-        self.hideAllLyrics()
+    def setThumbnail(self, event=None):
+        # safe toggle instead of deleting canvas items
+        self.thumbnailManager.toggleThumbnailMode()
         
     def changeMode(self, event):
         if self.testOrVideo == "Test":
@@ -714,12 +856,7 @@ class VoiceDetectionApp:
         if self.selectedLabel:
             self.pushUndoState("marker move right")
         self.moveMarker(1)
-        
-    def updateChunkText(self, newIndex):
-        """Update the chunk index value displayed."""
-        self.currentChunkIndex = newIndex
-        self.chunkIndexLabel.config(text=str(self.currentChunkIndex))
-    
+
     def selectMarker(self, chunkIndex, markerType):
         print(f"Marker selected at {chunkIndex} with type {markerType}")
         self.setSelectedMarker(chunkIndex, markerType)
@@ -815,11 +952,8 @@ class VoiceDetectionApp:
             return
 
         # ---- Overlay cleanup (always by markerId) ----
-        if getattr(self, "labelOverlay", None):
-            if hasattr(self.labelOverlay, "hideNow"):
-                self.labelOverlay.hideNow()
-            if hasattr(self.labelOverlay, "forgetMarker"):
-                self.labelOverlay.forgetMarker(markerId)
+        self.labelOverlay.hideNow()
+        self.labelOverlay.forgetMarker(markerId)
 
         # ---- Case 1: a label is selected -> delete the whole label (preferred, avoids ambiguity) ----
         if self.selectedLabel is not None:
@@ -1072,13 +1206,13 @@ class VoiceDetectionApp:
         # --- Sync the rest of the UI (chunk index, time, progress handle, video) ---
         self.selectedMarker["chunkIndex"] = newChunkIndex
         self.currentChunkIndex = newChunkIndex
-        self.updateChunkText(newChunkIndex)
+        self.updateChunkIndexDisplay(newChunkIndex)
 
         newTimeMs = newChunkIndex * self.chunk_duration
     
         # --- Sync the rest of the UI (chunk index, time, progress handle, video) ---
         self.currentChunkIndex = newChunkIndex
-        self.updateChunkText(newChunkIndex)
+        self.updateChunkIndexDisplay(newChunkIndex)
         newTimeMs = newChunkIndex * self.chunk_duration
 
         # Make the handle follow the drag and show time
@@ -1346,6 +1480,7 @@ class VoiceDetectionApp:
             # print("No marker selected.")
             return
         
+        self.labelOverlay.hide()
         oldChunkIndex = self.selectedMarker["chunkIndex"]
         markerType = self.selectedMarker["type"]
         
@@ -1471,68 +1606,140 @@ class VoiceDetectionApp:
         # Redraw only what depends on the section
         self.drawLabelMarkers(sectionIndex)
         self.drawTimeMarkers()
-    
-    def addControls(self, root):
-        buttonFrame = tk.Frame(root, bg="blue")  # Light gray background for visibility
-        buttonFrame.pack(fill="x", side="bottom")  # Place at the bottom
-        
-        self.singerVar = tk.StringVar(value=self.trainingMember)
-        
-        memberMapping = {member['name']: member for member in self.members}
-        memberNames = memberMapping.keys()
-        tk.OptionMenu(buttonFrame, self.singerVar, *memberNames).pack(side="left", padx=10, pady=10)
-        
-        # Add control buttons
-        self.playButton = tk.Button(buttonFrame, text="Play", command=self.play, bg="white", fg="black")
-        self.playButton.pack(side="left", padx=10, pady=10)
-        
-        self.pauseButton = tk.Button(buttonFrame, text="Pause", command=self.pause, bg="white", fg="black")
-        self.pauseButton.pack(side="left", padx=10, pady=10)
-        
-        def onToggleEditing():
-            # Toggle the underlying state
-            self.clipManager.toggleEnabled()
 
-            # Update button color based on new state
-            if self.clipManager.enabled:
-                self.toggleEditButton.config(bg="red", fg="white")
-            else:
-                self.toggleEditButton.config(bg="white", fg="black")
-        # end
+    def setupMenubar(self, root: tk.Tk):
+        # This replaces addControls entirely (no bottom frame!)
+        self.menubar = getOrCreateMenubar(root)
         
-        self.toggleEditButton = tk.Button(
-            buttonFrame,
-            text="Toggle Editing",
-            command=onToggleEditing,
-            bg="white",
-            fg="black"
+        
+        # =========================
+        # RECORD MENU (DEDICATED)
+        # =========================
+        recordMenu = tk.Menu(self.menubar, tearoff=0)
+
+        recordMenu.add_command(
+            label="Start Recording / Export…",
+            accelerator="Ctrl+G",
+            command=self.startExportVideo
         )
-        self.toggleEditButton.pack(side="left", padx=10, pady=10)
-        
-        self.forwardButton = tk.Button(buttonFrame, text="Reset Positions", command=lambda: self.countBacking(False), bg="white", fg="black")
-        self.forwardButton.pack(side="left", padx=10, pady=10)
-        
-        self.backingToggle = tk.Button(buttonFrame, text="Count Backing", command=lambda: self.countBacking(True), bg="white", fg="black")
-        self.backingToggle.pack(side="left", padx=10, pady=10) 
-        
-        self.startPointButton = tk.Button(buttonFrame, text="Set Start Point (Q)", command=self.addStartPoint)
-        self.startPointButton.pack(side="left", padx=10, pady=10)
-        
-        self.endPointButton = tk.Button(buttonFrame, text="Set End Point (W)", command=self.addEndPoint)
-        self.endPointButton.pack(side="left", padx=10, pady=10)
-        
-        self.addLabelsButton = tk.Button(buttonFrame, text="Add Labels (E)", command=lambda: self.showAddLabelsMenu(event=None))
-        self.addLabelsButton.pack(side="left", padx=10, pady=10)
-        
-        self.editLyricsButton = tk.Button(buttonFrame, text="Open Lyrics Menu (L)", command=self.lyricsEditor.openLyricsEditorMenu) 
-        self.editLyricsButton.pack(side="left", padx=10, pady=10)
-        
-        chunkIndexFrame = tk.Frame(buttonFrame, bg="gray")
-        chunkIndexFrame.pack(side="right", padx=10, pady=10)  # Align to the right side
 
-        tk.Label(chunkIndexFrame, text="Chunk Index:", bg="turquoise", fg="white", font=("Arial", 10)).pack(side="top")
-        self.chunkIndexLabel = tk.Label(chunkIndexFrame, text=str(self.currentChunkIndex), bg="gray", fg="white", font=("Arial", 10))
-        self.chunkIndexLabel.pack(side="top")
+        # Optional future-proof items (safe to keep commented for now)
+        # recordMenu.add_separator()
+        # recordMenu.add_command(label="Open Finished Videos Folder", command=self.openFinishedVideosFolder)
+        # recordMenu.add_command(label="Record Settings…", command=self.openRecordSettings)
+
+        self.menubar.add_cascade(label="Record", menu=recordMenu)
+        # =========================
+        # EDIT MENU (MOST IMPORTANT)
+        # =========================
+        # --- Editing / Labels menu ---
+        self.editingEnabledVar = tk.BooleanVar(value=getattr(self.clipManager, "enabled", True))
+        labelsMenu = tk.Menu(self.menubar, tearoff=0)
+            
+        editMenu = tk.Menu(self.menubar, tearoff=0)
+
+        editMenu.add_command(
+            label="Undo",
+            accelerator="Ctrl+Z",
+            command=self.undo
+        )
+        editMenu.add_command(
+            label="Redo",
+            accelerator="Ctrl+Y",
+            command=self.redo
+        )
+
+        editMenu.add_separator()
+
+        editMenu.add_checkbutton(
+            label="Enable Editing",
+            onvalue=True,
+            offvalue=False,
+            variable=self.editingEnabledVar,
+            command=lambda: (
+                self.clipManager.toggleEnabled(),
+                self.updateChunkIndexDisplay(self.currentChunkIndex)
+            )
+        )
+
+        self.menubar.add_cascade(label="Edit", menu=editMenu)
+
+        labelsMenu.add_separator()
+
+        labelsMenu.add_command(
+            label="Set Start Point",
+            accelerator="Q",
+            command=self.addStartPoint
+        )
+        labelsMenu.add_command(
+            label="Set End Point",
+            accelerator="W",
+            command=self.addEndPoint
+        )
+        labelsMenu.add_command(
+            label="Add Labels…",
+            accelerator="E",
+            command=lambda: self.showAddLabelsMenu(event=None)
+        )
+
+        self.menubar.add_cascade(label="Labels", menu=labelsMenu)
+
+        # =========================
+        # PLAYBACK MENU
+        # =========================
+        playbackMenu = tk.Menu(self.menubar, tearoff=0)
+
+        playbackMenu.add_command(
+            label="Play / Pause",
+            accelerator="Space",
+            command=self.togglePlayPause
+        )
+        playbackMenu.add_command(
+            label="Toggle Audio Mode",
+            accelerator="V",
+            command=self.toggleAudioMode
+        )
+
+        self.menubar.add_cascade(label="Playback", menu=playbackMenu)
+
+        # =========================
+        # VIEW MENU
+        # =========================
+        viewMenu = tk.Menu(self.menubar, tearoff=0)
+
+        viewMenu.add_command(
+            label="Toggle UI",
+            accelerator="Ctrl+H",
+            command=self.toggleUIElements
+        )
+
+        self.menubar.add_cascade(label="View", menu=viewMenu)
+        # --- Lyrics menu ---
+        lyricsMenu = tk.Menu(self.menubar, tearoff=0)
+        lyricsMenu.add_command(
+            label="Open Lyrics Menu…",
+            accelerator="L",
+            command=self.lyricsEditor.openLyricsEditorMenu
+        )
+        self.menubar.add_cascade(label="Lyrics", menu=lyricsMenu)
+
+        # --- Tools menu (your “count backing” + reset positions) ---
+        toolsMenu = tk.Menu(self.menubar, tearoff=0)
+        toolsMenu.add_command(label="Reset Positions: Ctrl-R", command=lambda: self.countBacking(switch=False))
+        toolsMenu.add_command(label="Count Backing", command=lambda: self.countBacking(switch=True))
+        self.menubar.add_cascade(label="Tools", menu=toolsMenu)
+        
+        self.updateChunkIndexDisplay(self.currentChunkIndex)
+        
+    def initChunkIndexInTitle(self, root: tk.Tk):
+        self._titleRoot = root
+        self._baseTitle = root.title() or "Line Distribution Creator"
+        self.menubar = None
+
+    def updateChunkIndexDisplay(self, chunkIndex):
+        # Call this whenever currentChunkIndex changes
+        editing = "ON" if getattr(self.clipManager, "enabled", True) else "OFF"
+        self._titleRoot.title(f"{self._baseTitle} |  Chunk {chunkIndex}  |  Editing {editing}")
     
     def refreshLyricsLayout(self):
         # 1) Rebuild each lyric box’s canvas items at the new scale
@@ -1564,6 +1771,7 @@ class VoiceDetectionApp:
         self.scaleY = newHeight / self.baseHeight
         
         # 1) Rescale member timelines (vertical animation positions)
+        self.slotHeightPx = int(round(self.slotHeightBase * self.scaleY))
         for trackItem in self.memberImages.values():
             trackItem.rescalePositionTimeline(self.scaleY)
         
@@ -1588,7 +1796,8 @@ class VoiceDetectionApp:
     
     def updateElementPositions(self):
         """Update the position and size of all canvas elements based on the new scale."""
-        currentChunk = getattr(self, "currentChunkIndex", 0)
+        currentChunk =  self.currentChunkIndex
+        print(f"Current scale Y: {self.scaleY}")
         
         for member, trackItem in self.memberImages.items():
             # Resize portrait
@@ -1635,56 +1844,85 @@ class VoiceDetectionApp:
         canvasHeight = self.baseHeight - 10
         maxScaledHeightBase = int(imgBaseHeight * maxScale / 100)
         totalStackedHeight = numMembers * maxScaledHeightBase
-        # This is actually expected
-        # print(f"Img height: {imgBaseHeight}\nTotal stacked height: {totalStackedHeight}, Canvas Height: {canvasHeight}")
         
         # Adjust scale if it exceeds canvas height
         if totalStackedHeight > canvasHeight:
             scale = (canvasHeight / (imgBaseHeight * numMembers)) * 100
             scale = min(scale, maxScale)
-            print(f"New scale: {scale}")
         else:
             scale = maxScale
             
         # Compute actual scaled image height and initial Y offset
-        scaledPixelHeight = math.floor(imgBaseHeight * scale / 100)
-        # Change this later
-        # initialYOffset = int((scaledPixelHeight * numMembers) - canvasHeight)
+        scaledPixelHeight = round(imgBaseHeight * scale / 100)
+        self.slotHeightBase = round(imgBaseHeight * scale / 100)
+
         # Step 4: Compute where to start stacking so last member lands exactly at bottom
         self.memberImages = {}
         self.memberImageIds = {}
         memberTimes = []
         
-        for index, memberName in enumerate(groupMembers):  # original order
-            darkImage = self.images[memberName]["dark"]
-            lightImage = self.images[memberName]["light"]
+        # --- build first trackItem just to lock in the true pixel height ---
+        firstName = groupMembers[0]
+        firstTrack = TrackItem(
+            scale=scale,
+            sourceImages={
+                "dark": self.images[firstName]["dark"],
+                "light": self.images[firstName]["light"],
+            },
+            animations=[],
+            parent=self,
+            trackMember=firstName,
+        )
+        firstTrack.initializeTimeline(self.includeBacking)
+        firstTrack.resizeImages(scale)
+
+        # ✅ authoritative step: whatever Tk is actually going to draw
+        scaledPixelHeight = firstTrack.sourceImages["dark"].height()
+        
+        self.slotHeightBase = scaledPixelHeight
+
+        # Now place first
+        self.slotMap[firstName] = 0
+        firstTrack.currentSlotIndex = 0
+        imageId = self.canvas.create_image(0, 0, image=firstTrack.sourceImages["dark"], anchor="nw")
+        firstTrack.setImageId(imageId)
+        firstTrack.initializeProgressBar()
+        self.memberImages[firstName] = firstTrack
+        self.memberImageIds[firstName] = imageId
+        memberTimes.append(firstTrack.timeline[len(self.chunks) - 1])
+        
+        for index, memberName in enumerate(groupMembers[1:], start=1):
             self.slotMap[memberName] = index
-            
-            initialYBase = index * scaledPixelHeight
-                    
+
             trackItem = TrackItem(
                 scale=scale,
-                sourceImages={'dark': darkImage, 'light': lightImage},
+                sourceImages={
+                    "dark": self.images[memberName]["dark"],
+                    "light": self.images[memberName]["light"],
+                },
                 animations=[],
                 parent=self,
                 trackMember=memberName,
             )
-            
             trackItem.initializeTimeline(self.includeBacking)
-            self.memberImages[memberName] = trackItem
             trackItem.resizeImages(scale)
             trackItem.currentSlotIndex = index
-            
-            imageId = self.canvas.create_image(
-                0, initialYBase, image=trackItem.sourceImages["dark"], anchor="nw"
-            )
+
+            # 🔒 enforce exact height match (optional assertion)
+            h = trackItem.sourceImages["dark"].height()
+            if h != scaledPixelHeight:
+                print(f"WARNING: {memberName} resized height {h} != {scaledPixelHeight}")
+
+            y = index * scaledPixelHeight
+            imageId = self.canvas.create_image(0, y, image=trackItem.sourceImages["dark"], anchor="nw")
             trackItem.setImageId(imageId)
-            self.memberImageIds[memberName] = imageId
             trackItem.initializeProgressBar()
+
+            self.memberImages[memberName] = trackItem
+            self.memberImageIds[memberName] = imageId
             memberTimes.append(trackItem.timeline[len(self.chunks) - 1])
-          
-        # Set max time across all members
-        for _, trackItem in self.memberImages.items():
+
+        for trackItem in self.memberImages.values():
             trackItem.setMaxTime(max(memberTimes))
     #end initializeMemberImages 
      
@@ -1827,7 +2065,7 @@ class VoiceDetectionApp:
             int(newTimeMs / self.chunk_duration),
             len(self.chunks) - 1
         )       
-        self.updateChunkText(self.currentChunkIndex)
+        self.updateChunkIndexDisplay(self.currentChunkIndex)
         self.updateProgressBarHandle(newTimeMs)
         self.updateDisplayedTime(newTimeMs)
         
@@ -2036,7 +2274,10 @@ class VoiceDetectionApp:
             sec = self.currentSectionIndex if redrawSection is None else redrawSection
             self.labelLaneRenderer.drawSection(sec, self.progressBarWidth)
         
-    def showAddLabelsMenu(self, event):    
+    def showAddLabelsMenu(self, event):
+        if not ModalGuard.try_open("labels_menu"):
+            return  # another modal is open
+           
         self.disableRootKeybinds()        
         # Create menu window
         labelMenu = tk.Toplevel(self.root)
@@ -2315,7 +2556,7 @@ class VoiceDetectionApp:
             backingCheckbox.bind("<Button-1>", lambda event, index=i: onCheckboxClick(event, index, "repeat"))
             adLibCheckBox.bind("<Button-1>", lambda event, index=i: onCheckboxClick(event, index, "adlib"))
 
-            # double-click opens editor (much harder to do accidentally than single click)
+            # Right click opens editor (much harder to do accidentally than single click)
             labelCheckbox.bind("<Button-3>", lambda event, index=i: (openEditDialog(index), "break"))
 
             if member:
@@ -2465,6 +2706,7 @@ class VoiceDetectionApp:
                 pass
             try:
                 labelMenu.destroy()
+                ModalGuard.close("labels_menu")
             except Exception:
                 pass
             
@@ -2541,8 +2783,10 @@ class VoiceDetectionApp:
         self.canvas.unbind("<KeyPress-x>")
         self.canvas.unbind("<KeyPress-v>")
         self.canvas.unbind("<Return>")
-        self.canvas.bind("<Control-z>")
-        self.canvas.bind("<Control-y>")
+        self.canvas.unbind("<Control-z>")
+        self.canvas.unbind("<Control-y>")
+        self.canvas.unbind("<Control-r>")
+        self.canvas.unbind("<Control-g>")
         self.root.unbind_all("<space>")
         self.zoomManager.disableScrollZoom(self.root)
 
@@ -2571,6 +2815,8 @@ class VoiceDetectionApp:
         # split current label at current chunk
         self.canvas.bind("<KeyPress-x>", self.handleSplitGapKey)
         self.canvas.bind("<Escape>", self.cancelSplitGap)
+        self.canvas.bind("<Control-r>", lambda event: self.countBacking(switch=False))
+        self.root.bind("<Control-g>", self.startExportVideo)
         
         # Undo / Redo
         self.canvas.bind("<Control-z>", self.undo)
@@ -2606,12 +2852,33 @@ class VoiceDetectionApp:
             
             lyricBox = LyricBox(canvas=self.canvas, parent=self, memberNames=memberName, circleImages=circleImages, koreanLyric=koreanLyric, romanization=romanization, englishTrans=englishTrans, startChunk=startChunk, language=language, isAdLib=isAdLib, adLibDuration=adLibDuration)
             self.lyrics[startChunk] = lyricBox
-        
-    def hideAllLyrics(self):
+    
+    def resetLyricsToChunkStart(self, startChunk: int):
+        startChunk = max(0, int(startChunk))
+
+        # Parent trackers
+        self.activeLyricIds.clear()
+        self.lastChunkSeen = startChunk - 1   # safe even if startChunk==0 => -1
+
+        # Reset every lyric's internal cursor so getBaseYAt() works from the start
+        for lb in self.lyrics.values():
+            lb.resetAnimCursor()              # <-- THIS is the missing reset :contentReference[oaicite:1]{index=1}
+            lb.hide()  
+            
+    def hideAllLyrics(self, lyricsSurpressed=True):
         """Hides all lyric box objects stored in self.lyrics."""
+        self.lyricsSuppressed = lyricsSurpressed
         for _, lyricBox in self.lyrics.items():
             lyricBox.hide()
-            
+    
+    def unsuppressLyricsAndRefresh(self):
+        self.lyricsSuppressed = False
+        # reset state so activation works
+        if hasattr(self, "activeLyricIds"):
+            self.activeLyricIds.clear()
+        self.lastChunkSeen = self.currentChunkIndex - 1
+        self.renderLyrics(self.currentChunkIndex)
+           
     def getActiveLyricBoxesAtChunk(self, chunkIndex):
         boxes = []
         for sc, lb in self.lyrics.items():
@@ -2624,6 +2891,14 @@ class VoiceDetectionApp:
         return boxes  
             
     def renderLyrics(self, chunkIndex):
+        if self.lyricsSuppressed:
+            print(f"Lyrics are being surpressed: Hiding...")
+            # Keep them hidden even if renderLyrics is being called every tick
+            for lb in self.lyrics.values():
+                lb.hide()
+            self.lyricsLayerDirty = False
+            return
+        
         # Activate any new lyrics starting now
         last = getattr(self, "lastChunkSeen", -1)
         if chunkIndex > last:
@@ -2764,7 +3039,7 @@ class VoiceDetectionApp:
 
                 self.canvas.itemconfig(imageId, image=trackItem.sourceImages[trackItem.currentImageKey])
             
-        self.canvas.update()
+        self.canvas.update_idletasks()
     # end
     
     def _restartAudioAtTime(self, newTimeMs):
@@ -2797,7 +3072,7 @@ class VoiceDetectionApp:
             len(self.chunks) - 1
         )
         self.seekToChunk(newChunkIndex)
-        self.updateChunkText(self.currentChunkIndex)
+        self.updateChunkIndexDisplay(self.currentChunkIndex)
         # print(f"Released at {newTimeMs}")
         
         self.updateCurrentTime(newTimeMs)
@@ -2950,7 +3225,7 @@ class VoiceDetectionApp:
         return False
     # End isInStartOrEnd
     
-    def togglePlayPause(self, event):
+    def togglePlayPause(self, event=None):
         if self.isPlaying and not self.isPaused:
             self.pause()
         else:
@@ -2986,41 +3261,54 @@ class VoiceDetectionApp:
         else:
             self.openStartChunk = None
 
-    def addStartPoint(self, event=None): 
+    def addStartPoint(self, event=None):
         if self.openStartChunk is not None or len(self.startPoints) > len(self.endPoints):
-            print(f"open start: {self.openStartChunk}, is start > end? {len(self.startPoints) > len(self.endPoints)}")
-            print("Add end marker first.")
+            self.showStatus(
+                "You already have an open start point. Add an end point first.",
+                level="warn"
+            )
             return
+
         self.pushUndoState("add start marker")
         self.startPoints.append(self.currentChunkIndex)
-        # Make sure this is changed if marker is moved
         self.openStartChunk = self.currentChunkIndex
         self.addMarkerToSection(self.currentChunkIndex, "start")
-        print(f"Start point set at chunk {self.currentChunkIndex}.")
+
+        self.showStatus(
+            f"Start point set at chunk {self.currentChunkIndex}.",
+            level="info"
+        )
 
     def addEndPoint(self, event=None):
-        # gate: must have an unmatched start
         if self.openStartChunk is None and len(self.startPoints) <= len(self.endPoints):
-            print("Add a start marker first.")
+            self.showStatus(
+                "You need to add a start point before adding an end point.",
+                level="warn"
+            )
             return
-        
-        # (start and end *can* share a chunk across different labels, but not as the immediate pair)
+
         if self.openStartChunk == self.currentChunkIndex:
-            print("End point cannot be the same chunk as the start point.")
+            self.showStatus(
+                "End point cannot be the same chunk as the start point.",
+                level="error"
+            )
             return
-    
+
         self.pushUndoState("add end marker")
         self.endPoints.append(self.currentChunkIndex)
         self.addMarkerToSection(self.currentChunkIndex, "end")
-        print(f"End point set at chunk {self.currentChunkIndex}.")
-        
-        # close the open segment
         self.openStartChunk = None
+
+        self.showStatus(
+            f"End point set at chunk {self.currentChunkIndex}.",
+            level="info"
+        )
     
     def clearAllMarkers(self):
         """
         Clear all start and end markers from the canvas and reset marker dictionaries.
         """
+        self.labelOverlay.hide()
         self.canvas.delete("marker")
 
         # Reset state
@@ -3384,6 +3672,8 @@ class VoiceDetectionApp:
         Toggle whether backing-only labels should contribute to timelines,
         then rebuild member images + timelines + position timelines.
         """
+        if not self.isPlaying:
+            return
         if switch:
             self.includeBacking = not getattr(self, "includeBacking", True)
         
@@ -3411,7 +3701,8 @@ class VoiceDetectionApp:
         Force UI state (chunk index, section index, progress bar, labels)
         to reflect a given playback time, without touching audio/video playback.
         """
-
+        if self.isExportingVideo:
+            return
         timeMs = max(0, min(timeMs, (len(self.chunks) - 1) * self.chunk_duration))
 
         newChunkIndex = min(
@@ -3421,7 +3712,7 @@ class VoiceDetectionApp:
         self.seekToChunk(newChunkIndex)
 
         # These are the SAME calls updateChunk() normally does
-        self.updateChunkText(self.currentChunkIndex)
+        self.updateChunkIndexDisplay(self.currentChunkIndex)
         self.updateProgressBarHandle(timeMs)
         self.updateDisplayedTime(timeMs)
         self.updateCanvasForCurrentPosition(self.currentChunkIndex)
@@ -3429,7 +3720,6 @@ class VoiceDetectionApp:
     def playWithSavedResults(self, startTimeMs):
         """Replay the audio with saved detection results synced to the audio."""
         if self.isPaused and not self.isManualUpdate: 
-            #print('Application is paused')
             return
         
         if not self.isPlaying or self.isManualUpdate:
@@ -3438,7 +3728,7 @@ class VoiceDetectionApp:
                     pygame.mixer.music.load(self.currentAudioPath)
                 pygame.mixer.music.play(start=startTimeMs / 1000)
             except pygame.error as e:
-                print(f"Error loading audio file: {e}")
+                self.showStatus(f"Error loading audio file: {e}")
                 self.isPlaying = False
                 return
 
@@ -3576,7 +3866,7 @@ class VoiceDetectionApp:
 
         # UI sync
         self.currentChunkIndex = min(int(playbackTimeMs / self.chunk_duration), len(self.chunks) - 1)
-        self.updateChunkText(self.currentChunkIndex)
+        self.updateChunkIndexDisplay(self.currentChunkIndex)
         self.updateProgressBarHandle(playbackTimeMs)
         self.updateDisplayedTime(playbackTimeMs)
         self.updateCanvasForCurrentPosition(self.currentChunkIndex)
@@ -3587,14 +3877,14 @@ class VoiceDetectionApp:
         Only works when audioMode == "vocals".
         """
         if self.audioMode != "vocals":
-            print("ℹ️ Lead/back toggles only work in VOCALS mode (press V first).")
+            self.showStatus("ℹ️ Lead/back toggles only work in VOCALS mode (press V first).")
             return
 
         if not self.vocalsLeadPath or not os.path.exists(self.vocalsLeadPath):
-            print("⚠️ Missing lead-only vocals file; cannot toggle lead/back.")
+            self.showStatus("⚠️ Missing lead-only vocals file; cannot toggle lead/back.")
             return
         if not self.vocalsBackingPath or not os.path.exists(self.vocalsBackingPath):
-            print("⚠️ Missing backing-only vocals file; cannot toggle lead/back.")
+            self.showStatus("⚠️ Missing backing-only vocals file; cannot toggle lead/back.")
             return
 
         playbackTime = self.getPlaybackTimeMs()
@@ -3626,14 +3916,14 @@ class VoiceDetectionApp:
         mode = []
         if self.leadEnabled: mode.append("LEAD")
         if self.backEnabled: mode.append("BACK")
-        print(f"🎛️ Vocals submix: {'+'.join(mode)} | pan={self.panMode}")
+        self.showStatus(f"🎛️ Vocals submix: {'+'.join(mode)} | pan={self.panMode}")
     
     def togglePanMode(self, event=None):
         if self.audioMode != "vocals":
-            print("ℹ️ Pan mode only works in VOCALS mode.")
+            self.showStatus("ℹ️ Pan mode only works in VOCALS mode.")
             return
         self.panMode = "split" if self.panMode == "mono" else "mono"
-        print(f"🎧 Pan mode: {self.panMode}")
+        self.showStatus(f"🎧 Pan mode: {self.panMode}")
 
         # Rebuild current submix immediately
         playbackTime = self.getPlaybackTimeMs()
@@ -3647,7 +3937,7 @@ class VoiceDetectionApp:
         """
         # If we don't have a vocals-only file, just bail
         if not os.path.exists(self.vocalsOnlyPath):
-            print("⚠️ Vocals-only file not found; cannot toggle audio mode.")
+            self.showStatus("⚠️ Vocals-only file not found; cannot toggle audio mode.")
             return
         
         # Figure out where we are in the song (in ms)
@@ -3664,11 +3954,11 @@ class VoiceDetectionApp:
         if self.currentAudioPath == self.testSongPath:
             self.currentAudioPath = self.vocalsOnlyPath
             self.audioMode = "vocals"
-            print("🔊 Switched to *vocals-only* audio.")
+            self.showStatus("🔊 Switched to *vocals-only* audio.")
         else:
             self.currentAudioPath = self.testSongPath
             self.audioMode = "mix"
-            print("🎵 Switched to *full mix* audio.")
+            self.showStatus("🎵 Switched to *full mix* audio.")
 
         # If we're currently playing (and not paused), restart playback on the new source
         if self.isPlaying and not self.isPaused:
@@ -3680,7 +3970,7 @@ class VoiceDetectionApp:
                 # Keep our offset consistent with this new start
                 self.playbackOffset = playbackTime
             except pygame.error as e:
-                print(f"Error switching audio source: {e}")
+                self.showStatus(f"Error switching audio source: {e}")
                 return
 
             # Keep UI in sync
@@ -3688,7 +3978,7 @@ class VoiceDetectionApp:
                 int(playbackTime / self.chunk_duration),
                 len(self.chunks) - 1
             )
-            self.updateChunkText(self.currentChunkIndex)
+            self.updateChunkIndexDisplay(self.currentChunkIndex)
             self.updateProgressBarHandle(playbackTime)
             self.updateDisplayedTime(playbackTime)
             self.updateCanvasForCurrentPosition(self.currentChunkIndex)
@@ -3720,7 +4010,7 @@ class VoiceDetectionApp:
             markerId = ids[-1] if ids else None
 
         if markerId is None:
-            print(f"[WARN] setSelectedMarker: markerId not found for {markerType}@{chunkIndex}")
+            self.showStatus(f"[WARN] setSelectedMarker: markerId not found for {markerType}@{chunkIndex}")
             self.selectedMarker = None
             return
 
@@ -3761,8 +4051,6 @@ class VoiceDetectionApp:
             ids.append(markerId)
             self._setMarkerIdsAtChunk(self.startPointMarkers, chunkIndex, ids)
 
-            print(f"Start marker added at chunk {chunkIndex}.")
-
         elif markerType == "end":
             markerId = self.canvas.create_line(
                 x, yTop, x, yBottom,
@@ -3775,8 +4063,6 @@ class VoiceDetectionApp:
             ids = self._getMarkerIdsAtChunk(self.endPointMarkers, chunkIndex)
             ids.append(markerId)
             self._setMarkerIdsAtChunk(self.endPointMarkers, chunkIndex, ids)
-
-            print(f"End marker added at chunk {chunkIndex}.")
          
         self.selectedLabel = None
         self.setSelectedMarker(chunkIndex, markerType, markerId=markerId)

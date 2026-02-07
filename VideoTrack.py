@@ -1,5 +1,5 @@
-import cv2
-import time
+import cv2, wave
+import time, uuid
 from PIL import Image, ImageTk
 import threading
 from TrackItem import TrackItem
@@ -16,9 +16,10 @@ class VideoTrackItem(TrackItem):
     def __init__(self, canvas, parent, videoPath, scale=100, scaleX=1.0, baseHeight=720, isMusicVideo=True):
         super().__init__(scale, sourceImages={}, animations=[], type="video")
         self.canvas = canvas
+            
         self.videoPath = videoPath
         self.parent = parent
-        self.cap = cv2.VideoCapture(videoPath)
+        self.cap = cv2.VideoCapture(self.videoPath)
         self.cap_lock = threading.Lock()
         self.scale = scale
         self.scaleX = scaleX
@@ -52,6 +53,10 @@ class VideoTrackItem(TrackItem):
             self.effective_fps = min(fps, 45) # cap to 30
             
         self.isMusicVideo = isMusicVideo
+        self.totalFrames = int(self.cap.get(cv2.CAP_PROP_FRAME_COUNT)) if self.cap.isOpened() else 0
+        self.videoDurationMs = 0
+        if self.totalFrames > 0 and self.effective_fps > 0:
+            self.videoDurationMs = int((self.totalFrames / float(self.effective_fps)) * 1000)
         
     def adjustScale(self, currentHeight):
         """Adjust the video dimensions and scale based on the current height."""
@@ -151,66 +156,76 @@ class VideoTrackItem(TrackItem):
             pos = 0
         return int(self.parent.playbackOffset + pos)
     
+    def _loopFrameIndex(self, frameIndex: int) -> int:
+        if self.totalFrames and self.totalFrames > 0:
+            return frameIndex % self.totalFrames
+        return frameIndex
+        
     def _decodeLoop(self):
-        # One-time setup: jump close to current audio time ONCE
         fps = self.effective_fps if self.effective_fps > 0 else 30.0
-    
+        target_dt = 1.0 / fps
+        next_t = time.perf_counter()
+
+        # initial seek: only for looping backgrounds (optional), OR allow MV to start at audio time
+        if self.totalFrames > 0:
+            audio_ms = self._audioTimeMs()
+            start_frame = int((audio_ms / 1000.0) * fps)
+            if not self.isMusicVideo:
+                start_frame = self._loopFrameIndex(start_frame)
+            else:
+                # clamp for MV so we don't mod-wrap
+                if start_frame < 0:
+                    start_frame = 0
+                if start_frame >= self.totalFrames:
+                    start_frame = self.totalFrames - 1
+
+            with self.cap_lock:
+                self.cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
+
         while self.isPlaying and self.cap.isOpened() and not self.decodeStop.is_set():
             if self.isPaused:
                 time.sleep(0.01)
                 continue
-            
-            audio_ms = self._audioTimeMs()
-            target_frame = int((audio_ms / 1000.0) * fps)
-            if target_frame < 0:
-                target_frame = 0
-                
-            # Only do expensive seeks when we're WAY off (resync), not EVERY Frame
+
             with self.cap_lock:
-                current_frame = int(self.cap.get(cv2.CAP_PROP_POS_FRAMES))
-                drift_frames = target_frame - current_frame
-                
-                # If we're behind audio by a lot, skip frames cheaply by reading forward
-                if drift_frames > 3:
-                    # if it's huge drift, do one seek, then continue sequentially
-                    if drift_frames > int(fps * 0.5): # ~ 0.5s f
-                        self.cap.set(cv2.CAP_PROP_POS_FRAMES, target_frame)
-                    else:
-                        # Skip forward by reading and discarding
-                        for _ in range(drift_frames - 1):
-                            self.cap.read()
-                            
-                # If video is ahead of audio, just wait
-                elif drift_frames < -3:
-                    time.sleep(0.005)
-                    continue
-                
                 ret, frame = self.cap.read()
-            
+
+                if not ret:
+                    if not self.isMusicVideo and self.totalFrames and self.totalFrames > 0:
+                        # looping background: wrap
+                        self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                        ret, frame = self.cap.read()
+                    else:
+                        # music video: STOP instead of looping
+                        self.isPlaying = False
+                        break
+
             if not ret:
-                break
-            
-            # Preprocess frame (still in worker thread)
-            frame = cv2.resize(frame, (self.newWidth, self.newHeight))
+                time.sleep(0.01)
+                continue
+
+            frame = cv2.resize(frame, (self.newWidth, self.newHeight), interpolation=cv2.INTER_AREA)
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            
-            # Keep only newest frame
+
+            # keep only newest
             try:
                 while True:
                     self.frameQueue.get_nowait()
             except Exception:
                 pass
-            
+
             try:
                 self.frameQueue.put_nowait(frame)
             except Exception:
                 pass
-            
-            # Aim for fps
-            time.sleep(max(0.0, (1.0 / fps) * 0.5))
-            
-        self.isPlaying = False            
-    
+
+            next_t += target_dt
+            sleep = next_t - time.perf_counter()
+            if sleep > 0:
+                time.sleep(sleep)
+            else:
+                next_t = time.perf_counter()
+               
     def _renderTick(self):
         # Run ONLY on the Tk main thread via after()
         if not self.isPlaying:
@@ -251,6 +266,7 @@ class VideoTrackItem(TrackItem):
             frameIndex = int((timeMs / 1000.0) * self.effective_fps)
             if frameIndex < 0:
                 frameIndex = 0
+            frameIndex = self._loopFrameIndex(frameIndex)
             with self.cap_lock:
                 self.cap.set(cv2.CAP_PROP_POS_FRAMES, frameIndex)
                 
@@ -279,11 +295,62 @@ class VideoTrackItem(TrackItem):
 
         cropped = windowImg.crop((canvasX, canvasY, canvasX + w, canvasY + h))
         return cropped
+      
+    def getFirstKeepChunk(self, startChunk: int = 0) -> int:
+        """
+        Returns the first chunk index >= startChunk that is NOT inside a Cut range.
+        Assumes self.cutRanges/self.cutStarts are already built.
+        """
+        chunk = max(0, int(startChunk))
+
+        if not getattr(self, "cutRanges", None):
+            return chunk
+
+        # Walk forward through cut blocks if we land inside one.
+        while True:
+            i = bisect_right(self.cutStarts, chunk) - 1
+            if i < 0:
+                return chunk
+            s, e = self.cutRanges[i]
+            if s <= chunk <= e:
+                chunk = e + 1
+                continue
+            return chunk
+    
+    def _resetExportUiToChunk(self, chunkIndex: int):
+        """
+        Hard reset the canvas + parent state so export always starts from the first keep chunk,
+        regardless of where the user is currently scrubbing/paused (e.g., chunk 1044).
+        """
+        chunkIndex = max(0, int(chunkIndex))
+        startTimeMs = int(chunkIndex * self.parent.chunk_duration)
+
+        # 1) Stop/neutralize live playback influence (export will own visuals)
+        self.parent.isPaused = False
+
+        # 2) Reset parent time/index state to baseline
+        self.parent.currentChunkIndex = chunkIndex
+        self.parent.currentSectionIndex = 0
+        self.parent.playbackOffset = startTimeMs
+        
+        self.parent.resetLyricsToChunkStart(chunkIndex)
+
+        # 3) Reset lyric incremental state WITHOUT deleting canvas items
+        self.parent.hideAllLyrics(False)
+        
+        try:
+            self.position = self.setPosition()
+        except Exception:
+            pass
+
+        # 6) One full redraw at the starting chunk
+        self.parent.updateCanvasForCurrentPosition(chunkIndex)
+        self.canvas.update_idletasks()
         
     def processFrame(self, frame, currentTimeMs, currentChunkIndex):
         newChunkIndex = int(currentTimeMs / self.parent.chunk_duration)
 
-        if newChunkIndex != currentChunkIndex:
+        if currentChunkIndex is None or newChunkIndex != currentChunkIndex:
             self.parent.updateCanvasForCurrentPosition(newChunkIndex)
             currentChunkIndex = newChunkIndex
 
@@ -308,7 +375,6 @@ class VideoTrackItem(TrackItem):
 
         # IMPORTANT: give Tk a chance to layout + draw everything you just changed
         self.canvas.update_idletasks()
-        self.canvas.update()  # <- this is the big difference vs update_idletasks only
 
         videoFrame = self.captureCanvas(self.canvas)
         finalFrame = np.array(videoFrame.convert("RGB"), dtype=np.uint8)
@@ -317,7 +383,7 @@ class VideoTrackItem(TrackItem):
             return None, currentChunkIndex
 
         return finalFrame, currentChunkIndex
-
+    
     def buildCutRanges(self):
         """
         Build merged, non-overlapping inclusive chunk ranges for labels with name == 'Cut'.
@@ -405,48 +471,91 @@ class VideoTrackItem(TrackItem):
             frame.shape[2] == 3 and
             frame.shape[0] > 0 and frame.shape[1] > 0
         )
-       
+    
+    def _getWavDurationMs(self, wavPath: str) -> int:
+        # Fast, no ffprobe required (works for .wav)
+        with wave.open(wavPath, "rb") as wf:
+            frames = wf.getnframes()
+            rate = wf.getframerate()
+            if rate <= 0:
+                return 0
+            return int((frames / float(rate)) * 1000.0)
+        
     def processVideoAndSave(self, songName, originalVideoPath=None, originalAudioPath=None, fpsCap=0):
         """
         Export a line-distribution video by rendering the UI (video + labels/lyrics/markers) onto the canvas
-        and capturing frames from the Tk window (not screen bbox).
+        and capturing frames from the Tk window.
 
-        - songName: used for default output naming
-        - outputPath: optional override; default is ./finished_videos/{songName}_line_distribution.mp4
-        - originalVideoPath: path to the full-quality MV (e.g. 1440p)
-        - originalAudioPath: path to the original WAV (not downsampled cache)
-        """    
+        Uses ONE timebase: exportTimeMs.
+
+        - If self.isMusicVideo is True: sample the MV at exportTimeMs.
+        If exportTimeMs exceeds MV duration, loops MV frames (safe fallback).
+        - If self.isMusicVideo is False: loop the chosen short background video for the full audio duration.
+        """
+        import os, uuid, queue, threading
+        import cv2
+        from tqdm import tqdm
+
         os.makedirs("./finished_videos", exist_ok=True)
         finalOutputPath = os.path.join("./finished_videos", f"{songName}_line_distribution.mp4")
-        print("EXPORT canvas python id:", id(self.canvas))
-        print("EXPORT canvas tk name:", str(self.canvas))
+
+        # Make sure previous abort doesn't instantly kill this export
+        try:
+            self.parent.exportStopEvent.clear()
+        except Exception:
+            pass
+
+        # Build cut ranges once
         self.cutRanges, self.cutStarts = self.buildCutRanges()
-        capHQ = cv2.VideoCapture(originalVideoPath)
-        if not capHQ.isOpened():
-            raise FileNotFoundError(f"Original video not found / failed to open: {originalVideoPath}")
-        
-        # --- fps math based on HQ video ---
-        originalFps = capHQ.get(cv2.CAP_PROP_FPS)
-        if not originalFps or originalFps <= 0:
-            originalFps = 30.0
-            
-        effectiveFps = min(originalFps, fpsCap) if fpsCap and fpsCap > 0 else originalFps
-        # how many HQ frames to skip each iteration to simulate fps cap
-        frameSkipRate = max(1, int(round(originalFps / effectiveFps))) if fpsCap and fpsCap > 0 else 1
-        frameDuration = 1000.0 / effectiveFps  # ms per output frame
-        
-        # --- output dimensions are your canvas dimensions ---
+
+        cap = cv2.VideoCapture(originalVideoPath)
+        if not cap.isOpened():
+            raise FileNotFoundError(f"Video not found / failed to open: {originalVideoPath}")
+
+        # FPS from source video (we still write at effectiveFps)
+        srcFps = cap.get(cv2.CAP_PROP_FPS)
+        if not srcFps or srcFps <= 0:
+            srcFps = 30.0
+
+        effectiveFps = min(srcFps, fpsCap) if fpsCap and fpsCap > 0 else srcFps
+        if not effectiveFps or effectiveFps <= 0:
+            effectiveFps = 30.0
+
+        frameDuration = 1000.0 / float(effectiveFps)
+
+        # Canvas dimensions
         self.canvas.update_idletasks()
         width = int(self.canvas.winfo_width())
         height = int(self.canvas.winfo_height())
-        
-        # --- compute capped frame count by duration (stable even with fps cap) ---
-        totalFramesHQ = int(capHQ.get(cv2.CAP_PROP_FRAME_COUNT))
-        totalDurationMs = totalFramesHQ * (1000.0 / originalFps)
+
+        totalFrames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) or 0
+        isMusicVideo = bool(getattr(self, "isMusicVideo", True))
+
+        # Total export duration:
+        # - If you have audio, always prefer audio duration (keeps output length correct).
+        # - If no audio path, fall back to video duration.
+        totalDurationMs = 0
+        if originalAudioPath:
+            try:
+                totalDurationMs = int(self._getWavDurationMs(originalAudioPath))
+            except Exception:
+                totalDurationMs = 0
+
+        if totalDurationMs <= 0:
+            # Fallback: video duration
+            if totalFrames > 0:
+                totalDurationMs = int(totalFrames * (1000.0 / float(srcFps)))
+            else:
+                totalDurationMs = 0
+
+        if totalDurationMs <= 0:
+            cap.release()
+            raise RuntimeError("Could not determine export duration (audio duration and video duration both unavailable).")
+
         cappedTotalFrames = int(totalDurationMs / frameDuration)
 
-        tempVideoPath = "temp_video.mp4"
-        frameQueue = queue.Queue(maxsize=16)  # backpressure: prevents RAM blowup
+        tempVideoPath = f"temp_video_{uuid.uuid4().hex}.mp4"
+        frameQueue = queue.Queue(maxsize=16)
         writerStop = threading.Event()
         writerThread = threading.Thread(
             target=self._writerThreadLoop,
@@ -455,82 +564,142 @@ class VideoTrackItem(TrackItem):
         )
         writerThread.start()
 
-        # --- state ---
-        currentChunkIndex = -1
+        # State
+        currentChunkIndex = None
         frameIndex = 0
         goodFrames = 0
         maxChunkSeen = 0
 
-        # Prepare progress bar
-        progressBar = tqdm(total=cappedTotalFrames, desc="Processing Video", unit="frame", leave=True, position=0, dynamic_ncols=True)
-
-        # IMPORTANT: ensure app isn't paused while rendering
+        # Prepare UI baseline: start at first keep chunk
         self.parent.isPaused = False
-        # Force a known-good baseline render state before you start sampling frames
+        firstKeepChunk = self.getFirstKeepChunk(0)
+        startTimeMs = int(firstKeepChunk * self.parent.chunk_duration)
+        
+        self._resetExportUiToChunk(firstKeepChunk)
+
         self.parent.activeLyricIds.clear()
-        self.parent.updateCanvasForCurrentPosition(0)
+        self.parent.updateCanvasForCurrentPosition(firstKeepChunk)
         self.canvas.update_idletasks()
         self.canvas.update()
-        try:
-            # start from beginning
-            capHQ.set(cv2.CAP_PROP_POS_FRAMES, 0)
 
-            while capHQ.isOpened() and frameIndex < cappedTotalFrames:
+        # Single timebase for everything
+        exportTimeMs = float(startTimeMs)
+
+        progressBar = tqdm(
+            total=cappedTotalFrames,
+            desc="Processing Video",
+            unit="frame",
+            leave=True,
+            position=0,
+            dynamic_ncols=True
+        )
+
+        try:
+            while cap.isOpened() and frameIndex < cappedTotalFrames:
                 if self.parent.exportStopEvent.is_set():
                     break
 
-                ret, frame = capHQ.read()
+                # Chunk index derived from the ONE timeline
+                chunkIndex = int(exportTimeMs / self.parent.chunk_duration)
+                if chunkIndex > maxChunkSeen:
+                    maxChunkSeen = chunkIndex
 
-                # Apply fps cap skipping by discarding additional frames
-                for _ in range(frameSkipRate - 1):
-                    capHQ.read()
-
-                if not ret:
-                    break
-
-                currentTimeMs = int(frameIndex * frameDuration)
-                newChunkIndex = int(currentTimeMs / self.parent.chunk_duration)
-                if newChunkIndex > maxChunkSeen:
-                    maxChunkSeen = newChunkIndex  # ✅ update before cut-skip
-                
-                if self.isChunkInCutRanges(newChunkIndex):
-                    # skip frame
+                # Skip cut chunks (but still advance time so we don't freeze)
+                if self.isChunkInCutRanges(chunkIndex):
+                    exportTimeMs += frameDuration
                     progressBar.update(1)
                     frameIndex += 1
                     continue
 
-                # Render + capture on Tk thread only
-                try:
-                    rgbFrame, currentChunkIndex = self.processFrame(frame, currentTimeMs, currentChunkIndex)
+                # Select a video frame for this exportTimeMs
+                frame = None
+                if totalFrames > 0:
+                    # Convert export time -> source frame number
+                    desiredFrame = int((exportTimeMs / 1000.0) * float(srcFps))
 
-                    # processFrame returns np RGB or None
+                    if isMusicVideo:
+                        # If MV is shorter than audio, loop MV frames safely
+                        desiredFrame = desiredFrame % totalFrames
+                    else:
+                        # Looping background always loops
+                        desiredFrame = desiredFrame % totalFrames
+
+                    cap.set(cv2.CAP_PROP_POS_FRAMES, desiredFrame)
+                    ret, frame = cap.read()
+                    if not ret or frame is None:
+                        # Hard reset once
+                        cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                        ret, frame = cap.read()
+                        if not ret or frame is None:
+                            # If video decode fails, advance time and keep going (don’t deadlock export)
+                            exportTimeMs += frameDuration
+                            progressBar.update(1)
+                            frameIndex += 1
+                            continue
+                else:
+                    # No frame count available; attempt sequential read and loop on EOF
+                    ret, frame = cap.read()
+                    if not ret or frame is None:
+                        cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                        ret, frame = cap.read()
+                        if not ret or frame is None:
+                            exportTimeMs += frameDuration
+                            progressBar.update(1)
+                            frameIndex += 1
+                            continue
+
+                # Render + capture
+                try:
+                    rgbFrame, currentChunkIndex = self.processFrame(frame, int(exportTimeMs), currentChunkIndex)
                     if self._isValidRgbFrame(rgbFrame, width, height):
-                        # Queue may block if encoder is behind; that's good (backpressure)
                         frameQueue.put(rgbFrame)
                         goodFrames += 1
-
                 except Exception as e:
-                    # Don't crash export for a single bad frame
-                    print(f"⚠️ Frame {frameIndex} @ {currentTimeMs}ms failed: {e}")
+                    print(f"⚠️ Frame {frameIndex} @ {int(exportTimeMs)}ms failed: {e}")
 
+                # Advance the ONE timeline
+                exportTimeMs += frameDuration
                 progressBar.update(1)
                 frameIndex += 1
 
-        except Exception as e:
-            print(f"\n⚠️ Error during video processing: {e}")
-            print("Saving current progress and adding audio...")
+                # Keep Tk responsive if this function is called on the main thread
+                if frameIndex % 5 == 0:
+                    try:
+                        self.canvas.update_idletasks()
+                        self.canvas.update()
+                    except Exception:
+                        pass
 
         finally:
-            capHQ.release()
+            cap.release()
             progressBar.close()
-            frameQueue.put(None)
+
+            # Stop writer
+            try:
+                frameQueue.put(None)
+            except Exception:
+                pass
             writerThread.join(timeout=30)
             writerStop.set()
-            self.parent._finishExportVideo()
-            print("Video processing complete. Adding audio...")
 
-        # Use the frame count you *actually produced* (frameIndex), not cappedTotalFrames
-            self.addAudioToVideo(
+            # Restore UI state
+            try:
+                self.parent._finishExportVideo()
+            except Exception:
+                pass
+
+        # Abort / no frames guard
+        if self.parent.exportStopEvent.is_set() or goodFrames <= 0:
+            print("⛔ Export aborted or no frames produced. Skipping audio mux.")
+            try:
+                if os.path.exists(tempVideoPath):
+                    os.remove(tempVideoPath)
+            except Exception:
+                pass
+            return None
+
+        # Mux audio
+        self.addAudioToVideo(
             tempVideoPath,
             originalAudioPath,
             goodFrames,
@@ -546,7 +715,7 @@ class VideoTrackItem(TrackItem):
 
         print(f"✅ Saved: {finalOutputPath}")
         return finalOutputPath
-
+    
     # WORKS!!!!! ADD MULTITHREADING!!
     def compileFramesToMP4(self, tempVideoPath, framesList, fps, width, height):
         """Compile all stored frames into an MP4 video"""

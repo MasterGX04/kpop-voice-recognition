@@ -1,6 +1,4 @@
 from PIL import ImageTk, Image, ImageDraw
-import tkinter as tk 
-import math
 import tkinter.font as tkFont
 
 class TrackItem:
@@ -77,15 +75,14 @@ class TrackItem:
         self.yOffset = int(5 * parentScaleY)
         
     def rescalePositionTimeline(self, scaleY):
-        """
-        Rescale Y positions from base timeline using the current vertical scale.
-        Called when the window is resized.
-        """
         if not hasattr(self, "basePositionTimeline"):
             return
 
+        baseH = self.parent.slotHeightBase
+        pixH  = self.parent.slotHeightPx  # computed once in parent on resize
+
         self.positionTimeline = [
-            (math.floor(y * scaleY) if y is not None else None)
+            (int(round((y / baseH) * pixH)) if y is not None else None)
             for y in self.basePositionTimeline
         ]
         
@@ -146,19 +143,13 @@ class TrackItem:
                 #self.parent.canvas.coords(self.imageId, x, interpolatedY)
                 self.animations.remove(anim)
     
-    def _basePortraitHeight(self):
-        # base-space height at design scale (40% etc)
-        pil = self.originalImages[self.currentImageKey]  # PIL Image
-        return int(pil.size[1] * (self.scale / 100.0))
-    
     def getSlotOffsetForSlot(self, slotIndex):
         """
         Computes the vertical offset of this member based on slot index and scale.
         Replaces heightOffset[0] and heightOffset[1].
         I realized THIS IS STATIC
         """
-        imgHeightBase = self._basePortraitHeight()
-        return imgHeightBase * slotIndex
+        return self.parent.slotHeightBase * slotIndex
         
     def getMostRecentY(self, currentChunk):
         for c in range(currentChunk, -1, -1):
@@ -347,8 +338,8 @@ class TrackItem:
         for key in self.originalImages:
             originalImage = self.originalImages[key]
             baseWidth, baseHeight = originalImage.size
-            newWidth = int(baseWidth * (scale / 100))
-            newHeight = int(baseHeight * (scale / 100))
+            newHeight = int(round(baseHeight * (scale / 100.0)))
+            newWidth = int(round(baseWidth * (scale / 100.0)))
             resizedImage = originalImage.resize((newWidth, newHeight))
             self.sourceImages[key] = ImageTk.PhotoImage(resizedImage)
 

@@ -265,16 +265,27 @@ class LyricBox:
         memberDisplay = "/".join(members) if members else ""
 
         # --- Pick the displayed lyric string ---
-        displayText = self.koreanLyric if self.language == "Korean" else self.englishTrans
+        lines = []
+
+        k = (getattr(self, "koreanLyric", "") or "").strip()
+        r = (getattr(self, "romanization", "") or "").strip()
+        e = (getattr(self, "englishTrans", "") or "").strip()
+
+        if k:
+            lines.append(("korean", k))
+        if r:
+            lines.append(("roman", r))
+        if e:
+            lines.append(("english", e))
 
         currentY = anchorY
 
-        # 1) Member name line (bold) – only if we actually have a name
+        # 1) Member name line (bold)
         if memberDisplay:
             nameId = self.canvas.create_text(
                 anchorX, currentY,
                 text=memberDisplay,
-                font=self.boldFont,                 # <- requested
+                font=self.boldFont,
                 fill=self.memberColors[0],
                 anchor="ne",
                 state="normal"
@@ -286,21 +297,74 @@ class LyricBox:
             nameHeight = self._getItemHeight(nameId)
             currentY += nameHeight + lineGapY
 
-        # 2) Lyric line(s)
-        textId = self.canvas.create_text(
-            anchorX, currentY,
-            text=displayText,
-            font=self.englishFont,
-            fill=self.memberColors[0],
-            anchor="ne",
-            state="normal"
-        )
-        self.canvas.addtag_withtag("lyrics", textId)
-        self.textItems.append(textId)
-        self._storeOffset(textId, anchorX, currentY)
+        # 2) Add each lyric line (stacked)
+        lineHeights = []
+        for kind, text in lines:
+            if not text:
+                continue
 
+            for line in str(text).split("\n"):
+                if not line.strip():
+                    continue
+
+                # --- KOREAN ---
+                if kind == "korean":
+                    self._createColorCodedText(
+                        anchorX,
+                        currentY,
+                        line,
+                        self.boldFont,          # Korean is always bold
+                        self.memberColors,
+                        anchor="ne"
+                    )
+                    lastId = self.textItems[-1]
+                    h = self._getItemHeight(lastId)
+
+                # --- ROMANIZATION ---
+                elif kind == "roman":
+                    tid = self.canvas.create_text(
+                        anchorX,
+                        currentY,
+                        text=line,
+                        font=self.font,         # normal font
+                        fill="grey",
+                        anchor="ne",
+                        state="normal"
+                    )
+                    self.canvas.addtag_withtag("lyrics", tid)
+                    self.textItems.append(tid)
+                    self._storeOffset(tid, anchorX, currentY)
+                    h = self._getItemHeight(tid)
+
+                # --- ENGLISH ---
+                elif kind == "english":
+                    # THIS is the key rule:
+                    # If language is Korean → English is bold
+                    # If language is English → English uses englishFont
+                    fontToUse = self.boldFont if self.language == "Korean" else self.englishFont
+
+                    tid = self.canvas.create_text(
+                        anchorX,
+                        currentY,
+                        text=line,
+                        font=fontToUse,
+                        fill=self.memberColors[0],
+                        anchor="ne",
+                        state="normal"
+                    )
+                    self.canvas.addtag_withtag("lyrics", tid)
+                    self.textItems.append(tid)
+                    self._storeOffset(tid, anchorX, currentY)
+                    h = self._getItemHeight(tid)
+
+                else:
+                    continue
+
+                lineHeights.append(h)
+                currentY += h + lineGapY
+                
         # Measure lyric height in canvas units
-        textHeightCanvas = self._getItemHeight(textId)
+        textHeightCanvas = sum(lineHeights) + lineGapY * max(0, len(lineHeights) - 1)
 
         # Total height (canvas units) used by normal on-screen checks
         # Include member name line if present
@@ -561,7 +625,7 @@ class LyricBox:
             
         self.hide()    
             
-    def _createColorCodedText(self, x, y, text, font, colors):
+    def _createColorCodedText(self, x, y, text, font, colors, anchor="nw"):
         """
         Create multi-colored text where color changes at each '|'.
         All positions are stored as RELATIVE offsets from lyric box origin.
@@ -580,7 +644,7 @@ class LyricBox:
             
             textId = self.canvas.create_text(
                 textX, y, text=part, font=font, 
-                fill=colors[colorIndex], anchor="nw", state="normal"
+                fill=colors[colorIndex], anchor=anchor, state="normal"
             )
             self.canvas.addtag_withtag("lyrics", textId)
             self.textItems.append(textId)
