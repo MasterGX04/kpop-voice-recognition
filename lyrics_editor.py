@@ -692,7 +692,8 @@ class LyricsEditor:
                 def onDelete(sc=startChunk):
                     if not messagebox.askyesno(
                         "Delete Lyric",
-                        f"Delete lyric at startChunk {sc}?\n\nThis cannot be undone."
+                        f"Delete lyric at startChunk {sc}?\n\nThis cannot be undone.",
+                        parent=self.app.root
                     ):
                         return
 

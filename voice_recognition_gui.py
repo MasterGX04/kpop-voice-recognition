@@ -11,7 +11,7 @@ from urllib.parse import urlparse, urlunparse, quote
 import urllib.request
 import io, shutil
 from audio_tester import VoiceDetectionApp
-from util_functions import ModalGuard
+from util_functions import findBestAudioFiles, pickBestAudioForStem, ModalGuard
 from image_generator import make_member_card, make_dark_member_card
 
 class VoiceTrainerGUI:
@@ -1062,6 +1062,7 @@ class VoiceTrainerGUI:
         self.refreshSongPickerUI()
         _setVideoLabel()
     
+    
     def refreshSongPickerUI(self):
         """
         Rebuilds the song list UI inside the existing song picker window.
@@ -1096,14 +1097,7 @@ class VoiceTrainerGUI:
         # Recompute song list
         songDir = self.groupRegistry.getGroupMediaDir(selectedGroup)
         try:
-            songList = sorted(
-                [
-                    f.replace(".wav", "")
-                    for f in os.listdir(songDir)
-                    if f.endswith(".wav") and "_vocals" not in f
-                ],
-                key=str.lower
-            )
+            songList, bestBySong = findBestAudioFiles(songDir)
         except Exception as e:
             print(f"❌ Could not list songs in {songDir}: {e}")
             songList = []
@@ -1382,7 +1376,7 @@ class VoiceTrainerGUI:
         def launchVoiceApp(songName, memberImages, videoPath):
             if not ModalGuard.try_open("voice_app"):
                 return  # another modal is open
-            testSongPath = os.path.join(songDir, f"{songName}.wav")
+            testSongPath = pickBestAudioForStem(songDir, songName)
             vocalsOnlyPath = os.path.join(songDir, f"{songName}_vocals.wav")
             vocalsLeadPath = os.path.join(songDir, f"{songName}_leading_vocals.wav")
             vocalsBackingPath =  os.path.join(songDir, f"{songName}_backing_vocals.wav")

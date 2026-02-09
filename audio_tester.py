@@ -127,6 +127,7 @@ class VoiceDetectionApp:
         self.exportStopEvent = threading.Event()
         self.root.bind_all("<Escape>", self._onCancelExport) 
         self.songDir = songDir
+        self.originalSongPath = testSongPath
         
         # names for leading and backing vocal files
         cachedMix, _ = ensureAudioForPlayback(testSongPath)
@@ -611,13 +612,9 @@ class VoiceDetectionApp:
         if self.isExportingVideo:
             return
         
-        videoPath = os.path.join(
-            self.songDir, f"{self.songName}.mp4"
-        )
+        videoPath = self.videoPath
 
-        originalWavPath = os.path.join(
-            self.songDir, f"{self.songName}.wav"
-        )
+        originalAudioPath = self.originalSongPath
         
         savedChunk = int(self.currentChunkIndex)
         savedSection = int(self.currentSectionIndex)
@@ -633,8 +630,8 @@ class VoiceDetectionApp:
             # (processVideoAndSave will use self.currentChunkIndex after the change above)
             self.videoTrackItem.processVideoAndSave(
                 songName=self.songName,
-                originalAudioPath=originalWavPath,
-                originalVideoPath=(videoPath if self.videoTrackItem.isMusicVideo else self.videoPath),
+                originalAudioPath=originalAudioPath,
+                originalVideoPath=videoPath,
                 fpsCap=(0 if self.videoTrackItem.isMusicVideo else 24),
             )
         finally:
@@ -952,7 +949,7 @@ class VoiceDetectionApp:
             return
 
         # ---- Overlay cleanup (always by markerId) ----
-        self.labelOverlay.hideNow()
+        self.labelOverlay.hide()
         self.labelOverlay.forgetMarker(markerId)
 
         # ---- Case 1: a label is selected -> delete the whole label (preferred, avoids ambiguity) ----

@@ -1,6 +1,9 @@
 import subprocess
 import json
 import os
+from pathlib import Path
+import re
+from dataclasses import dataclass
 
 def hexToRgb01(hexColor: str):
     hexColor = hexColor.strip().lstrip("#")
@@ -144,6 +147,151 @@ def getCached720pVideo(videoPath, cacheDir="./cache_audio"):
 
     subprocess.run(cmd, check=True)
     return cachedPath
+
+_AUDIO_EXT_PRIORITY = {
+    ".wav": 100,   # uncompressed PCM (usually)
+    ".flac": 95,   # lossless compressed
+    ".aiff": 90,   # uncompressed (often)
+    ".aif": 90,
+    ".m4a": 80,    # container, usually AAC/ALAC (could be lossless ALAC)
+    ".alac": 80,   # sometimes used as extension (less common)
+    ".aac": 75,    # lossy but decent
+    ".mp3": 70,    # lossy, very common (your #2)
+    ".ogg": 60,    # Vorbis/Opus container
+    ".opus": 60,
+    ".wma": 40,    # legacy Windows format
+}
+
+_STEM_SUFFIXES_TO_STRIP = (
+    "_leading_vocals",
+    "_backing_vocals",
+    "_vocals",
+)
+
+def _normalizeSongStem(stem: str) -> str:
+    """
+    Convert a filename stem into a canonical song name:
+    - remove known suffixes like _leading_vocals, _backing_vocals, _vocals
+    - collapse extra whitespace/underscores
+    - keep the rest intact
+    """
+    s = stem
+
+    # Strip any of the suffixes (case-insensitive) if present at end.
+    lowered = s.lower()
+    for suf in _STEM_SUFFIXES_TO_STRIP:
+        if lowered.endswith(suf):
+            s = s[: len(s) - len(suf)]
+            lowered = s.lower()
+            break
+
+    # Optional: clean trailing separators like "_" or "-" after stripping
+    s = re.sub(r"[\s_-]+$", "", s)
+
+    # Normalize internal whitespace a bit (don’t overdo it; preserve user’s naming)
+    s = re.sub(r"\s+", " ", s).strip()
+    return s
+
+def _audioExtScore(ext: str) -> int:
+    return _AUDIO_EXT_PRIORITY.get(ext.lower(), 0)
+
+@dataclass(frozen=True)
+class AudioPick:
+    songName: str          # normalized base name used in UI
+    path: str              # best file path for that song
+    ext: str               # extension chosen
+    score: int             # extension priority
+    sizeBytes: int         # file size tie-breaker
+
+def findBestAudioFiles(songDir: str):
+    """
+    Scans songDir for audio files, groups by normalized song name, and selects the best candidate
+    per song using:
+      1) extension priority (wav highest, mp3 second, then other common types)
+      2) file size as tie-breaker for same extension
+    Returns:
+      - sortedSongNames: list[str] of unique song names for the picker
+      - bestBySong: dict[songName -> AudioPick] containing the best path to load later
+    """
+    p = Path(songDir)
+    if not p.exists() or not p.is_dir():
+        return [], {}
+
+    bestBySong = {}
+
+    for entry in p.iterdir():
+        if not entry.is_file():
+            continue
+
+        ext = entry.suffix.lower()
+        score = _audioExtScore(ext)
+        if score <= 0:
+            continue  # not a recognized audio type
+
+        stem = entry.stem  # filename without extension
+        songName = _normalizeSongStem(stem)
+        if not songName:
+            continue
+
+        try:
+            sizeBytes = entry.stat().st_size
+        except Exception:
+            sizeBytes = 0
+
+        candidate = AudioPick(
+            songName=songName,
+            path=str(entry),
+            ext=ext,
+            score=score,
+            sizeBytes=sizeBytes
+        )
+
+        current = bestBySong.get(songName)
+        if current is None:
+            bestBySong[songName] = candidate
+            continue
+
+        # Prefer higher extension score; if tied, prefer larger file
+        if (candidate.score > current.score) or (
+            candidate.score == current.score and candidate.sizeBytes > current.sizeBytes
+        ):
+            bestBySong[songName] = candidate
+
+    sortedSongNames = sorted(bestBySong.keys(), key=str.lower)
+    return sortedSongNames, bestBySong
+
+def pickBestAudioForStem(songDir: str, stem: str):
+    """
+    Find best audio file matching exactly "<stem>.<ext>" in songDir.
+    Priority: extension score, then file size.
+    Returns full path or None if not found.
+    """
+    p = Path(songDir)
+    if not p.exists():
+        return None
+
+    bestPath = None
+    bestScore = -1
+    bestSize = -1
+
+    # Only match exact stem; no fuzzy matching (keeps behavior predictable)
+    for ext in _AUDIO_EXT_PRIORITY.keys():
+        candidate = p / f"{stem}{ext}"
+        if not candidate.exists() or not candidate.is_file():
+            continue
+
+        score = _audioExtScore(ext)
+        try:
+            size = candidate.stat().st_size
+        except Exception:
+            size = 0
+
+        if (score > bestScore) or (score == bestScore and size > bestSize):
+            bestPath = str(candidate)
+            bestScore = score
+            bestSize = size
+
+    return bestPath
 
 class ModalGuard:
     _open_modals = set()

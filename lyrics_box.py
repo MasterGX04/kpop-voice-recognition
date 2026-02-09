@@ -563,7 +563,7 @@ class LyricBox:
             nameX = textX
             for i, name in enumerate(self.memberNames):
                 partId = self.canvas.create_text(
-                    nameX, y, text=name, font=self.font, fill=self.memberColors[i], anchor="nw", state="normal"
+                    nameX, y, text=name, font=self.boldFont, fill=self.memberColors[i], anchor="nw", state="normal"
                 )
                 self.canvas.addtag_withtag("lyrics", partId)
                 nameIds.append(partId)
