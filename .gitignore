@@ -55,7 +55,11 @@ voice_classifier.py
 training_ui.py
 pitch_test.py
 harmony_test.py
+extract_adlibs.py
 
 *predictions.csv
 *_test_harmonies.json
 *_history.json
+
+ffmpeg.exe
+ffprobe.exe
