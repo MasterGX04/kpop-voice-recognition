@@ -3,7 +3,7 @@ import json
 import torch, torchaudio, math
 import itertools
 import torch.nn.functional as F
-from train_kpop_singers import MultiTaskHead, MuQEncoderWrapper
+from train_kpop_singers import PresenceHead, MuQEncoderWrapper
 from muq import MuQ
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -327,7 +327,7 @@ def predict_40ms(
         real_member_mask[gang_idx] = False
     
     fused_dim = emb_dim * 2
-    head = MultiTaskHead(emb_dim_fused=fused_dim, emb_dim_ctx=emb_dim, num_members=num_members).to(device)
+    head = PresenceHead(emb_dim_fused=fused_dim, emb_dim_ctx=emb_dim, num_members=num_members).to(device)
     head.load_state_dict(ckpt["state_dict"], strict=True)
     head.eval()
 

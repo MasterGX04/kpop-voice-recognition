@@ -1,6 +1,6 @@
 import subprocess
 import json
-import os
+import os, sys
 from pathlib import Path
 import re
 from dataclasses import dataclass
@@ -108,6 +108,11 @@ def getHalfCpuThreads(minThreads=2, maxThreads=16):
     threads = max(minThreads, cores // 2)
     return min(threads, maxThreads)  # optional cap so you don't go crazy
 
+def resourcePath(*parts: str) -> str:
+    # When packaged (PyInstaller), sys._MEIPASS points to the temp extracted dir
+    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base, *parts)
+
 def getCached720pVideo(videoPath, cacheDir="./cache_audio"):
     """
     Returns path to a 720p-safe video.
@@ -129,9 +134,9 @@ def getCached720pVideo(videoPath, cacheDir="./cache_audio"):
 
     threads = getHalfCpuThreads()
     print(f"🎥 Downscaling video {width}x{height} → 720p cache")
-
+    ffmpegPath = resourcePath("ffmpeg.exe") 
     cmd = [
-        "ffmpeg",
+        ffmpegPath,
         "-y",
         "-i", videoPath,
         "-vf", "scale=-2:720",  # preserve aspect ratio, divisible by 2
@@ -312,9 +317,7 @@ class ModalGuard:
         """Mark a modal as closed."""
         if key in cls._open_modals:
             cls._open_modals.discard(key)
-        else:
-            print(f"Warning: Attempted to close modal '{key}' which was not open.")
-
+        
     @classmethod
     def is_open(cls, key: str) -> bool:
         return key in cls._open_modals

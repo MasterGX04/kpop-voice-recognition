@@ -17,13 +17,15 @@ from image_generator import make_member_card, make_dark_member_card
 class VoiceTrainerGUI:
     def __init__(self, root):
         self.root = root
+        baseData = dataDir()
         self.groupRegistry = GroupRegistry(
-            iconsRoot="group_icons",
-            groupsJsonPath = "groups.json",
+            iconsRoot=str(baseData / "group_icons"),
+            groupsJsonPath=str(baseData / "groups.json")
         )
         self.groups = self.groupRegistry.groups
         groupNames = list(self.groups.keys())
         self.currentGroup = tk.StringVar(value=groupNames[0] if groupNames else "")
+        self.groupRegistry.setCurrentGroup = self.currentGroup.set  # allow registry to update current group in GUI
         self.imageSize = (100, 100)
         self.groupMenu = None
         self.cacheMenu = None
@@ -46,6 +48,7 @@ class VoiceTrainerGUI:
             self.showEmptyGroupsState()
             
         self.updateGroupMenuState()
+        self.root.bind("<Control-Shift-L>", lambda event: self.extractSong())
     
     def createMenuBar(self):
         menubar = tk.Menu(self.root)
@@ -71,7 +74,6 @@ class VoiceTrainerGUI:
         self.groupMenu.add_command(
             label="Generate Bright/Dark Member Images...",
             command=self.openGenerateMemberImagesDialog,
-            state="disabled"
         )
         self.generateImagesMenuIndex = self.groupMenu.index("end")
         
@@ -100,12 +102,6 @@ class VoiceTrainerGUI:
             1,
             state="normal" if hasGroup else "disabled"
         )
-        
-        if self.generateImagesMenuIndex is not None:
-            self.groupMenu.entryconfig(
-                self.generateImagesMenuIndex,
-                state="normal" if hasGroup else "disabled"
-            )
             
         if self.setMediaFolderMenuIndex is not None:
             self.groupMenu.entryconfig(
@@ -459,7 +455,7 @@ class VoiceTrainerGUI:
     def _getMemberCustomCachePath(self, groupName: str, memberName: str, ext: str) -> str:
         safe = "".join(c for c in memberName if c.isalnum() or c in (" ", "_", "-")).strip()
         safe = safe.replace(" ", "_") or "member"
-        cacheDir = os.path.join("member_images", groupName, "_custom")
+        cacheDir = os.path.join(dataDir(), "member_images", groupName, "_custom")
         os.makedirs(cacheDir, exist_ok=True)
         return os.path.join(cacheDir, f"{safe}{ext}")
     
@@ -940,7 +936,8 @@ class VoiceTrainerGUI:
     
     def initPlaceholders(self):
         try:
-            img = Image.open("placeholder.png").resize((100, 100))
+            path = resourcePath("placeholder.png")
+            img = Image.open(path).resize((100, 100), Image.LANCZOS)
         except Exception as e:
             print(f"[⚠️] Failed to load placeholder.png: {e}")
             img = Image.new("RGB", (100, 100), "gray")
@@ -979,6 +976,27 @@ class VoiceTrainerGUI:
         # ---- Layout: top bar + scrollable list below ----
         top = tk.Frame(songWindow)
         top.pack(fill="x", padx=8, pady=6)
+        
+        # Friendly "where do I put images?" hint
+        iconsHintText = (
+            "Heads up: to show group/member pictures, put your Light / Dark / Circle images in:\n"
+            "./group_icons/{group_name}/{albumDisplayName}\n"
+            "Yeah, this is kind of unintuitive right now — I’ll make this easier in a future update 🙂"
+        )
+        
+        # Make it wrap nicely to window width
+        rootW = self.root.winfo_width() or 1200
+        hintWrap = int(rootW * 0.75)  # tweak if you want tighter/looser wrapping
+
+        iconsHintLabel = tk.Label(
+            top,
+            text=iconsHintText,
+            anchor="w",
+            justify="left",
+            wraplength=hintWrap,
+            fg="#666666",
+        )
+        iconsHintLabel.pack(side="top", fill="x", pady=(0, 6))
 
         listContainer = tk.Frame(songWindow)
         listContainer.pack(fill="both", expand=True)
@@ -1002,6 +1020,15 @@ class VoiceTrainerGUI:
                 pass
 
         canvas.bind("<Configure>", _onCanvasConfigure)
+        
+        def _updateHintWrap(event=None):
+            try:
+                iconsHintLabel.config(wraplength=max(400, songWindow.winfo_width() - 40))
+            except Exception:
+                pass
+
+        songWindow.bind("<Configure>", _updateHintWrap)
+        _updateHintWrap()
 
         # Update scrollregion whenever content changes size
         frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
@@ -1044,7 +1071,7 @@ class VoiceTrainerGUI:
             chosen = filedialog.askopenfilename(
                 parent=songWindow,
                 title="Choose a video file (.mp4/.mov/.mkv)",
-                initialdir=songDir if os.path.isdir(songDir) else ".",
+                initialdir=songDir if os.path.isdir(songDir) else exeDir(),
                 filetypes=[
                     ("Video files", "*.mp4 *.mov *.mkv *.webm"),
                     ("MP4", "*.mp4"),
@@ -1269,7 +1296,7 @@ class VoiceTrainerGUI:
     # -------- Cache helpers --------   
     def getCacheDir(self) -> Path:
         # Always use ./cache_audio
-        return Path("./cache_audio")
+        return Path(f"{dataDir()}/cache_audio")
     
     def getCacheSizeBytes(self) -> int:
         cacheDir = self.getCacheDir()
@@ -1377,6 +1404,7 @@ class VoiceTrainerGUI:
             if not ModalGuard.try_open("voice_app"):
                 return  # another modal is open
             testSongPath = pickBestAudioForStem(songDir, songName)
+            print(f"Test song path: {testSongPath}")
             vocalsOnlyPath = os.path.join(songDir, f"{songName}_vocals.wav")
             vocalsLeadPath = os.path.join(songDir, f"{songName}_leading_vocals.wav")
             vocalsBackingPath =  os.path.join(songDir, f"{songName}_backing_vocals.wav")
@@ -1388,26 +1416,48 @@ class VoiceTrainerGUI:
             appWindow = tk.Toplevel(self.root)
             appWindow.title("Line Distribution Labeler")
             appWindow.geometry("960x540")
-            
-            # Please stop having a stroke app
             appWindow.update_idletasks()
             appWindow.minsize(960, 540)
-            continueApp = [True]
-            firstMember = self.groups[selectedGroup]['members'][0]['name']
+
             app = None
 
-            def onClose():
-                if tk.messagebox.askyesno("Exit", "Do you want to stop the application?"):
-                    if hasattr(app, "videoTrackItem") and app.videoTrackItem:
+            def shutdownVoiceApp():
+                nonlocal app
+                try:
+                    if app and getattr(app, "videoTrackItem", None):
                         app.videoTrackItem.pause()
                         app.videoTrackItem.stop()
+                except Exception:
+                    pass
 
-                    continueApp[0] = False
+                # If you used pygame for audio, stop it explicitly
+                try:
+                    import pygame
+                    pygame.mixer.music.stop()
+                    pygame.mixer.quit()
+                    pygame.quit()
+                except Exception:
+                    pass
+
+                try:
                     appWindow.destroy()
-                    
-                    sys.exit()
+                except Exception:
+                    pass
+
+            def onClose():
+                if messagebox.askyesno("Exit", "Do you want to stop the application?", parent=appWindow):
+                    shutdownVoiceApp()
 
             appWindow.protocol("WM_DELETE_WINDOW", onClose)
+
+            def onRootClose():
+                try:
+                    if appWindow.winfo_exists():
+                        shutdownVoiceApp()
+                finally:
+                    self.root.destroy()
+
+            self.root.protocol("WM_DELETE_WINDOW", onRootClose)
 
             memberList = self.groups[selectedGroup]["members"]
             app = VoiceDetectionApp(
@@ -1436,25 +1486,10 @@ class VoiceTrainerGUI:
         )    
     
     def openGenerateMemberImagesDialog(self):
-        groupName = self.currentGroup.get().strip()
-        if not groupName:
-            messagebox.showerror("Generate Images", "No group selected.", parent=self.root)
-            return
-
-        # Load group manifest (group.json) from ./group_icons/<group>/group.json
-        groupDir = self.groupRegistry.getGroupDir(groupName)
-        manifest = self.groupRegistry._loadGroupManifest(groupDir)
-        if not manifest:
-            messagebox.showerror(
-                "Generate Images",
-                f"No group.json found for '{groupName}'.\n\n"
-                "Create or rescan the group first.",
-                parent=self.root
-            )
-            return
-
+        # ----------------------------
+        # Build window first (so user can choose mode even if no group selected)
+        # ----------------------------
         win = tk.Toplevel(self.root)
-        win.title(f"Generate Member Images — {groupName}")
         win.transient(self.root)
         win.grab_set()
 
@@ -1462,18 +1497,234 @@ class VoiceTrainerGUI:
         frm.pack(fill="both", expand=True)
         frm.columnconfigure(1, weight=1)
 
-        # Directory that contains "{member} Circle.png"
-        dirVar = tk.StringVar(value="")
-        # Square color (background block behind circle)
-        squareVar = tk.StringVar(value="#1A1A1A")   # Bright square color (user)
-        ringVar = tk.StringVar(value="#ffffff")     # Bright ring override (user)
-        # Font path (you can default to your Hiragino path if you want)
-        fontVar = tk.StringVar(
-            value=r"C:\Users\elvin\AppData\Local\Microsoft\Windows\Fonts\Hiragino Sans GB W3.ttf"
-        )
+        # Mode toggle
+        currentSelectedGroup = (self.currentGroup.get().strip() if hasattr(self, "currentGroup") else "")
+        modeVar = tk.StringVar(value=("selected" if currentSelectedGroup else "new"))
 
-        ttk.Label(frm, text="Circle images folder:").grid(row=0, column=0, sticky="w")
-        ttk.Entry(frm, textvariable=dirVar).grid(row=0, column=1, sticky="ew", padx=(8, 0))
+        # Selected group vars
+        groupNameVar = tk.StringVar(value=currentSelectedGroup)
+
+        # New group vars
+        newGroupNameVar = tk.StringVar(value="")
+        membersJsonVar = tk.StringVar(value='[{"name":"Member1","color":"#ff0000"}]')
+
+        # Shared vars
+        dirVar = tk.StringVar(value="")
+        squareVar = tk.StringVar(value="#1A1A1A")
+        ringVar = tk.StringVar(value="#ffffff")
+
+        defaultFontPath = resourcePath("fonts", "Pretendard-Regular.ttf")
+        if not os.path.exists(defaultFontPath):
+            defaultFontPath = ""
+        fontVar = tk.StringVar(value=defaultFontPath)
+
+        statusVar = tk.StringVar(value="")
+
+        def _tryInferGroupAndThemeFromOutDir(outDir: str):
+            """
+            If outDir looks like: .../group_icons/<GROUP>/<ALBUM>
+            return (groupName, groupDirPath, themeName). Else return (None, None, None).
+            """
+            try:
+                p = Path(outDir).resolve()
+                if not p.exists() or not p.is_dir():
+                    return (None, None, None)
+
+                groupDir = p.parent
+                themeName = p.name
+                groupName = groupDir.name
+
+                # Must be inside the registry iconsRoot to be "trusted"
+                iconsRoot = Path(self.groupRegistry.iconsRoot).resolve()
+                try:
+                    rel = groupDir.relative_to(iconsRoot)
+                except Exception:
+                    return (None, None, None)
+
+                # Expect rel == <GROUP>
+                if rel.parts and rel.parts[0].lower() == groupName.lower():
+                    return (groupName, groupDir, themeName)
+
+                # More strict: groupDir must be direct child of iconsRoot
+                if groupDir.parent == iconsRoot:
+                    return (groupName, groupDir, themeName)
+
+                return (None, None, None)
+            except Exception:
+                return (None, None, None)
+
+        def setDialogTitleAndHelp():
+            if modeVar.get() == "selected":
+                g = groupNameVar.get().strip()
+                win.title(f"Generate Member Images — {g}" if g else "Generate Member Images — (No group selected)")
+                statusVar.set(
+                    "Mode: Selected group. Loads ./group_icons/<group>/group.json.\n"
+                    "Tip: If you browse to ./group_icons/<group>/<album>, this will also set activeTheme=<album> and save."
+                )
+            else:
+                win.title("Generate Member Images — New Group")
+                statusVar.set(
+                    "Mode: New group. Enter group + members OR just browse to ./group_icons/<group>/<album> and it will auto-save group.json with activeTheme=<album>."
+                )
+
+        def onModeChanged():
+            isSelected = (modeVar.get() == "selected")
+            # Toggle UI sections
+            selectedGroupFrame.grid() if isSelected else selectedGroupFrame.grid_remove()
+            newGroupFrame.grid_remove() if isSelected else newGroupFrame.grid()
+
+            # If switching to selected mode, sync groupNameVar from dropdown
+            if isSelected:
+                latest = self.currentGroup.get().strip() if hasattr(self, "currentGroup") else ""
+                if latest:
+                    groupNameVar.set(latest)
+
+            setDialogTitleAndHelp()
+
+        # ----------------------------
+        # Row 0: Mode toggle
+        # ----------------------------
+        ttk.Label(frm, text="Generate for:").grid(row=0, column=0, sticky="w")
+        modeFrame = ttk.Frame(frm)
+        modeFrame.grid(row=0, column=1, columnspan=2, sticky="w", padx=(8, 0))
+
+        ttk.Radiobutton(
+            modeFrame, text="Selected group (from dropdown)", value="selected",
+            variable=modeVar, command=onModeChanged
+        ).pack(side="left", padx=(0, 12))
+
+        ttk.Radiobutton(
+            modeFrame, text="New group (manual)", value="new",
+            variable=modeVar, command=onModeChanged
+        ).pack(side="left")
+
+        # ----------------------------
+        # Selected-group section
+        # ----------------------------
+        selectedGroupFrame = ttk.Frame(frm)
+        selectedGroupFrame.grid(row=1, column=0, columnspan=3, sticky="ew", pady=(8, 0))
+        selectedGroupFrame.columnconfigure(1, weight=1)
+
+        ttk.Label(selectedGroupFrame, text="Group name:").grid(row=0, column=0, sticky="w")
+        ttk.Entry(selectedGroupFrame, textvariable=groupNameVar).grid(row=0, column=1, sticky="ew", padx=(8, 0))
+
+        ttk.Label(
+            selectedGroupFrame,
+            text="(Loads ./group_icons/<group>/group.json to get members + colors.)",
+        ).grid(row=1, column=0, columnspan=2, sticky="w", pady=(4, 0))
+
+        # ----------------------------
+        # New-group section
+        # ----------------------------
+        newGroupFrame = ttk.Frame(frm)
+        newGroupFrame.grid(row=2, column=0, columnspan=3, sticky="ew", pady=(8, 0))
+        newGroupFrame.columnconfigure(1, weight=1)
+
+        ttk.Label(newGroupFrame, text="New group name:").grid(row=0, column=0, sticky="w")
+        ttk.Entry(newGroupFrame, textvariable=newGroupNameVar).grid(row=0, column=1, sticky="ew", padx=(8, 0))
+
+        membersRowsFrame = ttk.Frame(newGroupFrame)
+        membersRowsFrame.grid(row=3, column=0, columnspan=2, sticky="ew", pady=(8, 0))
+        membersRowsFrame.columnconfigure(1, weight=1)
+
+        memberRowVars = []  # list of (nameVar, colorVar)
+
+        def clearMemberRows():
+            nonlocal memberRowVars
+            for w in membersRowsFrame.winfo_children():
+                w.destroy()
+            memberRowVars = []
+
+        def addMemberRow(memberName: str, colorHex: str = "#ffffff"):
+            nameVar = tk.StringVar(value=memberName)
+            colorVar = tk.StringVar(value=(colorHex or "#ffffff").lower())
+
+            r = len(memberRowVars)
+
+            ttk.Label(membersRowsFrame, text="Name:").grid(row=r, column=0, sticky="w", pady=2)
+            ttk.Entry(membersRowsFrame, textvariable=nameVar, width=18).grid(row=r, column=1, sticky="ew", padx=(6, 6), pady=2)
+
+            ttk.Label(membersRowsFrame, text="Color:").grid(row=r, column=2, sticky="w", pady=2)
+            ttk.Entry(membersRowsFrame, textvariable=colorVar, width=12).grid(row=r, column=3, sticky="w", padx=(6, 6), pady=2)
+
+            def pickRowColor():
+                initial = colorVar.get().strip() or "#ffffff"
+                _, hexStr = colorchooser.askcolor(color=initial, title=f"Pick color for {memberName}", parent=win)
+                if hexStr:
+                    colorVar.set(hexStr.lower())
+
+            ttk.Button(membersRowsFrame, text="Pick…", command=pickRowColor).grid(row=r, column=4, sticky="w", pady=2)
+
+            memberRowVars.append((nameVar, colorVar))
+
+        def scanMembersFromCircleDir(outDir: str):
+            """
+            Detect members from files: '{memberName} Circle.png' in outDir.
+            Creates editable rows (name + color picker).
+            """
+            outDir = (outDir or "").strip()
+            if not outDir or not os.path.isdir(outDir):
+                messagebox.showerror("Scan Members", "Please choose a valid Circle images folder first.", parent=win)
+                return
+
+            circleFiles = []
+            try:
+                for fn in os.listdir(outDir):
+                    if not fn.lower().endswith(".png"):
+                        continue
+                    # must end with " Circle.png" (case sensitive-ish)
+                    if fn.lower().endswith(" circle.png"):
+                        circleFiles.append(fn)
+            except Exception as e:
+                messagebox.showerror("Scan Members Failed", f"{type(e).__name__}: {e}", parent=win)
+                return
+
+            # Parse member names
+            membersFound = []
+            for fn in circleFiles:
+                # remove trailing " Circle.png" preserving original name
+                name = fn[:-len(" Circle.png")]
+                name = name.strip()
+                if name:
+                    membersFound.append(name)
+
+            if not membersFound:
+                messagebox.showwarning(
+                    "Scan Members",
+                    "No files matching '{memberName} Circle.png' were found in that folder.",
+                    parent=win
+                )
+                return
+
+            clearMemberRows()
+
+            # Auto-fill new group name if empty, using folder inference logic you already have
+            inferredGroupName, inferredGroupDir, inferredTheme = _tryInferGroupAndThemeFromOutDir(outDir)
+            if modeVar.get() == "new" and inferredGroupName and not newGroupNameVar.get().strip():
+                newGroupNameVar.set(inferredGroupName)
+
+            # Pre-fill colors:
+            # If we can find Dark {member}.png in the same folder, try reading corner color.
+            # Otherwise default white and let user pick.
+            for memberName in membersFound:
+                colorHex = "#ffffff"
+                try:
+                    darkPath = os.path.join(outDir, f"Dark {memberName}.png")
+                    if os.path.exists(darkPath):
+                        colorHex = self.groupRegistry._inferHexFromImageCorner(Path(darkPath))
+                except Exception:
+                    pass
+                addMemberRow(memberName, colorHex)
+
+            statusVar.set(f"Found {len(membersFound)} members from circle filenames. Pick colors, then click Create.")
+
+        # ----------------------------
+        # Shared controls
+        # ----------------------------
+        startRow = 3  # shared controls start row index
+
+        ttk.Label(frm, text="Circle images folder:").grid(row=startRow, column=0, sticky="w", pady=(10, 0))
+        ttk.Entry(frm, textvariable=dirVar).grid(row=startRow, column=1, sticky="ew", padx=(8, 0), pady=(10, 0))
 
         def chooseDir():
             selected = filedialog.askdirectory(
@@ -1483,30 +1734,44 @@ class VoiceTrainerGUI:
             if selected:
                 dirVar.set(selected)
 
-        ttk.Button(frm, text="Browse...", command=chooseDir).grid(row=0, column=2, padx=(8, 0))
+                # Nice UX: if they picked group_icons/<group>/<album>, auto-fill group name fields
+                inferredGroupName, inferredGroupDir, inferredTheme = _tryInferGroupAndThemeFromOutDir(selected)
+                if inferredGroupName:
+                    if modeVar.get() == "selected":
+                        groupNameVar.set(inferredGroupName)
+                    else:
+                        newGroupNameVar.set(inferredGroupName)
+                    # Update the title/status to reflect auto-detection
+                    setDialogTitleAndHelp()
 
+        ttk.Button(frm, text="Browse...", command=chooseDir).grid(row=startRow, column=2, padx=(8, 0), pady=(10, 0))
+
+        ttk.Button(
+            frm,
+            text="Scan members from Circle PNGs",
+            command=lambda: scanMembersFromCircleDir(dirVar.get())
+        ).grid(row=startRow + 1, column=0, padx=(8, 0), pady=(10, 0), sticky="w")
+        
         def pickHexColor(targetVar: tk.StringVar, title: str):
             initial = targetVar.get().strip() or "#ffffff"
             rgb, hexStr = colorchooser.askcolor(color=initial, title=title, parent=win)
             if hexStr:
                 targetVar.set(hexStr.lower())
-        
-        # Bright square color
-        ttk.Label(frm, text="Bright square color (hex):").grid(row=1, column=0, sticky="w", pady=(10, 0))
-        ttk.Entry(frm, textvariable=squareVar).grid(row=1, column=1, sticky="ew", padx=(8, 0), pady=(10, 0))
+
+        ttk.Label(frm, text="Bright square color (hex):").grid(row=startRow + 2, column=0, sticky="w", pady=(10, 0))
+        ttk.Entry(frm, textvariable=squareVar).grid(row=startRow + 2, column=1, sticky="ew", padx=(8, 0), pady=(10, 0))
         ttk.Button(frm, text="Pick…", command=lambda: pickHexColor(squareVar, "Pick bright square color")).grid(
-            row=1, column=2, padx=(8, 0), pady=(10, 0)
+            row=startRow + 2, column=2, padx=(8, 0), pady=(10, 0)
         )
 
-        # Bright ring color override
-        ttk.Label(frm, text="Bright ring color (hex):").grid(row=2, column=0, sticky="w", pady=(10, 0))
-        ttk.Entry(frm, textvariable=ringVar).grid(row=2, column=1, sticky="ew", padx=(8, 0), pady=(10, 0))
+        ttk.Label(frm, text="Bright ring color (hex):").grid(row=startRow + 3, column=0, sticky="w", pady=(10, 0))
+        ttk.Entry(frm, textvariable=ringVar).grid(row=startRow + 3, column=1, sticky="ew", padx=(8, 0), pady=(10, 0))
         ttk.Button(frm, text="Pick…", command=lambda: pickHexColor(ringVar, "Pick bright ring color")).grid(
-            row=2, column=2, padx=(8, 0), pady=(10, 0)
+            row=startRow + 3, column=2, padx=(8, 0), pady=(10, 0)
         )
 
-        ttk.Label(frm, text="Font file (.ttf/.otf):").grid(row=3, column=0, sticky="w", pady=(10, 0))
-        ttk.Entry(frm, textvariable=fontVar).grid(row=3, column=1, sticky="ew", padx=(8, 0), pady=(10, 0))
+        ttk.Label(frm, text="Font file (.ttf/.otf):").grid(row=startRow + 4, column=0, sticky="w", pady=(10, 0))
+        ttk.Entry(frm, textvariable=fontVar).grid(row=startRow + 4, column=1, sticky="ew", padx=(8, 0), pady=(10, 0))
 
         def chooseFont():
             selected = filedialog.askopenfilename(
@@ -1517,13 +1782,68 @@ class VoiceTrainerGUI:
             if selected:
                 fontVar.set(selected)
 
-        ttk.Button(frm, text="Browse...", command=chooseFont).grid(row=3, column=2, padx=(8, 0), pady=(10, 0))
+        ttk.Button(frm, text="Browse...", command=chooseFont).grid(row=startRow + 4, column=2, padx=(8, 0), pady=(10, 0))
 
-        statusVar = tk.StringVar(value="Pick a folder containing circle PNGs, then click Create.")
-        ttk.Label(frm, textvariable=statusVar).grid(row=4, column=0, columnspan=3, sticky="w", pady=(12, 0))
+        ttk.Label(frm, textvariable=statusVar).grid(row=startRow + 5, column=0, columnspan=3, sticky="w", pady=(12, 0))
 
         btnRow = ttk.Frame(frm)
-        btnRow.grid(row=5, column=0, columnspan=3, sticky="e", pady=(12, 0))
+        btnRow.grid(row=startRow + 56, column=0, columnspan=3, sticky="e", pady=(12, 0))
+
+        def loadManifestForSelectedGroup(groupName: str):
+            groupDir = self.groupRegistry.getGroupDir(groupName)
+            manifest = self.groupRegistry._loadGroupManifest(groupDir)
+            return manifest
+
+        def buildManifestForNewGroup():
+            g = newGroupNameVar.get().strip()
+            if not g:
+                raise ValueError("Please enter a new group name.")
+
+            if not memberRowVars:
+                raise ValueError("No members found yet. Click 'Scan members from Circle PNGs' first.")
+
+            members = []
+            for (nameVar, colorVar) in memberRowVars:
+                memberName = (nameVar.get() or "").strip()
+                memberColor = (colorVar.get() or "").strip().lower()
+                if not memberName:
+                    continue
+                if not memberColor:
+                    memberColor = "#ffffff"
+                members.append({"name": memberName, "color": memberColor})
+
+            if not members:
+                raise ValueError("Members list is empty. Please scan members and ensure names are filled in.")
+
+            return {
+                "group": g,
+                "activeTheme": "default",
+                "templates": {},
+                "members": members,
+                "ageOrder": [m["name"] for m in members],
+            }, g
+
+        def _saveManifestAndRegistry(groupName: str, manifest: dict):
+            """
+            Save ./group_icons/<group>/group.json AND ensure groups.json has members.
+            """
+            groupDir = self.groupRegistry.getGroupDir(groupName)
+            os.makedirs(groupDir, exist_ok=True)
+
+            # Write manifest (group.json)
+            self.groupRegistry._saveGroupManifest(Path(groupDir), manifest)
+
+            # Ensure groups.json has this group + members
+            if groupName not in self.groupRegistry.groups or not isinstance(self.groupRegistry.groups.get(groupName), dict):
+                self.groupRegistry.groups[groupName] = {}
+            self.groupRegistry.groups[groupName]["members"] = manifest.get("members", [])
+            self.groupRegistry.saveGroupsToJson()
+
+            # If your GUI has self.groups in-memory, keep it synced too
+            if hasattr(self, "groups") and isinstance(self.groups, dict):
+                if groupName not in self.groups or not isinstance(self.groups.get(groupName), dict):
+                    self.groups[groupName] = {}
+                self.groups[groupName]["members"] = manifest.get("members", [])
 
         def onCreate():
             outDir = dirVar.get().strip()
@@ -1534,12 +1854,97 @@ class VoiceTrainerGUI:
             if not outDir or not os.path.isdir(outDir):
                 messagebox.showerror("Generate Images", "Please choose a valid folder.", parent=win)
                 return
-
             if not fontPath or not os.path.exists(fontPath):
                 messagebox.showerror("Generate Images", "Please choose a valid font file path.", parent=win)
                 return
 
             try:
+                # If outDir is group_icons/<group>/<album>, we will use that album as activeTheme
+                inferredGroupName, inferredGroupDir, inferredTheme = _tryInferGroupAndThemeFromOutDir(outDir)
+
+                if modeVar.get() == "selected":
+                    groupName = groupNameVar.get().strip()
+                    if not groupName:
+                        messagebox.showerror("Generate Images", "No group selected.", parent=win)
+                        return
+
+                    manifest = loadManifestForSelectedGroup(groupName)
+                    if not manifest:
+                        messagebox.showerror(
+                            "Generate Images",
+                            f"No group.json found for '{groupName}'.\n\nCreate or rescan the group first.",
+                            parent=win
+                        )
+                        return
+
+                    # If they picked ./group_icons/<group>/<album>, update activeTheme and save
+                    if inferredGroupName and inferredGroupName.lower() == groupName.lower():
+                        manifest["activeTheme"] = inferredTheme
+                        _saveManifestAndRegistry(groupName, manifest)
+
+                else:
+                    # ----------------------------
+                    # New group mode (NO JSON)
+                    # ----------------------------
+                    # Determine groupName + theme behavior
+                    if inferredGroupName:
+                        groupName = inferredGroupName
+                        themeName = inferredTheme
+                    else:
+                        groupName = newGroupNameVar.get().strip()
+                        themeName = "default"
+
+                    if not groupName:
+                        messagebox.showerror("Generate Images", "Please enter a new group name.", parent=win)
+                        return
+
+                    # Build members from scanned rows
+                    members = []
+                    if "memberRowVars" in locals() and memberRowVars:
+                        for (nameVar, colorVar) in memberRowVars:
+                            n = (nameVar.get() or "").strip()
+                            c = (colorVar.get() or "").strip().lower()
+                            if not n:
+                                continue
+                            if not c:
+                                c = "#ffffff"
+                            members.append({"name": n, "color": c})
+
+                    # If user never scanned (or rows empty), fall back (optional)
+                    if not members:
+                        # If you're ok forcing scan, replace this block with an error instead.
+                        built = None
+                        try:
+                            if inferredGroupDir:
+                                built = self.groupRegistry._buildGroupManifestFromIcons(Path(inferredGroupDir))
+                        except Exception:
+                            built = None
+
+                        if built and isinstance(built.get("members"), list) and built["members"]:
+                            manifest = built
+                        else:
+                            raise ValueError("No members found. Click 'Scan members from Circle PNGs' first.")
+
+                    if "manifest" not in locals():
+                        manifest = {
+                            "group": groupName,
+                            "activeTheme": themeName,
+                            "templates": {
+                                "light": "{member}.png",
+                                "dark": "Dark {member}.png",
+                                "circle": "{member} Circle.png",
+                            },
+                            "members": members,
+                            "ageOrder": [m["name"] for m in members if isinstance(m, dict) and m.get("name")],
+                        }
+
+                    # Force activeTheme to inferred album if we’re inside group_icons/<group>/<album>
+                    if inferredGroupName and inferredTheme:
+                        manifest["activeTheme"] = inferredTheme
+
+                    # Save under ./group_icons/<group>/group.json
+                    _saveManifestAndRegistry(groupName, manifest)
+
                 createdBright, createdDark, missing = self.generateMemberImagesFromManifest(
                     groupName=groupName,
                     manifest=manifest,
@@ -1552,25 +1957,32 @@ class VoiceTrainerGUI:
 
                 statusVar.set(f"Done. Bright: {createdBright}, Dark: {createdDark}, Missing circles: {missing}")
 
+                extraNote = ""
+                if inferredGroupName and inferredTheme:
+                    extraNote = f"\n\nSaved:\n./group_icons/{inferredGroupName}/group.json\n(activeTheme = '{inferredTheme}')"
+
                 messagebox.showinfo(
                     "Generate Images",
                     f"Success for {groupName}.\n\n"
                     f"Created bright images: {createdBright}\n"
                     f"Created dark images: {createdDark}\n"
                     f"Missing circle images: {missing}\n\n"
-                    f"Output folder:\n{outDir}",
+                    f"Output folder:\n{outDir}"
+                    f"{extraNote}",
                     parent=win
                 )
-
-                # Optional: if your GUI displays from member_images/<group>, you might copy outputs there.
-                # For now, we just generate into chosen folder as requested.
+                self.rescanGroups()
+                
 
             except Exception as e:
                 messagebox.showerror("Generate Images Failed", f"{type(e).__name__}: {e}", parent=win)
-
+    
         ttk.Button(btnRow, text="Cancel", command=win.destroy).pack(side="right")
         ttk.Button(btnRow, text="Create", command=onCreate).pack(side="right", padx=(8, 0))
-    
+
+        # Initialize view
+        onModeChanged()
+        
     def generateMemberImagesFromManifest(
         self,
         groupName: str,
@@ -1674,45 +2086,7 @@ class VoiceTrainerGUI:
             "Put all media files for this group in that folder (e.g. .mp3, .wav, .mp4, etc).",
             parent=self.root
         )
-    
-    def visualizeMemberVocals(self):
-        from sklearn.metrics import adjusted_rand_score
-        from sklearn.cluster import KMeans
         
-        selectedGroup = self.currentGroup.get()
-        
-        
-    def combineAllVocalsFromGroup(self):
-        currentGroup = self.currentGroup.get()
-        labelDir = f"./saved_labels/{currentGroup}"
-        audioDir = f"./training_data/{currentGroup}"
-        
-        if not os.path.exists(labelDir) or not os.path.exists(audioDir):
-            messagebox.showerror("Error", f"Paths not found for group: {currentGroup}")
-            return
-        
-        # Get all JsON label files
-        jsonFiles = [
-            os.path.join(labelDir, f) for f in os.listdir(labelDir)
-            if f.endswith("_labels.json")
-        ]
-        
-        # Get all '_vocals.wav' files
-        vocalsOnlySongs = [
-            f for f in os.listdir(audioDir)
-            if f.endswith("_vocals.wav")
-            and not f.endswith("_leading_vocals.wav")
-            and not f.endswith("_backing_vocals.wav")
-        ]
-        
-        if not jsonFiles or not vocalsOnlySongs:
-            messagebox.showwarning("No Data", "No vocal or label files found.")
-            return
-        
-        memberList = [member['name'] for member in self.groups[currentGroup]]
-        combineMemberVocals(jsonFiles, vocalsOnlySongs, currentGroup, memberList)
-        messagebox.showinfo("Done", "Combined and saved member vocals")
-    
     def chooseSongForHarmonyExtraction(self):
         """
         Opens a scrollable song list and extracts harmonies + segments
@@ -1728,9 +2102,13 @@ class VoiceTrainerGUI:
             title=f"Extract Harmonies & Segments for {selectedGroup}",
             callback=onSongSelected
         )
+        
     
-    def extractSong(self):
-        group = self.chooseGroup()
+    def extractSong(self, event=None):
+        group = self.currentGroup.get()
+        memberList = self.groups[group]["members"]
+        members = [member['name'] for member in memberList]
+        print(f"Member list: {members}")
         if group == "Back": return
         vocalsPath = f"./training_data/{group}"
         vocalsOnly = [f for f in os.listdir(vocalsPath) if (f.endswith(".mp3") or f.endswith(".wav")) and "_vocals" in f]
@@ -1739,7 +2117,7 @@ class VoiceTrainerGUI:
             return
         labelDir = f"./saved_labels/{group}"
         labelFiles = [os.path.join(labelDir, f) for f in os.listdir(labelDir) if f.endswith(".json")]
-        combineMemberVocals(labelFiles, vocalsOnly, group)
+        combineMemberVocals(labelFiles, vocalsOnly, group, members)
         
     def openAddGroupDialog(self):
         win = tk.Toplevel(self.root)
@@ -2000,24 +2378,52 @@ class VoiceTrainerGUI:
         with manifestPath.open("w", encoding="utf-8") as f:
             json.dump(manifest, f, indent=4, ensure_ascii=False)
 
+        groupEntry = self.groups.get(groupName)
+        if not isinstance(groupEntry, dict):
+            groupEntry = {}
+            self.groups[groupName] = groupEntry
+            
         # Update in-memory groups so GUI sees it immediately
         self.groups[groupName]["members"] = members
 
         # Refresh dropdown if you already store it on self (recommended)
-        if hasattr(self, "groupDropdown") and self.groupDropdown:
-            groupNames = sorted(list(self.groups.keys()), key=str.lower)
-            self.groupDropdown["values"] = groupNames
+        groupNames = sorted(list(self.groups.keys()), key=str.lower)
+        self.groupDropdown["values"] = groupNames
 
         # Switch current group to the new one and display members
         if hasattr(self, "currentGroup"):
             self.currentGroup.set(groupName)
         self.displayMembers(groupName)
-              
+
+def resourcePath(*parts: str) -> str:
+    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base, *parts)
+
+def exeDir() -> Path:
+    # Where the .exe lives when packaged; where the .py lives in dev
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent
+    return Path(__file__).resolve().parent
+
+def dataDir() -> Path:
+    # Primary: next to exe (as you requested)
+    primary = exeDir()
+    try:
+        primary.mkdir(parents=True, exist_ok=True)
+        test = primary / ".__write_test__"
+        test.write_text("ok", encoding="utf-8")
+        test.unlink(missing_ok=True)
+        return primary
+    except Exception:
+        # Fallback: user-writable appdata (prevents permission crashes)
+        fallback = Path(os.environ.get("APPDATA", str(Path.home()))) / "VoiceTrainer"
+        fallback.mkdir(parents=True, exist_ok=True)
+        return fallback
+       
 if __name__ == "__main__":
     root = tk.Tk()
     
-    icon = tk.PhotoImage(file="./images/logo.png")
-    root.iconphoto(True, icon)
+    root.iconbitmap(resourcePath("images", "logo.ico"))
     
     app = VoiceTrainerGUI(root)
     root.mainloop()

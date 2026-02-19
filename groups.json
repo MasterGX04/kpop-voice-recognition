@@ -65,7 +65,8 @@
                 "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/5/54/Ive_-_Ive_Secret.png",
                 "songs": [
                     "XOXZ",
-                    "Midnight Kiss"
+                    "Midnight Kiss",
+                    "GOTCHA (Baddest Eros)"
                 ]
             },
             "i_ve_mine": {
@@ -82,7 +83,8 @@
                 "albumArtCachePath": "",
                 "albumArtUrl": "",
                 "songs": [
-                    "Summer[Liz]"
+                    "Summer[Liz]",
+                    "Bang Bang"
                 ]
             }
         },
@@ -102,7 +104,9 @@
             "Off The Record": "i_ve_mine",
             "Payback": "i_ve_mine",
             "Summer[Liz]": "revive",
-            "Midnight Kiss": "ive_secret"
+            "Midnight Kiss": "ive_secret",
+            "Bang Bang": "revive",
+            "GOTCHA (Baddest Eros)": "ive_secret"
         },
         "defaultAlbumId": "ive_switch"
     },
@@ -144,45 +148,31 @@
         "members": [
             {
                 "name": "Jin",
-                "color": "#0000ff",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "color": "#0000ff"
             },
             {
                 "name": "Suga",
-                "color": "#46eb7d",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "color": "#46eb7d"
             },
             {
                 "name": "J-Hope",
-                "color": "#eb46b4",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "color": "#eb46b4"
             },
             {
                 "name": "RM",
-                "color": "#eb7d46",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "color": "#eb7d46"
             },
             {
                 "name": "Jimin",
-                "color": "#46b4eb",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "color": "#46b4eb"
             },
             {
                 "name": "V",
-                "color": "#7d46eb",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "color": "#7d46eb"
             },
             {
                 "name": "Jungkook",
-                "color": "#ff0000",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "color": "#ff0000"
             }
         ],
         "albums": {
@@ -257,12 +247,16 @@
                     "Path"
                 ]
             },
-            "map_of_the_soul__7": {
-                "displayName": "Map of The Soul: 7",
-                "albumArtCachePath": "",
-                "albumArtUrl": "",
+            "map_of_the_soul": {
+                "displayName": "Map of The Soul",
+                "albumArtCachePath": "member_images\\BTS\\_album_art\\map_of_the_soul__7.png",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/2/21/BTS_-_Map_of_the_Soul_7.png",
                 "songs": [
-                    "Louder than bombs"
+                    "Louder than bombs",
+                    "Zero O'Clock",
+                    "Black Swan",
+                    "Dionysus",
+                    "Stay Gold"
                 ]
             }
         },
@@ -282,7 +276,11 @@
             "Stigma[V]": "wings",
             "The Planet": "proof",
             "Life Goes On": "be",
-            "Louder than bombs": "map_of_the_soul__7"
+            "Louder than bombs": "map_of_the_soul",
+            "Zero O'Clock": "map_of_the_soul",
+            "Black Swan": "map_of_the_soul",
+            "Dionysus": "map_of_the_soul",
+            "Stay Gold": "map_of_the_soul"
         },
         "defaultAlbumId": "love_yourself_tear"
     },
@@ -712,5 +710,32 @@
             "Blue Hour": "minisode1___blue_hour"
         },
         "defaultAlbumId": "minisode1___blue_hour"
+    },
+    "ARTMS": {
+        "members": [
+            {
+                "name": "JinSoul",
+                "color": "#0000ff"
+            },
+            {
+                "name": "HaSeul",
+                "color": "#0a7a39"
+            },
+            {
+                "name": "Kim Lip",
+                "color": "#ff0000"
+            },
+            {
+                "name": "HeeJin",
+                "color": "#e10086"
+            },
+            {
+                "name": "Choerry",
+                "color": "#6d0379"
+            }
+        ],
+        "albums": {},
+        "songToAlbum": {},
+        "defaultAlbumId": ""
     }
 }

@@ -123,6 +123,7 @@ class LyricsEditor:
         if not ModalGuard.try_open("lyrics_menu"):
             return
         app = self.app
+        app.videoTrackItem.setUiBusy(True)
 
         # Prefill from existing lyric if editing
         prefillMembers = []
@@ -272,8 +273,10 @@ class LyricsEditor:
                 koreanFrame.pack_forget()
                 romanFrame.pack_forget()
             else:
-                koreanFrame.pack(fill="x", pady=5)
-                romanFrame.pack(fill="x", pady=5)
+                if not koreanFrame.winfo_ismapped():
+                    koreanFrame.pack(fill="x", pady=5, before=engFrame)
+                if not romanFrame.winfo_ismapped():
+                    romanFrame.pack(fill="x", pady=5, before=engFrame)
 
         langFrame = tk.Frame(scrollFrame)
         langFrame.pack(fill="x", pady=5)
@@ -394,22 +397,6 @@ class LyricsEditor:
             romanization = romanEntry.get("1.0", "end").strip() if langVar.get() == "Korean" else ""
             englishTrans = engEntry.get("1.0", "end").strip()
 
-            # If editing and the key changed, remove the old one first
-            if mode == "edit" and existingStartChunk is not None:
-                oldKey = int(existingStartChunk)
-                
-                # Case A: startChunk changed -> destroy oldKey
-                if oldKey != newStartChunk and oldKey in app.lyrics:
-                    oldLyric = app.lyrics.pop(oldKey)
-                    if hasattr(oldLyric, "destroy"):
-                        oldLyric.destroy()
-
-                # Case B: startChunk unchanged -> destroy existing at that key before replacing
-                if oldKey == newStartChunk and newStartChunk in app.lyrics:
-                    oldLyric = app.lyrics[newStartChunk]
-                    if hasattr(oldLyric, "destroy"):
-                        oldLyric.destroy()
-
             isAdLib = (adLibVar.get() == "AdLib")
             adLibDuration = 50
             if isAdLib:
@@ -441,6 +428,7 @@ class LyricsEditor:
         def onClose():
             app.enableRootKeybinds()
             ModalGuard.close("lyrics_menu")
+            app.videoTrackItem.setUiBusy(False)
             inputWindow.destroy()
 
         inputWindow.protocol("WM_DELETE_WINDOW", onClose)
@@ -451,6 +439,7 @@ class LyricsEditor:
             return
         
         app = self.app
+        app.videoTrackItem.setUiBusy(True)
         
         # Decide width = min(windowSize//2, rootWidth//2), with safe fallbacks
         rootW = app.root.winfo_width() or 1920
@@ -732,6 +721,7 @@ class LyricsEditor:
         def onClose():
             app.enableRootKeybinds()
             ModalGuard.close("lyrics_edit_menu")
+            app.videoTrackItem.setUiBusy(False)
             win.destroy()
 
         win.protocol("WM_DELETE_WINDOW", onClose)
@@ -739,7 +729,7 @@ class LyricsEditor:
     
     def _commitLyric(
         self,
-        existingStartChunk, # None if adding
+        existingStartChunk,  # None if adding
         newStartChunk,
         selectedMembers,
         language,
@@ -751,46 +741,68 @@ class LyricsEditor:
         anchorMode="startChunk",
     ):
         app = self.app
-        newStartChunk = int(newStartChunk)
+        newKey = int(newStartChunk)
+        oldKey = int(existingStartChunk) if existingStartChunk is not None else None
 
-        # If editing and the startChunk changed, remove the old key first
-        if existingStartChunk is not None:
-            existingStartChunk = int(existingStartChunk)
-            if existingStartChunk != newStartChunk:
-                if existingStartChunk in app.lyrics:
-                    # also delete the canvas items if LyricBox exposes a destroy()
-                    old = app.lyrics.pop(existingStartChunk)
-                    if hasattr(old, "destroy"):
-                        old.destroy()
+        # ---- 0) Collision guard (don't overwrite a different lyric) ----
+        # If we're adding OR we're editing and changing the key, block if target key is used.
+        if newKey in app.lyrics:
+            if oldKey is None or oldKey != newKey:
+                messagebox.showwarning(
+                    "Chunk Already Used",
+                    f"A lyric already exists at startChunk {newKey}.\n\n"
+                    "Pick a different startChunk, or edit the existing lyric at that chunk.",
+                    parent=app.root
+                )
+                return
 
-        # Rebuild LyricBox instance (fresh object is easiest & safest)
+        # ---- 1) Remove old runtime object if needed ----
+        # Edit + moved key: remove oldKey entry
+        if oldKey is not None and oldKey != newKey:
+            oldBox = app.lyrics.pop(oldKey, None)
+            if oldBox is not None and hasattr(oldBox, "destroy"):
+                oldBox.destroy()
+
+            # Also remove the OLD JSON entry, because upsert() won't remove it.
+            entries = self._loadLyricsJsonList()
+            entries = [e for e in entries if int(e.get("startChunk", -1)) != oldKey]
+            entries.sort(key=lambda x: int(x.get("startChunk", 0)))
+            self._saveLyricsJsonList(entries)
+
+        # Edit + same key: destroy existing at that key so we can rebuild cleanly
+        if oldKey is not None and oldKey == newKey:
+            oldBox = app.lyrics.get(newKey)
+            if oldBox is not None and hasattr(oldBox, "destroy"):
+                oldBox.destroy()
+            # (keep the dict entry; we'll overwrite it below)
+
+        # ---- 2) Build new LyricBox (fresh object) ----
         circleImages = app._getCircleImages(selectedMembers)
         lyricBox = LyricBox(
             app.canvas, app, selectedMembers, circleImages,
             koreanLyric, romanization, englishTrans,
-            newStartChunk, language, isAdLib=isAdLib, adLibDuration=adLibDuration
+            newKey, language, isAdLib=isAdLib, adLibDuration=adLibDuration
         )
-
-        # attach optional linkage metadata (new format)
         lyricBox.anchorMode = anchorMode
 
-        app.lyrics[newStartChunk] = lyricBox
+        # ---- 3) Install + rebuild ----
+        app.lyrics[newKey] = lyricBox
         app.rebuildLyricsAnimations()
 
-        # Persist JSON in the new schema
+        # ---- 4) Persist JSON (upsert by NEW key) ----
         entry = {
             "language": language,
             "memberName": selectedMembers,
             "korean": koreanLyric,
             "romanization": romanization,
             "english": englishTrans,
-            "startChunk": newStartChunk,
+            "startChunk": newKey,
             "isAdLib": isAdLib,
             "adLibDuration": int(adLibDuration) if isAdLib else 0,
             "anchorMode": anchorMode,
         }
         self.upsertLyricEntry(entry)
-        
+    
     def addLyricBox(self, event=None, startChunk=None, memberName=None):
         app = self.app
 

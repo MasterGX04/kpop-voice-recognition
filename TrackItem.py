@@ -165,7 +165,7 @@ class TrackItem:
         currentSlotIndex = self.parent.slotMap[self.trackMember]
         currentValue = self.timeline[currentChunk]
 
-        baseChunkLength = 12
+        baseChunkLength = 16
         membersToPass = []
             
          # Step 1: Determine which members need to be passed
@@ -343,7 +343,8 @@ class TrackItem:
             resizedImage = originalImage.resize((newWidth, newHeight))
             self.sourceImages[key] = ImageTk.PhotoImage(resizedImage)
 
-        self.updateProgressBarGeometry()
+        if self.imageId is not None:
+            self.initializeProgressBar()
         self.setTimerPosition()
     
     def updateTime(self):
@@ -367,7 +368,7 @@ class TrackItem:
         safeIndex = min(chunkIndex, len(self.timeline) - 1)
         value = self.timeline[safeIndex]
         
-        timerText = f"{round(value, 1)}" if value > 0.0 else ''
+        timerText = f"{value:.1f}" if value > 0.0 else ''
         # print(f"Timer text: {timerText}")
         
         x, y = self.parent.canvas.coords(self.imageId)
@@ -424,21 +425,54 @@ class TrackItem:
         imgHeight = self.sourceImages[self.currentImageKey].height()
         return imgY + int(0.7 * imgHeight)
     
-    def findStartX(self):
-        if self.progressBarXStart is None:
-            darkImage = self.originalImages["dark"]
-            memberColorRGBA = tuple(int(self.memberColor.lstrip('#')[i:i+2], 16) for i in (0, 2, 4)) + (255,)
-            pixels = darkImage.load()
-            width, _ = darkImage.size
-            
-            for x in range(width - 1, -1, -1):  # Iterate from the rightmost to the leftmost pixel
-                pixel = pixels[x, 0]  # Access the first row only
-                if pixel[:3] == memberColorRGBA[:3] and pixel[3] != 0:  # Check for member color and non-transparent alpha
-                    self.progressBarXStart = x * (self.scale / 100 / 2)
-                    return self.progressBarXStart  # Return the x-coordinate of the last matching pixel
-            return 0  # Default to 0 if no match is found
-        else:
-            return self.progressBarXStart
+    def _computeBaseBarStartX(self):
+        """
+        Find the rightmost x in the TOP row that matches member color (non-transparent),
+        in ORIGINAL image pixel coordinates.
+        Cached as self._barStartXBasePx.
+        """
+        if hasattr(self, "_barStartXBasePx") and self._barStartXBasePx is not None:
+            return self._barStartXBasePx
+
+        darkImage = self.originalImages["dark"].convert("RGBA")
+        pixels = darkImage.load()
+        width, _ = darkImage.size
+
+        keyRgb = tuple(int(self.memberColor.lstrip('#')[i:i+2], 16) for i in (0, 2, 4))
+
+        # Scan right -> left on row y=0 (your current behavior)
+        for x in range(width - 1, -1, -1):
+            r, g, b, a = pixels[x, 0]
+            if a != 0 and (r, g, b) == keyRgb:
+                self._barStartXBasePx = x
+                return x
+
+        self._barStartXBasePx = 0
+        return 0
+    
+    def getProgressBarXStartCanvas(self):
+        """
+        Returns the xStart in CANVAS coordinates, based on current displayed image size and position.
+        """
+        baseX = self._computeBaseBarStartX()
+
+        # Canvas position of the image (top-left because you use anchor="nw" in your create_image)
+        imgX, _ = self.parent.canvas.coords(self.imageId)
+
+        # Displayed image width (Tk PhotoImage width)
+        displayedW = self.sourceImages[self.currentImageKey].width()
+
+        baseW = self.originalImages["dark"].size[0]
+        if baseW <= 0:
+            return imgX
+
+        # Map proportionally
+        xStart = imgX + (baseX / baseW) * displayedW
+
+        # If you want a small inset so rounded cap isn't clipped:
+        xStart -= self.progressBarHeight // 4
+
+        return xStart
     
     def createRoundedRectangleImage(self, width, height, color, radius):
         """Create a rounded rectangle image with Pillow."""
@@ -511,13 +545,12 @@ class TrackItem:
             return
         
         if currentTime == 0.0:
-            if hasattr(self, "progressBarCanvasImage") and self.progressBarCanvasImage:
-                self.parent.canvas.itemconfig(self.progressBarCanvasImage, state="hidden")
+            self.parent.canvas.itemconfig(self.progressBarCanvasImage, state="hidden")
             return
          
         self.parent.canvas.itemconfig(self.progressBarCanvasImage, state="normal")
         progress = currentTime / maxTime
-        xStart = 1920 * self.parent.scaleX * 1 / 16 - self.progressBarHeight // 2
+        xStart = self.getProgressBarXStartCanvas()
         xEnd = min(xStart + progress * (self.timerX - xStart), self.timerX) # Update later
         # print(f"X start: {xStart}, xEnd: {xEnd}")
         

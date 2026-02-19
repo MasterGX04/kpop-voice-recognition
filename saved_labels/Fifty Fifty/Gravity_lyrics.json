@@ -1,5 +1,70 @@
 [
     {
+        "language": "Korean",
+        "memberName": [
+            "Athena"
+        ],
+        "korean": "Stars are shinin’ and we’re lookin’ up\n어쩌면 우릴 따라 밝게 비출 걸",
+        "romanization": "Stars are shinin’ and we’re lookin’ up\neojjeomyeon uril ttara balkge bichul geol",
+        "english": "Stars are shinin' and we're lookin' up\nMaybe they'll follow us and shine brightly",
+        "startChunk": 32,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Athena"
+        ],
+        "korean": "Don’t know how 이런 감정은 Can’t control\n서로 이끌린 맘은 Innocent, Innocent",
+        "romanization": "Don't know how ireon gamjeongeun Can't control\nseoro ikkeullin mameun Innocent, Innocent",
+        "english": "Don't know how these feelings can't control\nOur hearts that are drawn to each other are \ninnocent, innocent",
+        "startChunk": 171,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Hana"
+        ],
+        "korean": "또다시 우린 만나게 돼\nCuz nothin can keep us apart for long, no",
+        "romanization": "ttodashi urin mannage dwae\nCuz nothin can keep us apart for long, no",
+        "english": "We'll meet again\n'Cause nothing can keep us apart for long, no",
+        "startChunk": 362,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Hana"
+        ],
+        "korean": "좀 멀어져 가도 닿길 원해\nAlways comin’ back to you, yeah",
+        "romanization": "jom meoreojyeo gado dakil weonhae\nAlways comin' back to you, yeah",
+        "english": "Even if we grow apart, I want to reach you\nAlways coming back to you, yeah",
+        "startChunk": 521,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Yewon"
+        ],
+        "korean": "I just can’t escape\n눈을 감을 땐\nYou’re still in my head\n네게로 이끌려",
+        "romanization": "I just can't escape\nnuneul gameul ttaen\nYou're still in my head\nnegero ikkeullyeo",
+        "english": "I just can't escape\nWhen I close my eyes\nYou're still in my head\nI'm drawn to you",
+        "startChunk": 670,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
         "language": "English",
         "memberName": [
             "Athena",
@@ -7,7 +72,262 @@
         ],
         "korean": "",
         "romanization": "",
-        "english": "You push and pull me like gravity\nI fall for you every part of me\nYou push and pull me like gravity\nInsanity, I’m losing my mind",
-        "startChunk": 908
+        "english": "You pus|h and pull me like gravity\nI fall for| you every part of me\nYou pus|h and pull me like gravity\nInsanit|y, I’m losing my mind",
+        "startChunk": 908,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Athena",
+            "Chanelle"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Push a|nd pull me like gravity\nI fall for| you every part of me\nYou pus|h and pull me like gravity\nInsa|nity",
+        "startChunk": 1199,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Athena"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I'm losing my mind",
+        "startChunk": 1448,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Keena"
+        ],
+        "korean": "Wishing on a shooting star\n다신 널 만날 수 없었을까 난",
+        "romanization": "Wishing on a shooting star\ndashin neol mannal su eopseosseulkka nan",
+        "english": "Wishing on a shooting star\nI wonder if I will ever see you again",
+        "startChunk": 1543,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Keena"
+        ],
+        "korean": "What if we never met, \nwould we be the same?\n날 떠나가도 깊이 빠져들거야",
+        "romanization": "What if we never met,\nwould we be the same?\nnal tteonagado gipi ppajyeodeulgeoya",
+        "english": "What if we never met, \nwould we be the same?\nEven if you leave me, I'll fall deeper",
+        "startChunk": 1663,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Chanelle"
+        ],
+        "korean": "올라가려는 날 붙잡고\n더 끌어당긴 너의 gravity\n좀 나쁘지 않지 이 느낌이",
+        "romanization": "ollagaryeoneun nal butjapgo\ndeo kkeureodanggin neoye gravity\njom nappeuji anchi i neukkimi",
+        "english": "Your gravity that holds me as I try to go up\nPulls me in more\nThis feeling ain't so bad",
+        "startChunk": 1818,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Chanelle"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "So hold me tight\nDon’t let me go",
+        "startChunk": 2025,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Yewon"
+        ],
+        "korean": "I just can’t escape\n눈을 감을 땐\nYou’re still in my head\n네게로 이끌려",
+        "romanization": "I just can't escape\nnuneul gameul ttaen\nYou're still in my head\nnegero ikkeullyeo",
+        "english": "I just can't escape\nWhen I close my eyes\nYou're still in my head\nI'm drawn to you",
+        "startChunk": 2126,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Keena",
+            "Hana"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "You pus|h and pull me like gravity\nI fall for| you every part of me\nYou pus|h and pull me like gravity\nInsanit|y, I’m losing my mind",
+        "startChunk": 2359,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Keena",
+            "Hana"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Push a|nd pull me like gravity\nI fall for| you every part of me\nYou pus|h and pull me like gravity\nInsa|nity",
+        "startChunk": 2651,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Keena"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I'm losing my mind",
+        "startChunk": 2902,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Athena"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I keep falling deeper, so don't ever let me go",
+        "startChunk": 2980,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Chanelle"
+        ],
+        "korean": "널 밀어내 봐도 you pull me back\nCan’t fight this anymore\n네게로 이끌려 I’m helpless",
+        "romanization": "neol mireonae bwado you pull me back\nCan't fight this anymore\nnegero ikkeullyeo I'm helpless",
+        "english": "Even if I push you away, you pull me back\nCan't fight this anymore\nI'm drawn to you, I'm helpless",
+        "startChunk": 3244,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Yewon",
+            "Chanelle"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "You pus|h and pull me like gravity\nI fall for| you every part of me\nYou pus|h and pull me like gravity\nInsanit|y, I’m losing my mind",
+        "startChunk": 3595,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Hana"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Fall",
+        "startChunk": 3652,
+        "isAdLib": true,
+        "adLibDuration": 100,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Hana"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Fall",
+        "startChunk": 3800,
+        "isAdLib": true,
+        "adLibDuration": 100,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Yewon",
+            "Hana"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Push a|nd pull me like gravity\nI fall for| you every part of me\nYou pus|h and pull me like gravity\nInsa|nity",
+        "startChunk": 3890,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Chanelle"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Fall",
+        "startChunk": 3944,
+        "isAdLib": true,
+        "adLibDuration": 100,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Chanelle"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Fall",
+        "startChunk": 4089,
+        "isAdLib": true,
+        "adLibDuration": 100,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Yewon"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I'm losing my mind",
+        "startChunk": 4138,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
     }
 ]

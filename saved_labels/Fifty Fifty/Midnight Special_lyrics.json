@@ -7,7 +7,7 @@
         "korean": "Twenty fading stars (and) 이 밤을 여는 Moon\n이 어둠도 더 선명해질 즈음",
         "romanization": "Twenty fading stars (and) i bameul yeoneun Moon\ni eodumdo deo seonmyeonghaejil jeueum",
         "english": "Twenty fading stars and the moon open up this night\nJust when the darkness starts to sharpen into light",
-        "startChunk": 101
+        "startChunk": 99
     },
     {
         "language": "Korean",
@@ -17,7 +17,7 @@
         "korean": "너와의 마지막 Page\n상상들로 Painting, Oh",
         "romanization": "neowaye majimak Page\nsangsangdeullo Painting, Oh",
         "english": "The final page of us\nPainting with imagination, oh",
-        "startChunk": 274
+        "startChunk": 272
     },
     {
         "language": "Korean",
@@ -27,7 +27,7 @@
         "korean": "너와 나 어둠 속 가둔 Evening\n속삭여 우리 비밀스런 Feeling",
         "romanization": "neowa na, eodum sok gadun Evening\nsoksagyeo uri bimilseureon Feeling",
         "english": "You and I, trapped inside the evening\nWhispering our secret hidden feelings",
-        "startChunk": 440
+        "startChunk": 438
     },
     {
         "language": "Korean",
@@ -37,7 +37,7 @@
         "korean": "노을이 낮을 밀어내며 Falling\nWatch me shake it off",
         "romanization": "noeuri najeul mireonaemyeo Falling\nWatch me shake it off",
         "english": "As twilight pushes daytime out, it's falling\nWatch me shake it off",
-        "startChunk": 607
+        "startChunk": 605
     },
     {
         "language": "Korean",
@@ -47,7 +47,7 @@
         "korean": "It’s a matter of time\n시작과 끝의 Night\n우릴 깨우는 Sign",
         "romanization": "It's a matter of time\nshijakgwa kkeute Night\nuril kkaeuneun Sign",
         "english": "It's a matter of time\nThis night with start and end\nA sign that wakes us up",
-        "startChunk": 763
+        "startChunk": 761
     },
     {
         "language": "Korean",
@@ -57,7 +57,7 @@
         "korean": "말 못한 채 깊어져 가",
         "romanization": "mal mothan chae gipeojyeo ga",
         "english": "But we sink in deeper, unsaid",
-        "startChunk": 995
+        "startChunk": 993
     },
     {
         "language": "Korean",
@@ -67,7 +67,7 @@
         "korean": "It’s ten eleven midnight special\nKeep me up late, 더 머무르게 해줘",
         "romanization": "It's ten eleven midnight special\nKeep me up late, deo meomureuge haejweo",
         "english": "It's ten-eleven midnight special\nKeep me up late, let me stay in the moment",
-        "startChunk": 1095
+        "startChunk": 1093
     },
     {
         "language": "Korean",
@@ -77,7 +77,7 @@
         "korean": "내 맘에 stay 그대로 sentimental\nIt’s a midnight special, midnight",
         "romanization": "nae mame stay geudaero sentimental\nIt’s a midnight special, midnight",
         "english": "Stay in my heart, just like that sentimental\nIt's a midnight special, midnight",
-        "startChunk": 1268
+        "startChunk": 1266
     },
     {
         "language": "Korean",
@@ -87,7 +87,7 @@
         "korean": "You want another midnight special\nMake it all day, 너를 가득 채워",
         "romanization": "You want another midnight special\nMake it all day, neoreul gadeuk chaeweo",
         "english": "You want another midnight special\nMake it all day, let me be filled with you",
-        "startChunk": 1434
+        "startChunk": 1432
     },
     {
         "language": "Korean",
@@ -97,7 +97,7 @@
         "korean": "내 맘에 stay 우리를 담은 채로\nIt’s a midnight special, midnight special",
         "romanization": "nae mame stay urireul dameun chaero\nIt's a midnight special, midnight special",
         "english": "Stay in my heart holding us together\nIt's a midnight special, midnight special",
-        "startChunk": 1602
+        "startChunk": 1600
     },
     {
         "language": "Korean",
@@ -107,7 +107,7 @@
         "korean": "Ten, eleven, twelve, I want you\n서로를 느낀 Middle of the night rendezvous",
         "romanization": "Ten, eleven, twelve, I want you\nseororeul neukkin Middle of the night rendezvous",
         "english": "Ten, eleven, twelve, I want you, we're drawn to each other\nMiddle of the night rendezvous",
-        "startChunk": 1788
+        "startChunk": 1786
     },
     {
         "language": "Korean",
@@ -117,7 +117,7 @@
         "korean": "숨겨둔 얘기",
         "romanization": "sumgyeodun yaegi",
         "english": "Words we used to hide",
-        "startChunk": 1928
+        "startChunk": 1926
     },
     {
         "language": "English",
@@ -127,7 +127,7 @@
         "korean": "",
         "romanization": "",
         "english": "Taking it back, taking it back",
-        "startChunk": 1955
+        "startChunk": 1953
     },
     {
         "language": "Korean",
@@ -137,7 +137,7 @@
         "korean": "꿈처럼",
         "romanization": "kkum cheoreom",
         "english": "Like a dream",
-        "startChunk": 2013
+        "startChunk": 2011
     },
     {
         "language": "English",
@@ -147,7 +147,7 @@
         "korean": "",
         "romanization": "",
         "english": "Saying it all, saying it all",
-        "startChunk": 2036
+        "startChunk": 2034
     },
     {
         "language": "Korean",
@@ -157,7 +157,7 @@
         "korean": "달빛으로 물든 Color\n잊지 못할 우리 Aura",
         "romanization": "dalbicheuro muldeun Color\nitji mothal uri Aura",
         "english": "Colored in moonlight's glow\nAn aura we'll never let go",
-        "startChunk": 2117
+        "startChunk": 2115
     },
     {
         "language": "English",
@@ -167,7 +167,7 @@
         "korean": "",
         "romanization": "",
         "english": "Feeling the spark, feeling the spark",
-        "startChunk": 2287
+        "startChunk": 2285
     },
     {
         "language": "English",
@@ -177,7 +177,7 @@
         "korean": "",
         "romanization": "",
         "english": "Just tell me",
-        "startChunk": 2344
+        "startChunk": 2342
     },
     {
         "language": "English",
@@ -187,7 +187,7 @@
         "korean": "",
         "romanization": "",
         "english": "Baby don’t stop, baby don’t stop",
-        "startChunk": 2371
+        "startChunk": 2369
     },
     {
         "language": "Korean",
@@ -197,7 +197,7 @@
         "korean": "It’s a matter of time\n시작과 끝의 Night\n우릴 깨우는 Sign",
         "romanization": "It's a matter of time\nshijakgwa kkeute Night\nuril kkaeuneun Sign",
         "english": "It's a matter of time\nThis night with start and end\nA sign that wakes us up",
-        "startChunk": 2424
+        "startChunk": 2422
     },
     {
         "language": "Korean",
@@ -207,7 +207,7 @@
         "korean": "더 깊어져 가는 이 밤",
         "romanization": "deo gipeojyeo ganeun ibam",
         "english": "And deeper this night descends",
-        "startChunk": 2659
+        "startChunk": 2657
     },
     {
         "language": "Korean",
@@ -217,7 +217,7 @@
         "korean": "I'll give you another midnight special\nKeep me up late, 더 머무르게 해줘",
         "romanization": "I'll give you another midnight special\nKeep me up late, deo meomureuge haejweo",
         "english": "I'll give you another midnight special\nKeep me up late, let me stay in the moment",
-        "startChunk": 2950
+        "startChunk": 2948
     },
     {
         "language": "Korean",
@@ -227,7 +227,7 @@
         "korean": "내 맘에 stay 그대로 sentimental\nIt’s a midnight special, midnight",
         "romanization": "nae mame stay geudaero sentimental\nIt’s a midnight special, midnight",
         "english": "Stay in my heart, just like that sentimental\nIt's a midnight special, midnight",
-        "startChunk": 3122
+        "startChunk": 3120
     },
     {
         "language": "Korean",
@@ -237,7 +237,7 @@
         "korean": "You want another midnight special\nMake it all day, 너를 가득 채워",
         "romanization": "You want another midnight special\nMake it all day, neoreul gadeuk chaeweo",
         "english": "You want another midnight special\nMake it all day, let me be filled with you",
-        "startChunk": 3287
+        "startChunk": 3279
     },
     {
         "language": "Korean",
@@ -247,7 +247,7 @@
         "korean": "내 맘에 stay 우리를 담은 채로\nIt’s a midnight special, midnight special",
         "romanization": "nae mame stay urireul dameun chaero\nIt's a midnight special, midnight special",
         "english": "Stay in my heart holding us together\nIt's a midnight special, midnight special",
-        "startChunk": 3455
+        "startChunk": 3453
     },
     {
         "language": "English",

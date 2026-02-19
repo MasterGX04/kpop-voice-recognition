@@ -19,12 +19,14 @@ class LyricBox:
         
         self.BASE_W = 1920
         self.BASE_H = 1080
+        self.cardBgId = None
         
         self.circleImages = circleImages
         self.memberPhotos = self.resizeMemberImages(circleImages)
         self._animCursor = 0
         self._heldBaseY = None
         self.textItems = []  # Store canvas item IDs
+        self.textOnlyItems = [] 
         self.totalHeight = 0  # To calculate total height of the lyric box
         self.isVisible = False
         self.language = language
@@ -46,7 +48,7 @@ class LyricBox:
         self.recalculateFontSize(baseFontPx=self.baseFontSizePx)
         self.animations = []
         
-        self.lyricsPadding = self._pxY(5)
+        self.lyricsPadding = self._pxY(30)
         self.addLyricDuration = 9
         
         if isAdLib:
@@ -56,6 +58,7 @@ class LyricBox:
             self.initializeLyricPosition()
             
         self.lastChunkSeen = -1
+        self.hide()
     
     def recalculateFontSize(self, baseFontPx=15, minPx=12, maxPx=72, fontFamily="Pretendard Variable"):
         """
@@ -150,7 +153,7 @@ class LyricBox:
         startChunk = self.startChunk
         endChunk = self.startChunk + self.addLyricDuration
 
-        endYBase = 5
+        endYBase = 10
 
         scaleY = getattr(self.parent, "scaleY", 1.0)
         if scaleY <= 0:
@@ -172,10 +175,10 @@ class LyricBox:
         photoColumnHeightPx = 0
         if self.memberPhotos:
             photoHeight = self.memberPhotos[0].height()
-            photoOverlapY = self._pxY(10)
+            photoOverlapY = self._pxY(20)
             photoColumnHeightPx = (photoHeight * numMembers) - (photoOverlapY * max(0, numMembers - 1))
 
-        extraPadY = self._pxY(10)
+        extraPadY = self._pxY(20)
         additionalCanvasHeightPx = max(
             photoColumnHeightPx + self.lyricsPadding + extraPadY,
             self.totalHeight + self.lyricsPadding
@@ -522,109 +525,197 @@ class LyricBox:
         s = min(getattr(self.parent, "scaleX", 1.0), getattr(self.parent, "scaleY", 1.0))
         return max(1, int(basePx * s))
     
+    def _bboxOfItems(self, itemIds):
+        """Return a combined bbox (x1,y1,x2,y2) for a list of canvas items."""
+        boxes = []
+        for iid in itemIds:
+            b = self.canvas.bbox(iid)
+            if b:
+                boxes.append(b)
+        if not boxes:
+            return None
+        x1 = min(b[0] for b in boxes)
+        y1 = min(b[1] for b in boxes)
+        x2 = max(b[2] for b in boxes)
+        y2 = max(b[3] for b in boxes)
+        return (x1, y1, x2, y2)
+
     def createLyricDisplay(self):
         """Create a visual representation of the lyric box on the canvas."""
         self.originX, self.originY = self._anchorXY()
         x = self.originX
-        y = self.originY 
+        y = self.originY
+
+        padX = self._pxX(10)
+        padY = self._pxY(10)
         
-        padding = self._pxY(5)
-        textPhotoGapX = self._pxX(10)
+        innerGapY = self._pxY(5)
+        textPhotoGapX = self._pxX(20)
         photoOverlapY = self._pxY(10)
+
+        # Reset
         self.totalHeight = 0
         self.textItems = []
+        self.textOnlyItems = [] 
         self.textItemOffsets = []
-        
-        self.photoY = y + padding
+        self.photoItemIds = []
+        self._photoRefByItemId = {}
+
+        # Start content inside the padded card
+        contentX = x + padX
+        contentY = y + padY
+
+        # --- Photos column ---
+        self.photoY = contentY
         if self.memberPhotos:
             photoHeight = self.memberPhotos[0].height()
             photoWidth = self.memberPhotos[0].width()
-            
-            textX = x + photoWidth + textPhotoGapX
-            
+
+            textX = contentX + photoWidth + textPhotoGapX
+
             for i, photo in enumerate(self.memberPhotos):
                 photoId = self.canvas.create_image(
-                    x , self.photoY, image=photo, anchor="nw", state="normal", tags="lyrics"
-                    )
+                    contentX, self.photoY,
+                    image=photo,
+                    anchor="nw",
+                    state="normal",
+                    tags="lyrics"
+                )
                 self.photoItemIds.append(photoId)
-                self._photoRefByItemId[photoId] = photo 
+                self._photoRefByItemId[photoId] = photo
+
                 self.textItems.append(photoId)
-                self._storeOffset(photoId, x, self.photoY)
+                self._storeOffset(photoId, contentX, self.photoY)
 
                 if i < len(self.memberPhotos) - 1 or len(self.memberPhotos) == 1:
                     self.photoY += photoHeight - photoOverlapY
-                # Offset text to the right of the photo
         else:
-            textX = x
-        
-        # --- Member name ---
+            textX = contentX
+
+        # --- Member name (top line) ---
+        curY = contentY
+
         if isinstance(self.memberNames, list) and len(self.memberNames) > 1:
             nameIds = []
             nameX = textX
             for i, name in enumerate(self.memberNames):
                 partId = self.canvas.create_text(
-                    nameX, y, text=name, font=self.boldFont, fill=self.memberColors[i], anchor="nw", state="normal"
+                    nameX, curY,
+                    text=name,
+                    font=self.boldFont,
+                    fill=self.memberColors[i],
+                    anchor="nw",
+                    state="normal"
                 )
                 self.canvas.addtag_withtag("lyrics", partId)
                 nameIds.append(partId)
                 self.textItems.append(partId)
-                self._storeOffset(partId, nameX, y)
-                
-                # Add spacing between names
-                nameX += self._getItemWidth(partId) + self._pxX(5) 
+                self.textOnlyItems.append(partId) 
+                self._storeOffset(partId, nameX, curY)
+
+                nameX += self._getItemWidth(partId) + self._pxX(5)
+
             nameHeight = self._getItemHeight(nameIds[0]) if nameIds else 0
         else:
-            nameIds = self.canvas.create_text(
-                textX, y, text=self.memberNames,
-                font=self.boldFont, fill=self.memberColors[0], 
-                anchor="nw", state="normal"
-            )  
-            self.canvas.addtag_withtag("lyrics", nameIds)
-            self.textItems.append(nameIds)
-            self._storeOffset(nameIds, textX, y)
-            nameHeight = self._getItemHeight(nameIds)    
-        
-        y += nameHeight + padding
-        self.totalHeight += nameHeight + padding
+            nameId = self.canvas.create_text(
+                textX, curY,
+                text=self.memberNames,
+                font=self.boldFont,
+                fill=self.memberColors[0],
+                anchor="nw",
+                state="normal"
+            )
+            self.canvas.addtag_withtag("lyrics", nameId)
+            self.textItems.append(nameId)
+            self.textOnlyItems.append(nameId) 
+            self._storeOffset(nameId, textX, curY)
+            nameHeight = self._getItemHeight(nameId)
+
+        curY += nameHeight + innerGapY
 
         # --- Korean + Romanization ---
-        if self.language == 'Korean':
-            # Display Korean lyric (multi-line)
-            for line in self.koreanLyric.split("\n"):
-                self._createColorCodedText(textX, y, line, self.boldFont, self.memberColors)
-                
+        if self.language == "Korean":
+            for line in (self.koreanLyric or "").split("\n"):
+                if line.strip():
+                    self._createColorCodedText(textX, curY, line, self.boldFont, self.memberColors)
+
+                    lastId = self.textItems[-1] if self.textItems else None
+                    lineHeight = self._getItemHeight(lastId) if lastId else 0
+                    curY += lineHeight + innerGapY
+
+            for line in (self.romanization or "").split("\n"):
+                if line.strip():
+                    lineId = self.canvas.create_text(
+                        textX, curY,
+                        text=line,
+                        font=self.font,
+                        fill="grey",
+                        anchor="nw",
+                        state="normal"
+                    )
+                    self.canvas.addtag_withtag("lyrics", lineId)
+                    self.textItems.append(lineId)
+                    self.textOnlyItems.append(lineId) 
+                    self._storeOffset(lineId, textX, curY)
+
+                    lineHeight = self._getItemHeight(lineId)
+                    curY += lineHeight + innerGapY
+
+        # --- English translation (always) ---
+        for line in (self.englishTrans or "").split("\n"):
+            if line.strip():
+                fontToUse = self.boldFont if self.language == "Korean" else self.englishFont
+                self._createColorCodedText(textX, curY, line, fontToUse, self.memberColors)
+
                 lastId = self.textItems[-1] if self.textItems else None
                 lineHeight = self._getItemHeight(lastId) if lastId else 0
-                y += lineHeight + padding
-                self.totalHeight += lineHeight + padding
+                curY += lineHeight + innerGapY
 
-            # Display Romanization (multi-line, grey and not bold)
-            for line in self.romanization.split("\n"):
-                lineId = self.canvas.create_text(
-                    textX, y, text=line, font=self.font, 
-                    fill="grey", anchor="nw", state="normal"
-                )
-                self.canvas.addtag_withtag("lyrics", lineId)
-                self.textItems.append(lineId)
-                self._storeOffset(lineId, textX, y)
-                
-                lineHeight = self._getItemHeight(lineId)
-                y += lineHeight + padding
-                self.totalHeight += lineHeight + padding
+        # ---- Background card (rounded white rect behind everything) ----
+        bbox = self._bboxOfItems(self.textOnlyItems)
+        if not bbox:
+            self.totalHeight = 0
+            return
+        x1, y1, x2, y2 = bbox
 
-        # Display English translation (multi-line)
-        for line in self.englishTrans.split("\n"):
-            font = self.boldFont if self.language == 'Korean' else self.englishFont
-            self._createColorCodedText(textX, y, line, font, self.memberColors)
-            
-            lastId = self.textItems[-1] if self.textItems else None
-            lineHeight = self._getItemHeight(lastId) if lastId else 0
+        # Expand bbox by padding so there's a 5px margin around the content
+        bgX1 = x1 - padX
+        bgY1 = y1 - padY
+        bgX2 = x2 + padX
+        bgY2 = y2 + padY
 
-            y += lineHeight + padding
-            self.totalHeight += lineHeight + padding
-            
-        self.hide()    
-            
+        if getattr(self, "cardBgId", None):
+            try:
+                self.canvas.delete(self.cardBgId)
+            except Exception:
+                pass
+            self.cardBgId = None
+
+        bgId = self.canvas.create_rectangle(
+            bgX1, bgY1, bgX2, bgY2,
+            fill="white",
+            outline="",
+            state="normal",
+            tags=("lyrics_card_bg",)
+        )
+        
+        self.cardBgId = bgId
+        
+        # Put background behind everything
+        planeId = getattr(self.parent, "lyricsBackgroundId", None)
+        if planeId:
+            self.canvas.tag_raise(bgId, planeId)   # bg above plane
+
+        # Now lift ALL lyric items (photos + text) above bg
+        for iid in self.textItems:
+            self.canvas.tag_raise(iid, bgId)
+
+        # IMPORTANT: include bg in movement/visibility/offset bookkeeping
+        self.textItems.insert(0, bgId)
+
+        # Total height should include the background card
+        self.totalHeight = (bgY2 - bgY1)
+          
     def _createColorCodedText(self, x, y, text, font, colors, anchor="nw"):
         """
         Create multi-colored text where color changes at each '|'.
@@ -648,6 +739,7 @@ class LyricBox:
             )
             self.canvas.addtag_withtag("lyrics", textId)
             self.textItems.append(textId)
+            self.textOnlyItems.append(textId)
             self._storeOffset(textId, textX, y)
             
             textX += self._getItemWidth(textId)  # Move x position for next part
@@ -668,17 +760,35 @@ class LyricBox:
         return (bbox[2] - bbox[0]) if bbox else 0
     
     def setPosition(self, baseY):
-        scaleY = getattr(self.parent, "scaleY", 1.0)
+        scaleY = getattr(self.parent, "scaleY", 1.0) or 1.0
         offY = getattr(self.parent, "viewportOffsetY", 0)
 
-        anchorX, _ = self._anchorXY() # Recompute in case resized
-        self.originX = anchorX
-        self.originY = offY + (baseY * scaleY)
-        """Move the LyricBox to a fixed Y position on the canvas."""
+        anchorX, _ = self._anchorXY()  # recompute after resize
+        newOriginX = anchorX
+        newOriginY = offY + (baseY * scaleY)
+
+        # delta in canvas pixels
+        lastX = getattr(self, "_lastOriginX", None)
+        lastY = getattr(self, "_lastOriginY", None)
+        dxMove = 0 if lastX is None else (newOriginX - lastX)
+        dyMove = 0 if lastY is None else (newOriginY - lastY)
+
+        self.originX = newOriginX
+        self.originY = newOriginY
+
+        # move text/images via offsets
         for itemId, dx, dy in self.textItemOffsets:
-            #if (itemId == 53): print(f"Relative y: {relativeY} Actual y: {yPos + relativeY} for", itemId)
             self.canvas.coords(itemId, self.originX + dx, self.originY + dy)
+
+        # move the card polygon by delta
+        if getattr(self, "cardBgId", None):
+            self.canvas.move(self.cardBgId, dxMove, dyMove)
             
+        self._fitBackgroundToText()
+
+        self._lastOriginX = newOriginX
+        self._lastOriginY = newOriginY
+         
     def show(self):
         """Make the lyric box visible on the canvas (idempotent)."""
         # Actually show
@@ -726,6 +836,26 @@ class LyricBox:
             return self._heldBaseY
 
         return self._heldBaseY 
+    
+    def _fitBackgroundToText(self):
+        if not getattr(self, "cardBgId", None):
+            return
+        if not self.textOnlyItems:
+            return
+
+        bbox = self._bboxOfItems(self.textOnlyItems)
+        if not bbox:
+            return
+        x1, y1, x2, y2 = bbox
+
+        padX = self._pxX(10)
+        padY = self._pxY(10)
+
+        self.canvas.coords(
+            self.cardBgId,
+            x1 - padX, y1 - padY,
+            x2 + padX, y2 + padY
+        )
                     
     def animatePosition(self, startY, endY, startChunk, endChunk):
         """Precompute animation frames and store them per chunkIndex for smoother playback."""
@@ -750,7 +880,6 @@ class LyricBox:
 
         # Keep animations in chronological order so getBaseYAt's cursor is valid
         self.animations.sort(key=lambda a: a["startChunk"])
-              
     
     def rebuildForResize(self):
         # preserve visibility
@@ -767,6 +896,12 @@ class LyricBox:
         self.textItemOffsets = []
         self.photoItemIds = []
         self._photoRefByItemId = {}
+        self.textOnlyItems = []
+        self._lastOriginX = None
+        self._lastOriginY = None
+         
+        self.cardBgId = None
+        
         self.totalHeight = 0
         self.photoY = 0
         

@@ -7,7 +7,7 @@
         "korean": "",
         "romanization": "",
         "english": "We'll get it done, we'll work as one\nWe'll get it done, nah, nah\nWe'll get it done, we'll work as one\nWe'll get it done, nah, nah",
-        "startChunk": -1,
+        "startChunk": 1,
         "isAdLib": false,
         "adLibDuration": 0,
         "anchorMode": "startChunk"
@@ -579,7 +579,7 @@
             "V"
         ],
         "korean": "밤하|늘 깊이 춤을 추는\n별들| 따라 one, two, three\n함께| 떠나 저기 아득한 우주 멀리",
-        "romanization": "bam|haneul gipi chumeul chuneun\nbye|oldeul ttara one, two, three\nham|kke tteona jeogi adeukhan uju meolli",
+        "romanization": "bamhaneul gipi chumeul chuneun\nbyeoldeul ttara one, two, three\nhamkke tteona jeogi adeukhan uju meolli",
         "english": "Dan|cing deep in the night sky\nFol|low the stars, one, two, three\nLet|'s go together, far away in the distant universe",
         "startChunk": 3574,
         "isAdLib": false,
@@ -623,6 +623,19 @@
         "startChunk": 4001,
         "isAdLib": false,
         "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Get it done",
+        "startChunk": 4161,
+        "isAdLib": true,
+        "adLibDuration": 120,
         "anchorMode": "startChunk"
     },
     {

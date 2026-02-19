@@ -1,0 +1,38 @@
+{
+    "group": "ARTMS",
+    "activeTheme": "DALL",
+    "templates": {
+        "dark": "Dark {member}.png",
+        "light": "{member}.png",
+        "circle": "{member} Circle.png"
+    },
+    "members": [
+        {
+            "name": "JinSoul",
+            "color": "#0000ff"
+        },
+        {
+            "name": "HaSeul",
+            "color": "#0a7a39"
+        },
+        {
+            "name": "Kim Lip",
+            "color": "#ff0000"
+        },
+        {
+            "name": "HeeJin",
+            "color": "#e10086"
+        },
+        {
+            "name": "Choerry",
+            "color": "#6d0379"
+        }
+    ],
+    "ageOrder": [
+        "JinSoul",
+        "HaSeul",
+        "Kim Lip",
+        "HeeJin",
+        "Choerry"
+    ]
+}

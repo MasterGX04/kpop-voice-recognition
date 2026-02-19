@@ -1,6 +1,11 @@
-import json, os
+import json, os, sys
 from pathlib import Path
 from PIL import Image
+
+def getAppRoot() -> Path:
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent
+    return Path(__file__).resolve().parent
 
 class GroupRegistry:
     """
@@ -10,8 +15,9 @@ class GroupRegistry:
     """
     
     def __init__(self, iconsRoot="group_icons", groupsJsonPath="groups.json", defaultGroups=None):
-        baseDir = Path(__file__).resolve().parent
+        baseDir = getAppRoot()
         self.iconsRoot = baseDir / iconsRoot 
+        os.makedirs(self.iconsRoot, exist_ok=True)
         self.groupsJsonPath = baseDir / groupsJsonPath
         self.groups = {}
 
@@ -67,9 +73,25 @@ class GroupRegistry:
         Adds/overwrites a group entry, then saves to groups.json.
         """
         self.groups[groupName]["members"] = members
+        self.setCurrentGroup(groupName)
         self.saveGroupsToJson()
         
+    def setCurrentGroup(self, groupFunction) -> None:
+        self.setCurrentGroup = groupFunction
+        
     def getGroupDir(self, groupName: str) -> Path:
+        # 1) per-group override stored in groups.json
+        g = self.groups.get(groupName, {})
+        if isinstance(g, dict):
+            iconsDir = g.get("iconsDir")
+            if isinstance(iconsDir, str) and iconsDir.strip():
+                p = Path(iconsDir).expanduser()
+                # allow relative paths relative to the registry file location
+                if not p.is_absolute():
+                    p = self.groupsJsonPath.parent / p
+                return p
+
+        # 2) default behavior (current)
         return self.iconsRoot / str(groupName)
         
     def scanForNewGroups(self) -> None:
@@ -103,6 +125,121 @@ class GroupRegistry:
             else:
                 print(f"[GroupRegistry] Found group folder '{groupName}', but couldn't infer members. (No manifest + no matching files)")
     
+    def inferGroupDirAndThemeFromPath(self, selectedPath) -> tuple[Path, str]:
+        """
+        User may pick either:
+          A) group folder:  .../group_icons/ARTMS
+          B) album folder:  .../group_icons/ARTMS/DALL
+
+        Returns:
+          (groupDir, themeNameToUse)
+        """
+        p = Path(selectedPath).expanduser().resolve()
+
+        # If they picked an album folder, its parent is the group folder
+        # Detect "album folder" by: it has PNGs / and parent exists
+        if p.is_dir():
+            # If folder contains any pngs, assume it's an album/theme folder
+            hasPng = any(x.is_file() and x.suffix.lower() == ".png" for x in p.iterdir())
+            if hasPng and p.parent.is_dir():
+                return (p.parent, p.name)
+
+        # Otherwise assume it's the group folder
+        return (p, "")
+    
+    def _pickDefaultThemeFolder(self, groupDir: Path) -> Path:
+        """
+        Deterministic 'last album' folder. Uses sorted order by folder name.
+        """
+        subfolders = sorted([p for p in groupDir.iterdir() if p.is_dir()], key=lambda p: p.name.lower())
+        if not subfolders:
+            return None
+        return subfolders[-1]  # <--- LAST instead of FIRST
+    
+    def _buildGroupManifestFromIcons(self, groupDir: Path, forcedTheme: str = ""):
+        """
+        Convention-based fallback:
+        - Default theme: LAST subfolder (stable sorted), unless forcedTheme provided.
+        - Detect members from Dark*.png inside theme folder.
+        """
+        if not groupDir.exists() or not groupDir.is_dir():
+            return None
+
+        if forcedTheme:
+            themeDir = groupDir / forcedTheme
+            if not themeDir.exists() or not themeDir.is_dir():
+                raise FileNotFoundError(f"Theme folder not found: {themeDir}")
+        else:
+            themeDir = self._pickDefaultThemeFolder(groupDir)
+            if themeDir is None:
+                return None
+
+        darkPngs = [p for p in themeDir.glob("Dark*.png") if p.is_file()]
+        if not darkPngs:
+            return None
+
+        members = []
+        for p in sorted(darkPngs, key=lambda x: x.name.lower()):
+            memberName = self._parseMemberNameFromDarkFilename(p.name)
+            if not memberName:
+                continue
+
+            colorHex = self._inferHexFromImageCorner(p)
+            members.append({"name": memberName, "color": colorHex})
+
+        if not members:
+            return None
+
+        return {
+            "group": groupDir.name,
+            "activeTheme": themeDir.name,
+            "members": members,
+            "ageOrder": [m["name"] for m in members],
+            "templates": {
+                "light": "{member}.png",
+                "dark": "Dark {member}.png",
+                "circle": "{member} Circle.png"
+            }
+        }
+        
+    def ensureManifestFromSelectedIconsPath(self, selectedPath) -> dict:
+        """
+        Ensures ./group_icons/{group}/group.json exists, and sets activeTheme properly:
+        - If user selected .../{group}/{album}, activeTheme = album
+        - Else activeTheme = LAST subfolder in .../{group}
+        Returns the manifest dict.
+        """
+        groupDir, forcedTheme = self.inferGroupDirAndThemeFromPath(selectedPath)
+        os.makedirs(groupDir, exist_ok=True)
+
+        manifest = self._loadGroupManifest(groupDir) or {"group": groupDir.name}
+
+        # If no manifest OR missing fields, build/refresh from icons
+        built = self._buildGroupManifestFromIcons(groupDir, forcedTheme=forcedTheme) if forcedTheme else self._buildGroupManifestFromIcons(groupDir)
+
+        if not built:
+            raise ValueError(
+                "Could not infer members/images from the selected folder.\n"
+                "Make sure it contains Dark*.png files in the theme folder."
+            )
+
+        # Preserve any existing fields you care about, but ensure activeTheme matches our rule
+        manifest["group"] = built["group"]
+        manifest["activeTheme"] = built["activeTheme"]
+        manifest["members"] = built["members"]
+        manifest["ageOrder"] = built.get("ageOrder", [m["name"] for m in built["members"]])
+        manifest["templates"] = manifest.get("templates") or built["templates"]
+
+        self._saveGroupManifest(groupDir, manifest)
+
+        # Also keep runtime registry consistent
+        if groupDir.name not in self.groups or self.groups[groupDir.name] is None:
+            self.groups[groupDir.name] = {"members": [], "albums": {}, "songToAlbum": {}, "defaultAlbumId": ""}
+        self.groups[groupDir.name]["members"] = manifest["members"]
+        self.saveGroupsToJson()
+
+        return manifest
+    
     # ---------- group.json manifest helpers ----------              
     def _loadGroupManifest(self, groupDir: Path):
         manifestPath = groupDir / "group.json"
@@ -111,11 +248,41 @@ class GroupRegistry:
         try:
             with manifestPath.open("r", encoding="utf-8") as f:
                 data = json.load(f)
-            if isinstance(data, dict):
-                return data
+
+            if not isinstance(data, dict):
+                return None
+
+            # --- HARDEN ageOrder ---
+            members = data.get("members", [])
+            if isinstance(members, list):
+                memberNames = [
+                    (m.get("name") or "").strip()
+                    for m in members
+                    if isinstance(m, dict) and isinstance(m.get("name"), str)
+                ]
+                memberNames = [n for n in memberNames if n]
+
+                ageOrder = data.get("ageOrder")
+
+                # Missing / invalid / wrong length → default alphabetical
+                if (
+                    not isinstance(ageOrder, list)
+                    or len(ageOrder) != len(memberNames)
+                    or set(ageOrder) != set(memberNames)
+                ):
+                    defaultOrder = sorted(memberNames, key=str.lower)
+                    data["ageOrder"] = defaultOrder
+
+                    print(
+                        f"[GroupRegistry] '{groupDir.name}': "
+                        f"Missing or invalid ageOrder → defaulting to alphabetical order"
+                    )
+
+            return data
+
         except Exception as e:
             print(f"[GroupRegistry] Failed to read manifest {manifestPath}: {type(e).__name__}: {e}")
-        return None
+            return None
     
     def getGroupMediaDir(self, groupName: str) -> str:
         """
@@ -682,6 +849,8 @@ class GroupRegistry:
     
     def setSongAlbum(self, groupName, songName, albumId):
         g = self.groups[groupName]
+        if "albums" not in g:
+            self._ensureAlbumFields()
         albums = g["albums"]
         if albumId not in albums:
             raise ValueError(f"Album '{albumId}' not found in group '{groupName}'")
@@ -761,7 +930,8 @@ class GroupRegistry:
         templates = groupManifest.get("templates", {}) or {}
         ageOrder = groupManifest.get("ageOrder", []) or []
         
-        groupBaseDir = os.path.join("group_icons", groupName)
+        groupDir = self.getGroupDir(groupName)
+        groupBaseDir = str(groupDir)
         # 1) Decide theme folder: song album first, else activeTheme fallback
         def dirExists(themeName: str) -> bool:
             return bool(themeName) and os.path.isdir(os.path.join(groupBaseDir, themeName))
@@ -790,13 +960,11 @@ class GroupRegistry:
             return (activeTheme or albumTheme or ""), memberImages
  
         memberImages = {}
-
         for memberName in ageOrder:
             perMember = {}
 
             for templateKey, filenameTemplate in templates.items():
                 filename = filenameTemplate.format(member=memberName)
-
                 # Try primary theme first
                 candidatePaths = []
                 if primaryTheme:

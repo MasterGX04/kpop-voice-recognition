@@ -350,40 +350,35 @@ class ThumbnailManager:
                 pass
         self._tempExitBindings.clear()
 
-    # -------------------------
-    # Screenshot capture
-    # -------------------------
     def captureThumbnailScreenshot(self, event=None):
-        """
-        Captures the canvas as an image and saves a 1280x720 PNG thumbnail.
-        This assumes you're okay with capturing exactly what is on the canvas.
-
-        NOTE: true OS-level screenshot capture requires ImageGrab (Windows/macOS)
-        and won't work on some Linux configs without extra setup.
-        """
-        # Ensure we're in thumbnail mode so the capture is clean
         wasInMode = self.thumbnailMode
+
         if not wasInMode:
             self.enterThumbnailMode()
             if not self.thumbnailMode:
                 return
 
+        owner = self.canvas.winfo_toplevel()
+        # Let Tk finish layout / redraw before grabbing
+        owner.after(50, lambda: self._doThumbnailScreenshot(wasInMode, owner))
+    
+    def _doThumbnailScreenshot(self, wasInMode, ownerWindow):
         try:
-            # Use PIL.ImageGrab when available (Windows/macOS).
             from PIL import ImageGrab
         except Exception:
             messagebox.showerror(
                 "Screenshot not available",
-                "PIL.ImageGrab isn't available in this environment.\n"
-                "If you need cross-platform capture, we can use an alternate approach.",
+                "PIL.ImageGrab isn't available in this environment.",
                 parent=self.root
             )
             if not wasInMode:
                 self.exitThumbnailMode()
             return
 
-        # Compute screen coords of the canvas
-        self.root.update_idletasks()
+        # Force final geometry sync
+        ownerWindow.update_idletasks()
+        ownerWindow.update() 
+
         x0 = self.canvas.winfo_rootx()
         y0 = self.canvas.winfo_rooty()
         x1 = x0 + self.canvas.winfo_width()
@@ -398,19 +393,20 @@ class ThumbnailManager:
             shot.save(savePath, format="PNG")
 
             messagebox.showinfo(
-                "Saved", 
+                "Saved",
                 f"Thumbnail saved:\n{savePath}",
                 parent=self.root
             )
         except Exception as e:
             messagebox.showerror(
-                "Capture failed", 
+                "Capture failed",
                 str(e),
-                parent=self.root)
+                parent=self.root
+            )
         finally:
-            # Always return to normal mode if we entered it just for capture
             if not wasInMode:
-                self.exitThumbnailMode()
+                # Important: exit AFTER capture
+                self.exitThumbnailMode() 
 
     def _defaultThumbnailSavePath(self):
         """

@@ -10,4 +10,4 @@ librosa
 Pillow
 transformers
 pygame
-speechbrain
+muq

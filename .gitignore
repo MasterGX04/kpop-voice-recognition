@@ -46,6 +46,9 @@ tmp/
 pitch_test/
 debug_harmonies/
 cache_audio/
+dist/
+build/
+.build_venv/
 
 overfit_test.py
 voice_classifier.py

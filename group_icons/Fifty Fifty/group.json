@@ -1,6 +1,11 @@
 {
-    "group": "Fifty Fifty",
+    "group": "FIFTY FIFTY",
     "activeTheme": "Day & Night",
+    "templates": {
+        "dark": "Dark {member}.png",
+        "light": "{member}.png",
+        "circle": "{member} Circle.png"
+    },
     "members": [
         {
             "name": "Keena",
@@ -23,11 +28,6 @@
             "color": "#131dd7"
         }
     ],
-    "templates": {
-        "dark": "Dark {member}.png",
-        "light": "{member}.png",
-        "circle": "{member} Circle.png"
-    },
     "ageOrder": [
         "Keena",
         "Chanelle",

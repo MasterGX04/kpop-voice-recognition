@@ -22,11 +22,12 @@ from dataclasses import dataclass
 from typing import List, Tuple, Dict 
 
 import torch
-import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader, random_split
 
 import torchaudio
 import numpy as np
+from model.heads import PresenceHead
+from model.encoders import MuQEncoderWrapper, FusedEncoder, FusedEncoderWithECAPA
 from torchaudio.transforms import Resample
 
 from tqdm import tqdm
@@ -233,7 +234,6 @@ class KpopVocalDataset(Dataset):
         # JSON with manual pairs
         harmony_label_dir = os.path.join(".", "saved_labels", group_name)
         harmony_pattern = os.path.join(harmony_label_dir, "*_test_harmonies.json")
-        harmony_files = sorted(glob.glob(harmony_pattern))
         
         # Root where debug harmony mp3 clips live
         self.debug_harmony_root = os.path.join(".", "debug_harmonies", group_name)
@@ -573,18 +573,18 @@ class KpopVocalDataset(Dataset):
             frac = cnt / max(total_windows, 1)
             print(f"  {cat:13s}: {cnt:7d} ({frac:5.1%})")
 
-        # print("\n[KpopFrameDataset] Example windows per category:")
-        # for cat, examples in self.debug_category_examples.items():
-        #     print(f"\n  Category: {cat}  (showing {len(examples)} examples)")
-        #     for ex in examples:
-        #         print(f"    song={ex['song']}, center_frame={ex['center_frame']}, "
-        #             f"vocal_frac={ex['vocal_frac_window']:.2f}, "
-        #             f"overlap_frac={ex['overlap_frac_window']:.2f}, "
-        #             f"dominant_idx={ex['dominant_idx']}, "
-        #             f"dominant_frac={ex['dominant_frac']:.2f}, "
-        #             f"frame_label={ex['frame_label']}")
+        print("\n[KpopFrameDataset] Example windows per category:")
+        for cat, examples in self.debug_category_examples.items():
+            print(f"\n  Category: {cat}  (showing {len(examples)} examples)")
+            for ex in examples:
+                print(f"    song={ex['song']}, center_frame={ex['center_frame']}, "
+                    f"vocal_frac={ex['vocal_frac_window']:.2f}, "
+                    f"overlap_frac={ex['overlap_frac_window']:.2f}, "
+                    f"dominant_idx={ex['dominant_idx']}, "
+                    f"dominant_frac={ex['dominant_frac']:.2f}, "
+                    f"frame_label={ex['frame_label']}")
         
-        # ----------------------------
+        # ----------------------    ------
         # 4) Simple audio cache to avoid re-loading the same song
         # ----------------------------
         self._max_cached_songs = 32       # tune this (8–32 is typical)
@@ -868,6 +868,7 @@ class KpopVocalDataset(Dataset):
                 if not np.any(presentMask):
                     return w
 
+                num_active = np.sum(presentMask)
                 # Base formula for present singers only
                 lf = leadFrac.astype(np.float32)
                 bf = backingFrac.astype(np.float32)
@@ -882,6 +883,9 @@ class KpopVocalDataset(Dataset):
                 # Don’t crash pure-adlib regions too low
                 base = np.where((af > 0.5) & (lf < 0.2) & (bf < 0.2), np.maximum(base, 0.7), base)
 
+                if num_active > 1:
+                    base = base / num_active
+                    
                 # Confidence scaling toward 1.0 (keeps 1.0 fixed)
                 scaled = 1.0 + scale * (base - 1.0)
 
@@ -1288,78 +1292,38 @@ class KpopVocalDataset(Dataset):
         return seg
     
     def __getitem__(self, idx: int):
-        (song_name,
-        stem_kind,
-        center_frame,
-        start_frame,
-        start_sample_out,
-        label_vec,
-        importance_vec,
-        harmony_vec,
-        harmony_wts,
-        adlib_vec,
-        adlib_wts, stem_weight) = self.base_samples[idx]
+        (
+            song_name,
+            stem_kind,
+            center_frame,
+            start_frame,
+            start_sample_out,
+            label_vec,
+            importance_vec,
+            _harmony_vec,
+            _harmony_wts,
+            _adlib_vec,
+            _adlib_wts,
+            stem_weight,
+        ) = self.base_samples[idx]
 
         # Resolve the actual file path for this item
         paths = self._song_audio[song_name]
-        audio_path = paths.get(stem_kind, paths["mix"])
-        if audio_path is None:
-            audio_path = paths["mix"]
+        audio_path = paths.get(stem_kind, paths["mix"]) or paths["mix"]
 
-        # Load cached waveform
-        wav = self._load_song_wave(audio_path)  # (1, T_out)
+        # Load cached waveform (1, T_out)
+        wav = self._load_song_wave(audio_path)
 
-        # Slice + pad (this is what makes "short harmony sections" not break anything)
+        # Slice + pad to fixed length (1, chunk_len)
         seg = self._slice_audio(wav, start_sample_out, self.chunk_len)
 
-        labels_main = torch.from_numpy(label_vec).to(torch.float32)
-        weights_main = torch.from_numpy(importance_vec).to(torch.float32)
-        labels_harm = torch.from_numpy(harmony_vec).to(torch.float32)
-        weights_harm = torch.from_numpy(harmony_wts).to(torch.float32)
-        labels_ad = torch.from_numpy(adlib_vec).to(torch.float32)
-        weights_ad = torch.from_numpy(adlib_wts).to(torch.float32)
-        stem_weight = torch.tensor(stem_weight, dtype=torch.float32)
+        # New, simplified outputs:
+        labels_main = torch.from_numpy(label_vec).to(torch.float32)          # (C_main,)
+        weights_main = torch.from_numpy(importance_vec).to(torch.float32)    # (C_main,)
+        stem_weight = torch.tensor(stem_weight, dtype=torch.float32)         # scalar
 
-        return (seg,
-                labels_main, weights_main,
-                labels_harm, weights_harm,
-                labels_ad,   weights_ad, stem_weight)
-
-class MultiTaskHead(nn.Module):
-    def __init__(self, emb_dim_fused: int, emb_dim_ctx: int, num_members: int):
-        super().__init__()
-        self.num_members = num_members
-        
-        # hidden = 256
-        hidden = 256
-        # Shared trunk for main/harmony (fused = 2D)
-        self.shared_fused = nn.Sequential(
-            nn.Linear(emb_dim_fused, hidden),
-            nn.ReLU(),
-            nn.Dropout(0.2),
-        )
-        
-        # Shared trunk for adlib (ctx = D)
-        self.shared_ctx = nn.Sequential(
-            nn.Linear(emb_dim_ctx, hidden),
-            nn.ReLU(),
-            nn.Dropout(0.2),
-        )
-        
-        # Heads 
-        self.presence_head = nn.Linear(hidden, num_members + 1) # members + silence
-        self.harmony_head = nn.Linear(hidden, num_members) # harmony per member
-        self.adlib_head = nn.Linear(hidden, num_members) # adlib per member
-    
-    def forward(self, emb_fused, emb_ctx):
-        h_fused = self.shared_fused(emb_fused)
-        h_ctx   = self.shared_ctx(emb_ctx)
-
-        return {
-            "main":    self.presence_head(h_fused),
-            "harmony": self.harmony_head(h_fused),
-            "adlib":   self.adlib_head(h_ctx),
-        }
+        # Return only what PresenceHead training needs
+        return (seg, labels_main, weights_main, stem_weight)
 
 class FocusCentersDataset(torch.utils.data.Dataset):
     def __init__(self, base_ds, centers):
@@ -1406,110 +1370,6 @@ class MiningViewDataset(torch.utils.data.Dataset):
 
         return item, song_name, stem_kind, int(center_frame)
 
-# ---------------------------
-# Model: ECAPA encoder (frozen or trainable) + linear head
-# ---------------------------
-class MuQEncoderWrapper(nn.Module):
-    """
-    Wrap MuQ so it behaves like SpeechBrain's encoder.encode_batch(...)
-    returning (B, 1, D) so your .squeeze(1) keeps working.
-    """
-    def __init__(
-        self,
-        muq_model,
-        muq_sr: int = 24000,
-        pooling: str = "mean",   # mean is simplest & stable
-        debug: bool = True,
-    ):
-        super().__init__()
-        self.muq = muq_model
-        self.muq_sr = muq_sr
-        self.pooling = pooling
-        self.debug = debug
-        self.topk_frac=0.3
-        self._debug_printed = False
-            
-    @torch.no_grad()
-    def encode_batch(self, wavs: torch.Tensor, ctx_frac: float = 0.2) -> torch.Tensor:
-        """
-        One MuQ forward. Returns:
-          emb_main: (B, 1, D)
-          emb_ctx:  (B, 1, D) pooled from the center frames
-        """
-        if wavs.ndim != 2:
-            raise ValueError(f"MuQ expects (B, T), got {wavs.shape}")
-
-        x = wavs
-
-        # MuQ forward: expected to output framewise reps (B, T', D)
-        out = self.muq(x, output_hidden_states=False)
-
-        if self.debug and not self._debug_printed:
-            print("[MuQ DEBUG] input x:", tuple(x.shape), x.dtype, x.device)
-            print("[MuQ DEBUG] out type:", type(out))
-            if isinstance(out, dict):
-                print("[MuQ DEBUG] out keys:", list(out.keys()))
-            else:
-                # show common attrs if present
-                for k in ["last_hidden_state", "hidden_states"]:
-                    print(f"[MuQ DEBUG] has {k}:", hasattr(out, k))
-            self._debug_printed = True
-            
-        # Common conventions: out could be a dict-like or object with last_hidden_state
-        feats = getattr(out, "last_hidden_state", None)
-        if feats is None and isinstance(out, dict):
-            feats = out.get("last_hidden_state", None)
-        if feats is None:
-            # fallback: if the model returns tensor directly
-            if torch.is_tensor(out):
-                feats = out
-            else:
-                raise RuntimeError("Could not find MuQ frame features (last_hidden_state).")
-
-        # feats: (B, T', D)
-        B, Tprime, D = feats.shape
-
-        # ---- global pooled ----
-        emb_main = self._pool_feats(feats)  # (B, D)
-
-         # ---- center pooled (slice frames, not waveform) ----
-        ctx_len = max(1, int(round(Tprime * ctx_frac)))
-        mid = Tprime // 2
-        half = ctx_len // 2
-        start = max(0, mid - half)
-        end = min(Tprime, start + ctx_len)
-        start = max(0, end - ctx_len)  # keep exact length when possible
-
-        feats_center = feats[:, start:end, :]  # (B, ctx_len, D)
-        emb_ctx = self._pool_feats(feats_center)  # (B, D)
-
-        if self.debug and not hasattr(self, "_debug_two_printed"):
-            print(f"[MuQ DEBUG] feats={tuple(feats.shape)} center=[{start}:{end}] ctx_len={ctx_len}")
-            self._debug_two_printed = True
-
-        return emb_main.unsqueeze(1), emb_ctx.unsqueeze(1)
-    
-    def _pool_feats(self, feats: torch.Tensor) -> torch.Tensor:
-        # feats: (B, T', D) -> (B, D)
-        if self.pooling == "mean":
-            return feats.mean(dim=1)
-        elif self.pooling == "cls":
-            return feats[:, 0, :]
-        elif self.pooling == "topk":
-            # NOTE: make sure self.topk_frac exists in __init__
-            scores = feats.norm(p=2, dim=-1)  # (B, T')
-            T = feats.size(1)
-            k = max(1, int(T * self.topk_frac))
-            idx = scores.topk(k, dim=1).indices  # (B, k)
-            idx = idx.unsqueeze(-1).expand(-1, -1, feats.size(-1))  # (B,k,D)
-            top_feats = feats.gather(dim=1, index=idx)  # (B,k,D)
-            
-            if self.debug and not hasattr(self, "_debug_topk_printed"):
-                print(f"[MuQ DEBUG] topk k={k}/{T} example idx:", idx[0, :, 0].detach().cpu().numpy()[:10])
-                self._debug_topk_printed = True
-            return top_feats.mean(dim=1)
-        else:
-            raise ValueError(f"Unknown pooling: {self.pooling}")
 
 def binarize_logits(logits: torch.Tensor, thr: float = 0.5) -> torch.Tensor:
     """(B, C) logits -> (B, C) {0,1} via sigmoid threshold."""
@@ -1622,9 +1482,8 @@ def finalize_sanity_stats(stats: dict):
 # ---------------------------
 def train_epoch(encoder, head, loader, device, optimizer, 
                 thr=0.5, use_amp=True,
-                ctx_frac: float = 0.25, is_phase2: bool = False,
-                lambda_harmony: float = 0.7,
-                lambda_adlib: float = 0.7):
+                ctx_frac: float = 0.25, is_phase2: bool = False
+                ):
     """
     encoder: ECAPA model (SpeechBrain)
     head:   multi-task head taking fused embedding -> dict of logits
@@ -1650,58 +1509,30 @@ def train_epoch(encoder, head, loader, device, optimizer,
         torch.cuda.reset_peak_memory_stats()
     
     for batch in tqdm(loader, desc="Train", leave=False):
-        (wavs,
-         y_main, w_main,
-         y_harm, w_harm,
-         y_ad,   w_ad, stem_weight) = batch
+        wavs, y_main, w_main, stem_weight = batch
         
-        wavs = wavs.to(device, non_blocking=True)   # (B, 1, T)
+        wavs = wavs.to(device, non_blocking=True)  # (B,1,T)
         y_main = y_main.to(device, non_blocking=True)
         w_main = w_main.to(device, non_blocking=True)
-        y_harm = y_harm.to(device, non_blocking=True)
-        w_harm = w_harm.to(device, non_blocking=True)
-        y_ad = y_ad.to(device, non_blocking=True)
-        w_ad = w_ad.to(device, non_blocking=True)
         stem_weight = stem_weight.to(device, non_blocking=True)
         
-        # Ensure shapes for ECAPA
-        if wavs.ndim == 3 and wavs.size(1) == 1:
-            wavs_encoder = wavs.squeeze(1)        # (B, T)
-        elif wavs.ndim == 2:
-            wavs_encoder = wavs                   # (B, T)
-        else:
-            raise ValueError(f"Unexpected wavs shape: {wavs.shape}")
+        wavs_encoder = wavs.squeeze(1) if (wavs.ndim == 3 and wavs.size(1) == 1) else wavs
         
         amp_ctx = torch.autocast(device_type=device.type, enabled=(use_amp and device.type=="cuda"))
         
         with torch.no_grad():
-            # SpeechBrain ECAPA expects (B, T) or (B, 1, T) tensors; encode_batch handles both.
-            # print(f"[DEBUG] wavs.shape = {wavs.shape}, dtype={wavs.dtype}, device={wavs.device}")
-            emb_main_b1, emb_ctx_b1 = encoder.encode_batch(wavs_encoder, ctx_frac=ctx_frac)
-            emb_main = emb_main_b1.squeeze(1)  # (B, D)
-            emb_ctx  = emb_ctx_b1.squeeze(1)   # (B, D)
-             
-        # Fuse multi-window embeddings
-        emb_fused = torch.cat([emb_main, emb_ctx], dim=1)
+            emb_fused = encoder.encode_batch(wavs_encoder, ctx_frac=ctx_frac)  # (B,Df)
         
         optimizer.zero_grad(set_to_none=True)
         
         with amp_ctx:
-            out = head(emb_fused, emb_ctx)
-            logits_main = out["main"]      # (B, C_main)
-            # Updates my sanity lol
+            logits_main = head(emb_fused)  # (B, C)
             update_sanity_stats(sanity, logits_main, y_main, thr=thr)
-            # logits_harm = out["harmony"]   # (B, C_members)
-            # logits_ad   = out["adlib"]     # (B, C_members)
-        
-        # # --- harmony head ---
-        # loss_harm_raw = bce(logits_harm, y_harm)
-        # loss_harm = (loss_harm_raw * w_harm).mean()
-        
-        # # --- ad-lib head ---
-        # loss_ad_raw = bce(logits_ad, y_ad) 
-        # loss_ad = (loss_ad_raw * w_ad).mean()
-        
+
+            loss_w = bce(logits_main, y_main) * w_main
+            loss_per = loss_w.sum(dim=1) / w_main.sum(dim=1).clamp(min=1e-6)
+            loss = (loss_per * stem_weight).mean() + 1e-4 * logits_main.pow(2).mean()
+            
         # Total loss with task weights
         loss_w = bce(logits_main, y_main) * w_main
         
@@ -1761,95 +1592,117 @@ def train_epoch(encoder, head, loader, device, optimizer,
     return avg_loss, {"micro_f1": avg_f1, "precision": avg_p, "recall": avg_r, "subset_acc": avg_subset, "sanity": sanity_out}
 
 @torch.no_grad()
-def eval_epoch(encoder, head, loader, device, thr=0.5, use_amp=True,
-               ctx_frac: float = 0.25, lambda_harm: float = 0.7, lambda_ad: float = 0.7):
+def eval_epoch(encoder, head, loader, device, thr=0.5, use_amp=True, ctx_frac: float = 0.25):
+    """
+    encoder: MuQEncoderWrapper (frozen), encode_batch(wavs, ctx_frac) -> (emb_main, emb_ctx)
+             where emb_main/emb_ctx are either:
+               - OLD style: (B,1,D)  (then we squeeze)
+               - NEW style: (B,D)    (then we don't)
+    head: PresenceHead, forward(emb_fused) -> logits_main (B, num_members+1)
+    loader yields: (wavs, y_main, w_main, stem_weight)
+    """
     encoder.eval()
     head.eval()
-    
+
     sanity = {
         "pred_pos_sum": 0.0, "true_pos_sum": 0.0, "n_samples": 0,
         "abs_sum": 0.0, "abs_count": 0, "abs_max": 0.0,
         "abs_sample": [],
     }
-    
+
     total_loss, total_count = 0.0, 0
     total_f1, total_prec, total_rec = 0.0, 0.0, 0.0
     total_subset_acc = 0.0
-    
-    bce = torch.nn.BCEWithLogitsLoss(reduction="none")
-    
-    for batch in tqdm(loader, desc="Eval", leave=False):
-        (wavs,
-         y_main, w_main,
-         y_harm, w_harm,
-         y_ad,   w_ad, stem_weight) = batch
-        
-        wavs = wavs.to(device)
-        y_main = y_main.to(device)
-        w_main = w_main.to(device)
-        y_harm = y_harm.to(device)
-        w_harm = w_harm.to(device)
-        y_ad = y_ad.to(device)
-        w_ad = w_ad.to(device)
-        stem_weight = stem_weight.to(device)
-        
-        if wavs.ndim == 3 and wavs.size(1) == 1:
-            wavs_encoder = wavs.squeeze(1)
-        elif wavs.ndim == 2:
-            wavs_encoder = wavs
-        else:
-            raise ValueError(f"Unexpected wavs shape: {wavs.shape}")
 
-        # Full 2s
-        emb_main_b1, emb_ctx_b1 = encoder.encode_batch(wavs_encoder, ctx_frac=ctx_frac)
-        emb_main = emb_main_b1.squeeze(1)  # (B, D)
-        emb_ctx  = emb_ctx_b1.squeeze(1)  # (B, D)
-        
-        emb_fused = torch.cat([emb_main, emb_ctx], dim=1)    
-        
-        with torch.autocast(device_type=device.type, enabled=(use_amp and device.type=="cuda")):
-            out = head(emb_fused, emb_ctx)
-            logits_main = out["main"]
-            update_sanity_stats(sanity, logits_main, y_main, thr=thr)
-            # logits_harm = out["harmony"]
-            # logits_ad   = out["adlib"]
-        
-        # loss_harm_raw = bce(logits_harm, y_harm)
-        # loss_harm = (loss_harm_raw * w_harm).mean()
-        
-        # loss_ad_raw = bce(logits_ad, y_ad)
-        # loss_ad = (loss_ad_raw * w_ad).mean()
-        
-        # Total loss with task weights
-        loss_w = bce(logits_main, y_main) * w_main
-        
-        # Mean over classes
-        loss_main_per_sample = loss_w.sum(dim=1) / w_main.sum(dim=1).clamp(min=1e-6)
-        # Apply stemWEight
-        loss_main_per_sample = loss_main_per_sample * stem_weight
-        loss = loss_main_per_sample.mean() #  + lambda_harmony * loss_harm + lambda_adlib * loss_ad
-        
+    bce = torch.nn.BCEWithLogitsLoss(reduction="none")
+
+    last_logits = None
+    last_y = None
+
+    # helper: squeeze (B,1,D)->(B,D) but leave (B,D) unchanged
+    def _squeeze_b1d(x: torch.Tensor) -> torch.Tensor:
+        if x.ndim == 3 and x.size(1) == 1:
+            return x.squeeze(1)
+        return x
+
+    # helper: ensure wavs fed to encoder are (B,T)
+    def _prepare_wavs(wavs: torch.Tensor) -> torch.Tensor:
+        if wavs.ndim == 3 and wavs.size(1) == 1:
+            return wavs.squeeze(1)
+        if wavs.ndim == 2:
+            return wavs
+        raise ValueError(f"Unexpected wavs shape: {tuple(wavs.shape)}")
+
+    for batch in tqdm(loader, desc="Eval", leave=False):
+        wavs, y_main, w_main, stem_weight = batch
+
+        wavs = wavs.to(device, non_blocking=True)
+        y_main = y_main.to(device, non_blocking=True)
+        w_main = w_main.to(device, non_blocking=True)
+        stem_weight = stem_weight.to(device, non_blocking=True)
+
+        wavs_encoder = _prepare_wavs(wavs)
+
+        # --- encode ---
+        enc_out = encoder.encode_batch(wavs_encoder, ctx_frac=ctx_frac)
+
+        # NEW path: a single embedding tensor
+        if isinstance(enc_out, torch.Tensor):
+            emb_fused = _squeeze_b1d(enc_out)
+
+        else:
+            raise TypeError(
+                f"encode_batch returned unexpected type/shape: {type(enc_out)}"
+            )
+
+        # --- forward + loss ---
+        with torch.autocast(device_type=device.type, enabled=(use_amp and device.type == "cuda")):
+            logits = head(emb_fused)  # (B,C)
+
+            update_sanity_stats(sanity, logits, y_main, thr=thr)
+
+            # weighted BCE per class
+            loss_w = bce(logits, y_main) * w_main  # (B,C)
+
+            # normalize by weight mass per sample
+            loss_per_sample = loss_w.sum(dim=1) / w_main.sum(dim=1).clamp(min=1e-6)  # (B,)
+
+            # apply stem weight
+            loss = (loss_per_sample * stem_weight).mean()
+
         bsz = wavs.size(0)
-        total_loss += loss.item() * bsz
+        total_loss += float(loss.item()) * bsz
         total_count += bsz
 
-        f1, prec, rec = multilabel_micro_f1(logits_main, y_main, thr=thr)
+        f1, prec, rec = multilabel_micro_f1(logits, y_main, thr=thr)
         total_f1 += f1 * bsz
         total_prec += prec * bsz
         total_rec += rec * bsz
-        total_subset_acc += subset_accuracy(logits_main, y_main, thr=thr) * bsz
-    
-    pred_pos = (torch.sigmoid(logits_main.detach()) > thr).float().sum(dim=1).mean().item()
-    true_pos = y_main.sum(dim=1).mean().item()
-    print(f"[DEBUG] avg_pred_pos={pred_pos:.2f} avg_true_pos={true_pos:.2f}")
-    
+        total_subset_acc += subset_accuracy(logits, y_main, thr=thr) * bsz
+
+        last_logits = logits
+        last_y = y_main
+
+    # Optional debug from last batch
+    if last_logits is not None and last_y is not None:
+        pred_pos = (torch.sigmoid(last_logits) > thr).float().sum(dim=1).mean().item()
+        true_pos = last_y.sum(dim=1).mean().item()
+        print(f"[DEBUG] avg_pred_pos={pred_pos:.2f} avg_true_pos={true_pos:.2f}")
+
     avg_loss = total_loss / max(1, total_count)
     avg_f1 = total_f1 / max(1, total_count)
     avg_p = total_prec / max(1, total_count)
     avg_r = total_rec / max(1, total_count)
     avg_subset = total_subset_acc / max(1, total_count)
+
     sanity_out = finalize_sanity_stats(sanity)
-    return avg_loss, {"micro_f1": avg_f1, "precision": avg_p, "recall": avg_r, "subset_acc": avg_subset, "sanity": sanity_out}
+    return avg_loss, {
+        "micro_f1": avg_f1,
+        "precision": avg_p,
+        "recall": avg_r,
+        "subset_acc": avg_subset,
+        "sanity": sanity_out,
+    }
 
 @torch.no_grad()
 def hard_miner(encoder, head, loader, device, thr=0.7, pain_threshold=2.0, max_hard=50000):
@@ -1982,10 +1835,10 @@ def main():
     
     encoder = MuQEncoderWrapper(
         muq_model=muq,
-        muq_sr=args.sr_out,
         pooling="topk",
         debug=False
     ).to(device)
+    fused_encoder = FusedEncoder(encoder).to(device)
     
     dummy = torch.zeros(1, int(args.chunk_sec * args.sr_out), device=device)
 
@@ -1994,16 +1847,16 @@ def main():
         dummy = dummy.squeeze(1)
 
     with torch.no_grad():
-        emb_main_b1, _ = encoder.encode_batch(dummy)  # tuple
-        emb_dim = emb_main_b1.squeeze(1).shape[-1]
+        fused = fused_encoder.encode_batch(dummy, ctx_frac=0.2)  # (1, D_fused)
+        fused_dim = fused.shape[1]  
         
-    fused_dim = emb_dim * 2
     num_members = ds_phase1.num_members
         
-    head = MultiTaskHead(
-        emb_dim_fused=fused_dim, 
-        emb_dim_ctx=emb_dim, 
-        num_members=num_members
+    head = PresenceHead(
+        emb_dim_fused=fused_dim,
+        num_members=num_members,
+        hidden=256,
+        dropout=0.2
     ).to(device)
     
     optimizer = torch.optim.AdamW(head.parameters(), lr=args.lr, weight_decay=1e-4)
@@ -2026,8 +1879,8 @@ def main():
         # Train phase 1
         for epoch in range(1, args.epochs + 1):
             print(f"\nEpoch {epoch}/{args.epochs}")
-            tr_loss, tr_metrics = train_epoch(encoder, head, train_loader, device, optimizer, thr=eval_thr)
-            va_loss, va_metrics = eval_epoch(encoder, head, val_loader, device, thr=eval_thr)
+            tr_loss, tr_metrics = train_epoch(fused_encoder, head, train_loader, device, optimizer, thr=eval_thr)
+            va_loss, va_metrics = eval_epoch(fused_encoder, head, val_loader, device, thr=eval_thr)
             tr_s = tr_metrics["sanity"]
             va_s = va_metrics["sanity"]
 
@@ -2057,7 +1910,7 @@ def main():
                 torch.save({
                     "state_dict": head.state_dict(),
                     "classes": ds_phase1.class_map.idx_to_name,
-                    "emb_dim": emb_dim,
+                    "emb_dim_fused": fused_dim,
                     "sr": args.sr_out,
                     "chunk_sec": args.chunk_sec,
                     "group": args.group,
@@ -2075,7 +1928,7 @@ def main():
     
     # 2) mine hard centers using the trained phase 1 model
     hard_centers = hard_miner(
-        encoder=encoder,
+        encoder=fused_encoder,
         head=head,
         loader=mine_loader,   # based on the 2s dataset
         thr=eval_thr,
@@ -2110,7 +1963,7 @@ def main():
         num_workers=args.num_workers, pin_memory=True, drop_last=False
     )
     
-    head2 = MultiTaskHead(emb_dim_fused=fused_dim, emb_dim_ctx=emb_dim, num_members=num_members).to(device)
+    head2 = PresenceHead(emb_dim_fused=fused_dim, num_members=num_members).to(device)
     head2.load_state_dict(head.state_dict())  # start from phase1 solution
     opt2 = torch.optim.AdamW(head2.parameters(), lr=args.lr * 0.3, weight_decay=1e-4)
 
@@ -2127,8 +1980,8 @@ def main():
     
     for epoch in range(1, phase2_epochs + 1):
         print(f"\n[Phase2] Epoch {epoch}/{phase2_epochs}")
-        tr2_loss, tr2_metrics = train_epoch(encoder, head2, focus_loader, device, opt2, thr=THR2, is_phase2=True)
-        va2_loss, va2_metrics = eval_epoch(encoder, head2, val2_loader, device, thr=THR2)
+        tr2_loss, tr2_metrics = train_epoch(fused_encoder, head2, focus_loader, device, opt2, thr=THR2, is_phase2=True)
+        va2_loss, va2_metrics = eval_epoch(fused_encoder, head2, val2_loader, device, thr=THR2)
 
         print(f"[Phase2] Train loss {tr2_loss:.4f} microF1 {tr2_metrics['micro_f1']:.4f}")
         print(f"[Phase2] Val   loss {va2_loss:.4f} microF1 {va2_metrics['micro_f1']:.4f}")
@@ -2182,7 +2035,7 @@ def main():
             torch.save({
                 "state_dict": head2.state_dict(),
                 "classes": ds_phase1.class_map.idx_to_name,
-                "emb_dim": emb_dim,
+                "emb_dim": fused_dim,
                 "sr": args.sr_out,
                 "chunk_sec": 0.4,
                 "group": args.group,
@@ -2202,7 +2055,7 @@ def main():
             )
 
             new_hard = hard_miner(
-                encoder=encoder,
+                encoder=fused_encoder,
                 head=head2,
                 loader=mine_loader,
                 device=device,
