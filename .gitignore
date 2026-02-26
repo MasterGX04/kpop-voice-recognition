@@ -49,6 +49,7 @@ cache_audio/
 dist/
 build/
 .build_venv/
+thumbnails/
 
 overfit_test.py
 voice_classifier.py
