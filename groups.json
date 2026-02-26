@@ -80,11 +80,13 @@
             },
             "revive": {
                 "displayName": "REVIVE+",
-                "albumArtCachePath": "",
-                "albumArtUrl": "",
+                "albumArtCachePath": "member_images\\IVE\\_album_art\\revive.png",
+                "albumArtUrl": "https://images.genius.com/8d48b433a9799a20c5a6848669939392.1000x1000x1.png",
                 "songs": [
                     "Summer[Liz]",
-                    "Bang Bang"
+                    "Bang Bang",
+                    "BLACKHOLE",
+                    "Fireworks"
                 ]
             }
         },
@@ -106,7 +108,9 @@
             "Summer[Liz]": "revive",
             "Midnight Kiss": "ive_secret",
             "Bang Bang": "revive",
-            "GOTCHA (Baddest Eros)": "ive_secret"
+            "GOTCHA (Baddest Eros)": "ive_secret",
+            "BLACKHOLE": "revive",
+            "Fireworks": "revive"
         },
         "defaultAlbumId": "ive_switch"
     },
@@ -137,10 +141,19 @@
                 "songs": [
                     "Whiplash"
                 ]
+            },
+            "armageddon": {
+                "displayName": "Armageddon",
+                "albumArtCachePath": "",
+                "albumArtUrl": "",
+                "songs": [
+                    "Mine"
+                ]
             }
         },
         "songToAlbum": {
-            "Whiplash": "whiplash"
+            "Whiplash": "whiplash",
+            "Mine": "armageddon"
         },
         "defaultAlbumId": "whiplash"
     },

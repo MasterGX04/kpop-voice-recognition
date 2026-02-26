@@ -1,5 +1,18 @@
 [
     {
+        "language": "English",
+        "memberName": [
+            "Tzuyu"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Ooh-ooh\nOoh-ooh-ooh-ooh",
+        "startChunk": 247,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
         "language": "Korean",
         "memberName": [
             "Nayeon"
@@ -58,5 +71,603 @@
         "romanization": "nareul gamshihaneun jeo Spot spot spotlight\nbichulsurok eodum sogeuro ppallyeo deureo\nkkeuchi boineunde I know it's not right",
         "english": "I’m surrounded by that Spot spot spotlight\nAs it shines on me, I’m swept into the darkness\nI see the end, I know it’s not right",
         "startChunk": 1052
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Momo"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I can't stop me, can't stop me",
+        "startChunk": 1293,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "All"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "No-o-o-o",
+        "startChunk": 1342,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Nayeon"
+        ],
+        "korean": "내 앞에 놓여진 이 Red red red line\n건너편의 너와 난 이미 눈을 맞춰\n느끼고 싶어 짜릿한 Highlight",
+        "romanization": "nae ape noyeojin i Red red red line\ngeonneopyeone neowa nan imi nuneul matchweo\nneukkigo shipeo jjarithan Highlight",
+        "english": "Right in front of me, this Red red red line\nAcross from each other, you and I exchange glances\nWanna feel the thrilling Highlight",
+        "startChunk": 1373,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Dahyun"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I can't stop me, can't stop me",
+        "startChunk": 1611,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "All"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "No-o-o-o",
+        "startChunk": 1663,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Tzuyu"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Ooh-ooh, ooh-ooh-ooh-ooh\nOoh-ooh, ooh-ooh-ooh-ooh\nOoh-ooh, ooh-ooh-ooh-ooh",
+        "startChunk": 1688,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Tzuyu"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I can't stop me, can't stop me",
+        "startChunk": 1932,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Momo"
+        ],
+        "korean": "눈감아 달라구",
+        "romanization": "nungama dallagu",
+        "english": "Keep your eyes closed",
+        "startChunk": 1983,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "All"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Ya ya",
+        "startChunk": 2036,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Dahyun"
+        ],
+        "korean": "딱 한 번만 No rules",
+        "romanization": "ttak han beonman No rules",
+        "english": "Just this once No rules",
+        "startChunk": 2062,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "All"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Ah ah",
+        "startChunk": 2118,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Momo"
+        ],
+        "korean": "모른 척해 줘 Lights off",
+        "romanization": "moreun cheokhae jweo Lights off",
+        "english": "Pretend you don’t know Lights off",
+        "startChunk": 2141,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Jeongyeon"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Tonight",
+        "startChunk": 2195,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Jihyo"
+        ],
+        "korean": "나 참을 수 없을 거 같아 Losing myself",
+        "romanization": "na chameul su eopseul geo gata Losing myself",
+        "english": "I can’t help it Losing myself",
+        "startChunk": 2242,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Chaeyoung"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Yeah yeah",
+        "startChunk": 2317,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Tzuyu"
+        ],
+        "korean": "이제는 Turning back\n불가능해 난 점점 더 깊은 어둠에",
+        "romanization": "ijeneun Turning back\nbulganeunghae nan jeomjeom deo gipeun eodume",
+        "english": "Now Turning back\nIs impossible, I fall deeper into darkness",
+        "startChunk": 2343,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Sana"
+        ],
+        "korean": "너무나 짜릿해\n나 눈을 감을래",
+        "romanization": "neomuna jjarithae\nna nuneul gameullae",
+        "english": "It is so thrilling\nWanna close my eyes",
+        "startChunk": 2462,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Chaeyoung"
+        ],
+        "korean": "다시는 돌아갈 수 없을 것만 같애\nOut of control",
+        "romanization": "dashineun doragal su eopseul geonman gatae\nOut of control",
+        "english": "I just can’t go back anymore\nOut of control",
+        "startChunk": 2543,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Jihyo"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Ooh yeah",
+        "startChunk": 2628,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Nayeon"
+        ],
+        "korean": "나를 감시하는 저 Spot spot spotlight\n비출수록 어둠 속으로 빨려 들어\n끝이 보이는데 I know it’s not right",
+        "romanization": "nareul gamshihaneun jeo Spot spot spotlight\nbichulsurok eodum sogeuro ppallyeo deureo\nkkeuchi boineunde I know it's not right",
+        "english": "I’m surrounded by that Spot spot spotlight\nAs it shines on me, I’m swept into the darkness\nI see the end, I know it’s not right",
+        "startChunk": 2652,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Dahyun"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I can't stop me, can't stop me",
+        "startChunk": 2892,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "All"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "No-o-o-o",
+        "startChunk": 2943,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Jihyo"
+        ],
+        "korean": "내 앞에 놓여진 이 Red red red line\n건너편의 너와 난 이미 눈을 맞춰\n느끼고 싶어 짜릿한 Highlight",
+        "romanization": "nae ape noyeojin i Red red red line\ngeonneopyeone neowa nan imi nuneul matchweo\nneukkigo shipeo jjarithan Highlight",
+        "english": "Right in front of me, this Red red red line\nAcross from each other, you and I exchange glances\nWanna feel the thrilling Highlight",
+        "startChunk": 2971,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Nayeon"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Red light",
+        "startChunk": 3022,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Nayeon"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I can't stop me yeah",
+        "startChunk": 3171,
+        "isAdLib": true,
+        "adLibDuration": 100,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I can't stop me, can't stop me",
+        "startChunk": 3214,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "All"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "No-o-o-o",
+        "startChunk": 3262,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Chaeyoung"
+        ],
+        "korean": "Risky risky wiggy 위기\nThis is an emergency",
+        "romanization": "Risky risky wiggy wigi\nThis is an emergency",
+        "english": "Risky risky wiggy Crisis\nThis is an emergency",
+        "startChunk": 3287,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Dahyun"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Help me, help me, somebody stop me\nCuz I know I can’t stop me",
+        "startChunk": 3368,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Momo"
+        ],
+        "korean": "답은 알고 있잖아\n근데 가고 있잖아",
+        "romanization": "dabeun algo itjana\ngeunde gago itjana",
+        "english": "I already know the answer\nBut I still keep going",
+        "startChunk": 3463,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Dahyun"
+        ],
+        "korean": "이러고 싶지 않아\n내 안에 내가 또 있나 봐",
+        "romanization": "ireogo shipji ana\nnae ane naega tto inna bwa",
+        "english": "I don’t wanna do this\nThere must be another me inside me",
+        "startChunk": 3543,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "나는 원하는데",
+        "romanization": "naneun weonhaneunde",
+        "english": "I want it but",
+        "startChunk": 3616,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Nayeon"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Ah-ah-huh",
+        "startChunk": 3667,
+        "isAdLib": true,
+        "adLibDuration": 70,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Sana"
+        ],
+        "korean": "원하는 게 안돼",
+        "romanization": "weonhaneun ge andwae",
+        "english": "Can’t do what I want",
+        "startChunk": 3697,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Tzuyu"
+        ],
+        "korean": "Guilty 난 싫은데",
+        "romanization": "Guilty nan shireunde",
+        "english": "Guilty I don't want it",
+        "startChunk": 3777,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Nayeon"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I can’t stop me, can’t stop me, can’t stop me",
+        "startChunk": 3832,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Jeongyeon"
+        ],
+        "korean": "나를 감시하는 저 Spot spot spotlight\n비출수록 어둠 속으로 빨려 들어\n끝이 보이는데 I know it’s not right",
+        "romanization": "nareul gamshihaneun jeo Spot spot spotlight\nbichulsurok eodum sogeuro ppallyeo deureo\nkkeuchi boineunde I know it's not right",
+        "english": "I’m surrounded by that Spot spot spotlight\nAs it shines on me, I’m swept into the darkness\nI see the end, I know it’s not right",
+        "startChunk": 3931,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Chaeyoung"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I can't stop me, can't stop me",
+        "startChunk": 4174,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "All"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "No-o-o-o",
+        "startChunk": 4223,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Nayeon"
+        ],
+        "korean": "내 앞에 놓여진 이 Red red red line\n건너편의 너와 난 이미 눈을 맞춰\n느끼고 싶어 짜릿한 Highlight",
+        "romanization": "nae ape noyeojin i Red red red line\ngeonneopyeone neowa nan imi nuneul matchweo\nneukkigo shipeo jjarithan Highlight",
+        "english": "Right in front of me, this Red red red line\nAcross from each other, you and I exchange glances\nWanna feel the thrilling Highlight",
+        "startChunk": 4253,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Jihyo"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "No-no",
+        "startChunk": 4294,
+        "isAdLib": true,
+        "adLibDuration": 75,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Sana"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I can't stop me, can't stop me",
+        "startChunk": 4492,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "All"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "No-o-o-o",
+        "startChunk": 4543,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Tzuyu"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Ooh-ooh, ooh-ooh-ooh-ooh\nOoh-ooh, ooh-ooh-ooh-ooh\nOoh-ooh, ooh-ooh-ooh-ooh",
+        "startChunk": 4567,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Tzuyu"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I can't stop me, can't stop me",
+        "startChunk": 4812,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "All"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "No-o-o-o",
+        "startChunk": 4863,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
     }
 ]

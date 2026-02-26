@@ -2111,7 +2111,7 @@ class VoiceTrainerGUI:
         print(f"Member list: {members}")
         if group == "Back": return
         vocalsPath = f"./training_data/{group}"
-        vocalsOnly = [f for f in os.listdir(vocalsPath) if (f.endswith(".mp3") or f.endswith(".wav")) and "_vocals" in f]
+        vocalsOnly = [f for f in os.listdir(vocalsPath) if (f.endswith(".mp3") or f.endswith(".wav")) and "_vocals" in f and "leading" not in f and "backing" not in f]
         if not vocalsOnly:
             print("No songs available.")
             return

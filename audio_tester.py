@@ -1,6 +1,7 @@
 import os, traceback, hashlib, sys
 from thumbnail_functions import ThumbnailManager
 import time
+import numpy as np
 from PIL import Image, ImageTk
 import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
@@ -252,6 +253,7 @@ class VoiceDetectionApp:
         isMusicVideo = False
         # 1) User-provided video takes priority
         if videoPath and os.path.exists(videoPath):
+            self.videoPath = videoPath
             safeVideoPath = get720pVideo(videoPath)
         
         # 2) Song-named fallback
@@ -259,11 +261,13 @@ class VoiceDetectionApp:
             candidate = os.path.join(self.songDir, f"{self.songName}.mp4")
             if os.path.exists(candidate):
                 safeVideoPath = get720pVideo(candidate)
+                self.videoPath = candidate
 
         # 3) Final fallback
         if not safeVideoPath:
             print("No valid video found, using default looping background.")
             safeVideoPath = resourcePath("looping_background.mp4")
+            self.videoPath = safeVideoPath
             isMusicVideo = False
         else:
             videoMs = getVideoDurationMs(safeVideoPath)
@@ -281,8 +285,8 @@ class VoiceDetectionApp:
                         f"(video={videoMs}ms, audio={audioMs}ms). "
                         f"Using looping background behavior."
                     )
-
-        self.videoPath = safeVideoPath
+                    
+        print(f"Original videoPath: {self.videoPath}")
 
         self.videoTrackItem = VideoTrackItem(
             self.canvas,
@@ -395,6 +399,8 @@ class VoiceDetectionApp:
         
         # self.root.after(75, self.enforceCanvasLayering)
         self.thumbnailManager = ThumbnailManager(self, menubar=self.menubar)
+        
+        self.loadVocalPresence()
     # end init
 
     def onClose(self):
@@ -441,6 +447,49 @@ class VoiceDetectionApp:
         ModalGuard.close("lyrics_menu")
         ModalGuard.close("labels_menu")
         self.root.destroy()
+    
+    def loadVocalPresence(self):
+        """
+        Loads precomputed 40ms vocal presence JSON and stores it in:
+            self.vocalPresence  (np.ndarray, dtype=bool)
+
+        Uses:
+            ./training_data/{group}/{songName}_vocals_40ms_activity.json
+        """
+        if not hasattr(self, "selectedGroup") or not hasattr(self, "songName"):
+            print("[VocalPresence] Missing selectedGroup or songName.")
+            self.vocalPresence = None
+            return
+
+        jsonPath = os.path.join(
+            ".",
+            "training_data",
+            self.selectedGroup,
+            f"{self.songName}_vocals_40ms_activity.json"
+        )
+
+        if not os.path.isfile(jsonPath):
+            print(f"[VocalPresence] JSON not found: {os.path.abspath(jsonPath)}")
+            self.vocalPresence = None
+            return
+
+        try:
+            with open(jsonPath, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            if "isSilence" not in data:
+                print("[VocalPresence] 'isSilence' not found in JSON.")
+                self.vocalPresence = None
+                return
+
+            # Convert to boolean numpy array
+            self.vocalPresence = np.array(data["isSilence"], dtype=bool)
+
+            print(f"[VocalPresence] Loaded {len(self.vocalPresence)} chunks.")
+
+        except Exception as e:
+            print(f"[VocalPresence] Failed to load JSON: {e}")
+            self.vocalPresence = None
     
     def initStatusMessage(self):
         self._statusVisible = False
@@ -3115,39 +3164,52 @@ class VoiceDetectionApp:
             self.renderLyrics(safeChunkIndex)
         else:
             # voiceDetectionResults[chunkIndex] is now a dict with heads
-            frameRoles = self.voiceDetectionResults[safeChunkIndex] if self.voiceDetectionResults else {}
-            
-             # main is a single name or ""
-            main_names = frameRoles.get("main", []) or []
-            # harmony/adlib are lists
-            harmony_names = frameRoles.get("harmony", []) or []
-            adlib_names = frameRoles.get("adlib", []) or []
-
-            # ✅ Update each member's image based on detection
-            for member, trackItem in self.memberImages.items():
-                imageId = self.memberImageIds[member]
-                trackItem.updateAndDrawTimer(safeChunkIndex)
-                
-                if member in main_names:
-                    role = "main"
-                elif member in harmony_names:
-                    role = "harmony"
-                elif member in adlib_names:
-                    role = "adlib"
-                else:
-                    role = "none"
-                    
-                trackItem.currentRole = role
-                
-                if role == "none":
-                    trackItem.switchImage("dark")
-                else:
+            if self.vocalPresence is not None:
+                firstMember, trackItem = list(self.memberImages.items())[0]
+                imageId = self.memberImageIds[firstMember]
+                if self.vocalPresence[safeChunkIndex] == 0:
                     trackItem.switchImage("light")
-
+                    trackItem.currentRole = "main"
+                else:
+                    trackItem.switchImage("dark")
+                    trackItem.currentRole = "none"
+                    
                 self.canvas.itemconfig(imageId, image=trackItem.sourceImages[trackItem.currentImageKey])
             
         self.canvas.update_idletasks()
     # end
+    
+    def updateMemberTestingCanvas(self, chunkIndex):
+        frameRoles = self.voiceDetectionResults[chunkIndex] if self.voiceDetectionResults else {}
+            
+            # main is a single name or ""
+        main_names = frameRoles.get("main", []) or []
+        # harmony/adlib are lists
+        harmony_names = frameRoles.get("harmony", []) or []
+        adlib_names = frameRoles.get("adlib", []) or []
+
+        # ✅ Update each member's image based on detection
+        for member, trackItem in self.memberImages.items():
+            imageId = self.memberImageIds[member]
+            trackItem.updateAndDrawTimer(chunkIndex)
+            
+            if member in main_names:
+                role = "main"
+            elif member in harmony_names:
+                role = "harmony"
+            elif member in adlib_names:
+                role = "adlib"
+            else:
+                role = "none"
+                
+            trackItem.currentRole = role
+            
+            if role == "none":
+                trackItem.switchImage("dark")
+            else:
+                trackItem.switchImage("light")
+
+            self.canvas.itemconfig(imageId, image=trackItem.sourceImages[trackItem.currentImageKey])
     
     def _restartAudioAtTime(self, newTimeMs):
         try: 

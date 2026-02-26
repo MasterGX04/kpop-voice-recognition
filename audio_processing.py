@@ -288,38 +288,7 @@ def combineMemberVocals(jsonFiles, vocalsOnlySongs, selectedGroup, members):
             json.dump(out_data, jf, separators=(",", ":"))
 
         print(f"  ✅ Saved frame labels: {out_labels_path}")
-       
-def getSongsFromSameAlbum():
-    songsFromSameAlbum = {
-        'IVE': {
-            'Ive_Switch': ['해야 (HEYA)', 'Accendio', 'Blue Blood', 'Summer Festa', "Blue Heart", "Hypnosis", "WOW", "My Satisfaction", "LOVE DIVE", "Ice Queen", "Baddie", "Heroine", "Supernova Love", "RESET"],
-            'Ive_Empathy': ['Rebel Heart', 'Flu', 'You Wanna Cry', 'ATTITUDE','Thank U', 'TKO', 'Mine', 'ELEVEN', 'Summer[Liz]', 'Wish[Yujin]', 'Payback', 'XOXZ', "Off The Record"]},
-        'ITZY': {
-            'Born To Be': ['Born To Be', 'Mr. Vampire']   
-        },
-        'BTS': {
-            'Proof': ['Epiphany[Jin]', 'Euphoria[Jungkook]', "Filter[Jimin]", "Love Me Again[V]", "Persona[RM]", "First Love[Suga]", "Disease", "Mama[J-Hope]", "달려라 방탄", "Zero O'Clock"],
-            'Love Yourself Tear': ['Fake Love', 'Love Maze', 'Magic Shop', 'Let Go'],
-            'Wings': ["Stigma[V]", 'Spring Day Studio', "Blood Sweat & Tears", "Butterfly"],
-            'Pre_2015': ['Path'],
-            'Dark And Wild': ['Danger'],
-            'Skool Luv Affair': ['Just One Day']
-        },
-        'Fifty Fifty': {
-            'Day & Night': ['Midnight Special', 'Skittlez', "Heartbreak"]
-        },
-        'NMIXX': {
-            'Blue Valentine': ['Blue Valentine', 'Shape Of Love', 'Phoenix', "Spinnin' On It"]
-        },
-        'TWICE': {
-            'Fancy You': ['Fancy', 'Stuck In My Head']
-        },
-        'aespa': {
-            'Whiplash': ['Whiplash']
-        }
-    }
-    
-    return songsFromSameAlbum
+
 
 def buildOverlapRunsFromActivationMap(activationMap, minMembers=2, minRunLen=20):
     """
@@ -541,38 +510,327 @@ def estimatePitchRanges(audioChunks, sr=22050, groupSize=3, groupName='', savePa
     
     # Print count summary
     return pitchRanges
-     
+
+def _stftMag(y, sr, nFft=1024, hopLength=256):
+    S = np.abs(librosa.stft(y, n_fft=nFft, hop_length=hopLength, win_length=nFft))
+    freqs = librosa.fft_frequencies(sr=sr, n_fft=nFft)
+    return S, freqs
+
+def computeChunkVocalSilenceFlags(
+    y,
+    sr,
+    chunkMs=40,
+    nFft=1024,
+    hopLength=256,
+    vocalBand=(300, 4000),
+    smoothWin=5,          # chunks
+    minOnRun=3,           # chunks: require at least this many consecutive "on"
+    minOffRun=3           # chunks: require at least this many consecutive "off"
+):
+    """
+    Returns:
+      isSilence: (T,) bool
+      hasVocal:  (T,) bool
+      isVoiced:  (T,) bool   # voiced (vowel/pitched) vs unvoiced (consonant/breath)
+
+    Notes:
+      - isSilence: mostly RMS + (optional) bandRatio guard.
+      - hasVocal: "voice-like" score + rising-energy ON gate + hysteresis + smoothing.
+      - isVoiced: pYIN voiced probability aggregated per chunk (+ optional harmonic/flatness guards).
+    """
+    # -------------------------
+    # chunking
+    # -------------------------
+    chunkLen = int(sr * (chunkMs / 1000.0))
+    if chunkLen <= 0:
+        raise ValueError("chunkLen <= 0")
+
+    T = int(np.ceil(len(y) / chunkLen))
+    pad = T * chunkLen - len(y)
+    if pad > 0:
+        y = np.pad(y, (0, pad), mode="constant")
+
+    chunks = y.reshape(T, chunkLen)
+
+    # -------------------------
+    # Feature 1: RMS (per chunk)
+    # -------------------------
+    rms = np.sqrt(np.mean(chunks * chunks, axis=1) + 1e-12).astype(np.float32)  # (T,)
+
+    # -------------------------
+    # STFT features (per frame -> aggregate to chunk)
+    # -------------------------
+    S, freqs = _stftMag(y, sr, nFft=nFft, hopLength=hopLength)  # (F, frames)
+    nFrames = S.shape[1]
+    frameTimes = (np.arange(nFrames) * hopLength)  # in samples
+    frameChunk = np.clip(frameTimes // chunkLen, 0, T - 1).astype(int)
+
+    # pYIN voiced prob per frame (aligned to hopLength)
+    # Note: pyin can be slow, but it's the best "voiced vs unvoiced" signal you can add quickly.
+    _, _, voicedProbFrame = librosa.pyin(
+        y,
+        fmin=librosa.note_to_hz("C2"),
+        fmax=librosa.note_to_hz("C7"),
+        sr=sr,
+        frame_length=nFft,
+        hop_length=hopLength
+    )
+    voicedProbFrame = np.nan_to_num(voicedProbFrame, nan=0.0).astype(np.float32)  # (frames,)
+
+    # vocal-band energy ratio per frame
+    vLo, vHi = vocalBand
+    vMask = (freqs >= vLo) & (freqs <= vHi)
+    bandEnergy = np.sum(S[vMask, :]**2, axis=0) + 1e-12
+    totalEnergy = np.sum(S**2, axis=0) + 1e-12
+    bandRatioFrame = (bandEnergy / totalEnergy).astype(np.float32)  # (frames,)
+
+    # spectral flatness per frame (noise-like -> high)
+    flatFrame = librosa.feature.spectral_flatness(S=S)[0].astype(np.float32)  # (frames,)
+
+    # harmonicity proxy via HPSS (framewise)
+    H, P = librosa.decompose.hpss(S)
+    harmE = np.sum(H**2, axis=0) + 1e-12
+    percE = np.sum(P**2, axis=0) + 1e-12
+    harmRatioFrame = (harmE / (harmE + percE)).astype(np.float32)  # (frames,)
+
+    # Aggregate per chunk
+    bandRatio = np.zeros(T, dtype=np.float32)
+    flatness = np.zeros(T, dtype=np.float32)
+    harmRatio = np.zeros(T, dtype=np.float32)
+    voicedProb = np.zeros(T, dtype=np.float32)
+    counts = np.zeros(T, dtype=np.int32)
+
+    for i in tqdm(range(nFrames), desc="Aggregating STFT frames"):
+        c = frameChunk[i]
+        bandRatio[c] += bandRatioFrame[i]
+        flatness[c] += flatFrame[i]
+        harmRatio[c] += harmRatioFrame[i]
+        voicedProb[c] += voicedProbFrame[i]
+        counts[c] += 1
+
+    counts = np.maximum(counts, 1)
+    bandRatio /= counts
+    flatness /= counts
+    harmRatio /= counts
+    voicedProb /= counts
+    print("counts min/med/max:", counts.min(), np.median(counts), counts.max())
+    print("num chunks with 0 frames:", int(np.sum(counts == 0)))
+
+    # -------------------------
+    # Feature 5: ZCR (per chunk)
+    # -------------------------
+    signs = np.sign(chunks)
+    signs[signs == 0] = 1
+    zcr = np.mean(signs[:, 1:] != signs[:, :-1], axis=1).astype(np.float32)  # (T,)
+
+    # -------------------------
+    # 1) Silence detection
+    # -------------------------
+    med = float(np.median(rms))
+    mad = float(np.median(np.abs(rms - med)) + 1e-12)
+
+    silenceThr = med + 0.5 * mad
+    # "true silence" should be low energy; bandRatio guard helps reject weird low-energy mid-band artifacts
+    isSilence = (rms < silenceThr) & (bandRatio < 0.25)
+
+    # -------------------------
+    # 2) Voiced vs unvoiced (voicing)
+    # -------------------------
+    # Start with voicedProb > 0.7, then optionally add harmonic/flatness guards to reduce false voiced.
+    energyGuard = rms > (med + 0.1 * mad)
+
+    isVoiced = (voicedProb > 0.7) & (~isSilence) & energyGuard
+    # Optional extra robustness:
+    isVoiced = isVoiced & (harmRatio > 0.55) & (flatness < 0.35)
+    isVoiced = enforceMinRun(isVoiced, minOnRun=3, minOffRun=3)
+
+    # -------------------------
+    # 3) Vocal activity detection (hasVocal)
+    # -------------------------
+    score = (1.2 * bandRatio + 1.0 * harmRatio - 0.8 * flatness).astype(np.float32)
+    score -= 0.2 * (zcr > 0.25).astype(np.float32)
+
+    nonSilent = ~isSilence
+    if np.any(nonSilent):
+        sMed = float(np.median(score[nonSilent]))
+        sMad = float(np.median(np.abs(score[nonSilent] - sMed)) + 1e-12)
+        vocalThrOn = sMed + 0.75 * sMad
+        vocalThrOff = sMed + 0.40 * sMad
+    else:
+        vocalThrOn, vocalThrOff = 0.5, 0.3
+
+    # rising-energy ON gate (prevents reverb tails from constantly re-triggering)
+    rmsDiff = np.diff(rms, prepend=rms[0]).astype(np.float32)
+    riseThr = 0.0 + 0.05 * mad  
+
+    rawVocal = (score > vocalThrOn) & energyGuard  & (~isSilence)
+
+    # Hysteresis
+    hasVocal = np.zeros(T, dtype=bool)
+    state = False
+    for t in range(T):
+        if not state:
+            if rawVocal[t]:
+                state = True
+        else:
+            if (score[t] < vocalThrOff) or isSilence[t]:
+                state = False
+        hasVocal[t] = state
+
+    # Smoothing
+    if smoothWin and smoothWin > 1:
+        k = int(smoothWin)
+        padL = k // 2
+        padded = np.pad(hasVocal.astype(np.int32), (padL, padL), mode="edge")
+        sm = np.convolve(padded, np.ones(k, dtype=np.int32), mode="valid")
+        hasVocal = sm >= (k // 2 + 1)
+
+    hasVocal = enforceMinRun(hasVocal, minOnRun=minOnRun, minOffRun=minOffRun)
+
+    return isSilence, hasVocal, isVoiced
+
+def enforceMinRun(flags, minOnRun=3, minOffRun=3):
+    """
+    Removes short on-blips and short off-gaps.
+    """
+    flags = flags.astype(bool)
+    n = len(flags)
+    if n == 0:
+        return flags
+
+    # run-length encoding
+    out = flags.copy()
+    start = 0
+    cur = out[0]
+    for i in range(1, n + 1):
+        if i == n or out[i] != cur:
+            runLen = i - start
+            if cur and runLen < minOnRun:
+                out[start:i] = False
+            if (not cur) and runLen < minOffRun:
+                out[start:i] = True
+            if i < n:
+                start = i
+                cur = out[i]
+    return out
+       
+def _toBoolList(x: np.ndarray):
+    return [bool(v) for v in x.tolist()]
+
+def _ensureDir(path: str):
+    os.makedirs(path, exist_ok=True)
+
+def resolveVocalsPath(group: str, songName: str, useCache: bool) -> str:
+    base = os.path.join(".", "training_data", group)
+    if not useCache:
+        return os.path.join(base, f"{songName}_vocals.wav")
+    return os.path.join(base, "training_cache", "sr_24000", f"{songName}_vocals.wav")
+
+def resolveOutputJsonPath(group: str, songName: str, useCache: bool) -> str:
+    base = os.path.join(".", "training_data", group)
+    if not useCache:
+        return os.path.join(base, f"{songName}_vocals_40ms_activity.json")
+    return os.path.join(base, "training_cache", "sr_24000", f"{songName}_vocals_40ms_activity.json")
+
+def writeChunkActivityJson(
+    inputWavPath: str,
+    outputJsonPath: str,
+    isSilence: np.ndarray,
+    hasVocal: np.ndarray,
+    isVoiced: np.ndarray,
+    sr: int,
+    chunkMs: int,
+    nSamples: int
+):
+    _ensureDir(os.path.dirname(outputJsonPath))
+
+    # Safety: ensure equal lengths
+    if not (len(hasVocal) == len(isVoiced) == len(isSilence)):
+        raise ValueError("Activity arrays must all have same length")
+
+    # Identity-valid mask
+    # Must have vocal presence AND be voiced (pitched)
+    validMask = np.logical_and(hasVocal, isVoiced)
+
+    chunkLenSamples = int(round(sr * (chunkMs / 1000.0)))
+    numChunks = int(len(hasVocal))
+    durationSec = float(nSamples) / float(sr)
+
+    payload = {
+        "inputWavPath": os.path.normpath(inputWavPath),
+        "sampleRate": int(sr),
+        "durationSec": durationSec,
+        "chunkMs": int(chunkMs),
+        "chunkLenSamples": int(chunkLenSamples),
+        "numChunks": numChunks,
+
+        # raw activity
+        "isSilence": _toBoolList(isSilence),
+        "hasVocal": _toBoolList(hasVocal),
+        "isVoiced": _toBoolList(isVoiced),
+
+        # final identity-valid mask
+        "validIdentityMask": _toBoolList(validMask),
+    }
+
+    with open(outputJsonPath, "w", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2, ensure_ascii=False)
+        
+import argparse
+
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python audio_processing.py <group_name> [-r] [--u]")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(
+        description="Compute 40ms vocal-vs-silence activity flags for vocals-only wavs (native sample-rate)."
+    )
+    parser.add_argument("-group", required=True, type=str)
+    parser.add_argument("-song_name", required=True, type=str)
+    parser.add_argument(
+        "-use_cache",
+        action="store_true",
+        help="If set, use ./training_data/{group}/training_cache/sr_24000/{song_name}_vocals.wav"
+    )
+    parser.add_argument("-chunk_ms", type=int, default=40)
 
-    group = sys.argv[1]
-    convertToRttm = "-r" in sys.argv
-    generateUem = "-u" in sys.argv
+    args = parser.parse_args()
+    group = args.group
+    songName = args.song_name
+    useCache = bool(args.use_cache)
+    chunkMs = int(args.chunk_ms)
 
-    labelDir = f"./saved_labels/{group}"
-    jsonFiles = glob.glob(os.path.join(labelDir, "*labels.json"))
+    inputWavPath = resolveVocalsPath(group, songName, useCache)
+    if not os.path.isfile(inputWavPath):
+        raise FileNotFoundError(f"Could not find vocals wav at: {os.path.abspath(inputWavPath)}")
 
-    if not jsonFiles:
-        print(f"No label JSON files found in {labelDir}")
-        sys.exit(0)
+    # Native sample rate (no resampling)
+    y, sr = librosa.load(inputWavPath, sr=None, mono=True)
+    if y is None or len(y) == 0:
+        raise ValueError(f"Loaded empty audio from: {os.path.abspath(inputWavPath)}")
 
-    for jsonFile in jsonFiles:
-        baseName = os.path.basename(jsonFile).replace("_labels.json", "").replace(" ", "")
-        rttmPath = os.path.join(labelDir, f"{baseName}.rttm")
+    # Compute flags on a 40ms grid in *time* (chunk boundaries are derived from sr)
+    isSilence, hasVocal, isVoiced = computeChunkVocalSilenceFlags(
+        y=y,
+        sr=sr,
+        chunkMs=chunkMs,
+        vocalBand=(300, 4000),
+        smoothWin = 11,      # 360ms
+        minOnRun = 8,      # 240ms
+        minOffRun = 8
+    )
 
-        if convertToRttm:
-            convertJsonToRttm(jsonFile, baseName, rttmPath)
-            print(f"Converted {jsonFile} to {rttmPath}")
+    outputJsonPath = resolveOutputJsonPath(group, songName, useCache)
+    writeChunkActivityJson(
+        inputWavPath=inputWavPath,
+        outputJsonPath=outputJsonPath,
+        isSilence=isSilence,
+        hasVocal=hasVocal,
+        isVoiced=isVoiced,
+        sr=sr,
+        chunkMs=chunkMs,
+        nSamples=len(y)
+    )
 
-        if generateUem:
-            if not os.path.exists(rttmPath):
-                print(f"⚠️ RTTM not found for {baseName}, skipping UEM generation.")
-                continue
-            uemPath = os.path.join(labelDir, f"{baseName}.uem")
-            generateUemFromRttm(rttmPath, uemPath)
-            print(f"Created UEM file: {uemPath}")
-            
+    print(f"[OK] input sr={sr}, chunks={len(hasVocal)}")
+    print(f"[OK] Wrote: {os.path.abspath(outputJsonPath)}")
+
 if __name__ == "__main__":
     main()
