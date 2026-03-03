@@ -50,6 +50,10 @@ dist/
 build/
 .build_venv/
 thumbnails/
+background_videos/
+finished_videos/
+thumbnails/
+ultimatevocalremovergui/
 
 overfit_test.py
 voice_classifier.py
