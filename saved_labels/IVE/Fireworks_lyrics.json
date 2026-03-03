@@ -1,0 +1,275 @@
+[
+    {
+        "language": "Korean",
+        "memberName": [
+            "Leeseo"
+        ],
+        "korean": "세상은 어둡고 너무 고요한데\n네 마음은 그렇지 못해\n넌 잠들지 못하지 쉽게",
+        "romanization": "sesangeun eodupgo neomu goyohande\nne maeumeun geureochi mothae\nneon jamdeulji mothaji shipge",
+        "english": "The world is dark and so quiet\nBut your heart isn't\nYou can't easily fall asleep",
+        "startChunk": 178,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Rei"
+        ],
+        "korean": "차가운 밤공기 창을 열어둔 채\n턱을 괴며 말해",
+        "romanization": "chagaun bamgongi changeul yeoreodun chae\nteogeul gwemyeo malhae",
+        "english": "With the cold night air leaving the window open\nResting your chin on your hand, you say",
+        "startChunk": 362,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Rei"
+        ],
+        "korean": "한 번 더 보고 싶어",
+        "romanization": "han beon deo bogo shipeo",
+        "english": "I want to see you once more",
+        "startChunk": 517,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Liz"
+        ],
+        "korean": "참 이상하지, 네 한마디면\n난 초능력이 생겨\n까맣던 세상이 무지개 색깔로\n하늘을 채우던 날",
+        "romanization": "cham isanghaji, ne hanmadimyeon\nnan choneungryeogi saenggyeo\nkkamateon sesangi mujigae saekkkallo\nhaneureul chaeundeon nal",
+        "english": "Isn't it strange\nWith just one word from you, I gain superpowers\nOn the day the pitch-black world \nfilled the sky with rainbow colors",
+        "startChunk": 568,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Wonyoung"
+        ],
+        "korean": "아이같이 뛰며 웃던 너\nI keep on holding\n내 맘을 다 몰라줘도 난\nForever and ever and ever",
+        "romanization": "aigachi ttwimyeo utteon neo\nI keep on holding\nnae mameul da mollajweodo nan\nForever and ever and ever",
+        "english": "You, laughing and jumping like a child\nI keep on holding\nEven if you don't know all of my heart\nForever and ever and ever",
+        "startChunk": 915,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Yujin"
+        ],
+        "korean": "절대 시들지 않을\n넌 나의 꽃잎 fireworks",
+        "romanization": "jeoldae shideulji aneul\nneon naye kkochip fireworks",
+        "english": "You'll never wither\nYou are my petal, fireworks",
+        "startChunk": 1278,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Yujin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Oh, you and I were shining in the dark\nForever and ever and ever",
+        "startChunk": 1436,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Gaeul"
+        ],
+        "korean": "펑 하고 터질 때 봤지\n너는 하늘, 나는 너를\n아직도 잊을 수 없지\n처음 손을 잡던 날은",
+        "romanization": "pyeong hago teojil ttae bwatji\nneoneun haneul, naneun neoreul\najikdo ijeul su eopji\ncheoeum soneul japteon nareun",
+        "english": "I saw it when it burst with a bang\nYou are the sky, I am you\nI still can't forget\nThe day we first held hands",
+        "startChunk": 1642,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Rei"
+        ],
+        "korean": "솔직히 나 I don't buy it, guys\n그 영원한 사랑이란 거\n널 본 순간 완전히 믿게 됐어",
+        "romanization": "soljihi na I don't buy it, guys\ngeu yeongweonhan sarangiran geo\nneol bon sungan wanjeonhi mitge dwaesseo",
+        "english": "Honestly I don't buy it, guys\nThat thing called eternal love\nThe moment I saw you, I completely believed it",
+        "startChunk": 1812,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "All"
+        ],
+        "korean": "솔직히 나",
+        "romanization": "soljikhi na",
+        "english": "Honestly, I",
+        "startChunk": 1834,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "All"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Don't buy it, guys",
+        "startChunk": 1880,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Leeseo"
+        ],
+        "korean": "참 이상하지, 네 한마디면\n난 뭐든 할 수 있어\n동그란 보름달 조그만 별들로\n방 안을 채우던 날",
+        "romanization": "cham isanghaji, ne hanmadimyeon\nnan choneungryeogi saenggyeo\nkkamateon sesangi mujigae saekkkallo\nhaneureul chaeundeon nal",
+        "english": "Isn't it strange\nWith just one word from you, I gain superpowers\nOn the day the pitch-black world \nfilled the sky with rainbow colors",
+        "startChunk": 2023,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Wonyoung"
+        ],
+        "korean": "아이같이 뛰며 웃던 너\nI keep on holding\n내 맘을 다 몰라줘도 난\nForever and ever and ever",
+        "romanization": "aigachi ttwimyeo utteon neo\nI keep on holding\nnae mameul da mollajweodo nan\nForever and ever and ever",
+        "english": "You, laughing and jumping like a child\nI keep on holding\nEven if you don't know all of my heart\nForever and ever and ever",
+        "startChunk": 2369,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Yujin"
+        ],
+        "korean": "절대 시들지 않을\n넌 나의 꽃잎 fireworks",
+        "romanization": "jeoldae shideulji aneul\nneon naye kkochip fireworks",
+        "english": "You'll never wither\nYou are my petal, fireworks",
+        "startChunk": 2732,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Yujin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Oh, you and I were shining in the dark\nForever and ever and ever",
+        "startChunk": 2891,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Leeseo"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Shining in the dark\nYeah, forever and ever and ever",
+        "startChunk": 3230,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Liz"
+        ],
+        "korean": "Caught in the moment, it's our time\n오래도록 간직하고 파",
+        "romanization": "Caught in the moment, it's our time\noraedorok ganjikhago pa",
+        "english": "Caught in the moment, it's our time\nI want to cherish this for a long time",
+        "startChunk": 3481,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Leeseo"
+        ],
+        "korean": "시간아 천천히 baby",
+        "romanization": "shigana cheoncheonhi baby",
+        "english": "Time, please go slowly, baby",
+        "startChunk": 3729,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Wonyoung"
+        ],
+        "korean": "내 사랑을 몰라줘도 난\nForever and ever and ever",
+        "romanization": "nae sarangeul ollajweodo nan\nForever and ever and ever",
+        "english": "Even if you don't know my love\nForever and ever and ever",
+        "startChunk": 3823,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Yujin"
+        ],
+        "korean": "매일 새로운 축제\n넌 나의 꽃잎 fireworks",
+        "romanization": "maeil saeroun chukje\nneon naye kkochip fireworks",
+        "english": "A new festival every day\nYou are my petal, fireworks",
+        "startChunk": 4072,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Yujin"
+        ],
+        "korean": "Oh, \"언제까지 사랑할 거야?\"\nForever and ever and ever",
+        "romanization": "Oh, \"eonjekkaji saranghal geoya?\"\nForever and ever and ever",
+        "english": "Oh, \"How long will you love me?\"\nForever and ever and ever",
+        "startChunk": 4163,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    }
+]

@@ -62,5 +62,5 @@ extract_adlibs.py
 *_test_harmonies.json
 *_history.json
 
-ffmpeg.exe
-ffprobe.exe
+./ffmpeg.exe
+./ffprobe.exe

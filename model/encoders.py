@@ -1,6 +1,9 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torchaudio
+
+import numpy as np
 
 # ---------------------------
 # Model: MuQ encoder (frozen or trainable) + linear head
@@ -13,6 +16,26 @@ class MuQEncoderWrapper(nn.Module):
         self.debug = debug
         self.topk_frac = topk_frac
         self._debug_printed = False
+
+        # Optional PCA projection (set later)
+        self.pcaK = None           # int
+
+    def setPca(self, mean_np: np.ndarray, W_np: np.ndarray):
+        mean = torch.from_numpy(mean_np).float()
+        W = torch.from_numpy(W_np).float()
+
+        # If buffers already exist, just overwrite them
+        if hasattr(self, "pcaMean"):
+            self.pcaMean.data.copy_(mean)
+        else:
+            self.register_buffer("pcaMean", mean)
+
+        if hasattr(self, "pcaW"):
+            self.pcaW.data.copy_(W)
+        else:
+            self.register_buffer("pcaW", W)
+
+        self.pcaK = W.shape[1]
 
     def _pool_feats(self, feats):
         if self.pooling == "mean":
@@ -28,7 +51,17 @@ class MuQEncoderWrapper(nn.Module):
             top_feats = feats.gather(dim=1, index=idx)
             return top_feats.mean(dim=1)
         raise ValueError(self.pooling)
-    
+
+    def _applyPcaIfSet(self, emb: torch.Tensor) -> torch.Tensor:
+        """
+        emb: (B, D)
+        returns: (B, K) if PCA set else (B, D)
+        """
+        if self.pcaW is None or self.pcaMean is None:
+            return emb
+        # center then project
+        return (emb - self.pcaMean) @ self.pcaW
+
     @torch.no_grad()
     def encode_batch(self, wavs: torch.Tensor, ctx_frac: float = 0.2):
         if wavs.ndim != 2:
@@ -48,6 +81,10 @@ class MuQEncoderWrapper(nn.Module):
         # feats: (B, T', D)
         B, Tprime, D = feats.shape
 
+        if not self._debug_printed:
+            print(f"[MuQ] wavs: {tuple(wavs.shape)} -> feats: {tuple(feats.shape)} (B,T',D); D={D}")
+            self._debug_printed = True
+
         emb_main = self._pool_feats(feats)  # (B,D)
 
         ctx_len = max(1, int(round(Tprime * ctx_frac)))
@@ -58,40 +95,55 @@ class MuQEncoderWrapper(nn.Module):
         start = max(0, end - ctx_len)
 
         emb_ctx = self._pool_feats(feats[:, start:end, :])  # (B,D)
+
+        # ✅ Apply PCA projection AFTER pooling (important)
+        emb_main = self._applyPcaIfSet(emb_main)
+        emb_ctx = self._applyPcaIfSet(emb_ctx)
+
         return emb_main, emb_ctx
 
 class FusedEncoder(nn.Module):
     """
-    Produces a single fused embedding per example: (B, D_fused)
+    Produces a single fused embedding per example.
+    Fusion = normalize -> concat -> linear projection -> normalize
     """
-    def __init__(self, muq_encoder: MuQEncoderWrapper):
+    """
+    Shared trunk -> normalized hidden embedding -> cosine similarity to per-member prototypes.
+
+    - forward(emb, memberIdx=i) returns (B,) logits for that member
+    - forward(emb) returns (B, M) logits for all members
+    """
+    def __init__(self, embDim: int, numMembers: int, hidden: int = 256, dropout: float = 0.2, scale: float = 30.0):
         super().__init__()
-        self.muq = muq_encoder
+        self.numMembers = numMembers
+        self.scale = float(scale)
 
-    @torch.no_grad()
-    def encode_batch(self, wav24: torch.Tensor, ctx_frac: float = 0.2):
-        emb_main, emb_ctx = self.muq.encode_batch(wav24, ctx_frac=ctx_frac)  # (B,D), (B,D)
-        emb_fused = torch.cat([emb_main, emb_ctx], dim=1)                    # (B,2D)
-        return emb_fused
-    
-class FusedEncoderWithECAPA(nn.Module):
-    def __init__(self, muq_encoder, ecapa_encoder, sr_muq=24000, sr_ecapa=16000):
-        super().__init__()
-        self.muq = muq_encoder
-        self.ecapa = ecapa_encoder
-        self.resample = torchaudio.transforms.Resample(sr_muq, sr_ecapa)
-        self.sr_muq = sr_muq
-        self.sr_ecapa = sr_ecapa
+        self.trunk = nn.Sequential(
+            nn.Linear(embDim, hidden),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+        )
 
-    @torch.no_grad()
-    def encode_batch(self, wav24: torch.Tensor, ctx_frac: float = 0.2):
-        # MuQ embeddings (B,D)
-        emb_main, emb_ctx = self.muq.encode_batch(wav24, ctx_frac=ctx_frac)
-        muq_fused = torch.cat([emb_main, emb_ctx], dim=1)  # (B,2D)
+        # Per-member prototypes in hidden space (learnable "reference embeddings")
+        self.memberProto = nn.Parameter(torch.empty(numMembers, hidden))
+        nn.init.xavier_uniform_(self.memberProto)
 
-        # ECAPA embedding (B, D_ecapa)
-        wav16 = self.resample(wav24) # (B,T16)
-        ecapa_emb = self.ecapa.encode_batch(wav16) # make it return (B,D)
+        # Optional bias per member (often you can omit this; keep it if you like thresholding flexibility)
+        self.memberB = nn.Parameter(torch.zeros(numMembers))
 
-        # Final fusion
-        return torch.cat([muq_fused, ecapa_emb], dim=1) # (B, 2D + D_ecapa)
+    def forward(self, emb: torch.Tensor, memberIdx: int):
+        h = self.trunk(emb)                  # (B, hidden)
+        h = F.normalize(h, dim=-1)           # (B, hidden)
+
+        proto = F.normalize(self.memberProto, dim=-1)  # (M, hidden)
+
+        if memberIdx is None:
+            # cosine sim for all members: (B, M)
+            cos = h @ proto.t()
+            logits = self.scale * cos + self.memberB
+            return logits
+
+        # cosine sim for one member: (B,)
+        cos = (h * proto[memberIdx]).sum(dim=-1)
+        logits = self.scale * cos + self.memberB[memberIdx]
+        return logits
