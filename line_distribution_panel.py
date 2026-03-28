@@ -238,6 +238,15 @@ class LineDistributionPanel:
     def computeStats(self) -> dict:
         memberSeconds = self._getMemberSecondsSung()
         items = sorted(memberSeconds.items(), key=lambda kv: kv[1], reverse=True)
+        if not items:
+            return {
+                "sortedItems": [],
+                "meanSeconds": 0.0,
+                "stdSeconds": 0.0,
+                "fairness": 0.0,
+                "totalSeconds": 0.0,
+            }
+        items = [(name, sec) for name, sec in items if sec > 1e-6]
         values = [v for _, v in items]
 
         total = sum(values)
@@ -262,13 +271,13 @@ class LineDistributionPanel:
         }
 
     def _targetFairness(self, n: int) -> float:
-        if n <= 4:
-            return 0.85
-        if n >= 7:
-            return 0.70
-        # n = 5 or 6: linearly slide 0.85 -> 0.70 across 3 steps (4->7)
-        t = (n - 4) / 3.0
-        return 0.85 + t * (0.70 - 0.85)
+        if n <= 1:
+            return 1.0
+
+        fairness = 1.0 - 0.05 * (n - 1)
+
+        # cap at 0.70 for large groups
+        return max(0.70, fairness)
     
     def _fairnessGrade(self, fairness: float, n: int) -> tuple[str, float]:
         """

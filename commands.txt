@@ -46,25 +46,9 @@ python train_kpop_singers.py `
 - The song "Payback" is weird because it has gang vocal backing 
 
 Bugs:
-- Lyrics look stupid now because I didn't change where they spawn based on window resizing
-- Fix bug where the progressbar handle goes over the song's length
-- Fix bug so that starting on the same startIndex doesn't cause endIndex misalignment
-- Find out why the labels are being duplicated (prob start index + end index as key 
-- Bug where we can't change singers after labels have been set
-- Prevent user from adding same singer as lead + backing
-- Bug: If you try to move section indices while trying to create new label, THE MARKER MOVES TO THE OTHER SECTION!!!!
-- Create way to change label so you don't have to rely on Ctrl-S bandaid fix
-- You can press a button to recalculate positions and timers (idk why I haven't done that haha)
-- let user switch between counting backing vocals and not (looking at you Jungkook in Mgic Shop)
-- Change history to account for everything and to save startPoint/endpoint markers so the user doesn't nuke existing pre-labels
-- Don't let user insert consecutive start/end markers to avoid weird conjunctions and there should be a unintrusive visual warning
-- If you hide timer it hides the timer markers so fix the placement. Also make sure let user DRAG timer
-- Selected marker should change if you create a new label and be set to the new label by default
-- Fix audio lag if there's a higher quality music video with many frames and sync to audio. Then when recording, switch to actual high quality video to avoid lag
-- Fix weird windowed mode glitch where if you once again decrease size of window then return to full screen, the member positions get broken
-- Don't let markers appear without sufficient zoom so the user doesn't accidentally drag it to a completely different part of the song
-- Must change how images are found, and how songs are found because the user can customize directories. However we can't let them have custom group icons because they're built in how I made it.
-- Create a window with commands and their shortcuts because even I forget which is which
+- Last member text in group like Twice likes to overlap left navigation arrow
+- Remove members whose values are 0
+
 
 Crucial:
 If you ever write this in your paper, this is the line:
@@ -113,3 +97,8 @@ Elimination test: compare RMS and spectral centroid (or just your printed RMS) b
 But then if the UI stays the same wouldn't there be a bug where the user could drag the progress bar handle into a cut region and then the program freaks out? How do we consider that edge case
 
 Fairness score: 1 - (std/mean x 2/sqrt(n))
+
+ffmpeg -i input.mp3 -acodec pcm_s16le output.wav
+
+- Fix animations when members are at 0, it's bugging
+- Don't shrink the members if it's a subgroup, only shrink after

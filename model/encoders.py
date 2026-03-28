@@ -18,23 +18,22 @@ class MuQEncoderWrapper(nn.Module):
         self._debug_printed = False
 
         # Optional PCA projection (set later)
-        self.pcaK = None           # int
+        self.register_buffer("pcaMean", None, persistent=False)
+        self.register_buffer("pcaW", None, persistent=False)
+        self.pcaW = None
 
-    def setPca(self, mean_np: np.ndarray, W_np: np.ndarray):
+    def clearPca(self):
+        self.pcaMean = None
+        self.pcaW = None
+        self.pcaK = None
+
+    def setPca(self, mean_np, W_np):
         mean = torch.from_numpy(mean_np).float()
         W = torch.from_numpy(W_np).float()
 
-        # If buffers already exist, just overwrite them
-        if hasattr(self, "pcaMean"):
-            self.pcaMean.data.copy_(mean)
-        else:
-            self.register_buffer("pcaMean", mean)
-
-        if hasattr(self, "pcaW"):
-            self.pcaW.data.copy_(W)
-        else:
-            self.register_buffer("pcaW", W)
-
+        # Assign directly (no copy_) so shape changes are safe
+        self.pcaMean = mean
+        self.pcaW = W
         self.pcaK = W.shape[1]
 
     def _pool_feats(self, feats):
@@ -53,14 +52,21 @@ class MuQEncoderWrapper(nn.Module):
         raise ValueError(self.pooling)
 
     def _applyPcaIfSet(self, emb: torch.Tensor) -> torch.Tensor:
-        """
-        emb: (B, D)
-        returns: (B, K) if PCA set else (B, D)
-        """
-        if self.pcaW is None or self.pcaMean is None:
+        if self.pcaMean is None or self.pcaW is None:
             return emb
-        # center then project
-        return (emb - self.pcaMean) @ self.pcaW
+
+        # Ensure device match (covers CPU/GPU discrepancies)
+        mean = self.pcaMean.to(device=emb.device, dtype=emb.dtype)
+        W = self.pcaW.to(device=emb.device, dtype=emb.dtype)
+
+        # Shape sanity checks (fail fast with a useful message)
+        D = emb.size(-1)
+        if mean.numel() != D:
+            raise RuntimeError(f"PCA mean dim mismatch: embD={D}, mean={tuple(mean.shape)}")
+        if W.size(0) != D:
+            raise RuntimeError(f"PCA W dim mismatch: embD={D}, W={tuple(W.shape)}")
+
+        return (emb - mean) @ W
 
     @torch.no_grad()
     def encode_batch(self, wavs: torch.Tensor, ctx_frac: float = 0.2):

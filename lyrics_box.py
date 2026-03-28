@@ -149,6 +149,43 @@ class LyricBox:
         # store RELATIVE offsets (dx, dy)
         self.textItemOffsets.append((itemId, itemX - self.originX, itemY - self.originY))
     
+    def _getEffectiveBlockHeightPx(self):
+        """
+        Returns the visual height the lyric should occupy on screen.
+
+        This is the larger of:
+        - the text/card height
+        - the stacked member photo column height
+
+        Used for enter animations and push-down spacing so multi-member stacks
+        don't visually overlap or compress transitions.
+        """
+        textHeightPx = max(0, int(getattr(self, "totalHeight", 0)))
+
+        members = getattr(self, "memberNames", [])
+        if isinstance(members, str):
+            numMembers = 1
+        else:
+            numMembers = max(1, len(members))
+
+        photoColumnHeightPx = 0
+        if self.memberPhotos:
+            try:
+                photoHeight = self.memberPhotos[0].height()
+            except Exception:
+                photoHeight = 0
+
+            # Must match the overlap used in createLyricDisplay()
+            photoOverlapY = self._pxY(10)
+
+            if photoHeight > 0:
+                photoColumnHeightPx = (
+                    photoHeight * numMembers
+                    - photoOverlapY * max(0, numMembers - 1)
+                )
+
+        return max(textHeightPx, photoColumnHeightPx)
+    
     def initializeLyricPosition(self):
         startChunk = self.startChunk
         endChunk = self.startChunk + self.addLyricDuration
@@ -159,32 +196,26 @@ class LyricBox:
         if scaleY <= 0:
             scaleY = 1.0
 
-        totalHeightBase = self.totalHeight / scaleY
+        # Use EFFECTIVE visual height, not just text box height
+        effectiveHeightPx = self._getEffectiveBlockHeightPx()
+        effectiveHeightBase = effectiveHeightPx / scaleY
 
         # 1) Enter animation for THIS lyric
+        # Start fully above the screen using the larger of text/card or image stack
         self.animatePosition(
-            startY=-totalHeightBase,
+            startY=-effectiveHeightBase,
             endY=endYBase,
             startChunk=startChunk,
             endChunk=endChunk
         )
 
         # 2) Compute push-down delta
-        numMembers = 1 if isinstance(self.memberNames, str) else len(self.memberNames)
-
-        photoColumnHeightPx = 0
-        if self.memberPhotos:
-            photoHeight = self.memberPhotos[0].height()
-            photoOverlapY = self._pxY(20)
-            photoColumnHeightPx = (photoHeight * numMembers) - (photoOverlapY * max(0, numMembers - 1))
-
         extraPadY = self._pxY(20)
-        additionalCanvasHeightPx = max(
-            photoColumnHeightPx + self.lyricsPadding + extraPadY,
-            self.totalHeight + self.lyricsPadding
-        )
 
+        # Amount of vertical space this lyric should reserve
+        additionalCanvasHeightPx = effectiveHeightPx + self.lyricsPadding + extraPadY
         pushDownBaseY = additionalCanvasHeightPx / scaleY
+
         if pushDownBaseY <= 0:
             return
 
@@ -200,15 +231,12 @@ class LyricBox:
                     existingLyricBoxes.append(lb)
 
         for lb in existingLyricBoxes:
-            # Always skip self
             if lb is self:
                 continue
 
-            # Skip ad-libs so they don't get stacked/pushed
             if getattr(lb, "isAdLib", False):
                 continue
 
-            # Also skip if THIS lyric is an ad-lib (extra safety; normally you don't call initializeLyricPosition for adlibs)
             if getattr(self, "isAdLib", False):
                 continue
 

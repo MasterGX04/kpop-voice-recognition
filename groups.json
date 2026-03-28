@@ -271,6 +271,19 @@
                     "Dionysus",
                     "Stay Gold"
                 ]
+            },
+            "arirang": {
+                "displayName": "ARIRANG",
+                "albumArtCachePath": "member_images\\BTS\\_album_art\\arirang.png",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/2/2b/BTS_-_Arirang_%28cover%29.png",
+                "songs": [
+                    "SWIM",
+                    "Body to Body",
+                    "Merry Go Round",
+                    "Like Animals",
+                    "Normal",
+                    "Please"
+                ]
             }
         },
         "songToAlbum": {
@@ -293,7 +306,13 @@
             "Zero O'Clock": "map_of_the_soul",
             "Black Swan": "map_of_the_soul",
             "Dionysus": "map_of_the_soul",
-            "Stay Gold": "map_of_the_soul"
+            "Stay Gold": "map_of_the_soul",
+            "SWIM": "arirang",
+            "Body to Body": "arirang",
+            "Merry Go Round": "arirang",
+            "Like Animals": "arirang",
+            "Normal": "arirang",
+            "Please": "arirang"
         },
         "defaultAlbumId": "love_yourself_tear"
     },
@@ -390,10 +409,19 @@
                 "songs": [
                     "Imaginary Friend"
                 ]
+            },
+            "guess_who": {
+                "displayName": "GUESS WHO",
+                "albumArtCachePath": "member_images\\ITZY\\_album_art\\guess_who.jpg",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/1/1d/Itzy_-_Guess_Who.jpg",
+                "songs": [
+                    "SHOOT!"
+                ]
             }
         },
         "songToAlbum": {
-            "Imaginary Friend": "gold"
+            "Imaginary Friend": "gold",
+            "SHOOT!": "guess_who"
         },
         "defaultAlbumId": "gold"
     },
@@ -452,57 +480,39 @@
         "members": [
             {
                 "name": "Nayeon",
-                "color": "#46b4eb",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "color": "#46b4eb"
             },
             {
                 "name": "Jeongyeon",
-                "color": "#b4eb46",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "color": "#b4eb46"
             },
             {
                 "name": "Momo",
-                "color": "#eb46b4",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "color": "#eb46b4"
             },
             {
                 "name": "Sana",
-                "color": "#7d46eb",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "color": "#7d46eb"
             },
             {
                 "name": "Jihyo",
-                "color": "#ffd688",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "color": "#ffd688"
             },
             {
                 "name": "Mina",
-                "color": "#46eb7d",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "color": "#46eb7d"
             },
             {
                 "name": "Dahyun",
-                "color": "#8a8a8a",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "color": "#8a8a8a"
             },
             {
                 "name": "Chaeyoung",
-                "color": "#ff0000",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "color": "#ff0000"
             },
             {
                 "name": "Tzuyu",
-                "color": "#0000ff",
-                "imageCachePath": "",
-                "imageUrl": ""
+                "color": "#0000ff"
             }
         ],
         "albums": {
@@ -548,6 +558,15 @@
                 "songs": [
                     "Dance The Night Away"
                 ]
+            },
+            "masterpiece": {
+                "displayName": "Masterpiece",
+                "albumArtCachePath": "member_images\\TWICE\\_album_art\\masterpiece.png",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/thumb/6/6e/MiSaMo_Masterpiece_cover_art.png/250px-MiSaMo_Masterpiece_cover_art.png",
+                "songs": [
+                    "Funny Valentine",
+                    "Marshmallow"
+                ]
             }
         },
         "songToAlbum": {
@@ -558,7 +577,9 @@
             "Queen": "eyes_wide_open",
             "Up No More": "eyes_wide_open",
             "Like Ooh-Ahh": "the_story_begins",
-            "Dance The Night Away": "summer_nights"
+            "Dance The Night Away": "summer_nights",
+            "Funny Valentine": "masterpiece",
+            "Marshmallow": "masterpiece"
         },
         "defaultAlbumId": "fancy_you"
     },
@@ -675,6 +696,25 @@
                 "songs": [
                     "Deja Vu"
                 ]
+            },
+            "dystopia_road_to_utopia": {
+                "displayName": "Dystopia Road To Utopia",
+                "albumArtCachePath": "member_images\\Dreamcatcher\\_album_art\\dystopia_road_to_utopia.png",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/thumb/6/6c/Dreamcatcher_-_Dystopia_Road_to_Utopia.png/250px-Dreamcatcher_-_Dystopia_Road_to_Utopia.png",
+                "songs": [
+                    "Odd Eye",
+                    "Poison Love"
+                ]
+            },
+            "dystopia___the_tree_of_language": {
+                "displayName": "Dystopia - The Tree of Language",
+                "albumArtCachePath": "member_images\\Dreamcatcher\\_album_art\\dystopia___the_tree_of_language.jpg",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/f/fb/Dreamcatcher_-_Dystopia_The_Tree_of_Language.jpg",
+                "songs": [
+                    "Jazz Bar",
+                    "Red Sun",
+                    "Black Or White"
+                ]
             }
         },
         "songToAlbum": {
@@ -682,7 +722,12 @@
             "Fairytale": "apocalypse___follow_us",
             "BEcause": "summer_holiday",
             "Whistle": "summer_holiday",
-            "Deja Vu": "raid_of_dream"
+            "Deja Vu": "raid_of_dream",
+            "Odd Eye": "dystopia_road_to_utopia",
+            "Poison Love": "dystopia_road_to_utopia",
+            "Jazz Bar": "dystopia___the_tree_of_language",
+            "Red Sun": "dystopia___the_tree_of_language",
+            "Black Or White": "dystopia___the_tree_of_language"
         },
         "defaultAlbumId": "apocalypse__save_us"
     },

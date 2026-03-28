@@ -20,6 +20,7 @@ from json import encoder
 import os, argparse, random, glob, math
 import numpy as np
 from typing import List
+import time
 
 import torch
 import torch.nn.functional as F
@@ -27,6 +28,7 @@ from torch.utils.data import DataLoader, Subset
 
 import torchaudio
 from model.new_datasets import BinaryVocalDataset
+from model.helper_functions import Stage1ExampleDataset
 from model.heads import MultiMemberBinaryHead
 from model.encoders import MuQEncoderWrapper
 
@@ -34,6 +36,257 @@ from tqdm import tqdm
 from muq import MuQ
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
+import pickle, hashlib
+from collections import OrderedDict
+
+class MuQEmbeddingCache:
+    def __init__(self, cacheDir: str, maxOpenSongs: int = 8):
+        self.cacheDir = cacheDir
+        os.makedirs(self.cacheDir, exist_ok=True)
+        self._openSongCaches = OrderedDict()
+        self.maxOpenSongs = maxOpenSongs
+
+    def _makeConfigTag(
+        self,
+        *,
+        srOut: int,
+        ctxFrac: float,
+        chunkSec: float,
+        pcaTag: str = "pca256",
+        encoderTag: str = "muq-large-msd-iter",
+    ) -> str:
+        return f"sr{srOut}_ctx{ctxFrac}_chunk{chunkSec}_{pcaTag}_{encoderTag}"
+
+    def _songPath(
+        self,
+        *,
+        songId: str,
+        srOut: int,
+        ctxFrac: float,
+        chunkSec: float,
+        pcaTag: str = "pca256",
+        encoderTag: str = "muq-large-msd-iter",
+    ) -> str:
+        cfg = self._makeConfigTag(
+            srOut=srOut,
+            ctxFrac=ctxFrac,
+            chunkSec=chunkSec,
+            pcaTag=pcaTag,
+            encoderTag=encoderTag,
+        )
+        safeSong = songId.replace(os.sep, "_")
+        return os.path.join(self.cacheDir, f"{safeSong}__{cfg}.npy")
+
+    def hasSong(
+        self,
+        *,
+        songId: str,
+        srOut: int,
+        ctxFrac: float,
+        chunkSec: float,
+        pcaTag: str = "pca256",
+        encoderTag: str = "muq-large-msd-iter",
+    ) -> bool:
+        path = self._songPath(
+            songId=songId,
+            srOut=srOut,
+            ctxFrac=ctxFrac,
+            chunkSec=chunkSec,
+            pcaTag=pcaTag,
+            encoderTag=encoderTag,
+        )
+        return os.path.exists(path)
+
+    def loadSong(
+        self,
+        *,
+        songId: str,
+        srOut: int,
+        ctxFrac: float,
+        chunkSec: float,
+        pcaTag: str = "pca256",
+        encoderTag: str = "muq-large-msd-iter",
+    ):
+        cacheKey = (songId, srOut, ctxFrac, chunkSec, pcaTag, encoderTag)
+        if cacheKey in self._openSongCaches:
+            arr = self._openSongCaches.pop(cacheKey)
+            self._openSongCaches[cacheKey] = arr
+            return arr
+
+        path = self._songPath(
+            songId=songId,
+            srOut=srOut,
+            ctxFrac=ctxFrac,
+            chunkSec=chunkSec,
+            pcaTag=pcaTag,
+            encoderTag=encoderTag,
+        )
+        arr = np.load(path, mmap_mode="r")
+        self._openSongCaches[cacheKey] = arr
+
+        if len(self._openSongCaches) > self.maxOpenSongs:
+            self._openSongCaches.popitem(last=False)
+
+        return arr
+
+    def saveSong(
+        self,
+        *,
+        songId: str,
+        embMatrix: np.ndarray,
+        srOut: int,
+        ctxFrac: float,
+        chunkSec: float,
+        pcaTag: str = "pca256",
+        encoderTag: str = "muq-large-msd-iter",
+    ):
+        path = self._songPath(
+            songId=songId,
+            srOut=srOut,
+            ctxFrac=ctxFrac,
+            chunkSec=chunkSec,
+            pcaTag=pcaTag,
+            encoderTag=encoderTag,
+        )
+        np.save(path, embMatrix.astype(np.float32))
+
+def makeEmbeddingKey(
+    *,
+    songId: str,
+    centerChunk: int,
+    srOut: int,
+    ctxFrac: float,
+    chunkSec: float,
+    pcaTag: str = "pca256",
+    encoderTag: str = "muq-large-msd-iter",
+):
+    raw = f"{songId}|{centerChunk}|sr={srOut}|ctx={ctxFrac}|chunk={chunkSec}|{pcaTag}|{encoderTag}"
+    return hashlib.md5(raw.encode("utf-8")).hexdigest()
+
+@torch.no_grad()
+def getCachedEmbeddingsForFixedExampleBatch(
+    *,
+    base_ds,
+    batchExamples,
+    encoder,
+    device,
+    cache: MuQEmbeddingCache,
+    srOut: int,
+    ctxFrac: float,
+    chunkSec: float,
+):
+    """
+    Build a batch of embeddings, labels, and weights using a song-level embedding cache.
+
+    What this does:
+    - Groups batch examples by songId
+    - Loads one full embedding matrix per song from cache if available
+    - Otherwise builds that song's full embedding matrix once, saves it, and reuses it
+    - Pulls the needed centerChunk rows from each song matrix
+    - Returns:
+        (emb, y, w), cacheStats
+
+    Expected cache API:
+    - cache.hasSong(...)
+    - cache.loadSong(...)
+    - cache.saveSong(...)
+
+    Expected dataset API:
+    - base_ds.buildSongEmbeddingMatrix(...)
+      which returns a NumPy array of shape (numChunksInSong, embDim)
+    """
+    cacheStats = {
+        "requested": len(batchExamples["songId"]),
+        "sampled": len(batchExamples["songId"]),
+        "returned_none": 0,
+        "cache_hits": 0,
+        "cache_misses": 0,
+        "encoded_now": 0,
+    }
+
+    batchSize = len(batchExamples["songId"])
+    if batchSize == 0:
+        return None, cacheStats
+
+    sampledItems = []
+    songToPositions = {}
+
+    for i in range(batchSize):
+        songId = batchExamples["songId"][i]
+        centerChunk = int(batchExamples["centerChunk"][i].item())
+        y = batchExamples["label"][i].float().view(1)
+        w = batchExamples["weight"][i].float().view(1)
+
+        item = {
+            "songId": songId,
+            "centerChunk": centerChunk,
+            "y": y,
+            "w": w,
+        }
+        sampledItems.append(item)
+
+        if songId not in songToPositions:
+            songToPositions[songId] = []
+        songToPositions[songId].append(i)
+
+    songMatrices = {}
+
+    for songId in songToPositions:
+        if cache.hasSong(
+            songId=songId,
+            srOut=srOut,
+            ctxFrac=ctxFrac,
+            chunkSec=chunkSec,
+        ):
+            cacheStats["cache_hits"] += 1
+            songEmbMatrix = cache.loadSong(
+                songId=songId,
+                srOut=srOut,
+                ctxFrac=ctxFrac,
+                chunkSec=chunkSec,
+            )
+        else:
+            cacheStats["cache_misses"] += 1
+
+            songEmbMatrix = base_ds._buildSongEmbeddingMatrix(
+                songId=songId,
+                encoder=encoder,
+                device=device,
+                contextSec=chunkSec,
+            )
+
+            cache.saveSong(
+                songId=songId,
+                embMatrix=songEmbMatrix,
+                srOut=srOut,
+                ctxFrac=ctxFrac,
+                chunkSec=chunkSec,
+            )
+
+            cacheStats["encoded_now"] += 1
+
+        songMatrices[songId] = songEmbMatrix
+
+    for i, sample in enumerate(sampledItems):
+        songId = sample["songId"]
+        centerChunk = sample["centerChunk"]
+
+        embRow = songMatrices[songId][centerChunk]
+        sample["emb"] = torch.as_tensor(embRow, dtype=torch.float32)
+
+    emb = torch.stack(
+        [sample["emb"] for sample in sampledItems], dim=0
+    ).to(device, non_blocking=True)
+
+    y = torch.stack(
+        [sample["y"] for sample in sampledItems], dim=0
+    ).to(device, non_blocking=True).view(-1)
+
+    w = torch.stack(
+        [sample["w"] for sample in sampledItems], dim=0
+    ).to(device, non_blocking=True).view(-1)
+
+    return (emb, y, w), cacheStats
 
 # ---------------------------
 # CLI args
@@ -369,176 +622,182 @@ def finalize_sanity_stats(stats: dict):
 # ---------------------------
 def train_epoch(
     *,
-    ds,                    # BinaryVocalDataset
-    encoder,               # MuQEncoderWrapper (frozen)
-    head,                  # One-vs-rest cosine/prototype head or member-bank head
-    loader,                # yields batch of dataset indices (ints)
+    base_ds,
+    encoder,
+    head,
+    trainLoadersByMember,
     device,
     optimizer,
+    srOut,
+    embeddingCache,
+    chunkSec=1,
     thr=0.5,
     use_amp=True,
     ctx_frac: float = 0.25,
-    member_step_offset: int = 0,   # lets you continue round-robin across epochs
 ):
-    """
-    Round-robin per-member binary training.
-
-    Encoder:
-      - frozen MuQ -> embeddings
-      - normalize embeddings (L2) so cosine similarity is meaningful
-
-    Head:
-      - should output logits for a selected member (B,) OR (B,M) if memberIdx=None
-      - logits are interpreted as "scaled cosine similarity" (recommended) or
-        any logit suitable for BCEWithLogitsLoss
-
-    Loader:
-      - yields a batch of dataset indices (so we can call ds.getItemForMember)
-    """
-    encoder.eval()   # MuQ is frozen
-
+    encoder.eval()
     head.train()
 
     sanity = {
-        "pred_pos_sum": 0.0, "true_pos_sum": 0.0, "n_samples": 0,
-        "abs_sum": 0.0, "abs_count": 0, "abs_max": 0.0,
+        "pred_pos_sum": 0.0,
+        "true_pos_sum": 0.0,
+        "n_samples": 0,
+        "abs_sum": 0.0,
+        "abs_count": 0,
+        "abs_max": 0.0,
         "abs_sample": [],
     }
 
     scaler = torch.amp.GradScaler(device=device, enabled=(use_amp and device.type == "cuda"))
     bce = torch.nn.BCEWithLogitsLoss(reduction="none")
 
-    member_names = ds.group_members
-    num_members = len(member_names)
+    member_names = base_ds.group_members
+    memberToIdx = {m: i for i, m in enumerate(member_names)}
 
     if device.type == "cuda":
         torch.cuda.reset_peak_memory_stats()
+    
+    total_loss = 0.0
+    total_count = 0
 
-    total_loss, total_count = 0.0, 0
+    total_tp = 0
+    total_fp = 0
+    total_fn = 0
 
     amp_ctx = torch.autocast(device_type=device.type, enabled=(use_amp and device.type == "cuda"))
 
-    for step, batchIdxs in enumerate(tqdm(loader, desc="Train", leave=False)):
-        # batchIdxs can be a Tensor or list of ints
-        if torch.is_tensor(batchIdxs):
-            batchIdxs = batchIdxs.tolist()
+    for memberName in member_names:
+        memberIdx = memberToIdx[memberName]
+        loader = trainLoadersByMember[memberName]
+        for step, batchExamples in enumerate(tqdm(loader, desc=f"Train({memberName})", leave=False)):
+            if torch.is_tensor(batchExamples):
+                batchExamples = batchExamples.tolist()
 
-        # ----------------------------
-        # 1) Round-robin choose which member we train this step
-        # ----------------------------
-        memberIdx = (member_step_offset + step) % num_members
-        memberName = member_names[memberIdx]
+            t0 = time.time()
+            batchData, cacheStats = getCachedEmbeddingsForFixedExampleBatch(
+                base_ds=base_ds,
+                batchExamples=batchExamples,
+                encoder=encoder,
+                device=device,
+                cache=embeddingCache,
+                srOut=srOut,
+                ctxFrac=ctx_frac,
+                chunkSec=chunkSec,
+            )
+            t1 = time.time()
 
-        # ----------------------------
-        # 2) Build this batch's (wav, y, w, stem_weight) for THIS member
-        # ----------------------------
-        wav_list, y_list, w_list = [], [], []
-        for idx in batchIdxs:
-            item = ds.getItemForMember(memberName, idx)
-            if item is None:
-                continue
-            wav, y, w = item  # wav: (1,T), y:(1,), w:(1,) or scalar-like
-            wav_list.append(wav)
-            y_list.append(y)
-            w_list.append(w)
+            if step % 50 == 0:
+                tqdm.write(
+                    f"Step {step}: member={memberName}, "
+                    f"requested={cacheStats['requested']}, "
+                    f"sampled={cacheStats['sampled']}, "
+                    f"returned_none={cacheStats['returned_none']}, "
+                    f"cache_hits={cacheStats['cache_hits']}, "
+                    f"cache_misses={cacheStats['cache_misses']}"
+                )
 
-        if len(wav_list) == 0:
-            continue
+            emb, y, w = batchData
+            optimizer.zero_grad(set_to_none=True)
 
-        wavs = torch.stack(wav_list, dim=0).to(device, non_blocking=True)  # (B,1,T)
-        wavs = wavs.squeeze(1) if (wavs.ndim == 3 and wavs.size(1) == 1) else wavs  # (B,T)
+            with amp_ctx:
+                logits = head(emb, memberIdx=memberIdx)  # (B,)
+                probs = torch.sigmoid(logits)
+                pred = (probs > thr).to(y.dtype)
 
-        y = torch.stack(y_list, dim=0).to(device, non_blocking=True).view(-1)      # (B,)
-        w = torch.stack(w_list, dim=0).to(device, non_blocking=True).view(-1)      # (B,)
+                # sanity
+                abs_logits = logits.detach().abs().flatten()
+                sanity["pred_pos_sum"] += float(pred.sum().item())
+                sanity["true_pos_sum"] += float(y.detach().sum().item())
+                sanity["n_samples"] += int(y.numel())
+                sanity["abs_sum"] += float(abs_logits.sum().item())
+                sanity["abs_count"] += int(abs_logits.numel())
+                sanity["abs_max"] = max(sanity["abs_max"], float(abs_logits.max().item()))
 
-        # ----------------------------
-        # 3) Encode (frozen) + normalize embeddings for cosine speaker ID
-        # ----------------------------
-        with torch.no_grad():
-            emb_main, emb_ctx = encoder.encode_batch(wavs, ctx_frac=ctx_frac)  # (B,D),(B,D)
+                if len(sanity["abs_sample"]) < 64:
+                    take = min(8, abs_logits.numel())
+                    sanity["abs_sample"].append(abs_logits[:take].detach().cpu())
 
-            # L2 normalize so dot-products behave like cosine similarity
-            emb = F.normalize(emb_main, dim=-1) + F.normalize(emb_ctx, dim=-1)
-            emb = F.normalize(emb, dim=-1)
+                loss_per = bce(logits, y.float())
+                loss = (loss_per * w).mean()
+                loss = loss + 1e-4 * (logits.pow(2).mean())
 
-        optimizer.zero_grad(set_to_none=True)
+            t2 = time.time()
+            tqdm.write(f"batch_prep={t1-t0:.3f}s, model={t2-t1:.3f}s")
+            
+            if step % 10 == 0:
+                tqdm.write(
+                    f"Step {step}: member={memberName}, "
+                    f"loss={loss.item():.4f}, batch_size={y.size(0)}, "
+                    f"requested={cacheStats['requested']}, "
+                    f"sampled={cacheStats['sampled']}, "
+                    f"returned_none={cacheStats['returned_none']}, "
+                    f"cache_hits={cacheStats['cache_hits']}, "
+                    f"cache_misses={cacheStats['cache_misses']}, "
+                    f"encoded_now={cacheStats['encoded_now']}"
+                )       
 
-        # ----------------------------
-        # 4) Head forward + weighted BCE loss
-        # ----------------------------
-        with amp_ctx:
-            # If your head supports memberIdx -> (B,) logits, use it:
-            logits = head(emb, memberIdx=memberIdx)  # (B,)
+            if scaler.is_enabled():
+                scaler.scale(loss).backward()
+                scaler.unscale_(optimizer)
+                torch.nn.utils.clip_grad_norm_(head.parameters(), 1.0)
+                scaler.step(optimizer)
+                scaler.update()
+            else:
+                loss.backward()
+                torch.nn.utils.clip_grad_norm_(head.parameters(), 1.0)
+                optimizer.step()
 
-            # sanity stats (keep the same structure; adapt to 1D logits)
-            # predicted positives by thresholding sigmoid(logits)
-            probs = torch.sigmoid(logits.detach())
-            pred_pos = (probs > thr).float()
-            sanity["pred_pos_sum"] += float(pred_pos.sum().item())
-            sanity["true_pos_sum"] += float(y.detach().sum().item())
-            sanity["n_samples"] += int(y.numel())
+            tp = int(((pred == 1) & (y == 1)).sum().item())
+            fp = int(((pred == 1) & (y == 0)).sum().item())
+            fn = int(((pred == 0) & (y == 1)).sum().item())
 
-            abs_logits = logits.detach().abs()
-            sanity["abs_sum"] += float(abs_logits.sum().item())
-            sanity["abs_count"] += int(abs_logits.numel())
-            sanity["abs_max"] = max(sanity["abs_max"], float(abs_logits.max().item()))
-            if len(sanity["abs_sample"]) < 8:
-                sanity["abs_sample"].append(float(abs_logits[:1].item()))
-
-            # BCEWithLogitsLoss is the correct “regression” here (logistic, not linear regression)
-            loss_per = bce(logits, y.float())  # (B,)
-
-            # weight per-sample: your dataset already encodes overlap/transition/backing/adlib logic into w
-            weighted = loss_per * w
-
-            loss = weighted.mean()
-
-            # gentle logit magnitude regularizer to prevent runaway logits (keeps variance in check)
-            loss = loss + 1e-4 * (logits.pow(2).mean())
-
-        # ----------------------------
-        # 5) Backprop
-        # ----------------------------
-        if scaler.is_enabled():
-            scaler.scale(loss).backward()
-            scaler.unscale_(optimizer)
-            torch.nn.utils.clip_grad_norm_(head.parameters(), 1.0)
-            scaler.step(optimizer)
-            scaler.update()
-        else:
-            loss.backward()
-            torch.nn.utils.clip_grad_norm_(head.parameters(), 1.0)
-            optimizer.step()
-
-        # ----------------------------
-        # 6) Accumulate
-        # ----------------------------
-        bsz = int(y.numel())
-        total_loss += float(loss.item()) * bsz
-        total_count += bsz
+            bsz = int(y.numel())
+            total_loss += float(loss.item()) * bsz
+            total_count += bsz
+            total_tp += tp
+            total_fp += fp
+            total_fn += fn
 
     avg_loss = total_loss / max(1, total_count)
 
-    # finalize sanity stats (same idea as your old finalize)
+    precision = total_tp / max(1, (total_tp + total_fp))
+    recall = total_tp / max(1, (total_tp + total_fn))
+    micro_f1 = 0.0
+    if (precision + recall) > 0:
+        micro_f1 = 2.0 * precision * recall / (precision + recall)
+
+    if len(sanity["abs_sample"]) > 0:
+        sample = torch.cat(sanity["abs_sample"], dim=0)
+        p95_abs = torch.quantile(sample, 0.95).item()
+    else:
+        p95_abs = float("nan")
+
     sanity_out = {
-        "pred_pos_sum": sanity["pred_pos_sum"],
-        "true_pos_sum": sanity["true_pos_sum"],
-        "n_samples": sanity["n_samples"],
-        "abs_mean": (sanity["abs_sum"] / max(1, sanity["abs_count"])),
-        "abs_max": sanity["abs_max"],
-        "abs_sample": sanity["abs_sample"],
+        "avg_pred_pos": sanity["pred_pos_sum"] / max(1, sanity["n_samples"]),
+        "avg_true_pos": sanity["true_pos_sum"] / max(1, sanity["n_samples"]),
+        "mean_abs": sanity["abs_sum"] / max(1, sanity["abs_count"]),
+        "p95_abs": p95_abs,
+        "max_abs": sanity["abs_max"],
     }
 
-    return avg_loss, {"sanity": sanity_out}
-
+    return avg_loss, {
+        "micro_f1": micro_f1,
+        "precision": precision,
+        "recall": recall,
+        "sanity": sanity_out,
+    }
+    
 @torch.no_grad()
 def eval_epoch(
     *,
-    ds_subset, # this is val_ds (Subset)
-    encoder,   # MuQEncoderWrapper (frozen), encode_batch -> (emb_main, emb_ctx) :contentReference[oaicite:1]{index=1}
-    head, # cosine head or member-bank head; must support head(emb, memberIdx=idx) -> (B,)
-    loader, # yields subset indices (ints)
+    base_ds,
+    encoder,
+    head,
+    valLoadersByMember,
     device,
+    embeddingCache,
+    srOut,
+    chunkSec=1,
     thr=0.5,
     use_amp=True,
     ctx_frac: float = 0.25,
@@ -546,96 +805,89 @@ def eval_epoch(
     encoder.eval()
     head.eval()
 
-    # sanity stats (same spirit as your old ones)
     sanity = {
-        "pred_pos_sum": 0.0, "true_pos_sum": 0.0, "n_samples": 0,
-        "abs_sum": 0.0, "abs_count": 0, "abs_max": 0.0,
-        "abs_sample": [],
+        "pred_pos_sum": 0.0,
+        "true_pos_sum": 0.0,
+        "n_samples": 0,
+        "abs_sum": 0.0,
+        "abs_count": 0,
+        "abs_max": 0.0,
+        "abs_sample_tensors": [],
     }
 
     bce = torch.nn.BCEWithLogitsLoss(reduction="none")
-    amp_ctx = torch.autocast(device_type=device.type, enabled=(use_amp and device.type == "cuda"))
+    amp_ctx = torch.autocast(
+        device_type=device.type,
+        enabled=(use_amp and device.type == "cuda")
+    )
 
-    # Subset index mapping: subset[i] corresponds to base index subset.indices[i]
-    base_ds = ds_subset.dataset if hasattr(ds_subset, "dataset") else ds_subset
-    subset_indices = ds_subset.indices if hasattr(ds_subset, "indices") else None
+    member_names = base_ds.group_members
+    memberToIdx = {m: i for i, m in enumerate(member_names)}
 
-    member_names = getattr(base_ds, "group_members", None)
-    if member_names is None:
-        raise ValueError("Expected dataset to have .group_members")
+    total_loss = 0.0
+    total_count = 0
+    total_tp = 0
+    total_fp = 0
+    total_fn = 0
 
-    num_members = len(member_names)
+    for memberName in member_names:
+        memberIdx = memberToIdx[memberName]
+        memberLoader = valLoadersByMember[memberName]
 
-    # Simple binary metrics accumulators
-    total_loss, total_n = 0.0, 0
-    total_tp, total_fp, total_fn = 0, 0, 0
-
-    # We evaluate each member separately (matches your training philosophy)
-    # and aggregate micro TP/FP/FN across members.
-    for memberIdx, memberName in enumerate(member_names):
+        # per-member accumulators
         member_loss_sum = 0.0
         member_count = 0
-        member_tp = member_fp = member_fn = 0
+        member_tp = 0
+        member_fp = 0
+        member_fn = 0
 
-        for batchSubsetIdxs in tqdm(loader, desc=f"Eval({memberName})", leave=False):
-            if torch.is_tensor(batchSubsetIdxs):
-                batchSubsetIdxs = batchSubsetIdxs.tolist()
+        for step, batchExamples in enumerate(
+            tqdm(memberLoader, desc=f"Eval({memberName})", leave=False)
+        ):
+            batchData, cacheStats = getCachedEmbeddingsForFixedExampleBatch(
+                base_ds=base_ds,
+                batchExamples=batchExamples,
+                encoder=encoder,
+                device=device,
+                cache=embeddingCache,
+                srOut=srOut,
+                ctxFrac=ctx_frac,
+                chunkSec=chunkSec,
+            )
 
-            # Map subset-idx -> base dataset idx
-            if subset_indices is not None:
-                batchBaseIdxs = [subset_indices[i] for i in batchSubsetIdxs]
-            else:
-                batchBaseIdxs = batchSubsetIdxs
-
-            wav_list, y_list, w_list, stemw_list = [], [], [], []
-            for baseIdx in batchBaseIdxs:
-                item = base_ds.getItemForMember(memberName, baseIdx)
-                if item is None:
-                    continue
-                wav, y, w = item  # wav: (1,T)
-                wav_list.append(wav)
-                y_list.append(y)
-                w_list.append(w)
-
-            if len(wav_list) == 0:
+            if batchData is None:
                 continue
 
-            wavs = torch.stack(wav_list, dim=0).to(device, non_blocking=True)  # (B,1,T)
-            wavs = wavs.squeeze(1) if (wavs.ndim == 3 and wavs.size(1) == 1) else wavs  # (B,T)
-
-            y = torch.stack(y_list, dim=0).to(device, non_blocking=True).view(-1) # (B,)
-            w = torch.stack(w_list, dim=0).to(device, non_blocking=True).view(-1) # (B,)
-
-            # --- encode MuQ -> (emb_main, emb_ctx) :contentReference[oaicite:2]{index=2}
-            emb_main, emb_ctx = encoder.encode_batch(wavs, ctx_frac=ctx_frac)
-
-            # Use your requested fusion (no concat, cosine-friendly)
-            emb = F.normalize(emb_main, dim=-1) + F.normalize(emb_ctx, dim=-1)
-            emb = F.normalize(emb, dim=-1)
+            emb, y, w = batchData
 
             with amp_ctx:
-                logits = head(emb, memberIdx=memberIdx)  # (B,)
+                logits = head(emb, memberIdx=memberIdx)
 
-                # sanity stats (aggregate across members)
                 probs = torch.sigmoid(logits)
                 pred = (probs > thr).to(y.dtype)
 
+                abs_logits = logits.detach().abs().flatten()
                 sanity["pred_pos_sum"] += float(pred.sum().item())
                 sanity["true_pos_sum"] += float(y.sum().item())
                 sanity["n_samples"] += int(y.numel())
-
-                abs_logits = logits.abs()
                 sanity["abs_sum"] += float(abs_logits.sum().item())
                 sanity["abs_count"] += int(abs_logits.numel())
                 sanity["abs_max"] = max(sanity["abs_max"], float(abs_logits.max().item()))
-                if len(sanity["abs_sample"]) < 8:
-                    sanity["abs_sample"].append(float(abs_logits[:1].item()))
 
-                # weighted BCE
-                loss_per = bce(logits, y.float())              # (B,)
-                loss = (loss_per * w).mean()     # scalar
+                if len(sanity["abs_sample_tensors"]) < 64:
+                    take = min(8, abs_logits.numel())
+                    sanity["abs_sample_tensors"].append(abs_logits[:take].detach().cpu())
 
-            # metrics for this member
+                loss_per = bce(logits, y.float())
+                loss = (loss_per * w).mean()
+                loss = loss + 1e-4 * (logits.pow(2).mean())
+
+            if step % 100 == 0:
+                tqdm.write(
+                    f"Eval step {step}: member={memberName}, "
+                    f"loss={loss.item():.4f}, batch_size={y.size(0)}"
+                )
+
             tp = int(((pred == 1) & (y == 1)).sum().item())
             fp = int(((pred == 1) & (y == 0)).sum().item())
             fn = int(((pred == 0) & (y == 1)).sum().item())
@@ -647,15 +899,13 @@ def eval_epoch(
             member_fp += fp
             member_fn += fn
 
-        # accumulate across members (micro over all member decisions)
         total_loss += member_loss_sum
-        total_n += member_count
+        total_count += member_count
         total_tp += member_tp
         total_fp += member_fp
         total_fn += member_fn
 
-    # finalize averaged loss and micro metrics
-    avg_loss = total_loss / max(1, total_n)
+    avg_loss = total_loss / max(1, total_count)
 
     precision = total_tp / max(1, (total_tp + total_fp))
     recall = total_tp / max(1, (total_tp + total_fn))
@@ -663,13 +913,18 @@ def eval_epoch(
     if (precision + recall) > 0:
         micro_f1 = 2.0 * precision * recall / (precision + recall)
 
+    if len(sanity["abs_sample_tensors"]) > 0:
+        sample = torch.cat(sanity["abs_sample_tensors"], dim=0)
+        p95_abs = torch.quantile(sample, 0.95).item()
+    else:
+        p95_abs = float("nan")
+
     sanity_out = {
-        "pred_pos_sum": sanity["pred_pos_sum"],
-        "true_pos_sum": sanity["true_pos_sum"],
-        "n_samples": sanity["n_samples"],
-        "abs_mean": sanity["abs_sum"] / max(1, sanity["abs_count"]),
-        "abs_max": sanity["abs_max"],
-        "abs_sample": sanity["abs_sample"],
+        "avg_pred_pos": sanity["pred_pos_sum"] / max(1, sanity["n_samples"]),
+        "avg_true_pos": sanity["true_pos_sum"] / max(1, sanity["n_samples"]),
+        "mean_abs": sanity["abs_sum"] / max(1, sanity["abs_count"]),
+        "p95_abs": p95_abs,
+        "max_abs": sanity["abs_max"],
     }
 
     return avg_loss, {
@@ -678,7 +933,7 @@ def eval_epoch(
         "recall": recall,
         "sanity": sanity_out,
     }
-
+    
 @torch.no_grad()
 def hard_miner(encoder, head, loader, device, thr=0.7, pain_threshold=2.0, max_hard=50000):
     """
@@ -952,7 +1207,7 @@ def _pcaDimsForExplainedVariance(E: np.ndarray, target: float = 0.95):
     k = min(k, E.shape[1])
     return k, float(cumsum[k - 1]), eigvals
 
-torch.no_grad()
+@torch.no_grad()
 def runMuqVarianceTests(
     *,
     ds,
@@ -1026,6 +1281,7 @@ def runMuqVarianceTests(
     # -------------------------
     # Stage 2: Encode with MuQ
     # -------------------------
+    encoder.clearPca()
     X = torch.stack(X_chunks, dim=0).to(device)  # (N,T)
     y = np.array(y_chunks, dtype=np.int64)
     N = X.size(0)
@@ -1244,36 +1500,50 @@ def main():
     )
     print(f"Selected {len(valSongs)} validation songs: {valSongs}")
 
-    valSongNames = {t[0] for t in valSongs}  # IMPORTANT: your valSongs is (song, complexity) tuples
+    valSongNames = {t[0] for t in valSongs}
+    allSongNames = set(ds_phase1.training_songs.keys())
+    trainSongNames = allSongNames - valSongNames
 
-    trainIdx, valIdx = [], []
-    for i in range(len(ds_phase1)):
-        songId, centerChunk = ds_phase1[i]   # (song_id, center_chunk)
-        if songId in valSongNames:
-            valIdx.append(i)
-        else:
-            trainIdx.append(i)
-
-    train_ds = Subset(ds_phase1, trainIdx)
-    val_ds = Subset(ds_phase1, valIdx)
-    
-    train_loader = DataLoader(
-        IndexDataset(train_ds),
-        batch_size=args.batch_size,
-        shuffle=True,
-        num_workers=args.num_workers,
-        pin_memory=True,
-        drop_last=True,
+    # Build fixed stage-1 examples once
+    trainExamplesByMember = ds_phase1.buildStage1ExamplesByMember(
+        allowedSongs=trainSongNames,
+        totalExamplesPerMember=4000,
+        negOtherFrac=0.70,
+        seed=1337,
+        maxWorkers=min(8, os.cpu_count() or 1),
     )
 
-    val_loader = DataLoader(
-        IndexDataset(val_ds),
-        batch_size=args.batch_size,
-        shuffle=False,
-        num_workers=args.num_workers,
-        pin_memory=True,
-        drop_last=False,
+    valExamplesByMember = ds_phase1.buildStage1ExamplesByMember(
+        allowedSongs=valSongNames,
+        totalExamplesPerMember=1000,
+        negOtherFrac=0.70,
+        seed=1338,
+        maxWorkers=min(8, os.cpu_count() or 1),
     )
+    trainLoadersByMember = {}
+    valLoadersByMember = {}
+
+    for memberName in ds_phase1.group_members:
+        trainDsMember = Stage1ExampleDataset(trainExamplesByMember[memberName])
+        valDsMember = Stage1ExampleDataset(valExamplesByMember[memberName])
+
+        trainLoadersByMember[memberName] = DataLoader(
+            trainDsMember,
+            batch_size=args.batch_size,
+            shuffle=True,   # shuffle fixed examples each epoch
+            num_workers=args.num_workers,
+            pin_memory=True,
+            drop_last=True,
+        )
+
+        valLoadersByMember[memberName] = DataLoader(
+            valDsMember,
+            batch_size=args.batch_size,
+            shuffle=False,
+            num_workers=args.num_workers,
+            pin_memory=True,
+            drop_last=False,
+        )
 
     print("Validation songs:", tierInfo["valSongs"])
     print("Tier sizes:", {k: len(v) for k, v in tierInfo.items() if k in ["easy","med","hard"]})
@@ -1288,9 +1558,6 @@ def main():
         debug=False
     ).to(device)
     
-    pca = np.load("muq_pca_256.npz")
-    encoder.setPca(pca["mean"], pca["W"])
-    
     if getattr(args, "run_var_tests", False):
         runMuqVarianceTests(
             ds=ds_phase1,
@@ -1303,6 +1570,13 @@ def main():
             batchSize=32,
             topkAnova=30,
         )
+        
+    pca = np.load("muq_pca_256.npz")
+    mean = pca["mean"]
+    W = pca["W"]
+
+    print("mean:", mean.shape, "W:", W.shape)  # should be (1024,) and (1024,256)
+    encoder.setPca(pca["mean"], pca["W"])
     
     # Dummy audio to infer embedding dim
     dummy = torch.zeros(1, int(args.chunk_sec * args.sr_out), device=device)  # (B,T)
@@ -1335,6 +1609,9 @@ def main():
         patience=2, # wait 2 epochs with no improvement
     )
     
+    embedding_cache_dir = os.path.join(group_dir, "training_cache", f"muq_emb_sr_{args.sr_out}_ctx_025_pca256")
+    embeddingCache = MuQEmbeddingCache(embedding_cache_dir)
+    
     best_acc = 0.0
     os.makedirs(args.save_dir, exist_ok=True)
     ckpt_path = os.path.join(args.save_dir, f"{args.group}_muq_head.pt")
@@ -1344,33 +1621,32 @@ def main():
     run_stage1 = check_run_stage1(model=head, ckpt_path=ckpt_path, skip_stage1=args.skip_stage1, device=device)
     
     if run_stage1:
-        global_step_offset = 0  # keep RR schedule continuous across epochs
-
         for epoch in range(1, args.epochs + 1):
             print(f"\nEpoch {epoch}/{args.epochs}")
 
             tr_loss, tr_metrics = train_epoch(
-                ds=ds_phase1, # IMPORTANT: base dataset (has group_members + getItemForMember)
+                base_ds=ds_phase1,
                 encoder=encoder,
                 head=head,
-                loader=train_loader, # IMPORTANT: loader, not dataset
+                trainLoadersByMember=trainLoadersByMember,
                 device=device,
                 optimizer=optimizer,
+                srOut=args.sr_out,
+                embeddingCache=embeddingCache,
+                chunkSec=args.chunk_sec,
                 thr=eval_thr,
                 ctx_frac=0.25,
-                member_step_offset=global_step_offset,
             )
 
-            # advance RR offset by how many steps we consumed
-            # (len(train_loader) is #batches; we pick one member per batch)
-            global_step_offset += len(train_loader)
-
             va_loss, va_metrics = eval_epoch(
-                ds_subset=val_ds,          # IMPORTANT: subset
-                encoder=encoder,           # IMPORTANT: no fused_encoder
+                base_ds=ds_phase1,
+                encoder=encoder,
                 head=head,
-                loader=val_loader,         # IMPORTANT: loader, not dataset
+                valLoadersByMember=valLoadersByMember,
                 device=device,
+                embeddingCache=embeddingCache,
+                srOut=args.sr_out,
+                chunkSec=args.chunk_sec,
                 thr=eval_thr,
                 ctx_frac=0.25,
             )

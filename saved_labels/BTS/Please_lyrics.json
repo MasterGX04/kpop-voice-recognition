@@ -1,0 +1,569 @@
+[
+    {
+        "language": "English",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "If you wanna, if you wanna, I'll do the thing for you\nIf you wanna, if you wanna",
+        "startChunk": 128,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "Baby, oh, please\n세상이 우릴 갈라놓을 때",
+        "romanization": "Baby, oh, please\nsesangi uril gallanoeul ttae",
+        "english": "Baby, oh, please\nWhen the world divides us",
+        "startChunk": 242,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "Baby, oh, please\n한 걸음 더 다가설게",
+        "romanization": "Baby, oh, please\nhan georeum deo dagaseolge",
+        "english": "Baby, oh, please\nI'll take another step closer",
+        "startChunk": 381,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "I'm on my knees\n함께해 줘 나의 worst day\n널 더 세게 안을게 right now, even hell, I'm down",
+        "romanization": "I'm on my knees\nhamkkehae jweo naye worst day\nneol deo sege aneulge right now, even hell, I'm down",
+        "english": "I'm on my knees\nStay with me on my worst day\nHold you even tighter right now, even hell, I'm down",
+        "startChunk": 529,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "All I want is you",
+        "startChunk": 763,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Suga"
+        ],
+        "korean": "네가 있는 곳이라면 나 따라가리\n가시밭길쯤은 나 신기해 즈려밟지",
+        "romanization": "nega inneun goshiramyeon na ttaragari\ngashibatgiljjeumeun na shingihae jeuryeobalpji",
+        "english": "Any place that you are, I'll surely follow\nPath of thorns, I'll tread right over",
+        "startChunk": 832,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Suga"
+        ],
+        "korean": "세상은 말야 항상 우리 사이를 막지\n결국엔 우린 돌고 돌아서 제자리",
+        "romanization": "sesangeun marya hangsang uri saireul makji\ngyeolgugen urin deulgo doraseo jejari",
+        "english": "The world's always getting in between us\nGoing in circles, where we getting started",
+        "startChunk": 971,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "RM"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "You want me just all day, all night\nHold me from the front, back, left, right\nI need you like all me, all mine\nOh, you got me, oh, you got me like",
+        "startChunk": 1100,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "V"
+        ],
+        "korean": "Baby, oh, please\n세상이 우릴 갈라놓을 때",
+        "romanization": "Baby, oh, please\nsesangi uril gallanoeul ttae",
+        "english": "Baby, oh, please\nWhen the world divides us",
+        "startChunk": 1374,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "J-Hope"
+        ],
+        "korean": "갈라놓을 때",
+        "romanization": "gallanoeul ttae",
+        "english": "When it divides",
+        "startChunk": 1497,
+        "isAdLib": true,
+        "adLibDuration": 70,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "V"
+        ],
+        "korean": "Baby, oh, please\n한 걸음 더 다가설게",
+        "romanization": "Baby, oh, please\nhan georeum deo dagaseolge",
+        "english": "Baby, oh, please\nI'll take another step closer",
+        "startChunk": 1514,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "J-Hope"
+        ],
+        "korean": "더 다가설게",
+        "romanization": "deo dagaseolge",
+        "english": "I'll take a step",
+        "startChunk": 1633,
+        "isAdLib": true,
+        "adLibDuration": 70,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "I'm on my knees\n함께해 줘 나의 worst day\n널 더 세게 안을게 right now, even hell, I'm down",
+        "romanization": "I'm on my knees\nhamkkehae jweo naye worst day\nneol deo sege aneulge right now, even hell, I'm down",
+        "english": "I'm on my knees\nStay with me on my worst day\nHold you even tighter right now, even hell, I'm down",
+        "startChunk": 1657,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "J-Hope"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "On my knees",
+        "startChunk": 1690,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "All I want is you",
+        "startChunk": 1893,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Jungkook",
+            "J-Hope"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "If you wa|nna, if you wanna, I'll do the thing for you",
+        "startChunk": 1965,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "V",
+            "J-Hope"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "If |you wanna, if you wanna, I'll do a thing for you",
+        "startChunk": 2034,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Jungkook",
+            "Jimin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "If you wa|nna, if you wanna",
+        "startChunk": 2107,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Jungkook",
+            "J-Hope"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I'll do the |thing for you",
+        "startChunk": 2145,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "V",
+            "J-Hope"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "If| you wanna, if you wanna, I'll do a thing",
+        "startChunk": 2176,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "J-Hope"
+        ],
+        "korean": "나, 기쁨을 느꼈다면 너에게 오직\n봐, 내 잔이 넘치니 come and get a sip",
+        "romanization": "na, gippeumeul neukkyeottamyeon neoege ojik\nbwa, nae jani neomchini come and get a sip",
+        "english": "If I ever knew happiness, it was only you\nLook, my cup runneth over, come and get a sip",
+        "startChunk": 2239,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "J-Hope"
+        ],
+        "korean": "Yeah 염원하며 영원히 서로의 영혼이\n그대 안에 기댈래, baby, baby, please",
+        "romanization": "Yeah yeomweonhamyeo yeongweonhi seoroye yeonghoni\ngeudae ane gidaellae, baby, baby, please",
+        "english": "Yeah, praying on it, for eternity, your soul and mine\nFind reliance in you, baby, baby, please",
+        "startChunk": 2380,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "RM"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "You want me just all day, all night\nHold me from the front, back, left, right\nI need you like all me, all mine\nOh, you got me, oh, you got me like",
+        "startChunk": 2512,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "Baby, oh, please\n세상이 우릴 갈라놓을 때",
+        "romanization": "Baby, oh, please\nsesangi uril gallanoeul ttae",
+        "english": "Baby, oh, please\nWhen the world divides us",
+        "startChunk": 2785,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Suga"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Yeah, yeah\nYeah, yeah",
+        "startChunk": 2908,
+        "isAdLib": true,
+        "adLibDuration": 80,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "Baby, oh, please\n한 걸음 더 다가설게",
+        "romanization": "Baby, oh, please\nhan georeum deo dagaseolge",
+        "english": "Baby, oh, please\nI'll take another step closer",
+        "startChunk": 2926,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Oh, please",
+        "startChunk": 2970,
+        "isAdLib": true,
+        "adLibDuration": 70,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Suga"
+        ],
+        "korean": "더 다가설게",
+        "romanization": "deo dagaseolge",
+        "english": "I'll take a step",
+        "startChunk": 3044,
+        "isAdLib": true,
+        "adLibDuration": 70,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "I'm on my knees\n함께해 줘 나의 worst day\n널 더 세게 안을게 right now, even hell, I'm down",
+        "romanization": "I'm on my knees\nhamkkehae jweo naye worst day\nneol deo sege aneulge right now, even hell, I'm down",
+        "english": "I'm on my knees\nStay with me on my worst day\nHold you even tighter right now, even hell, I'm down",
+        "startChunk": 3069,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Suga"
+        ],
+        "korean": "나의 worst, worst day",
+        "romanization": "naye worst, worst day",
+        "english": "My worst, worst day",
+        "startChunk": 3190,
+        "isAdLib": true,
+        "adLibDuration": 70,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "All I want is you",
+        "startChunk": 3306,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Jimin",
+            "Suga"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "If you |wanna, if you wanna, I'll do the thing for you",
+        "startChunk": 3378,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Jin",
+            "Suga"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "If y|ou wanna, if you wanna, I'll do a thing for you",
+        "startChunk": 3447,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "If you |wanna, if you wanna, I'll do the thing for you",
+        "startChunk": 3517,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Jin",
+            "J-Hope"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "If y|ou wanna, if you wanna",
+        "startChunk": 3589,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "Baby, oh, please\n세상이 우릴 갈라놓을 때",
+        "romanization": "Baby, oh, please\nsesangi uril gallanoeul ttae",
+        "english": "Baby, oh, please\nWhen the world divides us",
+        "startChunk": 3630,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Please",
+        "startChunk": 3677,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Girl, I know that",
+        "startChunk": 3755,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "Baby, oh, please\n한 걸음 더 다가설게",
+        "romanization": "Baby, oh, please\nhan georeum deo dagaseolge",
+        "english": "Baby, oh, please\nI'll take another step closer",
+        "startChunk": 3772,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "더 다가설게",
+        "romanization": "deo dagaseolge",
+        "english": "I'll take a step",
+        "startChunk": 3891,
+        "isAdLib": true,
+        "adLibDuration": 70,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "V"
+        ],
+        "korean": "I'm on my knees\n함께해 줘 나의 worst day\n널 더 세게 안을게 right now, even hell, I'm down",
+        "romanization": "I'm on my knees\nhamkkehae jweo naye worst day\nneol deo sege aneulge right now, even hell, I'm down",
+        "english": "I'm on my knees\nStay with me on my worst day\nHold you even tighter right now, even hell, I'm down",
+        "startChunk": 3917,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "On my knees",
+        "startChunk": 3959,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "V"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "All I want is you",
+        "startChunk": 4152,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    }
+]

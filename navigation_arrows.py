@@ -12,8 +12,8 @@ class NavigationArrows:
         self.arrowPadding = 10  # Padding around the progress bar
         self.arrows = {}
         
-        self.canvas.bind_all('<KeyPress-[>', lambda e: self.navigateLeft)
-        self.canvas.bind_all('<KeyPress-]>', lambda e: self.navigateRight)
+        self.canvas.bind_all('<bracketleft>', lambda e: self.navigateLeft(e))
+        self.canvas.bind_all('<bracketright>', lambda e: self.navigateRight(e))
     
     def createArrows(self):
         self.progressBarCanvas.update_idletasks()

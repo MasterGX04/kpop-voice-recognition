@@ -60,11 +60,10 @@ class VideoTrackItem(TrackItem):
         self.position = self.setPosition()
         # Sets video fps
         fps = self.cap.get(cv2.CAP_PROP_FPS)
-        print(f"Current fps: {fps}")
         if fps <= 0:
             self.effective_fps = 30
         else:
-            self.effective_fps = min(fps, 45) # cap to 30
+            self.effective_fps = min(fps, 30) # cap to 30
         
         self.tkImg = None          # persistent ImageTk.PhotoImage
         self._lastPos = None       # avoid coords spam
@@ -224,6 +223,49 @@ class VideoTrackItem(TrackItem):
         med = np.median(arr, axis=0).astype(int)
         self._setCropInsets(tuple(int(x) for x in med))
 
+    def _getNormalizedCropInsets(self):
+        """
+        Return crop insets as ratios relative to the preview video's source size.
+        """
+        if self.frameWidth <= 0 or self.frameHeight <= 0:
+            return (0.0, 0.0, 0.0, 0.0)
+
+        top, bottomInset, left, rightInset = self.cropInsets
+        return (
+            top / self.frameHeight,
+            bottomInset / self.frameHeight,
+            left / self.frameWidth,
+            rightInset / self.frameWidth,
+        )
+
+    def _getScaledCropInsetsForFrame(self, frameBgr: np.ndarray):
+        """
+        Convert normalized crop insets to pixel insets for the current frame size.
+        This is what you should use for HQ export frames.
+        """
+        if frameBgr is None or frameBgr.size == 0:
+            return (0, 0, 0, 0)
+
+        h, w = frameBgr.shape[:2]
+        topR, bottomR, leftR, rightR = self._getNormalizedCropInsets()
+
+        top = int(round(topR * h))
+        bottomInset = int(round(bottomR * h))
+        left = int(round(leftR * w))
+        rightInset = int(round(rightR * w))
+
+        # Clamp just in case
+        top = max(0, min(top, h - 1))
+        bottomInset = max(0, min(bottomInset, h - 1))
+        left = max(0, min(left, w - 1))
+        rightInset = max(0, min(rightInset, w - 1))
+
+        # Prevent collapsing the frame
+        if h - top - bottomInset < 2 or w - left - rightInset < 2:
+            return (0, 0, 0, 0)
+
+        return (top, bottomInset, left, rightInset)
+    
     def _setCropInsets(self, insets):
         self.cropInsets = insets
         top, bottomInset, left, rightInset = insets
@@ -257,6 +299,40 @@ class VideoTrackItem(TrackItem):
         self._activeAspectW = cw
         self._activeAspectH = ch
         self.resize(currentHeight)
+        
+    def detectCropInsetsForVideoPath(self, videoPath: str, sampleCount: int = 5):
+        cap = cv2.VideoCapture(videoPath)
+        if not cap.isOpened():
+            return self.cropInsets
+
+        try:
+            totalFrames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) or 0
+            if totalFrames <= 0:
+                ret, frame = cap.read()
+                if not ret or frame is None:
+                    return self.cropInsets
+                return self._estimateCropInsetsFromFrame(frame)
+
+            picks = []
+            for i in range(sampleCount):
+                t = (i + 1) / (sampleCount + 2)
+                picks.append(int(t * (totalFrames - 1)))
+
+            insetsList = []
+            for idx in picks:
+                cap.set(cv2.CAP_PROP_POS_FRAMES, idx)
+                ret, frame = cap.read()
+                if ret and frame is not None:
+                    insetsList.append(self._estimateCropInsetsFromFrame(frame))
+
+            if not insetsList:
+                return self.cropInsets
+
+            arr = np.array(insetsList, dtype=np.int32)
+            med = np.median(arr, axis=0).astype(int)
+            return tuple(int(x) for x in med)
+        finally:
+            cap.release()
     
     def play(self):
         self.isPlaying = True
@@ -369,7 +445,8 @@ class VideoTrackItem(TrackItem):
                 continue
 
             if self.cropEnabled:
-                frame = self._applyCropInsets(frame, self.cropInsets)
+                scaledInsets = self._getScaledCropInsetsForFrame(frame)
+                frame = self._applyCropInsets(frame, scaledInsets)
                 
             frame = cv2.resize(frame, (self.newWidth, self.newHeight), interpolation=cv2.INTER_AREA)
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -556,7 +633,7 @@ class VideoTrackItem(TrackItem):
         self.parent.updateCanvasForCurrentPosition(chunkIndex)
         self.canvas.update_idletasks()
         
-    def processFrame(self, frame, currentTimeMs, currentChunkIndex):
+    def processFrame(self, frame, currentTimeMs, currentChunkIndex, exportCropInsets=None):
         newChunkIndex = int(currentTimeMs / self.parent.chunk_duration)
 
         if currentChunkIndex is None or newChunkIndex != currentChunkIndex:
@@ -567,14 +644,17 @@ class VideoTrackItem(TrackItem):
         video_x, video_y = int(self.position[0]), int(self.position[1])
 
         if self.cropEnabled:
-            frame = self._applyCropInsets(frame, self.cropInsets)
-            
+            if exportCropInsets is None:
+                scaledInsets = self._getScaledCropInsetsForFrame(frame)
+            else:
+                scaledInsets = exportCropInsets
+            frame = self._applyCropInsets(frame, scaledInsets)
+
         frame = cv2.resize(frame, (self.newWidth, self.newHeight))
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-        # Reuse the canvas item (good)
         img = ImageTk.PhotoImage(image=Image.fromarray(frame))
-        self._exportImgRef = img  # prevent GC
+        self._exportImgRef = img
 
         if self.videoFrameId:
             self.canvas.itemconfig(self.videoFrameId, image=img)
@@ -585,7 +665,6 @@ class VideoTrackItem(TrackItem):
             )
             self.canvas.tag_lower(self.videoFrameId)
 
-        # IMPORTANT: give Tk a chance to layout + draw everything you just changed
         self.canvas.update_idletasks()
 
         videoFrame = self.captureCanvas(self.canvas)
@@ -774,6 +853,10 @@ class VideoTrackItem(TrackItem):
 
         totalFrames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) or 0
         isMusicVideo = bool(getattr(self, "isMusicVideo", True))
+        
+        exportCropInsets = self.cropInsets
+        if self.cropEnabled:
+            exportCropInsets = self.detectCropInsetsForVideoPath(originalVideoPath)
 
         # Determine RAW audio duration (pre-cuts) in ms
         rawAudioMs = 0
@@ -1017,7 +1100,12 @@ class VideoTrackItem(TrackItem):
 
                 # Render + capture
                 try:
-                    rgbFrame, currentChunkIndex = self.processFrame(frame, int(rawMs), currentChunkIndex)
+                    rgbFrame, currentChunkIndex = self.processFrame(
+                        frame,
+                        int(rawMs),
+                        currentChunkIndex,
+                        exportCropInsets=exportCropInsets
+                    )
                     if self._isValidRgbFrame(rgbFrame, width, height):
                         if exportMs >= pieStartMs:
                             a = (exportMs - pieStartMs) / float(fadeInMs)

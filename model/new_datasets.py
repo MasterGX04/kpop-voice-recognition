@@ -75,9 +75,19 @@ class BinaryVocalDataset(Dataset):
         # ----------------------------
         # Audio LRU cache
         # ----------------------------
-        self._max_cached_songs = 16   # 8–32 is typical. Tune based on RAM.
+        self._max_cached_songs = 64   # 8–32 is typical. Tune based on RAM.
         self._wave_cache = OrderedDict()  # path -> waveform (1, T_out)
         self._resamplers = {}  # (sr_src, sr_out) -> Resample object
+        
+        # ----------------------------
+        # Embedding cache
+        # ----------------------------
+        self.embeddingCacheRoot = os.path.join(cache_dir, "embedding_cache")
+        os.makedirs(self.embeddingCacheRoot, exist_ok=True)
+
+        # song_id -> np.memmap or np.ndarray
+        self._song_emb_cache = OrderedDict()
+        self._max_cached_embedding_songs = 16
 
     def __len__(self):
         return len(self.anchors)
@@ -168,57 +178,310 @@ class BinaryVocalDataset(Dataset):
 
         return members
         
-    # ---------------------------
-    # Public: member-conditioned
-    # ---------------------------
-    def getItemForMember(self, memberName: str, idx: int):
-        song_id, center_c = self.anchors[idx]
+    def _makeEmbeddingConfigTag(
+        self,
+        *,
+        contextSec: float,
+        srOut: int,
+        encoderTag: str = "muq-large-msd-iter",
+        pooling: str = "mean",
+        pcaTag: str = "none",
+    ):
+        return f"sr{srOut}_ctx{contextSec:.2f}_{encoderTag}_{pooling}_{pcaTag}"
 
-        # pick pos/neg around this song; if anchor is unusable, resample a different anchor
-        # (keeps things robust if a song has few positives for a member)
-        for _ in range(20):
-            is_pos = (random.random() < self.p_pos)
-            center_c2, y, w = self._sample_center_for_member(song_id, memberName, want_pos=is_pos)
-            if center_c2 is not None:
-                audio = self._load_window(song_id, center_c2)
-                return audio, torch.tensor([y], dtype=torch.float32), torch.tensor([w], dtype=torch.float32)
 
-            # fallback: try another anchor entirely
-            song_id, center_c = random.choice(self.anchors)
+    def _getSongEmbeddingPaths(
+        self,
+        songId: str,
+        *,
+        contextSec: float,
+        srOut: int,
+        encoderTag: str = "muq-large-msd-iter",
+        pooling: str = "mean",
+        pcaTag: str = "none",
+    ):
+        cfg = self._makeEmbeddingConfigTag(
+            contextSec=contextSec,
+            srOut=srOut,
+            encoderTag=encoderTag,
+            pooling=pooling,
+            pcaTag=pcaTag,
+        )
 
-        # hard fallback: just return something deterministic
-        audio = self._load_window(song_id, center_c)
-        return audio, torch.tensor([0.0], dtype=torch.float32), torch.tensor([1.0], dtype=torch.float32)
+        safeSong = songId.replace(os.sep, "_")
+        base = os.path.join(self.embeddingCacheRoot, f"{safeSong}__{cfg}")
 
+        return {
+            "npy": base + ".npy",
+            "meta": base + ".json",
+        }
+        
+    @torch.no_grad()
+    def _buildSongEmbeddingMatrix(
+        self,
+        songId: str,
+        *,
+        encoder,
+        device,
+        batchSize: int = 64,
+        contextSec: float = None,
+        encoderTag: str = "muq-large-msd-iter",
+        pooling: str = "mean",
+        pcaTag="pca256"
+    ):
+        print(F"Building song embedding matrix for {songId} with context {contextSec}s, encoder {encoderTag}, pooling {pooling}")
+        if contextSec is None:
+            contextSec = self.context_sec
+
+        paths = self._getSongEmbeddingPaths(
+            songId,
+            contextSec=contextSec,
+            srOut=self.sr_out,
+            encoderTag=encoderTag,
+            pooling=pooling,
+            pcaTag=pcaTag,
+        )
+
+        if os.path.exists(paths["npy"]):
+            return np.load(paths["npy"], mmap_mode="r")
+
+        T = self._song_num_chunks[songId]
+        embList = []
+
+        oldContext = self.context_sec
+        oldSamplesPerWindow = self.samples_per_window
+
+        # temporarily switch context if needed
+        self.context_sec = float(contextSec)
+        self.samples_per_window = int(round(self.context_sec * self.sr_out))
+
+        try:
+            for start in range(0, T, batchSize):
+                end = min(T, start + batchSize)
+
+                wavBatch = []
+                for center_c in range(start, end):
+                    wav = self._load_window(songId, center_c)   # (1, samples)
+                    wavBatch.append(wav)
+
+                wavBatch = torch.stack(wavBatch, dim=0).to(device, non_blocking=True)
+
+                if wavBatch.ndim == 3 and wavBatch.size(1) == 1:
+                    wavBatch = wavBatch.squeeze(1)
+
+                embMain, embCtx = encoder.encode_batch(wavBatch, ctx_frac=0.25)
+
+                emb = self._l2Normalize(embMain) + self._l2Normalize(embCtx)
+                emb = self._l2Normalize(emb)
+
+                emb = emb.detach().cpu().numpy().astype(np.float32)
+
+                # fix this depending on your wrapper output
+                # example: pooled mean over token dimension
+                if emb.ndim == 3:
+                    emb = emb.mean(dim=1)
+
+                emb = emb.detach().cpu().numpy()
+
+                embList.append(emb.astype(np.float32))
+
+        finally:
+            self.context_sec = oldContext
+            self.samples_per_window = oldSamplesPerWindow
+
+        fullEmb = np.concatenate(embList, axis=0)
+        np.save(paths["npy"], fullEmb)
+
+        meta = {
+            "songId": songId,
+            "numChunks": int(fullEmb.shape[0]),
+            "embDim": int(fullEmb.shape[1]),
+            "contextSec": float(contextSec),
+            "srOut": int(self.sr_out),
+            "chunkMs": int(self.chunk_ms),
+            "encoderTag": encoderTag,
+            "pooling": pooling,
+            "pcaTag": pcaTag,
+        }
+
+        with open(paths["meta"], "w", encoding="utf-8") as f:
+            json.dump(meta, f, indent=2)
+
+        return np.load(paths["npy"], mmap_mode="r")
+
+    def _loadSongEmbeddingMatrix(
+        self,
+        songId: str,
+        *,
+        encoder,
+        device,
+        batchSize: int = 64,
+        contextSec: float = None,
+        encoderTag: str = "muq-large-msd-iter",
+        pooling: str = "mean",
+        pcaTag: str = "none",
+    ):
+        cacheKey = (songId, contextSec or self.context_sec, self.sr_out, encoderTag, pooling, pcaTag)
+
+        if cacheKey in self._song_emb_cache:
+            arr = self._song_emb_cache.pop(cacheKey)
+            self._song_emb_cache[cacheKey] = arr
+            return arr
+
+        arr = self._buildSongEmbeddingMatrix(
+            songId,
+            encoder=encoder,
+            device=device,
+            batchSize=batchSize,
+            contextSec=contextSec,
+            encoderTag=encoderTag,
+            pooling=pooling,
+            pcaTag=pcaTag,
+        )
+
+        self._song_emb_cache[cacheKey] = arr
+
+        if len(self._song_emb_cache) > self._max_cached_embedding_songs:
+            self._song_emb_cache.popitem(last=False)
+
+        return arr
+    
+    def getEmbeddingForCenter(
+        self,
+        songId: str,
+        centerChunk: int,
+        *,
+        encoder,
+        device,
+        batchSize: int = 64,
+        contextSec: float = None,
+        encoderTag: str = "muq-large-msd-iter",
+        pooling: str = "mean",
+        pca = None,
+        pcaTag: str = "none",
+    ):
+        arr = self._loadSongEmbeddingMatrix(
+            songId,
+            encoder=encoder,
+            device=device,
+            batchSize=batchSize,
+            contextSec=contextSec,
+            encoderTag=encoderTag,
+            pooling=pooling,
+            pca=pca,
+            pcaTag=pcaTag,
+        )
+
+        return torch.from_numpy(np.asarray(arr[centerChunk])).float()
+    
     # ---------------------------
     # Build masks + anchors
     # ---------------------------
     def _build_from_labels(self):
+        """
+        Build all dataset structures from labeled training songs.
+
+        Main steps:
+        1. Discover how long each song is in chunk units.
+        2. Initialize empty masks for members / weights / adlibs / backing vocals.
+        3. Read JSON labels and fill the masks.
+        4. Derive global masks like vocal / overlap / transition.
+        5. Compute per-song stats for debugging and curriculum ideas.
+        6. Build anchor list used for sampling.
+        """
         self.song_stats = {}
-        adlibMaskBySong = {} # song_id -> bool[T]
-        backingOnlyMaskBySong = {} # song_id -> bool[T]  (is_backing True AND is_adlib False)
+
+        # Step 1: figure out how many chunks each song has
+        self._discover_song_chunk_lengths()
+
+        # Step 2: create empty arrays for all masks
+        adlibMaskBySong, backingOnlyMaskBySong = self._initialize_empty_song_masks()
+
+        # Step 3: read label JSON files and fill per-song masks
+        boundaries = self._fill_masks_from_json_labels(
+            adlibMaskBySong=adlibMaskBySong,
+            backingOnlyMaskBySong=backingOnlyMaskBySong,
+        )
+
+        print(f"Group members inferred from labels: {self.group_members}")
+
+        # Step 4 + 5: derive global masks and compute stats
+        self._finalize_song_masks_and_stats(
+            boundaries=boundaries,
+            adlibMaskBySong=adlibMaskBySong,
+            backingOnlyMaskBySong=backingOnlyMaskBySong,
+        )
         
-        # print(f"training songs: {self.training_songs}")
-        # 1) Discover song lengths (in chunks) from audio files
+        # Step 6: Precompute which centers can be sampled depending on the current stage
+        self._precompute_candidate_indices()
+
+        # Step 6: build the list of anchor chunks used by sampling
+        self._build_anchor_list()
+
+        # Optional curriculum / difficulty scores
+        self._compute_song_complexities()
+    
+    def _discover_song_chunk_lengths(self):
+        """
+        Determine how many chunk positions each song has.
+
+        We use the audio file duration and convert it into chunk units based on
+        self.chunk_ms. This gives us the timeline length T for each song.
+        """
         for song_id, path in self.training_songs.items():
             info = torchaudio.info(path)
-            # resampling happens at load time; chunk timeline is in ms so independent of sr
+
+            # Convert audio length into milliseconds.
+            # Resampling happens later when loading audio, so timeline length is
+            # based on original duration, not sample rate after resampling.
             duration_ms = (info.num_frames / info.sample_rate) * 1000.0
-            
+
+            # Number of chunk positions in this song.
             T = int(np.ceil(duration_ms / self.chunk_ms))
             self._song_num_chunks[song_id] = max(T, 1)
+    
+    def _initialize_empty_song_masks(self):
+        """
+        Create empty per-song arrays before reading labels.
 
-        # 2) Initialize empty masks
+        Returns:
+            adlibMaskBySong: song_id -> bool[T]
+            backingOnlyMaskBySong: song_id -> bool[T]
+
+        We keep these as temporary global masks because they are useful later for
+        song-level stats and sampling logic.
+        """
+        adlibMaskBySong = {}
+        backingOnlyMaskBySong = {}
+
         for song_id, T in self._song_num_chunks.items():
-            self.memberMask[song_id] = {m: np.zeros(T, dtype=bool) for m in self.group_members}
+            # One boolean mask per member: True means that member is active on that chunk.
+            self.memberMask[song_id] = {
+                m: np.zeros(T, dtype=bool) for m in self.group_members
+            }
+
+            # Base training weight per chunk.
             self.baseWeight[song_id] = np.ones(T, dtype=np.float32)
-            
+
+            # Global song masks for special vocal types.
             adlibMaskBySong[song_id] = np.zeros(T, dtype=bool)
             backingOnlyMaskBySong[song_id] = np.zeros(T, dtype=bool)
 
-        # 3) Fill masks from JSON labels
-        # We also track boundaries to create transitionMask
-        boundaries = defaultdict(list)  # song -> list of (start_c, end_c)
+        return adlibMaskBySong, backingOnlyMaskBySong
+    
+    def _fill_masks_from_json_labels(self, *, adlibMaskBySong, backingOnlyMaskBySong):
+        """
+        Read all JSON label files and use them to fill member activity masks,
+        special vocal masks, and chunk weights.
+
+        Returns:
+            boundaries: dict[song_id] -> list[(start_c, end_c)]
+
+        boundaries are saved so we can later build transition masks around
+        segment edges.
+        """
+        boundaries = defaultdict(list)
+
         for json_path in self.json_files:
             with open(json_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
@@ -226,239 +489,678 @@ class BinaryVocalDataset(Dataset):
             song_id = os.path.basename(json_path).replace("_labels.json", "")
             if song_id not in self._song_num_chunks:
                 continue
+
             T = self._song_num_chunks[song_id]
 
             for entry in data:
                 member, start_c, end_c, is_back, is_adlib = entry
+
+                # Skip labels for members we are not modeling.
                 if member not in self.memberMask[song_id]:
                     continue
 
-                start_c = int(max(0, min(T - 1, start_c)))
-                end_c = int(max(0, min(T - 1, end_c)))
-                if end_c < start_c:
-                    start_c, end_c = end_c, start_c
+                start_c, end_c = self._sanitize_label_range(start_c, end_c, T)
 
+                # Mark this member as active over the labeled interval.
                 self.memberMask[song_id][member][start_c:end_c + 1] = True
+
+                # Save boundaries so we can later mark transitions near edges.
                 boundaries[song_id].append((start_c, end_c))
-                
-                # Per-chunk adlib / backing-only masks (global, not per-member)
+
+                # Update global adlib / backing-only masks.
                 if is_adlib:
                     adlibMaskBySong[song_id][start_c:end_c + 1] = True
+
                 if is_back and (not is_adlib):
-                    # very important: backing-only (exclude adlib)
+                    # backing-only means backing vocal that is NOT also marked adlib
                     backingOnlyMaskBySong[song_id][start_c:end_c + 1] = True
 
-                w = 1.0
-                if is_back:
-                    w = self.backing_weight
-                elif is_adlib:
-                    w = self.adlib_weight
+                # Update training weights for this labeled region.
+                weight = self._get_label_weight(is_back=is_back, is_adlib=is_adlib)
 
-                # if multiple labels overlap in time, keep the max confidence weight
-                self.baseWeight[song_id][start_c:end_c + 1] = np.maximum(self.baseWeight[song_id][start_c:end_c + 1], w)
+                # If multiple labels overlap, keep the maximum weight.
+                self.baseWeight[song_id][start_c:end_c + 1] = np.maximum(
+                    self.baseWeight[song_id][start_c:end_c + 1],
+                    weight
+                )
 
-        print(f"Group members inferred from labels: {self.group_members}")
-        # 4) Derive vocal/overlap/transition masks
+        return boundaries
+    
+    def _sanitize_label_range(self, start_c, end_c, T):
+        """
+        Clamp label boundaries into valid chunk range [0, T-1] and ensure
+        start <= end.
+        """
+        start_c = int(max(0, min(T - 1, start_c)))
+        end_c = int(max(0, min(T - 1, end_c)))
+
+        if end_c < start_c:
+            start_c, end_c = end_c, start_c
+
+        return start_c, end_c
+    
+    def _sanitize_label_range(self, start_c, end_c, T):
+        """
+        Clamp label boundaries into valid chunk range [0, T-1] and ensure
+        start <= end.
+        """
+        start_c = int(max(0, min(T - 1, start_c)))
+        end_c = int(max(0, min(T - 1, end_c)))
+
+        if end_c < start_c:
+            start_c, end_c = end_c, start_c
+
+        return start_c, end_c
+
+    def _get_label_weight(self, *, is_back, is_adlib):
+        """
+        Choose the base training weight for a labeled interval.
+
+        Priority:
+        - backing uses backing_weight
+        - adlib uses adlib_weight
+        - otherwise default is 1.0
+        """
+        if is_back:
+            return self.backing_weight
+        elif is_adlib:
+            return self.adlib_weight
+        return 1.0
+
+    def _finalize_song_masks_and_stats(
+        self,
+        *,
+        boundaries,
+        adlibMaskBySong,
+        backingOnlyMaskBySong,
+    ):
+        """
+        For each song:
+        - derive vocal / overlap / transition masks
+        - compute useful summary stats
+
+        This keeps all 'post-processing' logic in one place after raw labels have
+        already been loaded.
+        """
         for song_id, T in self._song_num_chunks.items():
-            stacked = np.stack([self.memberMask[song_id][m] for m in self.group_members], axis=0)  # (M, T)
-            counts = stacked.sum(axis=0)
-            anyVocal = (counts > 0)
+            stacked, counts, anyVocal, overlap = self._compute_basic_song_masks(song_id)
+
             self.vocalMask[song_id] = anyVocal
-            overlap = (counts > 1)
             self.overlapMask[song_id] = overlap
+            self.transitionMask[song_id] = self._build_transition_mask(
+                T=T,
+                boundaries=boundaries.get(song_id, []),
+            )
 
-            # transition: dilate boundaries by ±pad
-            transition = np.zeros(T, dtype=bool)
-            pad = self.transition_pad_chunks
-            for (s, e) in boundaries.get(song_id, []):
-                s2 = max(0, s - pad)
-                e2 = min(T - 1, e + pad)
-                # mark only the band near edges (not the whole interval)
-                transition[s2:min(T, s + pad + 1)] = True
-                transition[max(0, e - pad):e2 + 1] = True
-            self.transitionMask[song_id] = transition
+            self.song_stats[song_id] = self._compute_song_stats(
+                song_id=song_id,
+                T=T,
+                stacked=stacked,
+                counts=counts,
+                anyVocal=anyVocal,
+                overlap=overlap,
+                adlibMask=adlibMaskBySong[song_id],
+                backingOnlyMask=backingOnlyMaskBySong[song_id],
+            )
             
-            # ----------------------------
-            # Song complexity stats
-            # ----------------------------
-            totalChunks = int(T)
+    def _compute_basic_song_masks(self, song_id):
+        """
+        Build the stacked presence matrix for one song and derive basic vocal masks.
 
-            # presence matrix: (T, C) float
-            # stacked is (C, T) bool, so transpose
-            presence = stacked.T.astype(np.float32)  # (T, C)
+        Returns:
+            stacked: (M, T) bool
+            counts: (T,) int
+            anyVocal: (T,) bool
+            overlap: (T,) bool
+        """
+        stacked = np.stack(
+            [self.memberMask[song_id][m] for m in self.group_members],
+            axis=0
+        )  # (M, T)
 
-            # vocal masks already computed
-            vocalMask = anyVocal  # (T,) bool
+        counts = stacked.sum(axis=0)
+        anyVocal = (counts > 0)
+        overlap = (counts > 1)
 
-            # any-vocal rate (what you meant by vocalRate)
-            vocalChunks = int(np.count_nonzero(vocalMask))
-            vocalRate = float(vocalChunks / max(1, totalChunks))
+        return stacked, counts, anyVocal, overlap
+    
+    def _build_transition_mask(self, *, T, boundaries):
+        """
+        Build a boolean mask that marks chunks near labeled segment edges.
 
-            # solo rate (extra signal you wanted)
-            soloChunks = int(np.count_nonzero(counts == 1))
-            soloRate = float(soloChunks / max(1, totalChunks))
+        We do NOT mark the entire vocal segment as transition.
+        We only mark a padded band around the start and end boundaries.
+        """
+        transition = np.zeros(T, dtype=bool)
+        pad = self.transition_pad_chunks
 
-            # overlap rate
-            overlapChunks = int(np.count_nonzero(overlap))
-            overlapRate = float(overlapChunks / max(1, totalChunks))
+        for (s, e) in boundaries:
+            s2 = max(0, s - pad)
+            e2 = min(T - 1, e + pad)
 
-            # adlib/backing-only rates from masks we built while reading labels
-            adlibChunks = int(np.count_nonzero(adlibMaskBySong[song_id]))
-            adlibRate = float(adlibChunks / max(1, totalChunks))
+            # Left edge band near the start
+            transition[s2:min(T, s + pad + 1)] = True
 
-            backingOnlyChunks = int(np.count_nonzero(backingOnlyMaskBySong[song_id]))
-            backingOnlyRate = float(backingOnlyChunks / max(1, totalChunks))
+            # Right edge band near the end
+            transition[max(0, e - pad):e2 + 1] = True
 
-            # switch rate (XOR-like: did the active-singer set change from t-1 to t?)
-            if T <= 1:
-                changeCount = 0
-                switchRate = 0.0
-            else:
-                frameChanges = np.any(stacked[:, 1:] != stacked[:, :-1], axis=0)  # (T-1,)
-                changeCount = int(np.count_nonzero(frameChanges))
-                switchRate = float(changeCount / max(1, totalChunks - 1))
+        return transition
+    
+    def _precompute_candidate_indices(self):
+        """
+        Precompute per-song, per-member candidate chunk indices for each training stage.
 
-            # domFrac computed on vocal frames only
-            domFrac = 0.0
-            vocalFrames = presence[vocalMask]  # (Tv, C)
-            if vocalFrames.shape[0] > 0:
-                perSinger = vocalFrames.mean(axis=0)  # (C,)
-                denom = float(perSinger.sum()) + 1e-8
-                domFrac = float(perSinger.max() / denom)
+        Why this exists:
+        - Sampling is called many times during training.
+        - Rebuilding boolean masks and calling np.flatnonzero every time is wasteful.
+        - These masks depend only on labels, so we can compute them once after
+        _build_from_labels() has finished.
 
-            self.song_stats[song_id] = {
-                "T": totalChunks,
+        We store pools for:
+        - stage 1 clean positives / negatives
+        - stage 2 included positives / negatives
 
-                # rates
-                "vocalRate": vocalRate,           # any-vocal fraction
-                "soloRate": soloRate,             # solo-only fraction
-                "overlapRate": overlapRate,
-                "adlibRate": adlibRate,
-                "backingOnlyRate": backingOnlyRate,
-                "switchRate": switchRate,
-                "domFrac": domFrac,
+        Naming idea:
+        self.candidateIdx[song_id][memberName]["stage1"]["pos_clean"]
+        self.candidateIdx[song_id][memberName]["stage1"]["neg_other_vocal"]
+        self.candidateIdx[song_id][memberName]["stage1"]["neg_silence"]
+        etc.
+        """
+        self.candidateIdx = {}
 
-                # optional counts (still useful for debugging)
-                "vocalChunks": vocalChunks,
-                "soloChunks": soloChunks,
-                "overlapChunks": overlapChunks,
-                "adlibChunks": adlibChunks,
-                "backingOnlyChunks": backingOnlyChunks,
-                "changeCount": changeCount,
-            }
+        for song_id in self._song_num_chunks:
+            self.candidateIdx[song_id] = {}
 
-        # 5) Build anchor list (song_id, center_chunk)
+            anyVocalMask = self.vocalMask[song_id]
+            isOverlapMask = self.overlapMask[song_id]
+            isTransitionMask = self.transitionMask[song_id]
+
+            # Song-level silence pools do not depend on member
+            cleanSilenceMask = (~anyVocalMask) & (~isTransitionMask)
+            anySilenceMask = ~anyVocalMask
+
+            for memberName in self.group_members:
+                if memberName not in self.memberMask[song_id]:
+                    continue
+
+                memberIsActiveMask = self.memberMask[song_id][memberName]
+
+                # -------------------------
+                # Stage 1 = clean identity
+                # -------------------------
+                stage1PosCleanMask = memberIsActiveMask & (~isTransitionMask) & (~isOverlapMask)
+
+                stage1NegOtherVocalMask = (
+                    (~memberIsActiveMask) &
+                    anyVocalMask &
+                    (~isTransitionMask) &
+                    (~isOverlapMask)
+                )
+
+                stage1NegSilenceMask = cleanSilenceMask
+
+                # -------------------------
+                # Stage 2 = include messy positives
+                # -------------------------
+                # Allow overlap positives, but still avoid transitions.
+                stage2PosIncludedMask = memberIsActiveMask & (~isTransitionMask)
+
+                # Hard negative: target absent, somebody else singing, transitions removed.
+                stage2NegOtherVocalMask = (
+                    (~memberIsActiveMask) &
+                    anyVocalMask &
+                    (~isTransitionMask)
+                )
+
+                # Silence remains useful in stage 2 too.
+                stage2NegSilenceMask = cleanSilenceMask
+
+                # Very loose fallbacks if clean pools are empty
+                fallbackAnyPositiveMask = memberIsActiveMask
+                fallbackAnyNegativeMask = ~memberIsActiveMask
+                fallbackAnySilenceMask = anySilenceMask
+
+                self.candidateIdx[song_id][memberName] = {
+                    "stage1": {
+                        "pos_clean": np.flatnonzero(stage1PosCleanMask),
+                        "neg_other_vocal": np.flatnonzero(stage1NegOtherVocalMask),
+                        "neg_silence": np.flatnonzero(stage1NegSilenceMask),
+                    },
+                    "stage2": {
+                        "pos_included": np.flatnonzero(stage2PosIncludedMask),
+                        "neg_other_vocal": np.flatnonzero(stage2NegOtherVocalMask),
+                        "neg_silence": np.flatnonzero(stage2NegSilenceMask),
+                    },
+                    "fallback": {
+                        "pos_any": np.flatnonzero(fallbackAnyPositiveMask),
+                        "neg_any": np.flatnonzero(fallbackAnyNegativeMask),
+                        "silence_any": np.flatnonzero(fallbackAnySilenceMask),
+                    }
+                }
+    
+    def _compute_song_stats(
+        self,
+        *,
+        song_id,
+        T,
+        stacked,
+        counts,
+        anyVocal,
+        overlap,
+        adlibMask,
+        backingOnlyMask,
+    ):
+        """
+        Compute descriptive stats for one song.
+
+        These stats are mainly useful for:
+        - debugging label quality
+        - curriculum / difficulty sampling
+        - understanding how messy each song is
+        """
+        totalChunks = int(T)
+
+        # Convert stacked from (C, T) bool -> (T, C) float for easier averaging.
+        presence = stacked.T.astype(np.float32)
+
+        vocalChunks = int(np.count_nonzero(anyVocal))
+        vocalRate = float(vocalChunks / max(1, totalChunks))
+
+        soloChunks = int(np.count_nonzero(counts == 1))
+        soloRate = float(soloChunks / max(1, totalChunks))
+
+        overlapChunks = int(np.count_nonzero(overlap))
+        overlapRate = float(overlapChunks / max(1, totalChunks))
+
+        adlibChunks = int(np.count_nonzero(adlibMask))
+        adlibRate = float(adlibChunks / max(1, totalChunks))
+
+        backingOnlyChunks = int(np.count_nonzero(backingOnlyMask))
+        backingOnlyRate = float(backingOnlyChunks / max(1, totalChunks))
+
+        if T <= 1:
+            changeCount = 0
+            switchRate = 0.0
+        else:
+            # True whenever the active singer set changes from one chunk to the next.
+            frameChanges = np.any(stacked[:, 1:] != stacked[:, :-1], axis=0)
+            changeCount = int(np.count_nonzero(frameChanges))
+            switchRate = float(changeCount / max(1, totalChunks - 1))
+
+        # Dominance fraction:
+        # among vocal frames only, how concentrated is the activity toward the
+        # most active singer?
+        domFrac = 0.0
+        vocalFrames = presence[anyVocal]
+        if vocalFrames.shape[0] > 0:
+            perSinger = vocalFrames.mean(axis=0)
+            denom = float(perSinger.sum()) + 1e-8
+            domFrac = float(perSinger.max() / denom)
+
+        return {
+            "T": totalChunks,
+
+            "vocalRate": vocalRate,
+            "soloRate": soloRate,
+            "overlapRate": overlapRate,
+            "adlibRate": adlibRate,
+            "backingOnlyRate": backingOnlyRate,
+            "switchRate": switchRate,
+            "domFrac": domFrac,
+
+            "vocalChunks": vocalChunks,
+            "soloChunks": soloChunks,
+            "overlapChunks": overlapChunks,
+            "adlibChunks": adlibChunks,
+            "backingOnlyChunks": backingOnlyChunks,
+            "changeCount": changeCount,
+        }
+        
+    def _build_anchor_list(self):
+        """
+        Build the master list of anchor positions used by sampling.
+
+        Each anchor is just (song_id, center_chunk). Later sampling logic decides
+        whether that anchor becomes a positive or negative example for a member.
+        """
         anchors = []
+
         for song_id, T in self._song_num_chunks.items():
-            # You can anchor on all chunks, or only on vocal/silence subsets.
-            # Anchoring on all chunks is simplest; sampling logic chooses pos/neg.
             song_anchors = [(song_id, c) for c in range(T)]
             anchors.extend(song_anchors)
 
         random.shuffle(anchors)
         self.anchors = anchors
-        self._compute_song_complexities()
-        
+    
+    def buildStage1ExamplesByMember(
+        self,
+        *,
+        allowedSongs=None,
+        totalExamplesPerMember=None,
+        negOtherFrac: float = 0.70,
+        seed: int = 1337,
+        maxWorkers: int = 8,
+    ):
+        """
+        Build fixed stage-1 examples grouped by member.
+
+        Stage-1 policy:
+        - positives come only from stage1/pos_clean
+        - negatives are split between:
+            - stage1/neg_other_vocal
+            - stage1/neg_silence
+        - examples are sampled WITHOUT replacement
+        - overall ratio is 50% positive / 50% negative
+        - within negatives, target split is negOtherFrac / (1-negOtherFrac)
+
+        Returns:
+            examplesByMember: dict[str, list[dict]]
+
+            Each example dict contains:
+                songId, centerChunk, memberName, label, weight, source
+        """
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+        from tqdm import tqdm
+        import math
+
+        if allowedSongs is None:
+            allowedSongs = set(self._song_num_chunks.keys())
+        else:
+            allowedSongs = set(allowedSongs)
+
+        if not (0.0 < negOtherFrac < 1.0):
+            raise ValueError("negOtherFrac must be between 0 and 1.")
+
+        negSilFrac = 1.0 - negOtherFrac
+
+        masterRng = np.random.default_rng(seed)
+        memberSeeds = {
+            memberName: int(masterRng.integers(0, 2**31 - 1))
+            for memberName in self.group_members
+        }
+
+        def collectPoolEntries(memberName: str):
+            """
+            Collect all clean stage-1 candidate examples for one member across the
+            allowed song set.
+            """
+            posPool = []
+            negOtherPool = []
+            negSilPool = []
+
+            for song_id in allowedSongs:
+                if song_id not in self.candidateIdx:
+                    continue
+                if memberName not in self.candidateIdx[song_id]:
+                    continue
+
+                stage1Pools = self.candidateIdx[song_id][memberName]["stage1"]
+
+                for c in stage1Pools["pos_clean"]:
+                    c = int(c)
+                    posPool.append({
+                        "songId": song_id,
+                        "centerChunk": c,
+                        "memberName": memberName,
+                        "label": 1.0,
+                        "weight": float(self.baseWeight[song_id][c]),
+                        "source": "pos_clean",
+                    })
+
+                for c in stage1Pools["neg_other_vocal"]:
+                    c = int(c)
+                    negOtherPool.append({
+                        "songId": song_id,
+                        "centerChunk": c,
+                        "memberName": memberName,
+                        "label": 0.0,
+                        "weight": float(self.baseWeight[song_id][c]),
+                        "source": "neg_other_vocal",
+                    })
+
+                for c in stage1Pools["neg_silence"]:
+                    c = int(c)
+                    negSilPool.append({
+                        "songId": song_id,
+                        "centerChunk": c,
+                        "memberName": memberName,
+                        "label": 0.0,
+                        "weight": float(self.baseWeight[song_id][c]),
+                        "source": "neg_silence",
+                    })
+
+            return posPool, negOtherPool, negSilPool
+
+        def chooseBalancedCounts(posAvail, negOtherAvail, negSilAvail, totalExamplesCap):
+            """
+            Decide how many examples to use so that:
+            - positives == negatives
+            - negatives are split ~ negOtherFrac / negSilFrac
+            - sampling is without replacement
+            """
+            maxPos = posAvail
+
+            # If total negatives = nPos, then:
+            # nOther ≈ nPos * negOtherFrac
+            # nSil   ≈ nPos * negSilFrac
+            #
+            # Need both buckets to support that split.
+            maxByOther = int(math.floor(negOtherAvail / negOtherFrac)) if negOtherFrac > 0 else 10**18
+            maxBySil = int(math.floor(negSilAvail / negSilFrac)) if negSilFrac > 0 else 10**18
+            maxNegBalanced = min(maxByOther, maxBySil)
+
+            nPos = min(maxPos, maxNegBalanced)
+
+            if totalExamplesCap is not None:
+                # total = pos + neg = 2*nPos
+                nPos = min(nPos, totalExamplesCap // 2)
+
+            while nPos > 0:
+                nNeg = nPos
+                nOther = int(round(nNeg * negOtherFrac))
+                nSil = nNeg - nOther
+
+                if nOther <= negOtherAvail and nSil <= negSilAvail:
+                    return nPos, nOther, nSil
+
+                nPos -= 1
+
+            return 0, 0, 0
+
+        def buildForMember(memberName: str):
+            """
+            Build the final fixed example list for one member.
+            """
+            rng = np.random.default_rng(memberSeeds[memberName])
+
+            posPool, negOtherPool, negSilPool = collectPoolEntries(memberName)
+
+            posAvail = len(posPool)
+            negOtherAvail = len(negOtherPool)
+            negSilAvail = len(negSilPool)
+
+            nPos, nOther, nSil = chooseBalancedCounts(
+                posAvail=posAvail,
+                negOtherAvail=negOtherAvail,
+                negSilAvail=negSilAvail,
+                totalExamplesCap=totalExamplesPerMember,
+            )
+
+            if nPos == 0:
+                return {
+                    "memberName": memberName,
+                    "examples": [],
+                    "stats": {
+                        "posAvail": posAvail,
+                        "negOtherAvail": negOtherAvail,
+                        "negSilAvail": negSilAvail,
+                        "usedPos": 0,
+                        "usedNegOther": 0,
+                        "usedNegSil": 0,
+                    },
+                }
+
+            posIdx = rng.choice(posAvail, size=nPos, replace=False)
+            negOtherIdx = rng.choice(negOtherAvail, size=nOther, replace=False)
+            negSilIdx = rng.choice(negSilAvail, size=nSil, replace=False)
+
+            examples = [posPool[i] for i in posIdx]
+            examples.extend(negOtherPool[i] for i in negOtherIdx)
+            examples.extend(negSilPool[i] for i in negSilIdx)
+
+            rng.shuffle(examples)
+
+            return {
+                "memberName": memberName,
+                "examples": examples,
+                "stats": {
+                    "posAvail": posAvail,
+                    "negOtherAvail": negOtherAvail,
+                    "negSilAvail": negSilAvail,
+                    "usedPos": nPos,
+                    "usedNegOther": nOther,
+                    "usedNegSil": nSil,
+                },
+            }
+
+        examplesByMember = {}
+        memberStats = {}
+
+        workers = max(1, min(maxWorkers, len(self.group_members)))
+        with ThreadPoolExecutor(max_workers=workers) as ex:
+            futures = {
+                ex.submit(buildForMember, memberName): memberName
+                for memberName in self.group_members
+            }
+
+            for fut in tqdm(as_completed(futures), total=len(futures), desc="Building stage-1 examples by member"):
+                result = fut.result()
+                memberName = result["memberName"]
+                examplesByMember[memberName] = result["examples"]
+                memberStats[memberName] = result["stats"]
+
+        print("\nStage-1 example summary by member:")
+        for memberName in self.group_members:
+            st = memberStats.get(memberName, {})
+            print(
+                f"{memberName}: "
+                f"posAvail={st.get('posAvail', 0)}, "
+                f"negOtherAvail={st.get('negOtherAvail', 0)}, "
+                f"negSilAvail={st.get('negSilAvail', 0)}, "
+                f"usedPos={st.get('usedPos', 0)}, "
+                f"usedNegOther={st.get('usedNegOther', 0)}, "
+                f"usedNegSil={st.get('usedNegSil', 0)}, "
+                f"total={len(examplesByMember.get(memberName, []))}"
+            )
+
+        return examplesByMember
+      
     # ---------------------------
     # Sampling policy
     # ---------------------------
-    def _sample_center_for_member(self, song_id: str, memberName: str, want_pos: bool):
+    def _sample_center_for_member(self, song_id: str, memberName: str, want_pos: bool, stage: int = 1):
         """
-        Pick a center *chunk index* to sample a training window around for ONE member's
-        binary classifier, and return:
+        Pick a center chunk index for one member's binary classifier.
 
+        Returns:
             (centerChunkIndex, label, sampleWeight)
 
-        Where:
-        - label = 1.0 means "memberName is present at this center chunk"
-        - label = 0.0 means "memberName is NOT present at this center chunk"
-        - sampleWeight down-weights ambiguous or lower-confidence regions:
-            * overlap chunks (multiple members singing) get overlap_weight
-            * transition chunks (near boundaries) get transition_weight
-            * backing/adlib weighting is baked into baseWeight per chunk
-        """
+        label meanings:
+        - 1.0 => memberName is present at this center chunk
+        - 0.0 => memberName is NOT present at this center chunk
 
+        stage meanings:
+        - stage 1:
+            Learn clean vocal identity only.
+            Positives are solo, non-transition chunks.
+            Negatives are clean other-member vocal chunks or silence.
+        - stage 2:
+            Learn robustness to messier audio.
+            Positives may include overlap / included-presence chunks,
+            but still avoid transition regions by default.
+
+        Notes:
+        - This function assumes candidate pools were already precomputed by
+        _precompute_candidate_indices().
+        - baseWeight already includes backing/adlib confidence scaling.
+        """
         if memberName not in self.memberMask[song_id]:
-            # Member isn't tracked for this song => can't reliably sample.
-            # Return sentinel center=None plus a safe default.
             return None, 0.0, 1.0
 
-        # --- Per-chunk boolean masks for THIS song ---
-        memberIsActiveMask = self.memberMask[song_id][memberName]   # True where memberName sings
-        anyVocalMask = self.vocalMask[song_id]                     # True where anyone sings (any member)
-        isOverlapMask = self.overlapMask[song_id]                  # True where >=2 members sing
-        isTransitionMask = self.transitionMask[song_id]            # True near segment boundaries (uncertain)
-        perChunkBaseWeight = self.baseWeight[song_id]              # e.g., backing/adlib confidence weight
+        if stage not in (1, 2):
+            raise ValueError(f"Unsupported stage={stage}. Expected 1 or 2.")
 
-        # --- Build candidate sets (prefer "clean" chunks: not near transitions) ---
-        # Positive candidates: member is active, and NOT in transition region.
-        positiveCandidateMask = memberIsActiveMask & ~isTransitionMask
+        perChunkBaseWeight = self.baseWeight[song_id]
+        isOverlapMask = self.overlapMask[song_id]
+        isTransitionMask = self.transitionMask[song_id]
 
-        # Negative candidates type A: member is NOT active, but *someone* is singing (other-member vocal).
-        otherMemberVocalNegativeMask = (~memberIsActiveMask) & anyVocalMask & ~isTransitionMask
-
-        # Negative candidates type B: "true silence" (nobody is singing).
-        silenceNegativeMask = (~anyVocalMask) & ~isTransitionMask
+        pools = self.candidateIdx[song_id][memberName]
+        stageKey = f"stage{stage}"
 
         # ==========================
-        # Sample a POSITIVE example
+        # POSITIVE sampling
         # ==========================
         if want_pos:
-            positiveCandidateIndices = np.flatnonzero(positiveCandidateMask)
+            if stage == 1:
+                positiveCandidateIndices = pools[stageKey]["pos_clean"]
+            else:
+                positiveCandidateIndices = pools[stageKey]["pos_included"]
+
             if positiveCandidateIndices.size == 0:
-                # No positives available for this member in this song (or all were excluded by transitions).
-                # Returning label=1.0 signals caller that we *wanted* positive but couldn't find one.
-                return None, 1.0, 1.0
+                # Fallback to any positive chunk for this member
+                positiveCandidateIndices = pools["fallback"]["pos_any"]
+                if positiveCandidateIndices.size == 0:
+                    return None, 1.0, 1.0
 
             centerChunkIndex = int(np.random.choice(positiveCandidateIndices))
             label = 1.0
 
-            # Start from base weight (e.g., backing/adlib weighting) at this chunk.
             sampleWeight = float(perChunkBaseWeight[centerChunkIndex])
 
-            # If multiple members are singing here, down-weight (less clean identity signal).
+            # In stage 2, overlap positives are valid but lower confidence.
             if isOverlapMask[centerChunkIndex]:
                 sampleWeight *= self.overlap_weight
 
-            # If it's near a boundary, down-weight (can be consonants/hand-offs).
-            # NOTE: we already excluded transitions from positiveCandidateMask, but keep this in case
-            # you later change masks or add fallback sampling that allows transitions.
+            # We usually exclude transitions from candidate pools, but keep this
+            # as a safety guard for fallback cases.
             if isTransitionMask[centerChunkIndex]:
                 sampleWeight *= self.transition_weight
 
             return centerChunkIndex, label, sampleWeight
 
         # ==========================
-        # Sample a NEGATIVE example
+        # NEGATIVE sampling
         # ==========================
-        # Choose whether negatives come mostly from "other member is singing" (hard negatives)
-        # or from "silence" (easy negatives).
         pickOtherMemberVocalNeg = (random.random() < self.p_other_member_neg)
 
         if pickOtherMemberVocalNeg:
-            negativeCandidateIndices = np.flatnonzero(otherMemberVocalNegativeMask)
+            negativeCandidateIndices = pools[stageKey]["neg_other_vocal"]
         else:
-            negativeCandidateIndices = np.flatnonzero(silenceNegativeMask)
+            negativeCandidateIndices = pools[stageKey]["neg_silence"]
 
         if negativeCandidateIndices.size == 0:
-            # Fallback: if the preferred negative pool is empty, allow ANY chunk where member isn't active.
-            negativeCandidateIndices = np.flatnonzero(~memberIsActiveMask)
+            # Prefer silence fallback if we specifically wanted silence
+            if not pickOtherMemberVocalNeg:
+                negativeCandidateIndices = pools["fallback"]["silence_any"]
+
+            # Final fallback: any chunk where this member is absent
             if negativeCandidateIndices.size == 0:
-                # Extremely degenerate case: member is active everywhere (or masks are broken).
+                negativeCandidateIndices = pools["fallback"]["neg_any"]
+
+            if negativeCandidateIndices.size == 0:
                 return None, 0.0, 1.0
 
         centerChunkIndex = int(np.random.choice(negativeCandidateIndices))
         label = 0.0
 
-        # Negatives still get baseWeight (rarely matters, but consistent if you down-weight transitions globally).
         sampleWeight = float(perChunkBaseWeight[centerChunkIndex])
 
-        # If it’s near a boundary, down-weight because “who is singing” can be ambiguous right at hand-offs.
+        # Transition negatives are lower confidence if a fallback ever lands there.
         if isTransitionMask[centerChunkIndex]:
             sampleWeight *= self.transition_weight
 
-        # Note: we do NOT down-weight overlap for negatives, because overlap just means
-        # "someone else (not this member) is singing" — that's still a valid negative.
+        # For negatives, overlap is still a valid negative if target is absent.
+        # We do not need to down-weight it by default.
         return centerChunkIndex, label, sampleWeight
 
     def _get_resampler(self, sr_src: int):

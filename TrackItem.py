@@ -32,6 +32,7 @@ class TrackItem:
         
         self.timerX = 0
         self.timerY = 0
+        self.maxTime = 0.0
         self.lastUpdateChunk = 0
         
         if type == "image":
@@ -71,7 +72,7 @@ class TrackItem:
         
         self.fontSize = int(40 * parentScaleX)
         self.font.configure(size=self.fontSize)
-        self.xOffset = int(700 * parentScaleX)
+        self.xOffset = int(720 * parentScaleX)
         self.yOffset = int(5 * parentScaleY)
         
     def rescalePositionTimeline(self, scaleY):
@@ -81,6 +82,9 @@ class TrackItem:
         baseH = self.parent.slotHeightBase
         pixH  = self.parent.slotHeightPx  # computed once in parent on resize
 
+        if baseH <= 0 or pixH <= 0:
+            return
+    
         self.positionTimeline = [
             (int(round((y / baseH) * pixH)) if y is not None else None)
             for y in self.basePositionTimeline
@@ -144,11 +148,8 @@ class TrackItem:
                 self.animations.remove(anim)
     
     def getSlotOffsetForSlot(self, slotIndex):
-        """
-        Computes the vertical offset of this member based on slot index and scale.
-        Replaces heightOffset[0] and heightOffset[1].
-        I realized THIS IS STATIC
-        """
+        if hasattr(self.parent, "slotBaseYs") and 0 <= slotIndex < len(self.parent.slotBaseYs):
+            return self.parent.slotBaseYs[slotIndex]
         return self.parent.slotHeightBase * slotIndex
         
     def getMostRecentY(self, currentChunk):
@@ -164,13 +165,20 @@ class TrackItem:
         """
         currentSlotIndex = self.parent.slotMap[self.trackMember]
         currentValue = self.timeline[currentChunk]
-
-        baseChunkLength = 16
+        
+        baseChunkLength = 20
         membersToPass = []
+        
+        # Shanpshot the order at start of this chunk
+        originalSlotMap = dict(self.parent.slotMap)
+        originalTrackSlots = {
+            name: track.currentSlotIndex
+            for name, track in self.parent.memberImages.items()
+        }
             
          # Step 1: Determine which members need to be passed
         for slot in range(currentSlotIndex - 1, -1, -1):
-            otherKey = next(name for name, idx in self.parent.slotMap.items() if idx == slot)
+            otherKey = next(name for name, idx in originalSlotMap.items() if idx == slot)
             otherTrackItem = self.parent.memberImages[otherKey]
             
             # Look slightly ahead
@@ -189,30 +197,39 @@ class TrackItem:
             self.positionTimeline[currentChunk] = baseY
             return
         
-        # Step 2: Animate the current member upward to new Y
-        newSlot = currentSlotIndex - len(membersToPass)
-        newY = self.getSlotOffsetForSlot(newSlot)
+        # Step 2: compute all target slots FIRST
+        targetSlots = {}
+
+        newSelfSlot = originalTrackSlots[self.trackMember] - len(membersToPass)
+        targetSlots[self.trackMember] = newSelfSlot
+
+        for passedKey in membersToPass:
+            targetSlots[passedKey] = originalTrackSlots[passedKey] + 1
+
+        # Step 3: animate self
         currentY = self.getMostRecentY(currentChunk)
+        newY = self.getSlotOffsetForSlot(targetSlots[self.trackMember])
 
         fullLength = baseChunkLength + 2 * (len(membersToPass) - 1)
+        endChunk = min(currentChunk + fullLength, len(self.positionTimeline) - 1)
+        lockChunk = min(currentChunk + baseChunkLength, len(self.positionTimeline) - 1)
+
         self.animatePosition(
             startY=currentY,
             endY=newY,
             startChunk=currentChunk,
-            endChunk=currentChunk + fullLength
+            endChunk=endChunk
         )
-        self.positionTimeline[currentChunk + baseChunkLength] = newY
-        self.currentSlotIndex = newSlot
-        self.parent.slotMap[self.trackMember] = newSlot
-        
-        # Step 3: Animate each passed member down with staggered start
+        self.positionTimeline[lockChunk] = newY
+
+        # Step 4: animate passed members
         for idx, passedKey in enumerate(membersToPass):
             passedTrackItem = self.parent.memberImages[passedKey]
-            passedStartChunk = currentChunk + (idx * 2)
+            passedStartChunk = min(currentChunk + (idx * 2), len(passedTrackItem.positionTimeline) - 1)
+            passedEndChunk = min(passedStartChunk + baseChunkLength, len(passedTrackItem.positionTimeline) - 1)
+
             originalY = passedTrackItem.getMostRecentY(passedStartChunk)
-            passedEndChunk = passedStartChunk + baseChunkLength
-            newSlot = passedTrackItem.currentSlotIndex + 1
-            targetY = passedTrackItem.getSlotOffsetForSlot(newSlot)
+            targetY = passedTrackItem.getSlotOffsetForSlot(targetSlots[passedKey])
 
             passedTrackItem.animatePosition(
                 startY=originalY,
@@ -221,12 +238,14 @@ class TrackItem:
                 endChunk=passedEndChunk
             )
             passedTrackItem.positionTimeline[passedEndChunk] = targetY
-            passedTrackItem.currentSlotIndex = newSlot
-            self.parent.slotMap[passedKey] = newSlot
-    
-        # Step 5: Lock this chunk’s Y
-        baseY = self.getMostRecentY(currentChunk)
-        self.positionTimeline[currentChunk] = baseY
+
+        # Step 5: NOW commit slot changes
+        for memberName, newSlot in targetSlots.items():
+            track = self.parent.memberImages[memberName]
+            track.currentSlotIndex = newSlot
+            self.parent.slotMap[memberName] = newSlot
+
+        self.positionTimeline[currentChunk] = self.getMostRecentY(currentChunk)
     
     def initializeTimeline(self, includeBacking: bool = True):
         numChunks = len(self.parent.chunks)

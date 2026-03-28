@@ -341,7 +341,12 @@ class LyricsEditor:
 
         adLibDurationEntry = tk.Entry(durationFrame)
         adLibDurationEntry.pack(fill="x", padx=10)
-        adLibDurationEntry.insert(0, 50)
+        chunkKey = int(existingStartChunk) if existingStartChunk is not None else 50
+
+        adLibDurationEntry.insert(
+            0,
+            str(int(getattr(app.lyrics.get(chunkKey, {}), "adLibDuration", 50) or 50))
+        )
 
         def syncDurationEnabled(*_args):
             isAdLib = (adLibVar.get() == "AdLib")

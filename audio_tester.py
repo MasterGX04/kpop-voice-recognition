@@ -129,6 +129,11 @@ class VoiceDetectionApp:
         self.initChunkIndexInTitle(self.root)
         self.members = members
         self.images = images
+        
+        self.allMembers = list(members)
+        self.allImages = dict(images)
+        self.visibleMemberNames = set(m["name"] for m in members)
+
         self.playbackThread = None
         self.labels = []
         self.selectedMarker = None
@@ -333,9 +338,11 @@ class VoiceDetectionApp:
         )
             
         self.labels = self.loadSavedLabels() # Store labels (member, start, end)
-        if self.labels == [] and len(labels40) > 0: 
+        if self.labels == [] and len(labels40) > 0:
             self.labels = self.createLabelsFromPredictions(labels40)
-        
+
+        self.root.after_idle(self.startLayout)
+            
         self.labelLaneRenderer = LabelLaneRenderer(
             canvas=self.canvas,
             zoomManager=self.zoomManager,
@@ -346,7 +353,6 @@ class VoiceDetectionApp:
         )
         self.clipManager = CutClipManager(self.chunk_duration, jumpCallback=self.jumpToMs)
         self.clipManager.rebuild(self.labels, len(self.chunks))
-        self.root.after_idle(self.startLayout)
         self.lyricsEditor = LyricsEditor(self)
         self.lastChunkSeen = -1
         self.root.after(100, self.drawTimeMarkers)
@@ -556,6 +562,7 @@ class VoiceDetectionApp:
         self.startPointMarkers = {}
         self.endPointMarkers = {}
         self.labels = self.loadSavedLabels()
+        self.onLabelsChanged(redrawSection=self.currentSectionIndex)
         for trackItem in self.memberImages.values():
             if trackItem:
                 trackItem.initializeTimeline(includeBacking=self.includeBacking)
@@ -617,7 +624,6 @@ class VoiceDetectionApp:
 
         for startChunk in self.lyrics.keys():
             self.startEvents.setdefault(startChunk, []).append(startChunk)  
-    
     
     def setUIHidden(self, hidden: bool):
         """
@@ -684,7 +690,12 @@ class VoiceDetectionApp:
         self.setUIHidden(not self.uiHidden)
     
     def startLayout(self):
-        self.initializeMemberImages()
+        if not self.memberImages:
+            self.initializeMemberImages()
+         # If labels exist, immediately filter/rebuild after base layout is valid
+        if self.labels:
+            self.refreshVisibleMembersFromLabels()
+        
         self.initializePositions()
         self.slotHeightPx = int(round(self.slotHeightBase * self.scaleY))
         for t in self.memberImages.values():
@@ -758,6 +769,142 @@ class VoiceDetectionApp:
         self.activeLyricIds.clear()
         self.enableRootKeybinds()
         self.toggleUIElements()
+        
+    def getActiveMemberNames(self):
+        activeNames = set()
+
+        for label in self.labels:
+            if len(label) < 3:
+                continue
+
+            memberName = label[0]
+            startChunk = int(label[1])
+            endChunk = int(label[2])
+
+            if memberName in self.bannedNames:
+                continue
+
+            if endChunk >= startChunk:
+                activeNames.add(memberName)
+
+        return activeNames
+    
+    def removeMemberFromCanvas(self, memberName):
+        trackItem = self.memberImages.pop(memberName, None)
+        imageId = self.memberImageIds.pop(memberName, None)
+
+        if imageId:
+            try:
+                self.canvas.delete(imageId)
+            except Exception:
+                pass
+
+        if trackItem:
+            if hasattr(trackItem, "progressBarCanvasImage") and trackItem.progressBarCanvasImage:
+                try:
+                    self.canvas.delete(trackItem.progressBarCanvasImage)
+                except Exception:
+                    pass
+
+            if hasattr(trackItem, "timerTextId") and trackItem.timerTextId:
+                try:
+                    self.canvas.delete(trackItem.timerTextId)
+                except Exception:
+                    pass
+
+        self.slotMap.pop(memberName, None)
+    
+    def addMemberToCanvas(self, memberName):
+        if memberName in self.memberImages:
+            return
+
+        if memberName not in self.allImages:
+            return
+
+        scale = getattr(self, "_memberScale", 45)
+
+        trackItem = TrackItem(
+            scale=scale,
+            sourceImages={
+                "dark": self.allImages[memberName]["dark"],
+                "light": self.allImages[memberName]["light"],
+            },
+            animations=[],
+            parent=self,
+            trackMember=memberName,
+        )
+
+        trackItem.initializeTimeline(self.includeBacking)
+        trackItem.resizeImages(scale)
+
+        imageId = self.canvas.create_image(0, 0, image=trackItem.sourceImages["dark"], anchor="nw")
+        trackItem.setImageId(imageId)
+        trackItem.initializeProgressBar()
+
+        self.memberImages[memberName] = trackItem
+        self.memberImageIds[memberName] = imageId
+                        
+    def rebuildVisibleMemberLayout(self):
+        visibleNamesInOrder = [
+            m["name"] for m in self.allMembers
+            if m["name"] in self.memberImages
+        ]
+
+        self.slotMap = {}
+
+        if not visibleNamesInOrder:
+            self.layoutStartSlot = 0
+            return
+
+        # Dense internal slots for swap logic
+        self.layoutStartSlot = self.getLayoutStartSlot(len(visibleNamesInOrder))
+        self.slotBaseYs = self.buildSlotBaseYs(len(visibleNamesInOrder), self.slotHeightBase)
+
+        for denseSlot, memberName in enumerate(visibleNamesInOrder):
+            self.slotMap[memberName] = denseSlot
+
+            trackItem = self.memberImages[memberName]
+            trackItem.currentSlotIndex = denseSlot
+
+            y = self.slotBaseYs[denseSlot]
+            self.canvas.coords(trackItem.imageId, 0, y)
+
+            if hasattr(trackItem, "progressBarCanvasImage") and trackItem.progressBarCanvasImage:
+                self.canvas.coords(trackItem.progressBarCanvasImage, 0, trackItem.getProgressBarY())
+
+            if len(trackItem.positionTimeline) != len(self.chunks):
+                trackItem.positionTimeline = [None] * len(self.chunks)
+
+            if len(trackItem.timeline) != len(self.chunks):
+                trackItem.timeline = [0.0] * len(self.chunks)
+
+        self.initializePositions()
+        self.updateElementPositions()
+    
+    def refreshVisibleMembersFromLabels(self):
+        newVisibleNames = self.getActiveMemberNames()
+        oldVisibleNames = set(self.memberImages.keys())
+
+        toRemove = oldVisibleNames - newVisibleNames
+        toAdd = newVisibleNames - oldVisibleNames
+
+        for memberName in toRemove:
+            self.removeMemberFromCanvas(memberName)
+
+        for memberName in toAdd:
+            self.addMemberToCanvas(memberName)
+
+        visibleTrackItems = []
+
+        for memberName, trackItem in self.memberImages.items():
+            trackItem.initializeTimeline(includeBacking=self.includeBacking)
+            visibleTrackItems.append(trackItem)
+
+        maxTime = max((trackItem.timeline[-1] for trackItem in visibleTrackItems), default=0.0)
+        for trackItem in visibleTrackItems:
+            trackItem.setMaxTime(maxTime)
+
+        self.rebuildVisibleMemberLayout()
                         
     def createThumbnail(self):
         basePath = self.testSongPath.rsplit('\\', 1)[0]
@@ -1018,6 +1165,7 @@ class VoiceDetectionApp:
                 continue
             newLabels.append(l)
         self.labels = newLabels
+        self.onLabelsChanged(redrawSection=self.currentSectionIndex)
 
         # --- Rebuild marker timeline dict from labels (recommended) ---
         self.updateLabelMarkersDict()
@@ -1489,8 +1637,7 @@ class VoiceDetectionApp:
             with open(labelFilePath, "w") as file:
                 json.dump(self.labels, file, separators=(",", ":"))
 
-            self.updateLabelMarkersDict()
-            self.initializePositions()
+            self.onLabelsChanged(redrawSection=self.currentSectionIndex)
 
         except Exception as e:
             print(f"Error saving labels to {labelFilePath}: {e}")
@@ -1872,6 +2019,9 @@ class VoiceDetectionApp:
         self.renderLyrics(self.currentChunkIndex)
     
     def onCanvasResize(self, event):
+        if event.width <= 1 or event.height <= 1:
+            return
+        
         aspectRatio = self.baseWidth / self.baseHeight 
         newWidth = int(self.canvas.winfo_width() * 0.75)
         self.progressBarWidth = newWidth
@@ -1935,6 +2085,25 @@ class VoiceDetectionApp:
     def initializePositions(self):
         """Initializes the positions each member should be at for a specific chunk index"""
         n = len(self.chunks)
+        # Reset each member to its base slot state first
+        visibleNamesInOrder = [
+            m["name"] for m in self.allMembers
+            if m["name"] in self.memberImages
+        ]
+
+        self.slotMap = {}
+
+        for denseSlot, memberName in enumerate(visibleNamesInOrder):
+            trackItem = self.memberImages[memberName]
+            self.slotMap[memberName] = denseSlot
+            trackItem.currentSlotIndex = denseSlot
+            trackItem.animations = []
+            trackItem.positionTimeline = [None] * n
+
+            # seed initial base Y
+            if n > 0:
+                trackItem.positionTimeline[0] = self.slotBaseYs[denseSlot]
+                
         # Run swap/animation logic only where it's safe to do so
         for currentChunk in range(n):
             for trackItem in self.memberImages.values():
@@ -1947,41 +2116,91 @@ class VoiceDetectionApp:
         
         for trackItem in self.memberImages.values():
             trackItem.basePositionTimeline = trackItem.positionTimeline.copy()
+    
+    def getLayoutStartSlot(self, numMembers):
+        """
+        Visual starting slot for the stack.
+
+        Internal slotMap stays dense: 0..n-1
+        Visual placement is shifted downward by layoutStartSlot.
+        """
+        if numMembers >= 6:
+            return 0
+
+        if numMembers == 5:
+            return 2
         
+        if 0 < numMembers < 5:
+            return 3
+
+    def buildSlotBaseYs(self, numMembers, slotHeight):
+        layoutStartSlot = self.getLayoutStartSlot(numMembers)
+        return [(layoutStartSlot + i) * slotHeight for i in range(numMembers)]
+    
+    def getRenderableMemberNames(self, candidateNames):
+        renderable = []
+        missing = []
+
+        for name in candidateNames:
+            images = self.images.get(name)
+            if images and "dark" in images and "light" in images:
+                renderable.append(name)
+            else:
+                missing.append(name)
+
+        if missing:
+            print(f"Skipping members with missing images: {missing}")
+
+        return renderable
+    
     def initializeMemberImages(self):
-        groupMembers = list(self.images.keys())
+        candidateMembers = [m["name"] for m in self.members]
+        groupMembers = self.getRenderableMemberNames(candidateMembers)
         numMembers = len(groupMembers)
-        
-        # Base window dimensions
-        canvasHeight = self.baseHeight
+
+        # Empty safety
+        if not groupMembers:
+            self.memberImages = {}
+            self.memberImageIds = {}
+            self.slotMap = {}
+            self.layoutStartSlot = 0
+            self.slotHeightBase = 0
+            self.slotBaseYs = []
+            print("No renderable members found for this song.")
+            return
+
+        canvasHeight = self.baseHeight - 10
         maxScale = 45
-        
-        # Estimate initial image height at max scale
+
+        # Internal slots stay dense: 0..n-1
+        # Visual offset is handled separately
+        self.layoutStartSlot = self.getLayoutStartSlot(numMembers)
+
+        # We still must fit the whole visible vertical span:
+        # visual slots are layoutStartSlot .. layoutStartSlot + numMembers - 1
+        requiredSlots = self.layoutStartSlot + numMembers
+
         sampleImg = next(iter(self.images.values()))["dark"]
         imgBaseHeight = sampleImg.height
- 
-        # Step 1: calculate max scaled height per member
-        canvasHeight = self.baseHeight - 10
+
         maxScaledHeightBase = int(imgBaseHeight * maxScale / 100)
-        totalStackedHeight = numMembers * maxScaledHeightBase
-        
-        # Adjust scale if it exceeds canvas height
-        if totalStackedHeight > canvasHeight:
-            scale = (canvasHeight / (imgBaseHeight * numMembers)) * 100
+        totalRequiredHeight = requiredSlots * maxScaledHeightBase
+
+        if totalRequiredHeight > canvasHeight:
+            scale = (canvasHeight / (imgBaseHeight * requiredSlots)) * 100
             scale = min(scale, maxScale)
         else:
             scale = maxScale
-            
-        # Compute actual scaled image height and initial Y offset
-        scaledPixelHeight = round(imgBaseHeight * scale / 100)
-        self.slotHeightBase = round(imgBaseHeight * scale / 100)
 
-        # Step 4: Compute where to start stacking so last member lands exactly at bottom
+        self._memberScale = scale
+
+        # Reset state
         self.memberImages = {}
         self.memberImageIds = {}
+        self.slotMap = {}
         memberTimes = []
-        
-        # --- build first trackItem just to lock in the true pixel height ---
+
+        # Build first track to get authoritative rendered height
         firstName = groupMembers[0]
         firstTrack = TrackItem(
             scale=scale,
@@ -1996,45 +2215,67 @@ class VoiceDetectionApp:
         firstTrack.initializeTimeline(self.includeBacking)
         firstTrack.resizeImages(scale)
 
-        # ✅ authoritative step: whatever Tk is actually going to draw
         scaledPixelHeight = firstTrack.sourceImages["dark"].height()
-        
+        self.slotBaseYs = self.buildSlotBaseYs(numMembers, scaledPixelHeight)
         self.slotHeightBase = scaledPixelHeight
 
-        # Now place first
-        self.slotMap[firstName] = 0
-        firstTrack.currentSlotIndex = 0
-        imageId = self.canvas.create_image(0, 0, image=firstTrack.sourceImages["dark"], anchor="nw")
-        firstTrack.setImageId(imageId)
-        firstTrack.initializeProgressBar()
-        self.memberImages[firstName] = firstTrack
-        self.memberImageIds[firstName] = imageId
-        memberTimes.append(firstTrack.timeline[len(self.chunks) - 1])
-        
-        for index, memberName in enumerate(groupMembers[1:], start=1):
-            self.slotMap[memberName] = index
+        # If the true rendered height still exceeds the usable canvas, recompute once
+        totalRequiredHeightTrue = requiredSlots * scaledPixelHeight
+        if totalRequiredHeightTrue > canvasHeight:
+            scale = (canvasHeight / (imgBaseHeight * requiredSlots)) * 100
+            scale = min(scale, maxScale)
+            self._memberScale = scale
 
-            trackItem = TrackItem(
+            firstTrack = TrackItem(
                 scale=scale,
                 sourceImages={
-                    "dark": self.images[memberName]["dark"],
-                    "light": self.images[memberName]["light"],
+                    "dark": self.images[firstName]["dark"],
+                    "light": self.images[firstName]["light"],
                 },
                 animations=[],
                 parent=self,
-                trackMember=memberName,
+                trackMember=firstName,
             )
-            trackItem.initializeTimeline(self.includeBacking)
-            trackItem.resizeImages(scale)
-            trackItem.currentSlotIndex = index
+            firstTrack.initializeTimeline(self.includeBacking)
+            firstTrack.resizeImages(scale)
 
-            # 🔒 enforce exact height match (optional assertion)
-            h = trackItem.sourceImages["dark"].height()
-            if h != scaledPixelHeight:
-                print(f"WARNING: {memberName} resized height {h} != {scaledPixelHeight}")
+            scaledPixelHeight = firstTrack.sourceImages["dark"].height()
+            self.slotHeightBase = scaledPixelHeight
 
-            y = index * scaledPixelHeight
-            imageId = self.canvas.create_image(0, y, image=trackItem.sourceImages["dark"], anchor="nw")
+        # Build all members using dense internal slots
+        for denseSlot, memberName in enumerate(groupMembers):
+            if memberName == firstName:
+                trackItem = firstTrack
+            else:
+                trackItem = TrackItem(
+                    scale=scale,
+                    sourceImages={
+                        "dark": self.images[memberName]["dark"],
+                        "light": self.images[memberName]["light"],
+                    },
+                    animations=[],
+                    parent=self,
+                    trackMember=memberName,
+                )
+                trackItem.initializeTimeline(self.includeBacking)
+                trackItem.resizeImages(scale)
+
+                h = trackItem.sourceImages["dark"].height()
+                if h != scaledPixelHeight:
+                    print(f"WARNING: {memberName} resized height {h} != {scaledPixelHeight}")
+
+            # Dense slots for swap logic
+            self.slotMap[memberName] = denseSlot
+            trackItem.currentSlotIndex = denseSlot
+
+            # Shift visually by layoutStartSlot
+            y = self.slotBaseYs[denseSlot]
+
+            imageId = self.canvas.create_image(
+                0, y,
+                image=trackItem.sourceImages["dark"],
+                anchor="nw"
+            )
             trackItem.setImageId(imageId)
             trackItem.initializeProgressBar()
 
@@ -2042,9 +2283,9 @@ class VoiceDetectionApp:
             self.memberImageIds[memberName] = imageId
             memberTimes.append(trackItem.timeline[len(self.chunks) - 1])
 
+        maxTime = max(memberTimes) if memberTimes else 0.0
         for trackItem in self.memberImages.values():
-            trackItem.setMaxTime(max(memberTimes))
-    #end initializeMemberImages 
+            trackItem.setMaxTime(maxTime)
      
     def updateLabelMarkersDict(self):
         """
@@ -2393,6 +2634,7 @@ class VoiceDetectionApp:
         return labels
     
     def onLabelsChanged(self, redrawSection=None):
+        self.refreshVisibleMembersFromLabels()
         # 1) keep marker state sane
         self._syncPointsFromLabels()
         self._recomputeOpenStartChunk()

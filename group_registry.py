@@ -929,48 +929,47 @@ class GroupRegistry:
         activeTheme = (groupManifest.get("activeTheme", "") or "").strip()
         templates = groupManifest.get("templates", {}) or {}
         ageOrder = groupManifest.get("ageOrder", []) or []
-        
+
         groupDir = self.getGroupDir(groupName)
         groupBaseDir = str(groupDir)
-        # 1) Decide theme folder: song album first, else activeTheme fallback
+
         def dirExists(themeName: str) -> bool:
             return bool(themeName) and os.path.isdir(os.path.join(groupBaseDir, themeName))
-        
+
         albumId = ""
         try:
             albumId = self.getSongAlbumId(groupName, songName) or ""
         except Exception:
             albumId = ""
-        
+
         albumTheme = ""
         if albumId:
             try:
-                albums = self.getAlbums(groupName)  # safer than self.groups[...] direct
+                albums = self.getAlbums(groupName)
                 albumTheme = (albums.get(albumId, {}).get("displayName", "") or "").strip()
             except Exception:
                 print("Can't find albumTheme!")
                 albumTheme = ""
-            
-        # Prefer albumTheme IF its folder exists, otherwise fall back to activeTheme IF its folder exists
+
         primaryTheme = albumTheme if dirExists(albumTheme) else (activeTheme if dirExists(activeTheme) else "")
-        
+
         if not os.path.isdir(groupBaseDir):
             print(f"[⚠️] Group icons folder missing: {groupBaseDir}. Using empty images.")
-            memberImages = {m: {k: None for k in templates.keys()} for m in ageOrder}
-            return (activeTheme or albumTheme or ""), memberImages
- 
+            return {}
+
         memberImages = {}
+        skippedMembers = []
+
         for memberName in ageOrder:
             perMember = {}
 
             for templateKey, filenameTemplate in templates.items():
                 filename = filenameTemplate.format(member=memberName)
-                # Try primary theme first
+
                 candidatePaths = []
                 if primaryTheme:
                     candidatePaths.append(os.path.join(groupBaseDir, primaryTheme, filename))
 
-                # Fallback: activeTheme, but only if it’s different and exists
                 if activeTheme and activeTheme != primaryTheme and dirExists(activeTheme):
                     candidatePaths.append(os.path.join(groupBaseDir, activeTheme, filename))
 
@@ -984,16 +983,20 @@ class GroupRegistry:
                             print(f"[⚠️] Failed to open image: {imgPath} ({e})")
 
                 if loaded is None:
-                    # Helpful log, but not noisy if you prefer — you can remove this print later
                     if candidatePaths:
                         print(f"[⚠️] Missing image for '{memberName}' ({templateKey}). Tried: {candidatePaths}")
                     else:
                         print(f"[⚠️] No valid theme folders available for '{groupName}'.")
+
                 perMember[templateKey] = loaded
 
-            memberImages[memberName] = perMember
+            # Only keep members with the images needed by the app
+            if perMember.get("dark") is not None and perMember.get("light") is not None:
+                memberImages[memberName] = perMember
+            else:
+                skippedMembers.append(memberName)
 
-        # Return the folder we actually used (for the UI to know theme),
-        # but if none existed, return activeTheme as the "intent".
-        themeUsed = primaryTheme or activeTheme or albumTheme or ""
+        if skippedMembers:
+            print(f"[INFO] Skipping unrenderable members for '{songName}': {skippedMembers}")
+
         return memberImages

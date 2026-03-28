@@ -1459,7 +1459,10 @@ class VoiceTrainerGUI:
 
             self.root.protocol("WM_DELETE_WINDOW", onRootClose)
 
-            memberList = self.groups[selectedGroup]["members"]
+            memberList = [
+                member for member in self.groups[selectedGroup]["members"]
+                if member["name"] in memberImages
+            ]
             app = VoiceDetectionApp(
                 root=appWindow,
                 members=memberList,
