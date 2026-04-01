@@ -16,7 +16,6 @@ K-pop singer recognition using SpeechBrain ECAPA-TDNN embeddings + a small softm
 Tested on: Python 3.9, CUDA 12.x with torch cu124 wheels.
 """
 
-from json import encoder
 import os, argparse, random, glob, math
 import numpy as np
 from typing import List
@@ -24,11 +23,11 @@ import time
 
 import torch
 import torch.nn.functional as F
-from torch.utils.data import DataLoader, Subset
+from torch.utils.data import DataLoader
 
 import torchaudio
-from model.new_datasets import BinaryVocalDataset
-from model.helper_functions import Stage1ExampleDataset
+from datasets.new_datasets import BinaryVocalDataset
+from model.helper_functions import FastEmbeddingDataset
 from model.heads import MultiMemberBinaryHead
 from model.encoders import MuQEncoderWrapper
 
@@ -40,7 +39,7 @@ import pickle, hashlib
 from collections import OrderedDict
 
 class MuQEmbeddingCache:
-    def __init__(self, cacheDir: str, maxOpenSongs: int = 8):
+    def __init__(self, cacheDir: str, maxOpenSongs: int = 200):
         self.cacheDir = cacheDir
         os.makedirs(self.cacheDir, exist_ok=True)
         self._openSongCaches = OrderedDict()
@@ -121,7 +120,7 @@ class MuQEmbeddingCache:
             pcaTag=pcaTag,
             encoderTag=encoderTag,
         )
-        arr = np.load(path, mmap_mode="r")
+        arr = np.load(path)
         self._openSongCaches[cacheKey] = arr
 
         if len(self._openSongCaches) > self.maxOpenSongs:
@@ -162,131 +161,6 @@ def makeEmbeddingKey(
 ):
     raw = f"{songId}|{centerChunk}|sr={srOut}|ctx={ctxFrac}|chunk={chunkSec}|{pcaTag}|{encoderTag}"
     return hashlib.md5(raw.encode("utf-8")).hexdigest()
-
-@torch.no_grad()
-def getCachedEmbeddingsForFixedExampleBatch(
-    *,
-    base_ds,
-    batchExamples,
-    encoder,
-    device,
-    cache: MuQEmbeddingCache,
-    srOut: int,
-    ctxFrac: float,
-    chunkSec: float,
-):
-    """
-    Build a batch of embeddings, labels, and weights using a song-level embedding cache.
-
-    What this does:
-    - Groups batch examples by songId
-    - Loads one full embedding matrix per song from cache if available
-    - Otherwise builds that song's full embedding matrix once, saves it, and reuses it
-    - Pulls the needed centerChunk rows from each song matrix
-    - Returns:
-        (emb, y, w), cacheStats
-
-    Expected cache API:
-    - cache.hasSong(...)
-    - cache.loadSong(...)
-    - cache.saveSong(...)
-
-    Expected dataset API:
-    - base_ds.buildSongEmbeddingMatrix(...)
-      which returns a NumPy array of shape (numChunksInSong, embDim)
-    """
-    cacheStats = {
-        "requested": len(batchExamples["songId"]),
-        "sampled": len(batchExamples["songId"]),
-        "returned_none": 0,
-        "cache_hits": 0,
-        "cache_misses": 0,
-        "encoded_now": 0,
-    }
-
-    batchSize = len(batchExamples["songId"])
-    if batchSize == 0:
-        return None, cacheStats
-
-    sampledItems = []
-    songToPositions = {}
-
-    for i in range(batchSize):
-        songId = batchExamples["songId"][i]
-        centerChunk = int(batchExamples["centerChunk"][i].item())
-        y = batchExamples["label"][i].float().view(1)
-        w = batchExamples["weight"][i].float().view(1)
-
-        item = {
-            "songId": songId,
-            "centerChunk": centerChunk,
-            "y": y,
-            "w": w,
-        }
-        sampledItems.append(item)
-
-        if songId not in songToPositions:
-            songToPositions[songId] = []
-        songToPositions[songId].append(i)
-
-    songMatrices = {}
-
-    for songId in songToPositions:
-        if cache.hasSong(
-            songId=songId,
-            srOut=srOut,
-            ctxFrac=ctxFrac,
-            chunkSec=chunkSec,
-        ):
-            cacheStats["cache_hits"] += 1
-            songEmbMatrix = cache.loadSong(
-                songId=songId,
-                srOut=srOut,
-                ctxFrac=ctxFrac,
-                chunkSec=chunkSec,
-            )
-        else:
-            cacheStats["cache_misses"] += 1
-
-            songEmbMatrix = base_ds._buildSongEmbeddingMatrix(
-                songId=songId,
-                encoder=encoder,
-                device=device,
-                contextSec=chunkSec,
-            )
-
-            cache.saveSong(
-                songId=songId,
-                embMatrix=songEmbMatrix,
-                srOut=srOut,
-                ctxFrac=ctxFrac,
-                chunkSec=chunkSec,
-            )
-
-            cacheStats["encoded_now"] += 1
-
-        songMatrices[songId] = songEmbMatrix
-
-    for i, sample in enumerate(sampledItems):
-        songId = sample["songId"]
-        centerChunk = sample["centerChunk"]
-
-        embRow = songMatrices[songId][centerChunk]
-        sample["emb"] = torch.as_tensor(embRow, dtype=torch.float32)
-
-    emb = torch.stack(
-        [sample["emb"] for sample in sampledItems], dim=0
-    ).to(device, non_blocking=True)
-
-    y = torch.stack(
-        [sample["y"] for sample in sampledItems], dim=0
-    ).to(device, non_blocking=True).view(-1)
-
-    w = torch.stack(
-        [sample["w"] for sample in sampledItems], dim=0
-    ).to(device, non_blocking=True).view(-1)
-
-    return (emb, y, w), cacheStats
 
 # ---------------------------
 # CLI args
@@ -628,12 +502,8 @@ def train_epoch(
     trainLoadersByMember,
     device,
     optimizer,
-    srOut,
-    embeddingCache,
-    chunkSec=1,
     thr=0.5,
     use_amp=True,
-    ctx_frac: float = 0.25,
 ):
     encoder.eval()
     head.train()
@@ -673,30 +543,10 @@ def train_epoch(
             if torch.is_tensor(batchExamples):
                 batchExamples = batchExamples.tolist()
 
-            t0 = time.time()
-            batchData, cacheStats = getCachedEmbeddingsForFixedExampleBatch(
-                base_ds=base_ds,
-                batchExamples=batchExamples,
-                encoder=encoder,
-                device=device,
-                cache=embeddingCache,
-                srOut=srOut,
-                ctxFrac=ctx_frac,
-                chunkSec=chunkSec,
-            )
-            t1 = time.time()
-
-            if step % 50 == 0:
-                tqdm.write(
-                    f"Step {step}: member={memberName}, "
-                    f"requested={cacheStats['requested']}, "
-                    f"sampled={cacheStats['sampled']}, "
-                    f"returned_none={cacheStats['returned_none']}, "
-                    f"cache_hits={cacheStats['cache_hits']}, "
-                    f"cache_misses={cacheStats['cache_misses']}"
-                )
-
-            emb, y, w = batchData
+            emb, y, w = batchExamples
+            emb = emb.to(device, non_blocking=True)
+            y = y.to(device, non_blocking=True).view(-1)
+            w = w.to(device, non_blocking=True).view(-1)
             optimizer.zero_grad(set_to_none=True)
 
             with amp_ctx:
@@ -719,22 +569,7 @@ def train_epoch(
 
                 loss_per = bce(logits, y.float())
                 loss = (loss_per * w).mean()
-                loss = loss + 1e-4 * (logits.pow(2).mean())
-
-            t2 = time.time()
-            tqdm.write(f"batch_prep={t1-t0:.3f}s, model={t2-t1:.3f}s")
-            
-            if step % 10 == 0:
-                tqdm.write(
-                    f"Step {step}: member={memberName}, "
-                    f"loss={loss.item():.4f}, batch_size={y.size(0)}, "
-                    f"requested={cacheStats['requested']}, "
-                    f"sampled={cacheStats['sampled']}, "
-                    f"returned_none={cacheStats['returned_none']}, "
-                    f"cache_hits={cacheStats['cache_hits']}, "
-                    f"cache_misses={cacheStats['cache_misses']}, "
-                    f"encoded_now={cacheStats['encoded_now']}"
-                )       
+                loss = loss + 1e-4 * (logits.pow(2).mean())  
 
             if scaler.is_enabled():
                 scaler.scale(loss).backward()
@@ -795,12 +630,8 @@ def eval_epoch(
     head,
     valLoadersByMember,
     device,
-    embeddingCache,
-    srOut,
-    chunkSec=1,
     thr=0.5,
     use_amp=True,
-    ctx_frac: float = 0.25,
 ):
     encoder.eval()
     head.eval()
@@ -844,21 +675,10 @@ def eval_epoch(
         for step, batchExamples in enumerate(
             tqdm(memberLoader, desc=f"Eval({memberName})", leave=False)
         ):
-            batchData, cacheStats = getCachedEmbeddingsForFixedExampleBatch(
-                base_ds=base_ds,
-                batchExamples=batchExamples,
-                encoder=encoder,
-                device=device,
-                cache=embeddingCache,
-                srOut=srOut,
-                ctxFrac=ctx_frac,
-                chunkSec=chunkSec,
-            )
-
-            if batchData is None:
-                continue
-
-            emb, y, w = batchData
+            emb, y, w = batchExamples
+            emb = emb.to(device, non_blocking=True)
+            y = y.to(device, non_blocking=True).view(-1)
+            w = w.to(device, non_blocking=True).view(-1)
 
             with amp_ctx:
                 logits = head(emb, memberIdx=memberIdx)
@@ -1081,10 +901,10 @@ def _sampleCentersPerSongForMember(
     Clean region = member active AND not transition.
     If requireSolo, also exclude overlap chunks.
     """
-    memberMask = ds.memberMask[songId][memberName]          # bool[T] :contentReference[oaicite:1]{index=1}
-    transition = ds.transitionMask[songId]                  # bool[T] :contentReference[oaicite:2]{index=2}
-    overlap = ds.overlapMask[songId]                        # bool[T] :contentReference[oaicite:3]{index=3}
-
+    memberMask = ds.metadata.memberMask[songId][memberName]          
+    transition = ds.metadata.transitionMask[songId]                  
+    overlap = ds.metadata.overlapMask[songId]
+    
     cand = memberMask & (~transition)
     if requireSolo:
         cand = cand & (~overlap)
@@ -1503,6 +1323,7 @@ def main():
     valSongNames = {t[0] for t in valSongs}
     allSongNames = set(ds_phase1.training_songs.keys())
     trainSongNames = allSongNames - valSongNames
+    print(f"train song names: {trainSongNames}")
 
     # Build fixed stage-1 examples once
     trainExamplesByMember = ds_phase1.buildStage1ExamplesByMember(
@@ -1522,17 +1343,32 @@ def main():
     )
     trainLoadersByMember = {}
     valLoadersByMember = {}
+    
+    embedding_cache_dir = os.path.join(group_dir, "training_cache", f"sr_{args.sr_out}", "embedding_cache")
+    embeddingCache = MuQEmbeddingCache(embedding_cache_dir)
 
     for memberName in ds_phase1.group_members:
-        trainDsMember = Stage1ExampleDataset(trainExamplesByMember[memberName])
-        valDsMember = Stage1ExampleDataset(valExamplesByMember[memberName])
+        trainDsMember = FastEmbeddingDataset(
+            examples=trainExamplesByMember[memberName],
+            cache_dir=embedding_cache_dir,
+            sr_out=args.sr_out,
+            ctx_frac=0.25,
+            chunk_sec=args.chunk_sec
+        )
+        valDsMember = FastEmbeddingDataset(
+            examples=valExamplesByMember[memberName],
+            cache_dir=embedding_cache_dir,
+            sr_out=args.sr_out,
+            ctx_frac=0.25,
+            chunk_sec=args.chunk_sec
+        )
 
         trainLoadersByMember[memberName] = DataLoader(
             trainDsMember,
             batch_size=args.batch_size,
-            shuffle=True,   # shuffle fixed examples each epoch
-            num_workers=args.num_workers,
-            pin_memory=True,
+            shuffle=True,
+            num_workers=args.num_workers, # This now handles the disk reads in parallel
+            pin_memory=True,              # Keeps memory prepared for fast GPU transfer
             drop_last=True,
         )
 
@@ -1597,8 +1433,8 @@ def main():
     head = MultiMemberBinaryHead(
         embDim=emb_dim,
         numMembers=num_members,
-        hidden=256,
-        dropout=0.2
+        hidden=64,
+        dropout=0.4
     ).to(device)
         
     optimizer = torch.optim.AdamW(head.parameters(), lr=args.lr, weight_decay=1e-4)
@@ -1609,8 +1445,18 @@ def main():
         patience=2, # wait 2 epochs with no improvement
     )
     
-    embedding_cache_dir = os.path.join(group_dir, "training_cache", f"muq_emb_sr_{args.sr_out}_ctx_025_pca256")
-    embeddingCache = MuQEmbeddingCache(embedding_cache_dir)
+    print("Pre-encoding all songs into cache...")
+    for song_id in ds_phase1.training_songs.keys():
+        if not embeddingCache.hasSong(songId=song_id, srOut=args.sr_out, ctxFrac=0.25, chunkSec=args.chunk_sec):
+            # This builds and saves the .npy file automatically
+            ds_phase1._buildSongEmbeddingMatrix(
+                songId=song_id,
+                encoder=encoder,
+                device=device,
+                contextSec=args.chunk_sec
+            )
+            
+    print("Pre-encoding complete.")
     
     best_acc = 0.0
     os.makedirs(args.save_dir, exist_ok=True)
@@ -1631,11 +1477,7 @@ def main():
                 trainLoadersByMember=trainLoadersByMember,
                 device=device,
                 optimizer=optimizer,
-                srOut=args.sr_out,
-                embeddingCache=embeddingCache,
-                chunkSec=args.chunk_sec,
                 thr=eval_thr,
-                ctx_frac=0.25,
             )
 
             va_loss, va_metrics = eval_epoch(
@@ -1644,11 +1486,7 @@ def main():
                 head=head,
                 valLoadersByMember=valLoadersByMember,
                 device=device,
-                embeddingCache=embeddingCache,
-                srOut=args.sr_out,
-                chunkSec=args.chunk_sec,
                 thr=eval_thr,
-                ctx_frac=0.25,
             )
 
             # --- sanity printing: use your existing finalize_sanity_stats format ---

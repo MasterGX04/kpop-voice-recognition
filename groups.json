@@ -282,7 +282,8 @@
                     "Merry Go Round",
                     "Like Animals",
                     "Normal",
-                    "Please"
+                    "Please",
+                    "Aliens"
                 ]
             }
         },
@@ -312,7 +313,8 @@
             "Merry Go Round": "arirang",
             "Like Animals": "arirang",
             "Normal": "arirang",
-            "Please": "arirang"
+            "Please": "arirang",
+            "Aliens": "arirang"
         },
         "defaultAlbumId": "love_yourself_tear"
     },

@@ -219,5 +219,135 @@
         "isAdLib": true,
         "adLibDuration": 50,
         "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Walk→Rest→Running\nRest→Rest→Running",
+        "startChunk": 2394,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "All"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Yeah",
+        "startChunk": 2443,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "English",
+        "memberName": [
+            "All"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Yeah",
+        "startChunk": 2509,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Momo"
+        ],
+        "korean": "自分で選ぶ Making a move 決めていいよ\nたまにご褒美も必要",
+        "romanization": "jibun de erabu Making a move kimete ii yo\ntama ni gohoubi mo hitsuyou",
+        "english": "You should make your own choices, Making a move\nSometimes you need to give yourself a treat",
+        "startChunk": 2526,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "Everyday my life\nひとりじゃないよ　明日きっと\nLike Ding-Dong Ding-Dong Happy day",
+        "romanization": "Everyday my life\nhitori janai yo ashita ky kitto\nLike Ding-Dong Ding-Dong Happy day",
+        "english": "Everyday my life\nI will no longer be alone, tomorrow may be\nLike Ding-Dong Ding-Dong Happy day",
+        "startChunk": 2642,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Sana"
+        ],
+        "korean": "It’s sometimes\n雨が降っても It will be alright\nJust dancing dancing in the rain",
+        "romanization": "It's sometimes\name ga futtemo It will be alright\nJust dancing dancing in the rain",
+        "english": "It’s sometimes\nEven if it rains, It will be alright\nJust dancing dancing in the rain",
+        "startChunk": 2928,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Momo"
+        ],
+        "korean": "It’s something new\n新しくてお気に入りの靴を履いて\n歩き出そう Find a better place",
+        "romanization": "It's something new\natarashikute okini iri no wo haite\narakidasou Find a better place",
+        "english": "It’s something new\nPut on a pair of brand new fav shoes\nand set out to find a better place",
+        "startChunk": 3185,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "Someday きっと出会えるよ\nムリに背伸びせずに\n穏やかな 理想のsomeone",
+        "romanization": "Someday kitto deaeruyo\nmuri ni senobi sezu ni\nodayaka na risou no someone",
+        "english": "Someday I will find\nNo need to pretend any more\nGonna meet the ideal someone with a gentle soul",
+        "startChunk": 3458,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Sana"
+        ],
+        "korean": "Everyday my life\nひとりじゃないよ　明日きっと\nLike Ding-Dong Ding-Dong Happy day",
+        "romanization": "Everyday my life\nhitori janai yo ashita ky kitto\nLike Ding-Dong Ding-Dong Happy day",
+        "english": "Everyday my life\nI will no longer be alone, tomorrow may be\nLike Ding-Dong Ding-Dong Happy day",
+        "startChunk": 3710,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "language": "Korean",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "It’s sometimes\n雨が降っても It will be alright\nJust dancing dancing in the rain",
+        "romanization": "It's sometimes\name ga futtemo It will be alright\nJust dancing dancing in the rain",
+        "english": "It’s sometimes\nEven if it rains, It will be alright\nJust dancing dancing in the rain",
+        "startChunk": 3994,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
     }
 ]

@@ -2634,7 +2634,6 @@ class VoiceDetectionApp:
         return labels
     
     def onLabelsChanged(self, redrawSection=None):
-        self.refreshVisibleMembersFromLabels()
         # 1) keep marker state sane
         self._syncPointsFromLabels()
         self._recomputeOpenStartChunk()
@@ -4101,6 +4100,7 @@ class VoiceDetectionApp:
         
         # Recreate TrackItems and their widgets (images + progress bars)
         self.startLayout()
+        self.enforceCanvasLayering()
         
     def forward(self):
         """Skip forward by one second (one chunk)."""
