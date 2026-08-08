@@ -15,6 +15,23 @@ from core.util_functions import findBestAudioFiles, pickBestAudioForStem, ModalG
 from media.image_generator import make_member_card, make_dark_member_card
 from core import song_stats
 
+MEMBER_BAR_MAX_WIDTH = 200
+MEMBER_BAR_HEIGHT = 18
+MEMBER_BAR_RADIUS = 9
+
+
+def _roundedRectPoints(x1, y1, x2, y2, radius):
+    return [
+        x1 + radius, y1, x2 - radius, y1, x2, y1, x2, y1 + radius,
+        x2, y2 - radius, x2, y2, x2 - radius, y2, x1 + radius, y2,
+        x1, y2, x1, y2 - radius, x1, y1 + radius, x1, y1, x1 + radius, y1,
+    ]
+
+
+def _drawRoundedRect(canvas, x1, y1, x2, y2, radius, **kwargs):
+    return canvas.create_polygon(_roundedRectPoints(x1, y1, x2, y2, radius), smooth=True, **kwargs)
+
+
 class VoiceTrainerGUI:
     def __init__(self, root):
         self.root = root
@@ -279,7 +296,11 @@ class VoiceTrainerGUI:
         self.memberImageRefs.clear()
 
         members = self.groups[groupName]["members"]
-        orderedMembers, memberTimeLabels = self._sortMembersByMode(groupName, members)
+        memberNames = [m["name"] for m in members]
+        totals = song_stats.getGroupMemberTotals(groupName, memberNames)
+        maxTotal = max(totals.values(), default=0.0)
+
+        orderedMembers = self._sortMembersByMode(groupName, members, totals)
 
         for member in orderedMembers:
             memberName = member['name']
@@ -300,19 +321,37 @@ class VoiceTrainerGUI:
             labelText = tk.Label(frame, text=memberName, font=("Helvetica", 18), fg="black")
             labelText.pack(side="left", padx=20)
 
-            timeText = memberTimeLabels.get(memberName)
-            if timeText:
-                tk.Label(frame, text=timeText, font=("Helvetica", 14), fg="#666666").pack(side="left", padx=10)
+            memberTotal = totals.get(memberName, 0.0)
+            minutes, secs = divmod(int(round(memberTotal)), 60)
+            tk.Label(frame, text=f"{minutes}:{secs:02d}", font=("Helvetica", 14), fg="#666666").pack(side="left", padx=(0, 10))
 
-    def _sortMembersByMode(self, groupName, members):
-        """Returns (orderedMembers, timeLabels) where timeLabels maps memberName ->
-        display string (only populated in "Total Song Time" mode)."""
+            self._addMemberTimeBar(frame, member, memberTotal, maxTotal)
+
+    def _addMemberTimeBar(self, parentFrame, member, memberTotal, maxTotal):
+        if maxTotal <= 0:
+            return
+
+        barWidth = max(4, round(MEMBER_BAR_MAX_WIDTH * memberTotal / maxTotal))
+        color = member.get("color") or "#888888"
+
+        canvas = tk.Canvas(
+            parentFrame,
+            width=MEMBER_BAR_MAX_WIDTH,
+            height=MEMBER_BAR_HEIGHT,
+            highlightthickness=0,
+            bd=0,
+        )
+        canvas.pack(side="left", padx=10)
+        _drawRoundedRect(canvas, 0, 0, barWidth, MEMBER_BAR_HEIGHT, MEMBER_BAR_RADIUS, fill=color, outline="")
+
+    def _sortMembersByMode(self, groupName, members, totals):
+        """Returns orderedMembers for the current self.memberSortModeVar."""
         mode = self.memberSortModeVar.get() if hasattr(self, "memberSortModeVar") else "As Stored"
-        timeLabels = {}
 
         if mode == "Alphabetical":
-            ordered = sorted(members, key=lambda m: m["name"].lower())
-        elif mode == "Age Order":
+            return sorted(members, key=lambda m: m["name"].lower())
+
+        if mode == "Age Order":
             manifest = self.groupRegistry._loadGroupManifest(self.groupRegistry.iconsRoot / groupName) or {}
             ageOrder = manifest.get("ageOrder") or []
 
@@ -321,19 +360,12 @@ class VoiceTrainerGUI:
                 idx = ageOrder.index(name) if name in ageOrder else 999
                 return (idx, name.lower())
 
-            ordered = sorted(members, key=_ageKey)
-        elif mode == "Total Song Time":
-            memberNames = [m["name"] for m in members]
-            totals = song_stats.getGroupMemberTotals(groupName, memberNames)
-            ordered = sorted(members, key=lambda m: (-totals.get(m["name"], 0.0), m["name"].lower()))
-            for m in members:
-                seconds = totals.get(m["name"], 0.0)
-                minutes, secs = divmod(int(round(seconds)), 60)
-                timeLabels[m["name"]] = f"{minutes}:{secs:02d}"
-        else:
-            ordered = members
+            return sorted(members, key=_ageKey)
 
-        return ordered, timeLabels
+        if mode == "Total Song Time":
+            return sorted(members, key=lambda m: (-totals.get(m["name"], 0.0), m["name"].lower()))
+
+        return members
 
     def openEditGroupDialog(self):
         groupName = self.currentGroup.get()
