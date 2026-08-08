@@ -1,5 +1,7 @@
+import glob
 import json
 import os
+import re
 import statistics
 
 CHUNK_MS = 40  # matches CHUNK_DURATION in core/audio_processing.py
@@ -175,3 +177,42 @@ def invalidateSongStats(group, songName):
         **_computeEntry(group, songName),
     }
     _writeCache(group, cache)
+
+
+_SOLO_SONG_SUFFIX = re.compile(r"\[([^\[\]]+)\]\s*$")
+
+
+def isSoloSongFor(songName, memberNames):
+    """True if songName ends in a [MemberName] bracket matching a real member,
+    e.g. "Epiphany[Jin]" is Jin's solo song -- not part of group distribution."""
+    m = _SOLO_SONG_SUFFIX.search(songName)
+    return bool(m) and m.group(1).strip() in memberNames
+
+
+def listGroupSongNames(group):
+    pattern = os.path.join(SAVED_LABELS_DIR, group, "*_labels.json")
+    return [os.path.basename(p)[: -len("_labels.json")] for p in glob.glob(pattern)]
+
+
+def getGroupMemberTotals(group, memberNames):
+    """Raw lifetime weighted seconds per member across every labeled song in the
+    group, excluding solo songs and any label name not in memberNames (e.g.
+    "Gang Vocal"/"Cut", or a name no longer in the roster)."""
+    memberNameSet = set(memberNames)
+    totals = {name: 0.0 for name in memberNames}
+
+    for songName in listGroupSongNames(group):
+        if isSoloSongFor(songName, memberNameSet):
+            continue
+        for entry in loadRawLabels(group, songName):
+            try:
+                member, startChunk, endChunk, isBacking, isAdlib = entry
+            except (ValueError, TypeError):
+                continue
+            if member not in memberNameSet:
+                continue
+            duration = _chunkSpanSeconds(startChunk, endChunk)
+            weight = _labelWeight(bool(isBacking), bool(isAdlib))
+            totals[member] += duration * weight
+
+    return totals

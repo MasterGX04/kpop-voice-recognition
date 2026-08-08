@@ -169,7 +169,23 @@ class VoiceTrainerGUI:
             "<<ComboboxSelected>>",
             lambda e: (self.displayMembers(self.currentGroup.get()), self.updateGroupMenuState())
         )
-        
+
+        sortLabel = tk.Label(topFrame, text="Sort:")
+        sortLabel.pack(side=tk.LEFT, padx=(15, 5))
+
+        self.memberSortModeVar = tk.StringVar(value="As Stored")
+        self.memberSortDropdown = ttk.Combobox(
+            topFrame,
+            textvariable=self.memberSortModeVar,
+            values=["As Stored", "Alphabetical", "Age Order", "Total Song Time"],
+            state="readonly",
+        )
+        self.memberSortDropdown.pack(side=tk.LEFT)
+        self.memberSortDropdown.bind(
+            "<<ComboboxSelected>>",
+            lambda e: self.displayMembers(self.currentGroup.get())
+        )
+
         # Center: Scrollable vertical list
         container = tk.Frame(self.root)
         container.pack(fill="both", expand=True)
@@ -261,20 +277,21 @@ class VoiceTrainerGUI:
             widget.destroy()
             
         self.memberImageRefs.clear()
-        
+
         members = self.groups[groupName]["members"]
-        
-        for member in members:
+        orderedMembers, memberTimeLabels = self._sortMembersByMode(groupName, members)
+
+        for member in orderedMembers:
             memberName = member['name']
             frame = tk.Frame(self.scrollFrame, pady=5)
             frame.pack(fill="x", padx=0)
 
             image = self.loadMemberImage(groupName, member)
             self.memberImageRefs.append(image)
-            
+
             labelImage = tk.Label(frame, image=image)
             labelImage.pack(side="left")
-            
+
             labelImage.bind(
                 "<Button-3>",
                 lambda e, g=groupName, m=member: self.openMemberImageMenu(e, g, m)
@@ -282,7 +299,42 @@ class VoiceTrainerGUI:
 
             labelText = tk.Label(frame, text=memberName, font=("Helvetica", 18), fg="black")
             labelText.pack(side="left", padx=20)
-    
+
+            timeText = memberTimeLabels.get(memberName)
+            if timeText:
+                tk.Label(frame, text=timeText, font=("Helvetica", 14), fg="#666666").pack(side="left", padx=10)
+
+    def _sortMembersByMode(self, groupName, members):
+        """Returns (orderedMembers, timeLabels) where timeLabels maps memberName ->
+        display string (only populated in "Total Song Time" mode)."""
+        mode = self.memberSortModeVar.get() if hasattr(self, "memberSortModeVar") else "As Stored"
+        timeLabels = {}
+
+        if mode == "Alphabetical":
+            ordered = sorted(members, key=lambda m: m["name"].lower())
+        elif mode == "Age Order":
+            manifest = self.groupRegistry._loadGroupManifest(self.groupRegistry.iconsRoot / groupName) or {}
+            ageOrder = manifest.get("ageOrder") or []
+
+            def _ageKey(m):
+                name = m["name"]
+                idx = ageOrder.index(name) if name in ageOrder else 999
+                return (idx, name.lower())
+
+            ordered = sorted(members, key=_ageKey)
+        elif mode == "Total Song Time":
+            memberNames = [m["name"] for m in members]
+            totals = song_stats.getGroupMemberTotals(groupName, memberNames)
+            ordered = sorted(members, key=lambda m: (-totals.get(m["name"], 0.0), m["name"].lower()))
+            for m in members:
+                seconds = totals.get(m["name"], 0.0)
+                minutes, secs = divmod(int(round(seconds)), 60)
+                timeLabels[m["name"]] = f"{minutes}:{secs:02d}"
+        else:
+            ordered = members
+
+        return ordered, timeLabels
+
     def openEditGroupDialog(self):
         groupName = self.currentGroup.get()
         if not groupName:
