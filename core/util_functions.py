@@ -110,7 +110,7 @@ def getHalfCpuThreads(minThreads=2, maxThreads=16):
 
 def resourcePath(*parts: str) -> str:
     # When packaged (PyInstaller), sys._MEIPASS points to the temp extracted dir
-    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     return os.path.join(base, *parts)
 
 def getCached720pVideo(videoPath, cacheDir="./cache_audio"):

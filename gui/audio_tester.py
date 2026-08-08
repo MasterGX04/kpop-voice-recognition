@@ -1,5 +1,5 @@
 import os, traceback, hashlib, sys
-from thumbnail_functions import ThumbnailManager
+from gui.thumbnail_functions import ThumbnailManager
 import time
 import numpy as np
 from PIL import Image, ImageTk
@@ -7,28 +7,28 @@ import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
 import cv2
 import threading
-from lyrics_editor import LyricsEditor
+from gui.lyrics_editor import LyricsEditor
 from pydub import AudioSegment
-from TrackItem import TrackItem
+from gui.TrackItem import TrackItem
 from collections import defaultdict, Counter
 import pygame
-from VideoTrack import VideoTrackItem
-from navigation_arrows import NavigationArrows
+from gui.VideoTrack import VideoTrackItem
+from gui.navigation_arrows import NavigationArrows
 import json, copy
 import codecs
-from lyrics_box import LyricBox
-from zoom_functions import ZoomManager, ProgressBarHandle
-from util_functions import ensureReadableOnBackground, getCached720pVideo, ModalGuard
-from label_overlay import LabelOverlayController
-from label_lanes import LabelLaneRenderer
-from cut_clip_manager import CutClipManager
-from history_manager import HistoryManager
-from add_labels_menu import AddLabelsMenu
-from line_distribution_panel import LineDistributionPanel
+from gui.lyrics_box import LyricBox
+from gui.zoom_functions import ZoomManager, ProgressBarHandle
+from core.util_functions import ensureReadableOnBackground, getCached720pVideo, ModalGuard
+from gui.label_overlay import LabelOverlayController
+from gui.label_lanes import LabelLaneRenderer
+from gui.cut_clip_manager import CutClipManager
+from gui.history_manager import HistoryManager
+from gui.add_labels_menu import AddLabelsMenu
+from gui.line_distribution_panel import LineDistributionPanel
 
 def resourcePath(*parts: str) -> str:
     # When packaged (PyInstaller), sys._MEIPASS points to the temp extracted dir
-    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     return os.path.join(base, *parts)
 
 ffmpegPath = resourcePath("ffmpeg.exe")
@@ -313,7 +313,7 @@ class VoiceDetectionApp:
         if os.path.exists(modelPath):
             os.makedirs("./predictions", exist_ok=True)
             try:
-                from model_predictor import predict_song_selective
+                from ml.model_predictor import predict_song_selective
                 model2Path = f"./models/{self.selectedGroup}_muq_head_phase2.pt"
                 labels = predict_song_selective(
                     group_name=self.selectedGroup, 

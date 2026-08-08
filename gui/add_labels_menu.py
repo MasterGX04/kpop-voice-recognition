@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import copy
-from util_functions import ModalGuard
+from core.util_functions import ModalGuard
 
 class AddLabelsMenu:
     def __init__(self, app):

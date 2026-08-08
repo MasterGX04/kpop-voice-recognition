@@ -4,15 +4,15 @@ import os
 import json
 from PIL import Image, ImageTk
 from pathlib import Path
-from audio_processing import combineMemberVocals
-from group_registry import GroupRegistry
+from core.audio_processing import combineMemberVocals
+from core.group_registry import GroupRegistry
 import sys
 from urllib.parse import urlparse, urlunparse, quote
 import urllib.request
 import io, shutil
-from audio_tester import VoiceDetectionApp
-from util_functions import findBestAudioFiles, pickBestAudioForStem, ModalGuard
-from image_generator import make_member_card, make_dark_member_card
+from gui.audio_tester import VoiceDetectionApp
+from core.util_functions import findBestAudioFiles, pickBestAudioForStem, ModalGuard
+from media.image_generator import make_member_card, make_dark_member_card
 
 class VoiceTrainerGUI:
     def __init__(self, root):
@@ -2399,14 +2399,14 @@ class VoiceTrainerGUI:
         self.displayMembers(groupName)
 
 def resourcePath(*parts: str) -> str:
-    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     return os.path.join(base, *parts)
 
 def exeDir() -> Path:
     # Where the .exe lives when packaged; where the .py lives in dev
     if getattr(sys, "frozen", False):
         return Path(sys.executable).resolve().parent
-    return Path(__file__).resolve().parent
+    return Path(__file__).resolve().parent.parent
 
 def dataDir() -> Path:
     # Primary: next to exe (as you requested)

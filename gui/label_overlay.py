@@ -1,5 +1,5 @@
 import tkinter as tk
-from util_functions import pickTextColorForBg
+from core.util_functions import pickTextColorForBg
 
 class LabelOverlayController:
     def __init__(self, root, canvas, getLabelsFn, members):

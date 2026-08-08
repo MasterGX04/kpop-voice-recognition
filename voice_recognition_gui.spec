@@ -17,8 +17,8 @@ binaries += [("ffmpeg.exe", "."), ("ffprobe.exe", ".")]
 binaries += collect_dynamic_libs("cv2") 
 
 a = Analysis(
-    ['voice_recognition_gui.py'],
-    pathex=[],
+    ['gui/voice_recognition_gui.py'],
+    pathex=['.'],
     binaries=binaries,
     datas=extra_datas,
     hiddenimports=[],

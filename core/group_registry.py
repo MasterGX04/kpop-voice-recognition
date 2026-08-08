@@ -5,7 +5,7 @@ from PIL import Image
 def getAppRoot() -> Path:
     if getattr(sys, "frozen", False):
         return Path(sys.executable).resolve().parent
-    return Path(__file__).resolve().parent
+    return Path(__file__).resolve().parent.parent
 
 class GroupRegistry:
     """

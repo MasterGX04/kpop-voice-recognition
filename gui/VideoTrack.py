@@ -4,16 +4,16 @@ import time
 import tkinter as tk
 from PIL import Image, ImageTk
 import threading
-from TrackItem import TrackItem
+from gui.TrackItem import TrackItem
 import numpy as np
 import subprocess
 from bisect import bisect_right
 import pygame
 import queue
-from video_record import captureWindowClientRGBA
+from gui.video_record import captureWindowClientRGBA
 
 def resourcePath(*parts: str) -> str:
-    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     return os.path.join(base, *parts)
 
 writerError = {"err": None}

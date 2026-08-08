@@ -1,4 +1,4 @@
-python train_kpop_singers.py `
+python -m ml.train_kpop_singers `
   --root "K:\Python Projects\Voice Recognition" `
   --group "Dreamcatcher" `
   --sr_out 24000 `
@@ -13,7 +13,7 @@ python train_kpop_singers.py `
   --run-var-tests `
   --var-per-song-sec 15.0
 
-python train_kpop_singers.py `
+python -m ml.train_kpop_singers `
   --root "K:\Python Projects\Voice Recognition" `
   --group "IVE" `
   --sr_out 24000 `

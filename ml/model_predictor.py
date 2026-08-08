@@ -3,7 +3,7 @@ import json
 import torch, torchaudio, math
 import itertools
 import torch.nn.functional as F
-from train_kpop_singers import PresenceHead, MuQEncoderWrapper
+from ml.train_kpop_singers import PresenceHead, MuQEncoderWrapper
 from muq import MuQ
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple

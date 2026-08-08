@@ -3,8 +3,8 @@ import json
 import codecs
 import tkinter as tk
 from tkinter import messagebox
-from lyrics_box import LyricBox
-from util_functions import ModalGuard
+from gui.lyrics_box import LyricBox
+from core.util_functions import ModalGuard
 
 def _truncate(text: str, maxChars: int = 80) -> str:
     text = (text or "").strip().replace("\n", " ")
