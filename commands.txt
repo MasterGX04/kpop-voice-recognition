@@ -19,11 +19,12 @@ python train_kpop_singers.py `
   --sr_out 24000 `
   --chunk-sec 1.0 `
   --short-chunk-sec 0.4 `
-  --epochs 15 `
+  --epochs 20 `
   --batch-size 32 `
-  --lr 5e-4 `
+  --lr 1e-4 `
   --val-split 0.15 `
-  --num-workers 8 `
+  --num-workers 0 `
+  --eval_thr 0.5 `
   --save-dir "K:\Python Projects\Voice Recognition\models" `
   --run-var-tests `
   --var-per-song-sec 10.0

@@ -2,6 +2,7 @@ import os
 import json
 import numpy as np
 import torchaudio
+import re
 from collections import defaultdict
 
 class VocalMetadataManager:
@@ -32,7 +33,7 @@ class VocalMetadataManager:
         self.p_pos = p_pos
 
         self.json_files = self._get_json_files_for_group(json_dir)
-        self.group_members = self._infer_group_members_from_first_json()
+        self.group_members = self._infer_group_members(json_dir)
         
         # Filter training songs to only those with labels
         valid_labeled_songs = {os.path.basename(j).replace("_labels.json", "") for j in self.json_files}
@@ -42,6 +43,9 @@ class VocalMetadataManager:
                 self.training_songs[song_id] = path
             else:
                 print(f"[Warning] Excluding '{song_id}' from training: No label JSON found.")
+                
+        self.solo_songs_by_member = defaultdict(list)
+        self.explicit_solo_songs = set()
 
         # ====== per-song structures ======
         self._song_num_chunks = {}
@@ -53,6 +57,9 @@ class VocalMetadataManager:
         self.song_stats = {}
         self.candidateIdx = {}
         self.song_complexity = {}
+        
+        # 1. Detect and validate solo songs BEFORE building masks
+        self._detect_and_validate_solo_songs()
 
         # Build everything immediately upon initialization
         self._build_from_labels()
@@ -64,32 +71,85 @@ class VocalMetadataManager:
                 json_files.append(os.path.join(group_dir, fname))
         return json_files
 
-    def _infer_group_members_from_first_json(self):
+    def _infer_group_members(self, json_dir):
         """
-        Inspect the first JSON label file in self.json_files
-        and extract unique member names.
+        Reads the official roster from './group_icons/{groupName}/group.json',
+        sorts members by ageOrder, and appends 'Gang Vocal'.
         """
-        if not self.json_files:
-            raise ValueError("json_files is empty — cannot infer members.")
-
-        first_json_path = self.json_files[0]
-        print(f"First json path: {first_json_path}")
-        with open(first_json_path, "r", encoding="utf-8") as f:
+        # Extract the group name from the end of the json_dir path
+        # e.g., 'K:\...\saved_labels\IVE' -> 'IVE'
+        group_name = os.path.basename(os.path.normpath(json_dir))
+        
+        # Build the path to your group configuration file
+        group_json_path = os.path.join(".", "group_icons", group_name, "group.json")
+        
+        if not os.path.exists(group_json_path):
+            raise FileNotFoundError(f"🚨 Missing group configuration file: {group_json_path}")
+            
+        with open(group_json_path, "r", encoding="utf-8") as f:
             data = json.load(f)
+            
+        # Extract the raw list of names from the 'members' key
+        known_members = [m["name"] for m in data.get("members", [])]
+        age_order = data.get("ageOrder", [])
+        
+        if not known_members:
+            raise ValueError(f"No members found in the 'members' array of {group_json_path}")
+            
+        # Sort the members based on their index in the ageOrder list
+        # If someone is missing from ageOrder for whatever reason, they drop to the bottom
+        sorted_members = sorted(
+            known_members, 
+            key=lambda x: age_order.index(x) if x in age_order else 999
+        )
+        
+        # OCD check: slap Gang Vocal at the end
+        if "Gang Vocal" not in sorted_members:
+            sorted_members.append("Gang Vocal")
+            
+        print(f"🎤 Loaded official roster for {group_name}: {sorted_members}")
+        
+        return sorted_members
 
-        seen_members = set()
-        for entry in data:
-            if not entry:
+    def _detect_and_validate_solo_songs(self):
+        """
+        Detects songs formatted as 'SongName[MemberName]' and ensures
+        every member (except Gang Vocal) has an equal number of solo tracks.
+        """
+        # Regex to capture 'Odd' and 'Gaeul' from 'Odd[Gaeul]'
+        pattern = re.compile(r"^(.*)\[(.*)\]$")
+        
+        for song_id in self.training_songs.keys():
+            match = pattern.match(song_id)
+            if match:
+                song_name, member_name = match.groups()
+                # Ensure the name in brackets actually matches a known member
+                if member_name in self.group_members:
+                    self.solo_songs_by_member[member_name].append(song_id)
+                    self.explicit_solo_songs.add(song_id)
+
+        # Validate equal representation
+        solo_counts = {}
+        for member in self.group_members:
+            if member.lower() == "gang vocal":
                 continue
-            member_name = entry[0]
-            if member_name != "Cut":
-                seen_members.add(member_name)
+            solo_counts[member] = len(self.solo_songs_by_member.get(member, []))
+        
+        if not solo_counts:
+            return # No solo songs found at all
 
-        members = sorted(list(seen_members))
-        if len(members) == 0:
-            raise RuntimeError(f"No members found in label file: {first_json_path}")
-
-        return members
+        counts_set = set(solo_counts.values())
+        if len(counts_set) > 1:
+            # Imbalance detected! Crash gracefully.
+            error_msg = "\n\n🚨 FATAL ERROR: Solo Song Imbalance Detected! 🚨\n"
+            error_msg += "All members must have the exact same number of explicit solo songs.\n"
+            for m, c in solo_counts.items():
+                error_msg += f"  - {m}: {c} solo songs\n"
+            raise ValueError(error_msg)
+        else:
+            count = list(counts_set)[0]
+            if count > 0:
+                print(f"✅ Verified equal solo song representation: {count} explicit solo track(s) per member.")
 
     def _build_from_labels(self):
         """
@@ -108,8 +168,6 @@ class VocalMetadataManager:
             adlibMaskBySong=adlibMaskBySong,
             backingOnlyMaskBySong=backingOnlyMaskBySong,
         )
-
-        print(f"Group members inferred from labels: {self.group_members}")
 
         # 4 + 5. derive global masks and compute stats
         self._finalize_song_masks_and_stats(
@@ -204,7 +262,7 @@ class VocalMetadataManager:
             )
 
             self.song_stats[song_id] = self._compute_song_stats(
-                song_id=song_id, T=T, stacked=stacked, counts=counts,
+                T=T, stacked=stacked, counts=counts,
                 anyVocal=anyVocal, overlap=overlap,
                 adlibMask=adlibMaskBySong[song_id],
                 backingOnlyMask=backingOnlyMaskBySong[song_id],
@@ -231,9 +289,8 @@ class VocalMetadataManager:
             self.candidateIdx[song_id] = {}
             anyVocalMask = self.vocalMask[song_id]
             isOverlapMask = self.overlapMask[song_id]
-            isTransitionMask = self.transitionMask[song_id]
 
-            cleanSilenceMask = (~anyVocalMask) & (~isTransitionMask)
+            cleanSilenceMask = (~anyVocalMask)
             anySilenceMask = ~anyVocalMask
 
             for memberName in self.group_members:
@@ -242,11 +299,11 @@ class VocalMetadataManager:
 
                 memberIsActiveMask = self.memberMask[song_id][memberName]
 
-                stage1PosCleanMask = memberIsActiveMask & (~isTransitionMask) & (~isOverlapMask)
-                stage1NegOtherVocalMask = (~memberIsActiveMask) & anyVocalMask & (~isTransitionMask) & (~isOverlapMask)
+                stage1PosCleanMask = memberIsActiveMask & (~isOverlapMask)
+                stage1NegOtherVocalMask = (~memberIsActiveMask) & anyVocalMask & (~isOverlapMask)
                 
-                stage2PosIncludedMask = memberIsActiveMask & (~isTransitionMask)
-                stage2NegOtherVocalMask = (~memberIsActiveMask) & anyVocalMask & (~isTransitionMask)
+                stage2PosIncludedMask = memberIsActiveMask
+                stage2NegOtherVocalMask = (~memberIsActiveMask) & anyVocalMask
 
                 self.candidateIdx[song_id][memberName] = {
                     "stage1": {
@@ -266,7 +323,7 @@ class VocalMetadataManager:
                     }
                 }
 
-    def _compute_song_stats(self, *, song_id, T, stacked, counts, anyVocal, overlap, adlibMask, backingOnlyMask):
+    def _compute_song_stats(self, *, T, stacked, counts, anyVocal, overlap, adlibMask, backingOnlyMask):
         totalChunks = int(T)
         presence = stacked.T.astype(np.float32)
 
@@ -322,6 +379,10 @@ class VocalMetadataManager:
     def getNonSoloSongs(self, domFracSoloThreshold: float = 0.95):
         pairs = []
         for song, st in self.song_stats.items():
+            # EXPLICITLY BAN SOLO SONGS FROM VALIDATION
+            if song in self.explicit_solo_songs:
+                continue
+                
             if st.get("domFrac", 0.0) < domFracSoloThreshold:
                 pairs.append((song, self.get_song_complexity(song)))
         return pairs

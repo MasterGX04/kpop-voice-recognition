@@ -1,0 +1,78 @@
+{
+    "group": "WJSN",
+    "activeTheme": "Dream Your Dream",
+    "templates": {
+        "dark": "Dark {member}.png",
+        "light": "{member}.png",
+        "circle": "{member} Circle.png"
+    },
+    "members": [
+        {
+            "name": "Seola",
+            "color": "#50e73a"
+        },
+        {
+            "name": "Xuanyi",
+            "color": "#12d8e6"
+        },
+        {
+            "name": "Bona",
+            "color": "#ea0084"
+        },
+        {
+            "name": "Exy",
+            "color": "#245d18"
+        },
+        {
+            "name": "Soobin",
+            "color": "#3be289"
+        },
+        {
+            "name": "Luda",
+            "color": "#ffde00"
+        },
+        {
+            "name": "Dawon",
+            "color": "#f25000"
+        },
+        {
+            "name": "Eunseo",
+            "color": "#4699ca"
+        },
+        {
+            "name": "Cheng Xiao",
+            "color": "#c3446a"
+        },
+        {
+            "name": "Mei Qi",
+            "color": "#fc9700"
+        },
+        {
+            "name": "Yeoreum",
+            "color": "#1c52d9"
+        },
+        {
+            "name": "Dayoung",
+            "color": "#ff0000"
+        },
+        {
+            "name": "Yeonjung",
+            "color": "#7f048c"
+        }
+    ],
+    "ageOrder": [
+        "Seola",
+        "Xuanyi",
+        "Bona",
+        "Exy",
+        "Soobin",
+        "Luda",
+        "Dawon",
+        "Eunseo",
+        "Cheng Xiao",
+        "Mei Qi",
+        "Yeoreum",
+        "Dayoung",
+        "Yeonjung"
+    ]
+}

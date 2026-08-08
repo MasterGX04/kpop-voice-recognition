@@ -20,7 +20,7 @@ class FastEmbeddingDataset(Dataset):
         return len(self.examples)
         
     def _get_song_path(self, song_id: str) -> str:
-        cfg = f"sr{self.sr_out}_ctx{self.ctx_frac}_chunk{self.chunk_sec}_{self.pca_tag}_{self.encoder_tag}"
+        cfg = f"sr{self.sr_out}_ctx{self.chunk_sec}0_{self.encoder_tag}_mean_{self.pca_tag}"
         safe_song = song_id.replace(os.sep, "_")
         return os.path.join(self.cache_dir, f"{safe_song}__{cfg}.npy")
 

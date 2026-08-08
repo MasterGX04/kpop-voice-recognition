@@ -354,7 +354,8 @@ class BinaryVocalDataset(Dataset):
         self,
         *,
         allowedSongs=None,
-        totalExamplesPerMember=None,
+        member_configs: dict = None,
+        default_samples: int = 1000,
         negOtherFrac: float = 0.70,
         seed: int = 1337,
         maxWorkers: int = 8,
@@ -399,12 +400,15 @@ class BinaryVocalDataset(Dataset):
 
         def collectPoolEntries(memberName: str):
             """
-            Collect all clean stage-1 candidate examples for one member across the
-            allowed song set.
+            Collect all clean stage-1 candidate examples. 
+            Separates explicit solo song chunks from regular group song chunks.
             """
-            posPool = []
+            posPoolSolo = []  # Guaranteed inclusion
+            posPoolReg = []   # Randomly sampled
             negOtherPool = []
             negSilPool = []
+            
+            my_explicit_solos = self.metadata.solo_songs_by_member.get(memberName, [])
 
             for song_id in allowedSongs:
                 if song_id not in self.metadata.candidateIdx:
@@ -412,18 +416,23 @@ class BinaryVocalDataset(Dataset):
                 if memberName not in self.metadata.candidateIdx[song_id]:
                     continue
 
+                is_my_solo = (song_id in my_explicit_solos)
                 stage1Pools = self.metadata.candidateIdx[song_id][memberName]["stage1"]
 
                 for c in stage1Pools["pos_clean"]:
                     c = int(c)
-                    posPool.append({
+                    entry = {
                         "songId": song_id,
                         "centerChunk": c,
                         "memberName": memberName,
                         "label": 1.0,
                         "weight": float(self.metadata.baseWeight[song_id][c]),
                         "source": "pos_clean",
-                    })
+                    }
+                    if is_my_solo:
+                        posPoolSolo.append(entry)
+                    else:
+                        posPoolReg.append(entry)
 
                 for c in stage1Pools["neg_other_vocal"]:
                     c = int(c)
@@ -447,7 +456,7 @@ class BinaryVocalDataset(Dataset):
                         "source": "neg_silence",
                     })
 
-            return posPool, negOtherPool, negSilPool
+            return posPoolSolo, posPoolReg, negOtherPool, negSilPool
 
         def chooseBalancedCounts(posAvail, negOtherAvail, negSilAvail, totalExamplesCap):
             """
@@ -486,43 +495,51 @@ class BinaryVocalDataset(Dataset):
             return 0, 0, 0
 
         def buildForMember(memberName: str):
-            """
-            Build the final fixed example list for one member.
-            """
             rng = np.random.default_rng(memberSeeds[memberName])
 
-            posPool, negOtherPool, negSilPool = collectPoolEntries(memberName)
+            # ==========================================
+            # DYNAMIC HYPERPARAMETER ROUTING
+            # ==========================================
+            conf = member_configs.get(memberName, {})
+            member_sample_cap = conf.get("samples", default_samples)
 
-            posAvail = len(posPool)
+            posPoolSolo, posPoolReg, negOtherPool, negSilPool = collectPoolEntries(memberName)
+
+            posAvail = len(posPoolSolo) + len(posPoolReg)
             negOtherAvail = len(negOtherPool)
             negSilAvail = len(negSilPool)
 
+            # Pass the dynamically extracted member_sample_cap instead of the global one
             nPos, nOther, nSil = chooseBalancedCounts(
                 posAvail=posAvail,
                 negOtherAvail=negOtherAvail,
                 negSilAvail=negSilAvail,
-                totalExamplesCap=totalExamplesPerMember,
+                totalExamplesCap=member_sample_cap, 
             )
 
             if nPos == 0:
                 return {
                     "memberName": memberName,
                     "examples": [],
-                    "stats": {
-                        "posAvail": posAvail,
-                        "negOtherAvail": negOtherAvail,
-                        "negSilAvail": negSilAvail,
-                        "usedPos": 0,
-                        "usedNegOther": 0,
-                        "usedNegSil": 0,
-                    },
+                    "stats": {"posAvail": posAvail, "negOtherAvail": negOtherAvail, "negSilAvail": negSilAvail, "usedPos": 0, "usedNegOther": 0, "usedNegSil": 0},
                 }
 
-            posIdx = rng.choice(posAvail, size=nPos, replace=False)
+            # ====== THE SOLO FORCING LOGIC ======
+            maxSoloAllowed = int(nPos * 0.30)
+            nPosSoloToTake = min(maxSoloAllowed, len(posPoolSolo))
+            nPosRegToTake = min(nPos - nPosSoloToTake, len(posPoolReg))
+            
+            nPos = nPosSoloToTake + nPosRegToTake
+
+            posIdxSolo = rng.choice(len(posPoolSolo), size=nPosSoloToTake, replace=False)
+            posIdxReg = rng.choice(len(posPoolReg), size=nPosRegToTake, replace=False)
+
+            examples = [posPoolSolo[i] for i in posIdxSolo]
+            examples.extend(posPoolReg[i] for i in posIdxReg)
+
             negOtherIdx = rng.choice(negOtherAvail, size=nOther, replace=False)
             negSilIdx = rng.choice(negSilAvail, size=nSil, replace=False)
 
-            examples = [posPool[i] for i in posIdx]
             examples.extend(negOtherPool[i] for i in negOtherIdx)
             examples.extend(negSilPool[i] for i in negSilIdx)
 
@@ -536,6 +553,7 @@ class BinaryVocalDataset(Dataset):
                     "negOtherAvail": negOtherAvail,
                     "negSilAvail": negSilAvail,
                     "usedPos": nPos,
+                    "usedPosSolo": nPosSoloToTake, 
                     "usedNegOther": nOther,
                     "usedNegSil": nSil,
                 },

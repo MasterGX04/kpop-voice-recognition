@@ -306,8 +306,14 @@ class LineDistributionPanel:
 
         # F is special: far below target
         if delta < -3.5 * w:   # < -0.35
-            # Optional: F- if extremely low
-            return ("F-" if delta < -4.5 * w else "F"), target
+            if delta < -4.5 * w: # < -0.45
+                # Measure how far below the F- boundary (-0.45) we are in band widths (w = 0.10)
+                f_minus_boundary = -4.5 * w
+                extra_steps = (f_minus_boundary - delta) / w
+                
+                # Add 1 base minus + the rounded float count of extra band widths
+                total_minuses = 1 + round(extra_steps)
+                return "F" + ("-" * total_minuses), target
 
         # Choose nearest midpoint among A/B/C/D
         base, mid = min(midpoints, key=lambda bm: abs(delta - bm[1]))

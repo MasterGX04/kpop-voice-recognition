@@ -70,10 +70,20 @@ class TrackItem:
         if parentScaleY is None:
             parentScaleY = getattr(self.parent, "scaleY", 1.0)
         
-        self.fontSize = int(40 * parentScaleX)
+        if hasattr(self, "currentImageKey") and self.currentImageKey in self.sourceImages:
+            currentImgHeight = self.sourceImages[self.currentImageKey].height()
+        elif hasattr(self.parent, "slotHeightPx"):
+            # Fallback just in case the image isn't fully loaded/scaled yet
+            currentImgHeight = self.parent.slotHeightPx
+        else:
+            currentImgHeight = 60 # Default base height
+            
+        # 2. Enforce the 1:3 ratio based on the image height
+        # I added a max(8, ...) just to ensure it doesn't shrink to 0 and crash if the window is tiny
+        self.fontSize = max(8, int(currentImgHeight // 3))
+        
         self.font.configure(size=self.fontSize)
         self.xOffset = int(720 * parentScaleX)
-        self.yOffset = int(5 * parentScaleY)
         
     def rescalePositionTimeline(self, scaleY):
         if not hasattr(self, "basePositionTimeline"):
@@ -81,6 +91,7 @@ class TrackItem:
 
         baseH = self.parent.slotHeightBase
         pixH  = self.parent.slotHeightPx  # computed once in parent on resize
+        # print(f"Pixel height: {pixH} px")
 
         if baseH <= 0 or pixH <= 0:
             return
@@ -393,7 +404,7 @@ class TrackItem:
         x, y = self.parent.canvas.coords(self.imageId)
         # Update timer position to align the top-right corner
         self.timerX = x + self.xOffset
-        self.timerY = y + self.yOffset
+        self.timerY = y
         
         # print(f"Timer x: {self.timerX}, Timer y: {self.timerY}")
         

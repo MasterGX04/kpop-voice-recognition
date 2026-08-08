@@ -6,20 +6,27 @@ class MultiMemberBinaryHead(nn.Module):
     Independent MLP pathways for each member.
     Prevents "easy" members from warping the latent space of "hard" members.
     """
-    def __init__(self, embDim: int, numMembers: int, hidden: int = 256, dropout: float = 0.2):
+    def __init__(self, embDim, numMembers, memberNames, member_configs, default_config):
         super().__init__()
         self.numMembers = numMembers
+        self.member_heads = nn.ModuleList()
 
-        # Create a completely independent network for EACH member.
-        # nn.ModuleList registers all the parameters properly.
-        self.member_heads = nn.ModuleList([
-            nn.Sequential(
-                nn.Linear(embDim, hidden),
-                nn.GELU(), # GELU is slightly smoother for complex boundaries than ReLU
-                nn.Dropout(dropout),
-                nn.Linear(hidden, 1) # Final binary projection
-            ) for _ in range(numMembers)
-        ])
+        for name in memberNames:
+            # Grab specific config or fallback to defaults
+            conf = member_configs.get(name, default_config)
+            
+            hidden = conf.get("hidden", default_config["hidden"])
+            dropout = conf.get("dropout", default_config["dropout"])
+
+            self.member_heads.append(
+                nn.Sequential(
+                    nn.BatchNorm1d(embDim),
+                    nn.Linear(embDim, hidden),
+                    nn.GELU(),
+                    nn.Dropout(dropout),
+                    nn.Linear(hidden, 1)
+                )
+            )
 
     def forward(self, emb, memberIdx=None):
         """

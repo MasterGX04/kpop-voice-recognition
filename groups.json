@@ -86,7 +86,14 @@
                     "Summer[Liz]",
                     "Bang Bang",
                     "BLACKHOLE",
-                    "Fireworks"
+                    "Fireworks",
+                    "Odd[Gaeul]",
+                    "In Your Heart[Rei]",
+                    "8[Wonyoung]",
+                    "Force[Yujin]",
+                    "Solo Cover[Rei]",
+                    "Super ICY[Leeseo]",
+                    "Unreal[Liz]"
                 ]
             }
         },
@@ -110,7 +117,14 @@
             "Bang Bang": "revive",
             "GOTCHA (Baddest Eros)": "ive_secret",
             "BLACKHOLE": "revive",
-            "Fireworks": "revive"
+            "Fireworks": "revive",
+            "Odd[Gaeul]": "revive",
+            "In Your Heart[Rei]": "revive",
+            "8[Wonyoung]": "revive",
+            "Force[Yujin]": "revive",
+            "Solo Cover[Rei]": "revive",
+            "Super ICY[Leeseo]": "revive",
+            "Unreal[Liz]": "revive"
         },
         "defaultAlbumId": "ive_switch"
     },
@@ -139,21 +153,42 @@
                 "albumArtCachePath": "member_images\\aespa\\_album_art\\whiplash.jpg",
                 "albumArtUrl": "https://static.wikia.nocookie.net/aespa/images/b/ba/Whiplash_Digital_Cover.jpg",
                 "songs": [
-                    "Whiplash"
+                    "Whiplash",
+                    "Flowers"
                 ]
             },
             "armageddon": {
                 "displayName": "Armageddon",
-                "albumArtCachePath": "",
-                "albumArtUrl": "",
+                "albumArtCachePath": "member_images\\aespa\\_album_art\\armageddon.jpg",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/8/8e/Aespa_-_Armageddon.jpg",
                 "songs": [
                     "Mine"
+                ]
+            },
+            "savage": {
+                "displayName": "Savage",
+                "albumArtCachePath": "member_images\\aespa\\_album_art\\savage.jpg",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/6/67/Aespa_%E2%80%93_Savage.jpg",
+                "songs": [
+                    "Savage",
+                    "Forever",
+                    "I'll Make You Cry",
+                    "Next Level",
+                    "Dreams Come True",
+                    "ICONIC"
                 ]
             }
         },
         "songToAlbum": {
             "Whiplash": "whiplash",
-            "Mine": "armageddon"
+            "Mine": "armageddon",
+            "Savage": "savage",
+            "Forever": "savage",
+            "I'll Make You Cry": "savage",
+            "Next Level": "savage",
+            "Flowers": "whiplash",
+            "Dreams Come True": "savage",
+            "ICONIC": "savage"
         },
         "defaultAlbumId": "whiplash"
     },
@@ -283,7 +318,8 @@
                     "Like Animals",
                     "Normal",
                     "Please",
-                    "Aliens"
+                    "Aliens",
+                    "Hooligan"
                 ]
             }
         },
@@ -314,7 +350,8 @@
             "Like Animals": "arirang",
             "Normal": "arirang",
             "Please": "arirang",
-            "Aliens": "arirang"
+            "Aliens": "arirang",
+            "Hooligan": "arirang"
         },
         "defaultAlbumId": "love_yourself_tear"
     },
@@ -366,7 +403,17 @@
                 "albumArtCachePath": "member_images\\Fifty Fifty\\_album_art\\too_much_pt__1.png",
                 "albumArtUrl": "https://images.genius.com/77f65583cda2ca9e8a85aa2491f0612f.1000x1000x1.png",
                 "songs": [
-                    "Skittlez"
+                    "Skittlez",
+                    "Wish You Were Here"
+                ]
+            },
+            "imperfect_i_mperfect": {
+                "displayName": "Imperfect I'mperfect",
+                "albumArtCachePath": "member_images\\Fifty Fifty\\_album_art\\imperfect_i_mperfect.png",
+                "albumArtUrl": "https://static.wikia.nocookie.net/kpop/images/6/69/FIFTY_FIFTY_Imperfect-I%27mperfect_digital_album_cover.png",
+                "songs": [
+                    "Genie Magic",
+                    "Starstruck"
                 ]
             }
         },
@@ -376,7 +423,10 @@
             "Midnight Special": "day___night",
             "Perfect Crime": "day___night",
             "Skittlez": "too_much_pt__1",
-            "Push Your Love": "love_tune"
+            "Push Your Love": "love_tune",
+            "Wish You Were Here": "too_much_pt__1",
+            "Genie Magic": "imperfect_i_mperfect",
+            "Starstruck": "imperfect_i_mperfect"
         },
         "defaultAlbumId": "love_tune"
     },
@@ -435,7 +485,7 @@
             },
             {
                 "name": "Haewon",
-                "color": "#959595"
+                "color": "#23ffa0"
             },
             {
                 "name": "Sullyoon",
@@ -470,11 +520,22 @@
                 "songs": [
                     "Love Me Like This"
                 ]
+            },
+            "heavy_serenade": {
+                "displayName": "Heavy Serenade",
+                "albumArtCachePath": "member_images\\NMIXX\\_album_art\\heavy_serenade.png",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/5/51/Nmixx_-_Heavy_Serenade.png",
+                "songs": [
+                    "Crescendo",
+                    "Heavy Serenade"
+                ]
             }
         },
         "songToAlbum": {
             "Blue Valentine": "blue_valentine",
-            "Love Me Like This": "expergo"
+            "Love Me Like This": "expergo",
+            "Crescendo": "heavy_serenade",
+            "Heavy Serenade": "heavy_serenade"
         },
         "defaultAlbumId": "blue_valentine"
     },
@@ -542,7 +603,8 @@
                     "I Can't Stop Me",
                     "Cry For Me",
                     "Queen",
-                    "Up No More"
+                    "Up No More",
+                    "UP NO MORE"
                 ]
             },
             "the_story_begins": {
@@ -567,7 +629,8 @@
                 "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/thumb/6/6e/MiSaMo_Masterpiece_cover_art.png/250px-MiSaMo_Masterpiece_cover_art.png",
                 "songs": [
                     "Funny Valentine",
-                    "Marshmallow"
+                    "Marshmallow",
+                    "Do Not Touch"
                 ]
             }
         },
@@ -581,7 +644,9 @@
             "Like Ooh-Ahh": "the_story_begins",
             "Dance The Night Away": "summer_nights",
             "Funny Valentine": "masterpiece",
-            "Marshmallow": "masterpiece"
+            "Marshmallow": "masterpiece",
+            "UP NO MORE": "eyes_wide_open",
+            "Do Not Touch": "masterpiece"
         },
         "defaultAlbumId": "fancy_you"
     },
@@ -797,5 +862,113 @@
         "albums": {},
         "songToAlbum": {},
         "defaultAlbumId": ""
+    },
+    "One Direction": {
+        "members": [
+            {
+                "name": "Louis",
+                "color": "#fd8637"
+            },
+            {
+                "name": "Zayn",
+                "color": "#750aeb"
+            },
+            {
+                "name": "Liam",
+                "color": "#ffff00"
+            },
+            {
+                "name": "Niall",
+                "color": "#009a49"
+            },
+            {
+                "name": "Harry",
+                "color": "#0000ff"
+            }
+        ],
+        "albums": {
+            "midnight_memories": {
+                "displayName": "Midnight Memories",
+                "albumArtCachePath": "member_images\\One Direction\\_album_art\\midnight_memories.png",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/2/28/One_Direction_Midnight_Memories_%28Official_Album_Cover%29.png",
+                "songs": [
+                    "Night Changes"
+                ]
+            }
+        },
+        "songToAlbum": {
+            "Night Changes": "midnight_memories"
+        },
+        "defaultAlbumId": "midnight_memories"
+    },
+    "WJSN": {
+        "members": [
+            {
+                "name": "Seola",
+                "color": "#50e73a"
+            },
+            {
+                "name": "Xuanyi",
+                "color": "#12d8e6"
+            },
+            {
+                "name": "Bona",
+                "color": "#ea0084"
+            },
+            {
+                "name": "Exy",
+                "color": "#245d18"
+            },
+            {
+                "name": "Soobin",
+                "color": "#3be289"
+            },
+            {
+                "name": "Luda",
+                "color": "#ffde00"
+            },
+            {
+                "name": "Dawon",
+                "color": "#f25000"
+            },
+            {
+                "name": "Eunseo",
+                "color": "#4699ca"
+            },
+            {
+                "name": "Cheng Xiao",
+                "color": "#c3446a"
+            },
+            {
+                "name": "Mei Qi",
+                "color": "#fc9700"
+            },
+            {
+                "name": "Yeoreum",
+                "color": "#1c52d9"
+            },
+            {
+                "name": "Dayoung",
+                "color": "#ff0000"
+            },
+            {
+                "name": "Yeonjung",
+                "color": "#7f048c"
+            }
+        ],
+        "songToAlbum": {
+            "Dreams Come True": "dream_your_dream"
+        },
+        "defaultAlbumId": "dream_your_dream",
+        "albums": {
+            "dream_your_dream": {
+                "displayName": "Dream Your Dream",
+                "albumArtCachePath": "member_images\\WJSN\\_album_art\\dream_your_dream.jpg",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/c/c0/Dream_Your_Dream_album_cover.jpg",
+                "songs": [
+                    "Dreams Come True"
+                ]
+            }
+        }
     }
 }

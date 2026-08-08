@@ -1,0 +1,38 @@
+{
+    "group": "One Direction",
+    "activeTheme": "Midnight Memories",
+    "templates": {
+        "dark": "Dark {member}.png",
+        "light": "{member}.png",
+        "circle": "{member} Circle.png"
+    },
+    "members": [
+        {
+            "name": "Louis",
+            "color": "#fd8637"
+        },
+        {
+            "name": "Zayn",
+            "color": "#750aeb"
+        },
+        {
+            "name": "Liam",
+            "color": "#ffff00"
+        },
+        {
+            "name": "Niall",
+            "color": "#009a49"
+        },
+        {
+            "name": "Harry",
+            "color": "#0000ff"
+        }
+    ],
+    "ageOrder": [
+        "Louis",
+        "Zayn",
+        "Liam",
+        "Niall",
+        "Harry"
+    ]
+}

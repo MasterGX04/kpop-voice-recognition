@@ -16,10 +16,9 @@ K-pop singer recognition using SpeechBrain ECAPA-TDNN embeddings + a small softm
 Tested on: Python 3.9, CUDA 12.x with torch cu124 wheels.
 """
 
-import os, argparse, random, glob, math
+import os, argparse, random, glob, math, json
 import numpy as np
 from typing import List
-import time
 
 import torch
 import torch.nn.functional as F
@@ -30,6 +29,7 @@ from datasets.new_datasets import BinaryVocalDataset
 from model.helper_functions import FastEmbeddingDataset
 from model.heads import MultiMemberBinaryHead
 from model.encoders import MuQEncoderWrapper
+from pytorch_metric_learning import losses
 
 from tqdm import tqdm
 from muq import MuQ
@@ -535,7 +535,9 @@ def train_epoch(
     total_fn = 0
 
     amp_ctx = torch.autocast(device_type=device.type, enabled=(use_amp and device.type == "cuda"))
-
+    arcface_loss = losses.ArcFaceLoss(num_classes=len(member_names), embedding_size=256, margin=28.6, scale=64)
+    arcface_loss = arcface_loss.to(device)
+    
     for memberName in member_names:
         memberIdx = memberToIdx[memberName]
         loader = trainLoadersByMember[memberName]
@@ -569,7 +571,7 @@ def train_epoch(
 
                 loss_per = bce(logits, y.float())
                 loss = (loss_per * w).mean()
-                loss = loss + 1e-4 * (logits.pow(2).mean())  
+                # loss = loss + 1e-4 * (logits.pow(2).mean())  
 
             if scaler.is_enabled():
                 scaler.scale(loss).backward()
@@ -700,7 +702,7 @@ def eval_epoch(
 
                 loss_per = bce(logits, y.float())
                 loss = (loss_per * w).mean()
-                loss = loss + 1e-4 * (logits.pow(2).mean())
+                # loss = loss + 1e-4 * (logits.pow(2).mean())
 
             if step % 100 == 0:
                 tqdm.write(
@@ -753,7 +755,7 @@ def eval_epoch(
         "recall": recall,
         "sanity": sanity_out,
     }
-    
+      
 @torch.no_grad()
 def hard_miner(encoder, head, loader, device, thr=0.7, pain_threshold=2.0, max_hard=50000):
     """
@@ -1324,20 +1326,29 @@ def main():
     allSongNames = set(ds_phase1.training_songs.keys())
     trainSongNames = allSongNames - valSongNames
     print(f"train song names: {trainSongNames}")
+    # Load config
+    with open(os.path.join(".", "datasets", "group_configs.json"), "r") as f:
+        master_config = json.load(f)
+
+    group_config = master_config.get(args.group, {})
+    default_config = master_config["defaults"]
 
     # Build fixed stage-1 examples once
     trainExamplesByMember = ds_phase1.buildStage1ExamplesByMember(
         allowedSongs=trainSongNames,
-        totalExamplesPerMember=4000,
-        negOtherFrac=0.70,
+        member_configs=group_config,         # Route the dynamic capacities
+        default_samples=1000,                # Fallback if a member is missing from config
+        negOtherFrac=0.75,
         seed=1337,
         maxWorkers=min(8, os.cpu_count() or 1),
     )
 
+    # For validation, enforce a smaller, uniform cap
     valExamplesByMember = ds_phase1.buildStage1ExamplesByMember(
         allowedSongs=valSongNames,
-        totalExamplesPerMember=1000,
-        negOtherFrac=0.70,
+        member_configs={},                   # Empty config forces everyone to use the default
+        default_samples=400,                 # Cap validation chunks (e.g., 400 per member)
+        negOtherFrac=0.75,
         seed=1338,
         maxWorkers=min(8, os.cpu_count() or 1),
     )
@@ -1433,8 +1444,9 @@ def main():
     head = MultiMemberBinaryHead(
         embDim=emb_dim,
         numMembers=num_members,
-        hidden=64,
-        dropout=0.4
+        memberNames=ds_phase1.group_members,
+        member_configs=group_config,
+        default_config=default_config
     ).to(device)
         
     optimizer = torch.optim.AdamW(head.parameters(), lr=args.lr, weight_decay=1e-4)
@@ -1442,7 +1454,7 @@ def main():
         optimizer,
         mode='max',
         factor=0.3, # multiply LR by 0.3 when plateau
-        patience=2, # wait 2 epochs with no improvement
+        patience=4, # wait 2 epochs with no improvement
     )
     
     print("Pre-encoding all songs into cache...")

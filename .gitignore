@@ -43,6 +43,7 @@ outputs/
 logs/
 data/
 tmp/
+tmpdir/
 pitch_test/
 debug_harmonies/
 cache_audio/
