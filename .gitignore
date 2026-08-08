@@ -66,6 +66,7 @@ extract_adlibs.py
 *predictions.csv
 *_test_harmonies.json
 *_history.json
+_song_stats_cache.json
 
 ffmpeg.exe
 ffprobe.exe

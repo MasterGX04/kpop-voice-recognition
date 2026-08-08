@@ -13,6 +13,7 @@ import io, shutil
 from gui.audio_tester import VoiceDetectionApp
 from core.util_functions import findBestAudioFiles, pickBestAudioForStem, ModalGuard
 from media.image_generator import make_member_card, make_dark_member_card
+from core import song_stats
 
 class VoiceTrainerGUI:
     def __init__(self, root):
@@ -1085,6 +1086,32 @@ class VoiceTrainerGUI:
 
         tk.Button(top, text="Choose Video…", command=onChooseVideo).pack(side="right", padx=(8, 0))
 
+        # --- song picker: sort / view mode ---
+        self.songPickerSortModeVar = tk.StringVar(value="Alphabetical")
+        self.songPickerViewModeVar = tk.StringVar(value="By Album")
+
+        sortCombo = ttk.Combobox(
+            top,
+            textvariable=self.songPickerSortModeVar,
+            values=["Alphabetical", "Song Length", "Fairness"],
+            state="readonly",
+            width=13,
+        )
+        sortCombo.pack(side="right", padx=(8, 0))
+        sortCombo.bind("<<ComboboxSelected>>", lambda e: self.refreshSongPickerUI())
+        tk.Label(top, text="Sort:").pack(side="right", padx=(8, 0))
+
+        viewCombo = ttk.Combobox(
+            top,
+            textvariable=self.songPickerViewModeVar,
+            values=["By Album", "Flat List"],
+            state="readonly",
+            width=10,
+        )
+        viewCombo.pack(side="right", padx=(8, 0))
+        viewCombo.bind("<<ComboboxSelected>>", lambda e: self.refreshSongPickerUI())
+        tk.Label(top, text="View:").pack(side="right", padx=(8, 0))
+
         # First render
         self.refreshSongPickerUI()
         _setVideoLabel()
@@ -1140,54 +1167,83 @@ class VoiceTrainerGUI:
 
         albums = self.groupRegistry.getAlbums(selectedGroup) or {}
 
-        # ---- Group songs by album, and collect truly-unclaimed ones ----
-        defaultAlbumId = self._getDefaultAlbumId(albums)
+        # ---- Sort mode / view mode + per-song stats ----
+        sortMode = getattr(self, "songPickerSortModeVar", None)
+        sortMode = sortMode.get() if sortMode else "Alphabetical"
+        viewMode = getattr(self, "songPickerViewModeVar", None)
+        viewMode = viewMode.get() if viewMode else "By Album"
 
-        albumToSongs = {}   # albumId -> [songName...]
-        unclaimed = []
+        songStats = song_stats.getGroupSongStats(selectedGroup, songList)
 
-        for songName in songList:
-            albumId = self.getAlbumForSong(selectedGroup, songName)
+        def _sortKey(songName):
+            stat = songStats.get(songName) or {}
+            if sortMode == "Song Length":
+                value = stat.get("length_seconds")
+            elif sortMode == "Fairness":
+                value = stat.get("fairness")
+            else:
+                value = None
+            # No-stat songs (unlabeled, or Alphabetical mode) always sort last;
+            # Song Length / Fairness rank highest-value first.
+            if value is None:
+                return (1, 0.0, songName.lower())
+            return (0, -value, songName.lower())
 
-            # If missing / invalid, treat as unclaimed (failsafe section)
-            if (not albumId) or (albumId not in albums):
-                # If you *want* missing mappings to still fall into the default album, flip this:
-                albumId = defaultAlbumId if defaultAlbumId in albums else None
-                if albumId is None:
-                    unclaimed.append(songName)
-                continue
-
-            albumToSongs.setdefault(albumId, []).append(songName)
-
-        # Sort albums by displayName then id (stable, human-friendly)
-        def _albumSortKey(aid: str):
-            meta = albums.get(aid, {})
-            display = (meta.get("displayName") or aid).strip()
-            return (display.lower(), aid.lower())
-
-        orderedAlbumIds = sorted(albumToSongs.keys(), key=_albumSortKey)
-
-        # ---- Render UI sections ----
         headerFont = ("Helvetica", 16, "bold")
         sectionPadY = 10
 
-        for albumId in orderedAlbumIds:
-            meta = albums.get(albumId, {})
-            displayName = (meta.get("displayName") or albumId).strip()
-
-            hdr = tk.Label(frame, text=displayName, font=headerFont, anchor="w")
+        if viewMode == "Flat List":
+            hdr = tk.Label(frame, text="All Songs", font=headerFont, anchor="w")
             hdr.pack(fill="x", padx=10, pady=(sectionPadY, 6))
 
-            songs = sorted(albumToSongs.get(albumId, []), key=str.lower)
-            for songName in songs:
-                self._addSongRow(frame, selectedGroup, songName, albums, callback)
+            for songName in sorted(songList, key=_sortKey):
+                self._addSongRow(frame, selectedGroup, songName, albums, callback, songStats.get(songName), sortMode)
+        else:
+            # ---- Group songs by album, and collect truly-unclaimed ones ----
+            defaultAlbumId = self._getDefaultAlbumId(albums)
 
-        if unclaimed:
-            hdr = tk.Label(frame, text="Unclaimed", font=headerFont, anchor="w", fg="#aa2222")
-            hdr.pack(fill="x", padx=10, pady=(sectionPadY, 6))
+            albumToSongs = {}   # albumId -> [songName...]
+            unclaimed = []
 
-            for songName in sorted(unclaimed, key=str.lower):
-                self._addSongRow(frame, selectedGroup, songName, albums, callback)
+            for songName in songList:
+                albumId = self.getAlbumForSong(selectedGroup, songName)
+
+                # If missing / invalid, treat as unclaimed (failsafe section)
+                if (not albumId) or (albumId not in albums):
+                    # If you *want* missing mappings to still fall into the default album, flip this:
+                    albumId = defaultAlbumId if defaultAlbumId in albums else None
+                    if albumId is None:
+                        unclaimed.append(songName)
+                    continue
+
+                albumToSongs.setdefault(albumId, []).append(songName)
+
+            # Sort albums by displayName then id (stable, human-friendly)
+            def _albumSortKey(aid: str):
+                meta = albums.get(aid, {})
+                display = (meta.get("displayName") or aid).strip()
+                return (display.lower(), aid.lower())
+
+            orderedAlbumIds = sorted(albumToSongs.keys(), key=_albumSortKey)
+
+            # ---- Render UI sections ----
+            for albumId in orderedAlbumIds:
+                meta = albums.get(albumId, {})
+                displayName = (meta.get("displayName") or albumId).strip()
+
+                hdr = tk.Label(frame, text=displayName, font=headerFont, anchor="w")
+                hdr.pack(fill="x", padx=10, pady=(sectionPadY, 6))
+
+                songs = sorted(albumToSongs.get(albumId, []), key=_sortKey)
+                for songName in songs:
+                    self._addSongRow(frame, selectedGroup, songName, albums, callback, songStats.get(songName), sortMode)
+
+            if unclaimed:
+                hdr = tk.Label(frame, text="Unclaimed", font=headerFont, anchor="w", fg="#aa2222")
+                hdr.pack(fill="x", padx=10, pady=(sectionPadY, 6))
+
+                for songName in sorted(unclaimed, key=_sortKey):
+                    self._addSongRow(frame, selectedGroup, songName, albums, callback, songStats.get(songName), sortMode)
 
         # Update scroll region and restore scroll
         canvas.configure(scrollregion=canvas.bbox("all"))
@@ -1215,7 +1271,7 @@ class VoiceTrainerGUI:
         return "defaultTheme"
 
 
-    def _addSongRow(self, parentFrame, selectedGroup, songName, albums, callback):
+    def _addSongRow(self, parentFrame, selectedGroup, songName, albums, callback, songStat=None, sortMode="Alphabetical"):
         def _onPickSong(name):
             videoPath = self.songPickerVideoPathVar.get().strip() or None
             try:
@@ -1260,6 +1316,26 @@ class VoiceTrainerGUI:
             command=lambda name=songName: _onPickSong(name),
         )
         button.pack(side="left", fill="x", expand=True)
+
+        statText = self._formatSongStat(songStat, sortMode)
+        if statText:
+            tk.Label(songFrame, text=statText, font=("Helvetica", 11), fg="#666666").pack(side="right", padx=8)
+
+    def _formatSongStat(self, songStat, sortMode):
+        if not songStat:
+            return ""
+        if sortMode == "Song Length":
+            seconds = songStat.get("length_seconds")
+            if seconds is None:
+                return ""
+            minutes, secs = divmod(int(round(seconds)), 60)
+            return f"{minutes}:{secs:02d}"
+        if sortMode == "Fairness":
+            fairness = songStat.get("fairness")
+            if fairness is None:
+                return ""
+            return f"Fairness {round(fairness * 100)}%"
+        return ""
 
 
     def _bindScrollEverywhere(self, rootWidget, canvas):

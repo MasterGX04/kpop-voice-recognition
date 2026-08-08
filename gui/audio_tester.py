@@ -25,6 +25,7 @@ from gui.cut_clip_manager import CutClipManager
 from gui.history_manager import HistoryManager
 from gui.add_labels_menu import AddLabelsMenu
 from gui.line_distribution_panel import LineDistributionPanel
+from core import song_stats
 
 def resourcePath(*parts: str) -> str:
     # When packaged (PyInstaller), sys._MEIPASS points to the temp extracted dir
@@ -4195,9 +4196,11 @@ class VoiceDetectionApp:
         combined = list(byKey.values())
         combined.sort(key=lambda l: (l[1], l[2], l[0]))
 
-        self.clipManager.rebuild(self.labels, len(self.chunks)) 
+        self.clipManager.rebuild(self.labels, len(self.chunks))
         with open(labelFilePath, "w") as f:
             json.dump(combined, f, separators=(",", ":"))
-            
+
+        song_stats.invalidateSongStats(selectedGroup, self.songName)
+
         if hasattr(self, "labelLaneRenderer") and self.labelLaneRenderer:
             self.labelLaneRenderer.drawSection(self.currentSectionIndex, self.progressBarWidth)
