@@ -302,32 +302,36 @@ class VoiceTrainerGUI:
 
         orderedMembers = self._sortMembersByMode(groupName, members, totals)
 
-        for member in orderedMembers:
+        # Grid every row directly on self.scrollFrame (rather than one Frame per
+        # member) so column widths -- and therefore the bar's x position -- are
+        # computed across ALL rows at once. A long name in one row then widens
+        # that column for every row, keeping every bar aligned instead of each
+        # row's bar starting wherever its own name/time text happened to end.
+        for rowIndex, member in enumerate(orderedMembers):
             memberName = member['name']
-            frame = tk.Frame(self.scrollFrame, pady=5)
-            frame.pack(fill="x", padx=0)
 
             image = self.loadMemberImage(groupName, member)
             self.memberImageRefs.append(image)
 
-            labelImage = tk.Label(frame, image=image)
-            labelImage.pack(side="left")
+            labelImage = tk.Label(self.scrollFrame, image=image)
+            labelImage.grid(row=rowIndex, column=0, sticky="w", pady=5)
 
             labelImage.bind(
                 "<Button-3>",
                 lambda e, g=groupName, m=member: self.openMemberImageMenu(e, g, m)
             )
 
-            labelText = tk.Label(frame, text=memberName, font=("Helvetica", 18), fg="black")
-            labelText.pack(side="left", padx=20)
+            labelText = tk.Label(self.scrollFrame, text=memberName, font=("Helvetica", 18), fg="black", anchor="w")
+            labelText.grid(row=rowIndex, column=1, sticky="w", padx=20, pady=5)
 
             memberTotal = totals.get(memberName, 0.0)
             minutes, secs = divmod(int(round(memberTotal)), 60)
-            tk.Label(frame, text=f"{minutes}:{secs:02d}", font=("Helvetica", 14), fg="#666666").pack(side="left", padx=(0, 10))
+            timeLabel = tk.Label(self.scrollFrame, text=f"{minutes}:{secs:02d}", font=("Helvetica", 14), fg="#666666", anchor="w")
+            timeLabel.grid(row=rowIndex, column=2, sticky="w", padx=(0, 10), pady=5)
 
-            self._addMemberTimeBar(frame, member, memberTotal, maxTotal)
+            self._addMemberTimeBar(self.scrollFrame, member, memberTotal, maxTotal, row=rowIndex, column=3)
 
-    def _addMemberTimeBar(self, parentFrame, member, memberTotal, maxTotal):
+    def _addMemberTimeBar(self, parentWidget, member, memberTotal, maxTotal, row, column):
         if maxTotal <= 0:
             return
 
@@ -335,13 +339,13 @@ class VoiceTrainerGUI:
         color = member.get("color") or "#888888"
 
         canvas = tk.Canvas(
-            parentFrame,
+            parentWidget,
             width=MEMBER_BAR_MAX_WIDTH,
             height=MEMBER_BAR_HEIGHT,
             highlightthickness=0,
             bd=0,
         )
-        canvas.pack(side="left", padx=10)
+        canvas.grid(row=row, column=column, sticky="w", padx=10, pady=5)
         _drawRoundedRect(canvas, 0, 0, barWidth, MEMBER_BAR_HEIGHT, MEMBER_BAR_RADIUS, fill=color, outline="")
 
     def _sortMembersByMode(self, groupName, members, totals):
