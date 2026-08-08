@@ -10,7 +10,19 @@ CHUNK_MS = 40  # matches CHUNK_DURATION in core/audio_processing.py
 BACKING_WEIGHT = 0.7
 ADLIB_WEIGHT = 1.0
 
+# Reserved pseudo-member names used by the labeling UI (gui/audio_tester.py's
+# self.bannedNames) -- not real group members, so they must never enter
+# per-member fairness stats. "Cut" marks edited-out footage (not sung time
+# at all), so it's also excluded from song length.
+GANG_VOCAL_NAME = "Gang Vocal"
+CUT_NAME = "Cut"
+NON_MEMBER_NAMES = {GANG_VOCAL_NAME, CUT_NAME}
+
 SAVED_LABELS_DIR = "saved_labels"
+
+# Bump whenever the stat-computation logic changes, so stale cached values
+# (computed under old logic) get recomputed instead of trusted via mtime match.
+_CACHE_VERSION = 2
 
 
 def labelsPathFor(group, songName):
@@ -43,10 +55,12 @@ def computeSongLengthSeconds(labels):
     total = 0.0
     for entry in labels:
         try:
-            _, startChunk, endChunk, _, _ = entry
-            total += _chunkSpanSeconds(startChunk, endChunk)
+            member, startChunk, endChunk, _, _ = entry
         except (ValueError, TypeError):
             continue
+        if member == CUT_NAME:
+            continue  # edited-out footage, not sung time
+        total += _chunkSpanSeconds(startChunk, endChunk)
     return total if total > 0 else None
 
 
@@ -71,6 +85,8 @@ def computeSongFairness(labels):
             member, startChunk, endChunk, isBacking, isAdlib = entry
         except (ValueError, TypeError):
             continue
+        if member in NON_MEMBER_NAMES:
+            continue  # "Gang Vocal"/"Cut" aren't real members -- would skew mean/stdev
         duration = _chunkSpanSeconds(startChunk, endChunk)
         weight = _labelWeight(bool(isBacking), bool(isAdlib))
         memberSeconds[member] = memberSeconds.get(member, 0.0) + duration * weight
@@ -132,8 +148,9 @@ def getGroupSongStats(group, songNames):
     for songName in songNames:
         mtime = _currentMtime(group, songName)
         entry = cache.get(songName)
-        if entry is None or entry.get("mtime") != mtime:
-            entry = {"mtime": mtime, **_computeEntry(group, songName)}
+        stale = entry is None or entry.get("mtime") != mtime or entry.get("cacheVersion") != _CACHE_VERSION
+        if stale:
+            entry = {"mtime": mtime, "cacheVersion": _CACHE_VERSION, **_computeEntry(group, songName)}
             cache[songName] = entry
             changed = True
         result[songName] = {
@@ -152,5 +169,9 @@ def invalidateSongStats(group, songName):
     called right after its labels are saved so the picker doesn't need to wait
     for a lazy mtime check."""
     cache = _readCache(group)
-    cache[songName] = {"mtime": _currentMtime(group, songName), **_computeEntry(group, songName)}
+    cache[songName] = {
+        "mtime": _currentMtime(group, songName),
+        "cacheVersion": _CACHE_VERSION,
+        **_computeEntry(group, songName),
+    }
     _writeCache(group, cache)
