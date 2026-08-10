@@ -645,9 +645,10 @@ class LyricBox:
 
             nameHeight = self._getItemHeight(nameIds[0]) if nameIds else 0
         else:
+            singleName = (self.memberNames[0] if self.memberNames else "") if isinstance(self.memberNames, list) else self.memberNames
             nameId = self.canvas.create_text(
                 textX, curY,
-                text=self.memberNames,
+                text=singleName,
                 font=self.boldFont,
                 fill=self.memberColors[0],
                 anchor="nw",

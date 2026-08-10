@@ -527,7 +527,8 @@
                 "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/5/51/Nmixx_-_Heavy_Serenade.png",
                 "songs": [
                     "Crescendo",
-                    "Heavy Serenade"
+                    "Heavy Serenade",
+                    "Superior"
                 ]
             }
         },
@@ -535,7 +536,8 @@
             "Blue Valentine": "blue_valentine",
             "Love Me Like This": "expergo",
             "Crescendo": "heavy_serenade",
-            "Heavy Serenade": "heavy_serenade"
+            "Heavy Serenade": "heavy_serenade",
+            "Superior": "heavy_serenade"
         },
         "defaultAlbumId": "blue_valentine"
     },
