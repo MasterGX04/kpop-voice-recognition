@@ -56,12 +56,9 @@ class ZoomManager:
         visibleDuration = self.currentChunksInView * self.parent.chunk_duration
 
         # Update the current section index based on playback offset and new visible duration
-        if hasattr(self.parent, "playbackOffset"):
-            playbackPos = self.pygame.mixer.music.get_pos()
-            if playbackPos < 0:
-                playbackPos = 0
-            playbackTime = self.parent.playbackOffset + self.pygame.mixer.music.get_pos()
-            
+        if hasattr(self.parent, "clock"):
+            playbackTime = self.parent.clock.currentMs()
+
             if visibleDuration > 0:
                 self.parent.currentSectionIndex = max(
                     0,
@@ -120,14 +117,14 @@ class ZoomManager:
         r.unbind_all("<Button-5>")
         
     def _onMouseWheel(self, event):
-        if not self.zoomEnabled or not self.parent.isPlaying:
+        if not self.zoomEnabled:
             return
 
         direction = 1 if event.delta > 0 else -1
         self._applyZoomDelta(direction)
 
     def _onMouseWheelLinux(self, event):
-        if not self.zoomEnabled or not self.parent.isPlaying:
+        if not self.zoomEnabled:
             return
 
         direction = 1 if event.num == 4 else -1
@@ -147,12 +144,8 @@ class ZoomManager:
             self.updateZoomLevel(newZoom)
         
     def onZoomChange(self, newZoom):
-        if not self.parent.isPlaying:
-            self.zoomVar.set(1.0)  # Reset zoom level to default
-            return
-        """Handle zoom changes and update visi ble range"""
+        """Handle zoom changes and update visible range."""
         self.updateZoomLevel(newZoom)
-        # self.parent.updateProgressBar()
         
     def getVisibleChunks(self):
         """Return the current range of visible chunks based on the zoom level."""

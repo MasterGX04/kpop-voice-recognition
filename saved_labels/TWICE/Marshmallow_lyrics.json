@@ -1,11 +1,13 @@
 [
     {
-        "language": "Korean",
+        "lyricId": "915bc0f7-4df5-4d3d-912b-53070a1cf97e",
+        "linkedLabel": null,
+        "language": "Japanese",
         "memberName": [
             "Momo"
         ],
         "korean": "Listen 知らない街角 Uh\n自由に独り Walk on",
-        "romanization": "Listen shiranai machikado Uh\njiyuu ni hitori Walk on",
+        "romanization": "Listen shira nai machikado Uh\njiyuu ni hitori Walk on",
         "english": "Listen, on an unknown street,\nI walk on by myself",
         "startChunk": 250,
         "isAdLib": false,
@@ -13,7 +15,7 @@
         "anchorMode": "startChunk"
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Mina"
         ],
@@ -23,10 +25,12 @@
         "startChunk": 393,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "968d58c8-edba-4583-a2d9-f3d5062142ac",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Momo"
         ],
@@ -36,15 +40,19 @@
         "startChunk": 533,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "6f364d09-7f73-4e02-a185-df3f27b1ca0d",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "lyricId": "ccb24cd4-598f-4ae5-91ca-bce844e0c41c",
+        "linkedLabel": null,
+        "language": "Japanese",
         "memberName": [
             "Mina"
         ],
         "korean": "君の前じゃそれなりに\n嫌われないよう Worked on it",
-        "romanization": "kimi no mae ja sore nari ni\nkirawarenai you Worked on it",
+        "romanization": "kimi no mae ja sore nari ni\nkirawa re nai you Worked on it",
         "english": "I used to pretend when I was with you\nSo that you wouldn’t dislike me, I worked on it",
         "startChunk": 660,
         "isAdLib": false,
@@ -52,7 +60,7 @@
         "anchorMode": "startChunk"
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Momo"
         ],
@@ -62,10 +70,12 @@
         "startChunk": 794,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "83caa8d9-39e2-4012-be58-ceb8cf424988",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Sana"
         ],
@@ -75,7 +85,9 @@
         "startChunk": 918,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "270ae8a6-6510-4552-aa99-d0830f796a7a",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -88,10 +100,12 @@
         "startChunk": 976,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "42201e2b-86d7-42c1-9171-c1c8ab795509",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Momo"
         ],
@@ -101,10 +115,12 @@
         "startChunk": 1043,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "388a926c-7d62-471a-85ae-2b837ae9c068",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Momo"
         ],
@@ -114,10 +130,12 @@
         "startChunk": 1127,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "4ab08436-9cbf-4e54-bb7e-b1e0a6df08f8",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Sana"
         ],
@@ -127,10 +145,12 @@
         "startChunk": 1310,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "33bbf9ce-feef-42de-ba7c-baf9c9bdfbd2",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Mina"
         ],
@@ -140,10 +160,12 @@
         "startChunk": 1593,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "15bbf95b-9926-4a4d-9737-1af0782cad2f",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Sana"
         ],
@@ -153,10 +175,12 @@
         "startChunk": 1867,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "97fb48e7-aab7-44b7-bceb-5fd0eb95cd8b",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Mina"
         ],
@@ -166,10 +190,12 @@
         "startChunk": 1985,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "e5051e10-9e88-45e0-a3a1-7dcf87ea2768",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Sana"
         ],
@@ -179,10 +205,12 @@
         "startChunk": 2135,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "9b8ad906-f94a-40e3-bd80-3b7644f85d22",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Momo"
         ],
@@ -192,7 +220,9 @@
         "startChunk": 2261,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "9a6c84a1-088a-4c13-a97e-e114e6f3335e",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -205,7 +235,9 @@
         "startChunk": 2309,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "2dba3484-15be-454b-8bf6-bdb6ec0793c8",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -218,7 +250,9 @@
         "startChunk": 2375,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "80a3a8a5-687b-4cd0-85d7-727a403151c4",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -231,7 +265,9 @@
         "startChunk": 2394,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "580594b9-d47c-43e4-a3dd-bcf5cf5d59ad",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -244,7 +280,9 @@
         "startChunk": 2443,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "69d77d4b-a457-4791-8e55-902b4d708627",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -257,10 +295,12 @@
         "startChunk": 2509,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "827c10ae-910b-436b-8102-f8b96498fc72",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Momo"
         ],
@@ -270,10 +310,12 @@
         "startChunk": 2526,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "43139b5a-99dc-4abc-a108-e123db57b079",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Mina"
         ],
@@ -283,10 +325,12 @@
         "startChunk": 2642,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "e33f33d6-9d15-474e-b294-a18b67735c5e",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Sana"
         ],
@@ -296,10 +340,12 @@
         "startChunk": 2928,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "88f252be-ec18-49f5-b895-9d4929ebde8b",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Momo"
         ],
@@ -309,10 +355,12 @@
         "startChunk": 3185,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "42394598-344f-40ca-af7c-4253d46bd61f",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Mina"
         ],
@@ -322,10 +370,12 @@
         "startChunk": 3458,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "d601a507-d70f-4f50-9275-82878bc84277",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Sana"
         ],
@@ -335,10 +385,12 @@
         "startChunk": 3710,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "adbd5190-c6fb-4559-b94a-b00bd394b234",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Mina"
         ],
@@ -348,6 +400,8 @@
         "startChunk": 3994,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "df1ddb21-16a4-47bd-a187-585a344eb0b3",
+        "linkedLabel": null
     }
 ]

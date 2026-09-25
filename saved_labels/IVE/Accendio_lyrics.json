@@ -7,7 +7,9 @@
         "korean": "Dear priest 고백할 게 있어\n피 한 방울과 tears\n그저 연극일 뿐",
         "romanization": "Dear priest gobaekhal ge isseo\npi han bangulgwa tears\ngeujeo yeongeugil ppun",
         "english": "Dear priest, I have a confession to make\nWith a drop of blood and tears\nIt’s just a play",
-        "startChunk": 188
+        "startChunk": 188,
+        "lyricId": "e53fdfc3-ad61-48e0-9dc5-306545bd5de3",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -17,7 +19,9 @@
         "korean": "이건 은밀한 독백\n아름답지만 Born bad\n예측하지 마 No way\nYou just talk too much",
         "romanization": "igeon eunmilhan dokbaek\nareumdapjiman Born bad\nyecheukhaji ma No way\nYou just talk too much",
         "english": "This is a secret soliloquy\nBeautiful but born bad\nDon’t predict it, no way\nYou just talk too much",
-        "startChunk": 359
+        "startChunk": 359,
+        "lyricId": "f7f3b1a8-d6ed-46a6-97b6-dafe14855f53",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -27,7 +31,9 @@
         "korean": "오 아름답지만 섬찟할 거야\n첫인상은 강한 게 좋지",
         "romanization": "o areumdapjiman seomjjithal geoya\ncheotinsangeun ganghan ge jochi",
         "english": "Oh beautiful but chilling\nFirst impressions, the stronger the better",
-        "startChunk": 520
+        "startChunk": 520,
+        "lyricId": "ccdba140-7f18-4643-b812-0568901b3d1e",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -37,7 +43,9 @@
         "korean": "오 다정하지만 얼음장 같아\nGonna make you crazy",
         "romanization": "o dajeonghajiman eoreumjang gata\nGonna make you crazy",
         "english": "Oh affectionate but cold as ice\nGonna make you crazy",
-        "startChunk": 692
+        "startChunk": 692,
+        "lyricId": "c62a7797-7c47-4e13-9af4-736d351b5505",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -47,7 +55,9 @@
         "korean": "우 평온했던 심장이\n나를 볼 때 Yeah I like that 멎을지 몰라",
         "romanization": "u pyeongonhaetteon shimjangi\nnareul bol ttae Yeah I like that meojeulji molla",
         "english": "Oooh, when your calm heart sees me,\nYeah I like that, it might stop",
-        "startChunk": 862
+        "startChunk": 862,
+        "lyricId": "efc067b6-2b8f-4cb5-b38e-0570c2593285",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -57,7 +67,9 @@
         "korean": "",
         "romanization": "",
         "english": "Now I’m changing, can’t you see?",
-        "startChunk": 1059
+        "startChunk": 1059,
+        "lyricId": "546d87fc-96b2-463b-be0f-a649382af5a9",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -67,7 +79,9 @@
         "korean": "",
         "romanization": "",
         "english": "Five, six, seven, eight",
-        "startChunk": 1162
+        "startChunk": 1162,
+        "lyricId": "97f6654e-9e57-4e2b-a5ce-968e35c0bc92",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -77,7 +91,9 @@
         "korean": "",
         "romanization": "",
         "english": "Watch me, don’t touch me\nLove me, don’t hurt me\nWatch me, don’t touch me",
-        "startChunk": 1216
+        "startChunk": 1216,
+        "lyricId": "a5cde2b3-4b9d-4993-a4d0-b31ec05faa0e",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -87,7 +103,9 @@
         "korean": "주문 걸어 아센디오",
         "romanization": "jumun georeo asendio",
         "english": "Cast a spell Accendio",
-        "startChunk": 1334
+        "startChunk": 1334,
+        "lyricId": "14e2a3fa-6bab-490a-9635-a866382b8af3",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -97,7 +115,9 @@
         "korean": "",
         "romanization": "",
         "english": "Watch me, don’t touch me\nLove me, don’t hurt me\nWatch me, don’t touch me",
-        "startChunk": 1387
+        "startChunk": 1387,
+        "lyricId": "a7347437-67f3-4ab3-8e5e-a6425fef9686",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -107,7 +127,9 @@
         "korean": "주문 걸어 아센디오",
         "romanization": "jumun georeo asendio",
         "english": "Cast a spell Accendio",
-        "startChunk": 1506
+        "startChunk": 1506,
+        "lyricId": "4e08e41e-bf4a-4971-a0f4-15258a6b3033",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -117,7 +139,9 @@
         "korean": "손끝으로 아센디오",
         "romanization": "sonkkeuteureo asendio",
         "english": "Accendio with your fingertips",
-        "startChunk": 1677
+        "startChunk": 1677,
+        "lyricId": "61aa0a6a-7db5-4d35-8bba-541abe6ccc3f",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -127,7 +151,9 @@
         "korean": "손끝으로 아센디오",
         "romanization": "sonkkeuteureo asendio",
         "english": "Accendio with your fingertips",
-        "startChunk": 1847
+        "startChunk": 1847,
+        "lyricId": "a70c82e1-7134-4cbd-a2e9-b897745d3b93",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -137,7 +163,9 @@
         "korean": "오 절벽에서 Turn\n처음 보는 색채로 물든 동공",
         "romanization": "o jeolbyeogeseo Turn\ncheoeum boneun saekchaero muldeun donggong",
         "english": "Turn from the cliff\nPupils dyed with colors never seen before",
-        "startChunk": 1933
+        "startChunk": 1933,
+        "lyricId": "881329d5-b630-4525-a75f-f90dbb0454db",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -147,7 +175,9 @@
         "korean": "그 감정은 pure\n그 눈빛은 love\n쉽지는 않을 거야 Out of control",
         "romanization": "geu gamjeongeun pure\ngeu nunbicheun love\nshwipjineun aneul geoya Out of control",
         "english": "That emotion is pure\nThat gaze is love\nIt won’t be easy, Out of control",
-        "startChunk": 2085
+        "startChunk": 2085,
+        "lyricId": "d8e310b3-b0b7-4d1e-8b02-d130082102cd",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -157,7 +187,9 @@
         "korean": "향기 가득 채워 둔 미로\n연기 속으로 널 밀어\n여섯 방울 magic syrup\nAnd we pop into the mirror",
         "romanization": "hyanggi gadeuk chaeweo dun miro\nyeongi sogeuro neol mireo\nyeoseot bangul magic syrup\nAnd we pop into the mirror",
         "english": "A maze filled with a scent\nPushing you into the smoke\nSix drops of magic syrup\nAnd we pop into the mirror",
-        "startChunk": 2266
+        "startChunk": 2266,
+        "lyricId": "e0e42180-be01-4912-a863-0bfe420ae387",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -167,7 +199,9 @@
         "korean": "온몸에 붙어있는 pearl\n두 손가락으로 Swirl\n보여줘 달콤한 curse\nLet them B U R N yeah",
         "romanization": "온몸에 붙어있는 pearl\n두 손가락으로 Swirl\n보여줘 달콤한 curse\nLet them B U R N yeah",
         "english": "Pearls all over my body\nSwirl two fingers\nShow you a sweet curse\nLet them B U RN",
-        "startChunk": 2434
+        "startChunk": 2434,
+        "lyricId": "3afa61ea-e253-4503-89e4-47bcc93afb46",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -177,7 +211,9 @@
         "korean": "우 평온했던 심장이\n나를 볼 때 Yeah I like that 멎을지 몰라",
         "romanization": "u pyeongonhaetteon shimjangi\nnareul bol ttae Yeah I like that meojeulji molla",
         "english": "Oooh, when your calm heart sees me,\nYeah I like that, it might stop",
-        "startChunk": 2623
+        "startChunk": 2623,
+        "lyricId": "01ab8f64-34b1-4ec4-a6cf-524e21372edd",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -187,7 +223,9 @@
         "korean": "",
         "romanization": "",
         "english": "Now I’m changing, can’t you see?",
-        "startChunk": 2817
+        "startChunk": 2817,
+        "lyricId": "fb19d346-6b54-4be8-9782-fd7c561f8f8e",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -197,7 +235,9 @@
         "korean": "",
         "romanization": "",
         "english": "Five, six, seven, eight",
-        "startChunk": 2918
+        "startChunk": 2918,
+        "lyricId": "413c223b-03c2-4287-bcae-a0af04fe3421",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -207,7 +247,9 @@
         "korean": "",
         "romanization": "",
         "english": "Watch me, don’t touch me\nLove me, don’t hurt me\nWatch me, don’t touch me",
-        "startChunk": 2972
+        "startChunk": 2972,
+        "lyricId": "9a39dd7f-43c0-4365-905c-dee61df6e3c5",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -217,7 +259,9 @@
         "korean": "주문 걸어 아센디오",
         "romanization": "jumun georeo asendio",
         "english": "Cast a spell Accendio",
-        "startChunk": 3091
+        "startChunk": 3091,
+        "lyricId": "5bd98700-a965-4166-a76e-bccce4807cb4",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -227,7 +271,9 @@
         "korean": "",
         "romanization": "",
         "english": "Watch me, don’t touch me\nLove me, don’t hurt me\nWatch me, don’t touch me",
-        "startChunk": 3146
+        "startChunk": 3146,
+        "lyricId": "1c1f35f0-efdc-4b42-8103-fd84b74ed2bc",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -237,7 +283,9 @@
         "korean": "주문 걸어 아센디오",
         "romanization": "jumun georeo asendio",
         "english": "Cast a spell Accendio",
-        "startChunk": 3264
+        "startChunk": 3264,
+        "lyricId": "c035dc8e-053c-4991-a4af-3b7584c7fa99",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -247,7 +295,9 @@
         "korean": "손끝으로 아센디오",
         "romanization": "sonkkeuteureo asendio",
         "english": "Accendio with your fingertips",
-        "startChunk": 3434
+        "startChunk": 3434,
+        "lyricId": "abede51c-ac21-4d97-964b-a90139a5302f",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -257,7 +307,9 @@
         "korean": "손끝으로 아센디오",
         "romanization": "sonkkeuteureo asendio",
         "english": "Accendio with your fingertips",
-        "startChunk": 3605
+        "startChunk": 3605,
+        "lyricId": "2812321b-c345-4052-a4a1-2700576f87cd",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -267,7 +319,9 @@
         "korean": "주문 걸어 아센디오",
         "romanization": "jumun georeo asendio",
         "english": "Cast a spell Accendio",
-        "startChunk": 3777
+        "startChunk": 3777,
+        "lyricId": "b7d222c5-172c-4583-9231-48aa53ffd43b",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -277,7 +331,9 @@
         "korean": "",
         "romanization": "",
         "english": "Watch me, don’t touch me\nLove me, don’t hurt me\nWatch me, don’t touch me",
-        "startChunk": 4001
+        "startChunk": 4001,
+        "lyricId": "0c7c33e1-c002-469e-9d83-48c96b6c5b70",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -287,7 +343,9 @@
         "korean": "주문 걸어 아센디오",
         "romanization": "jumun georeo asendio",
         "english": "Cast a spell Accendio",
-        "startChunk": 4119
+        "startChunk": 4119,
+        "lyricId": "fcdb69f2-a53c-46e0-9b15-61c67e81c475",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -297,7 +355,9 @@
         "korean": "",
         "romanization": "",
         "english": "Watch me, don’t touch me\nLove me, don’t hurt me\nWatch me, don’t touch me",
-        "startChunk": 4173
+        "startChunk": 4173,
+        "lyricId": "b9d035dc-c3a2-41ce-bd82-32f0020e4894",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -306,8 +366,10 @@
         ],
         "korean": "주문 걸어 아센디오",
         "romanization": "jumun georeo asendio",
-        "english": "Cast a spell Accendio", 
-        "startChunk": 4291
+        "english": "Cast a spell Accendio",
+        "startChunk": 4291,
+        "lyricId": "de58dfd3-bb4c-4fc6-8cd1-07307e3cfea7",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -317,7 +379,9 @@
         "korean": "손끝으로 아센디오",
         "romanization": "sonkkeuteureo asendio",
         "english": "Accendio with your fingertips",
-        "startChunk": 4461
+        "startChunk": 4461,
+        "lyricId": "4c9b2465-e771-4183-99c7-dcfbe5271b1e",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -327,6 +391,8 @@
         "korean": "손끝으로 아센디오",
         "romanization": "sonkkeuteureo asendio",
         "english": "Accendio with your fingertips",
-        "startChunk": 4632
+        "startChunk": 4632,
+        "lyricId": "6ced26e7-1380-43a4-8e9b-e84c01cee975",
+        "linkedLabel": null
     }
 ]

@@ -1,0 +1,976 @@
+[
+    {
+        "surface": "忙しなく",
+        "reading": "せわしなく",
+        "lemma": "忙しない",
+        "lemmaReading": "せわしない",
+        "category": "jukujigo",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "adjective (keiyoushi)"
+            ],
+            "gloss": [
+                "restless",
+                "fidgety",
+                "in a hurry"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "忙",
+            "pinyin": "mang2"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Suga: 忙しなくする日々 Keeping myself busy\n紛らわすため埋め込んだ Schedule\nでも忘れられないよ\n脳裏に焼き付いてる Like tattoo"
+    },
+    {
+        "surface": "日々",
+        "reading": "ひび",
+        "lemma": "日々",
+        "lemmaReading": "ひび",
+        "category": "jukujigo",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "nouns which may take the genitive case particle 'no'"
+            ],
+            "gloss": [
+                "daily",
+                "everyday"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "日",
+            "pinyin": "ri4"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Suga: 忙しなくする日々 Keeping myself busy\n紛らわすため埋め込んだ Schedule\nでも忘れられないよ\n脳裏に焼き付いてる Like tattoo"
+    },
+    {
+        "surface": "紛らわす",
+        "reading": "まぎらわす",
+        "lemma": "紛らわす",
+        "lemmaReading": "まぎらわす",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'su' ending",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to divert (e.g. one's mind)",
+                "to distract",
+                "to relieve (boredom, sorrow, etc.)",
+                "to drown (one's sorrows)",
+                "to beguile (the time)"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "紛",
+            "pinyin": "fen1"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Suga: 忙しなくする日々 Keeping myself busy\n紛らわすため埋め込んだ Schedule\nでも忘れられないよ\n脳裏に焼き付いてる Like tattoo"
+    },
+    {
+        "surface": "埋め込ん",
+        "reading": "うめこん",
+        "lemma": "埋め込む",
+        "lemmaReading": "うめこむ",
+        "category": "jukujigo",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'mu' ending",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to bury",
+                "to embed",
+                "to implant"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "埋込",
+            "pinyin": "mai2 込"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Suga: 忙しなくする日々 Keeping myself busy\n紛らわすため埋め込んだ Schedule\nでも忘れられないよ\n脳裏に焼き付いてる Like tattoo"
+    },
+    {
+        "surface": "忘れ",
+        "reading": "わすれ",
+        "lemma": "忘れる",
+        "lemmaReading": "わすれる",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Ichidan verb",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to forget",
+                "to leave carelessly",
+                "to be forgetful of",
+                "to forget about",
+                "to forget (an article)"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "忘",
+            "pinyin": "wang4"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Suga: 忙しなくする日々 Keeping myself busy\n紛らわすため埋め込んだ Schedule\nでも忘れられないよ\n脳裏に焼き付いてる Like tattoo"
+    },
+    {
+        "surface": "脳裏",
+        "reading": "のうり",
+        "lemma": "脳裏",
+        "lemmaReading": "のうり",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "not_attested",
+            "traditional": "腦裏",
+            "pinyinFallback": "nao3 li3"
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "one's mind"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "腦裏",
+            "pinyin": "nao3 li3"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Suga: 忙しなくする日々 Keeping myself busy\n紛らわすため埋め込んだ Schedule\nでも忘れられないよ\n脳裏に焼き付いてる Like tattoo"
+    },
+    {
+        "surface": "焼き付い",
+        "reading": "やきつい",
+        "lemma": "焼き付く",
+        "lemmaReading": "やきつく",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'ku' ending",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to be scorched into",
+                "to be seared into"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "燒付",
+            "pinyin": "shao1 fu4"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Suga: 忙しなくする日々 Keeping myself busy\n紛らわすため埋め込んだ Schedule\nでも忘れられないよ\n脳裏に焼き付いてる Like tattoo"
+    },
+    {
+        "surface": "頃",
+        "reading": "ころ",
+        "lemma": "頃",
+        "lemmaReading": "ころ",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)",
+                "adverb (fukushi)",
+                "noun, used as a suffix"
+            ],
+            "gloss": [
+                "(approximate) time",
+                "around",
+                "about",
+                "toward"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "頃",
+            "pinyin": "qing1"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Suga: あの頃には戻れないね\n出来ることなら Call your name\nNo but 受け止める Your blame\n本当に It is time to say goodbye"
+    },
+    {
+        "surface": "戻れ",
+        "reading": "もどれ",
+        "lemma": "戻る",
+        "lemmaReading": "もどる",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'ru' ending",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to turn back (e.g. half-way)"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "戾",
+            "pinyin": "li4"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Suga: あの頃には戻れないね\n出来ることなら Call your name\nNo but 受け止める Your blame\n本当に It is time to say goodbye"
+    },
+    {
+        "surface": "出来る",
+        "reading": "できる",
+        "lemma": "出来る",
+        "lemmaReading": "できる",
+        "category": "jukujigo",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Ichidan verb",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to be able to do",
+                "to be possible",
+                "to be permitted (to do)"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "出來",
+            "pinyin": "chu1 lai2"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Suga: あの頃には戻れないね\n出来ることなら Call your name\nNo but 受け止める Your blame\n本当に It is time to say goodbye"
+    },
+    {
+        "surface": "受け止める",
+        "reading": "うけとめる",
+        "lemma": "受け止める",
+        "lemmaReading": "うけとめる",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Ichidan verb",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to catch",
+                "to stop the blow"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "受止",
+            "pinyin": "shou4 zhi3"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Suga: あの頃には戻れないね\n出来ることなら Call your name\nNo but 受け止める Your blame\n本当に It is time to say goodbye"
+    },
+    {
+        "surface": "逃げ",
+        "reading": "にげ",
+        "lemma": "逃げる",
+        "lemmaReading": "にげる",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Ichidan verb",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to run away",
+                "to flee",
+                "to get away (e.g. from danger)",
+                "to escape",
+                "to break out",
+                "to leave (e.g. one's spouse)",
+                "to take cover"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "逃",
+            "pinyin": "tao2"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Jimin: I gotta let you know that I need to let you go\nHard to say goodbye\nでも逃げない"
+    },
+    {
+        "surface": "今頃",
+        "reading": "いまごろ",
+        "lemma": "今頃",
+        "lemmaReading": "いまごろ",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)",
+                "adverb (fukushi)"
+            ],
+            "gloss": [
+                "about this time",
+                "about now"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "今頃",
+            "pinyin": "jin1 qing1"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "J-Hope: 今頃どこで何をしてる\n遠く離れて誰を想う\n君がいない生活はもう、Unbelievable\nそれでも行くしかねーんだ"
+    },
+    {
+        "surface": "何",
+        "reading": "なん",
+        "lemma": "何",
+        "lemmaReading": "なに",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "pronoun"
+            ],
+            "gloss": [
+                "what"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "何",
+            "pinyin": "he2"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "J-Hope: 今頃どこで何をしてる\n遠く離れて誰を想う\n君がいない生活はもう、Unbelievable\nそれでも行くしかねーんだ"
+    },
+    {
+        "surface": "遠く",
+        "reading": "とうく",
+        "lemma": "遠い",
+        "lemmaReading": "とおい",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "adjective (keiyoushi)"
+            ],
+            "gloss": [
+                "far",
+                "distant",
+                "far away",
+                "a long way off",
+                "in the distance"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "遠",
+            "pinyin": "yuan3"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "J-Hope: 今頃どこで何をしてる\n遠く離れて誰を想う\n君がいない生活はもう、Unbelievable\nそれでも行くしかねーんだ"
+    },
+    {
+        "surface": "離れ",
+        "reading": "はなれ",
+        "lemma": "離れる",
+        "lemmaReading": "はなれる",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Ichidan verb",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to be separated",
+                "to be apart",
+                "to be distant"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "離",
+            "pinyin": "li2"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "J-Hope: 今頃どこで何をしてる\n遠く離れて誰を想う\n君がいない生活はもう、Unbelievable\nそれでも行くしかねーんだ"
+    },
+    {
+        "surface": "誰",
+        "reading": "だれ",
+        "lemma": "誰",
+        "lemmaReading": "だれ",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "pronoun"
+            ],
+            "gloss": [
+                "who"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "誰",
+            "pinyin": "shei2"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "J-Hope: 今頃どこで何をしてる\n遠く離れて誰を想う\n君がいない生活はもう、Unbelievable\nそれでも行くしかねーんだ"
+    },
+    {
+        "surface": "想う",
+        "reading": "おもう",
+        "lemma": "思う",
+        "lemmaReading": "おもう",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'u' ending",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to think",
+                "to consider",
+                "to believe",
+                "to reckon"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "思",
+            "pinyin": "si1"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "J-Hope: 今頃どこで何をしてる\n遠く離れて誰を想う\n君がいない生活はもう、Unbelievable\nそれでも行くしかねーんだ"
+    },
+    {
+        "surface": "君",
+        "reading": "きみ",
+        "lemma": "君",
+        "lemmaReading": "きみ",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "pronoun"
+            ],
+            "gloss": [
+                "you",
+                "buddy",
+                "pal"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "君",
+            "pinyin": "jun1"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "J-Hope: 今頃どこで何をしてる\n遠く離れて誰を想う\n君がいない生活はもう、Unbelievable\nそれでも行くしかねーんだ"
+    },
+    {
+        "surface": "生活",
+        "reading": "せいかつ",
+        "lemma": "生活",
+        "lemmaReading": "せいかつ",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "生活",
+            "pinyin": "sheng1 huo2",
+            "gloss": [
+                "to live",
+                "life",
+                "livelihood"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)",
+                "noun or participle which takes the aux. verb suru",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "life",
+                "living"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "生活",
+            "pinyin": "sheng1 huo2"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "J-Hope: 今頃どこで何をしてる\n遠く離れて誰を想う\n君がいない生活はもう、Unbelievable\nそれでも行くしかねーんだ"
+    },
+    {
+        "surface": "行く",
+        "reading": "いく",
+        "lemma": "行く",
+        "lemmaReading": "いく",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb - Iku/Yuku special class",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to go",
+                "to move (towards)",
+                "to head (towards)",
+                "to leave (for)"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "行",
+            "pinyin": "hang2"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "J-Hope: 今頃どこで何をしてる\n遠く離れて誰を想う\n君がいない生活はもう、Unbelievable\nそれでも行くしかねーんだ"
+    },
+    {
+        "surface": "俺",
+        "reading": "おれ",
+        "lemma": "俺",
+        "lemmaReading": "おれ",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "pronoun"
+            ],
+            "gloss": [
+                "I",
+                "me"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "俺",
+            "pinyin": "an3"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "J-Hope: 俺が愛し過ぎた人\n絡み過ぎて絡みあった糸\n解けなくなって別の道を歩む\nそのために I’ll say goodbye"
+    },
+    {
+        "surface": "愛し",
+        "reading": "あいし",
+        "lemma": "愛する",
+        "lemmaReading": "あいする",
+        "category": "jukujigo",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "suru verb - special class",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to love"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "愛",
+            "pinyin": "ai4"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "J-Hope: 俺が愛し過ぎた人\n絡み過ぎて絡みあった糸\n解けなくなって別の道を歩む\nそのために I’ll say goodbye"
+    },
+    {
+        "surface": "過ぎ",
+        "reading": "すぎ",
+        "lemma": "過ぎる",
+        "lemmaReading": "すぎる",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Ichidan verb",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to pass through",
+                "to pass by",
+                "to go beyond"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "過",
+            "pinyin": "guo4"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "J-Hope: 俺が愛し過ぎた人\n絡み過ぎて絡みあった糸\n解けなくなって別の道を歩む\nそのために I’ll say goodbye"
+    },
+    {
+        "surface": "人",
+        "reading": "ひと",
+        "lemma": "人",
+        "lemmaReading": "ひと",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "person",
+                "someone",
+                "somebody"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "人",
+            "pinyin": "ren2"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "J-Hope: 俺が愛し過ぎた人\n絡み過ぎて絡みあった糸\n解けなくなって別の道を歩む\nそのために I’ll say goodbye"
+    },
+    {
+        "surface": "絡み",
+        "reading": "からみ",
+        "lemma": "絡む",
+        "lemmaReading": "からむ",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'mu' ending",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to twine",
+                "to get tangled",
+                "to get entangled",
+                "to get caught (in)"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "絡",
+            "pinyin": "lao4"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "J-Hope: 俺が愛し過ぎた人\n絡み過ぎて絡みあった糸\n解けなくなって別の道を歩む\nそのために I’ll say goodbye"
+    },
+    {
+        "surface": "絡みあっ",
+        "reading": "からみあっ",
+        "lemma": "絡み合う",
+        "lemmaReading": "からみあう",
+        "category": "jukujigo",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'u' ending",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to intertwine",
+                "to become entangled",
+                "to get tangled (together)"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "絡合",
+            "pinyin": "lao4 ge3"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "J-Hope: 俺が愛し過ぎた人\n絡み過ぎて絡みあった糸\n解けなくなって別の道を歩む\nそのために I’ll say goodbye"
+    },
+    {
+        "surface": "糸",
+        "reading": "いと",
+        "lemma": "糸",
+        "lemmaReading": "いと",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)",
+                "noun, used as a suffix"
+            ],
+            "gloss": [
+                "thread",
+                "yarn",
+                "string"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "絲",
+            "pinyin": "si1"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "J-Hope: 俺が愛し過ぎた人\n絡み過ぎて絡みあった糸\n解けなくなって別の道を歩む\nそのために I’ll say goodbye"
+    },
+    {
+        "surface": "解け",
+        "reading": "とけ",
+        "lemma": "解ける",
+        "lemmaReading": "とける",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Ichidan verb",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to be solved",
+                "to be worked out"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "解",
+            "pinyin": "jie3"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "J-Hope: 俺が愛し過ぎた人\n絡み過ぎて絡みあった糸\n解けなくなって別の道を歩む\nそのために I’ll say goodbye"
+    },
+    {
+        "surface": "別",
+        "reading": "べつ",
+        "lemma": "別",
+        "lemmaReading": "べつ",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "別",
+            "pinyin": "Bie2",
+            "gloss": [
+                "surname Bie"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "distinction",
+                "difference",
+                "discrimination"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "別",
+            "pinyin": "Bie2"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "J-Hope: 俺が愛し過ぎた人\n絡み過ぎて絡みあった糸\n解けなくなって別の道を歩む\nそのために I’ll say goodbye"
+    },
+    {
+        "surface": "道",
+        "reading": "みち",
+        "lemma": "道",
+        "lemmaReading": "みち",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "road",
+                "path",
+                "street",
+                "lane",
+                "passage"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "道",
+            "pinyin": "dao4"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "J-Hope: 俺が愛し過ぎた人\n絡み過ぎて絡みあった糸\n解けなくなって別の道を歩む\nそのために I’ll say goodbye"
+    },
+    {
+        "surface": "歩む",
+        "reading": "あゆむ",
+        "lemma": "歩む",
+        "lemmaReading": "あゆむ",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'mu' ending",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to walk",
+                "to go on foot"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "步",
+            "pinyin": "bu4"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "J-Hope: 俺が愛し過ぎた人\n絡み過ぎて絡みあった糸\n解けなくなって別の道を歩む\nそのために I’ll say goodbye"
+    },
+    {
+        "surface": "二人",
+        "reading": "ふたり",
+        "lemma": "二人",
+        "lemmaReading": "ふたり",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "two persons",
+                "two people",
+                "pair",
+                "couple"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "二人",
+            "pinyin": "er4 ren2"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Jin: 二人で見た空の色"
+    },
+    {
+        "surface": "見",
+        "reading": "み",
+        "lemma": "見る",
+        "lemmaReading": "みる",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Ichidan verb",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to see",
+                "to look",
+                "to watch",
+                "to view",
+                "to observe"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "見",
+            "pinyin": "jian4"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Jin: 二人で見た空の色"
+    },
+    {
+        "surface": "空",
+        "reading": "そら",
+        "lemma": "空",
+        "lemmaReading": "そら",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "sky",
+                "the air",
+                "the heavens"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "空",
+            "pinyin": "kong1"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Jin: 二人で見た空の色"
+    },
+    {
+        "surface": "色",
+        "reading": "いろ",
+        "lemma": "色",
+        "lemmaReading": "いろ",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "colour",
+                "color",
+                "hue",
+                "tint",
+                "tinge",
+                "shade"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "色",
+            "pinyin": "se4"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Jin: 二人で見た空の色"
+    },
+    {
+        "surface": "香り",
+        "reading": "かおり",
+        "lemma": "香り",
+        "lemmaReading": "かおり",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "aroma",
+                "fragrance",
+                "scent",
+                "smell"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "香",
+            "pinyin": "xiang1"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "V: 二人がいた道の香り"
+    }
+]

@@ -1,0 +1,56 @@
+2. The Song-Graph Audio Flashcard EngineInstead of generic textbook sentences, your "Context Sentences" should be the actual song audio segments you already have in saved_labels.  The Prompt Card:Displays the lyric line with the target word blanked out: その瞳は＿＿ (BTS — Stay Gold).Plays the precise 1.5-second audio chunk of the singer (e.g., Jungkook singing the line).  Input: Type the reading or tap "Recall".Cross-Song Repetition Signal:When you review a word (e.g., 今 or 時間), the card displays its occurrence graph:  Found across 3 songs:BTS — Let Go (Jungkook, J-Hope)  TWICE — Breakthrough (Tzuyu)  TWICE — Funny Valentine (Sana, Mina)  Clicking any song plays that specific artist's audio rendition. This builds phonetic invariance across different pitches, tempos, and vocal timbres.
+
+3. The Tri-Lingual Ideographic Bridge (JA ↔ KO ↔ ZH)Whenever a Sino-vocabulary word enters your review queue, show the comparative triangle:ElementJapanese (Kanji)Korean (Hanja)Chinese (Source)Form瞬間 (しゅんかん)  순간 (瞬間)瞬間 (shùnjiān)Sound Shift RuleEnds in open vowel $\rightarrow$ adds -nPreserves final -n (ㄴ)Alveolar nasal (-n)Example TrackTWICE — Do Not Touch (Momo)  IVE — After LIKE—The Sound-Law Cheat Code: Add an automated tag highlighting Middle Chinese sound laws:If Mandarin ends in -ng $\rightarrow$ Japanese vowel elongates (-ou/-ei), Korean takes ㅇ (-ng).If Cantonese ends in a checked stop (-p, -t, -k) $\rightarrow$ Korean ends in ㅂ/ㄹ/ㄱ, Japanese appends -tsu/-ku.
+
+4. Grammar Pattern Collector & Suffix QuizzerGrammar should not be studied as isolated abstract rules. Leverage your kiwipiepy morpheme output and your Japanese Bunsetsu parser to extract high-frequency suffixes:  Grammar Formula Cards:Korean: [Verb Stem] + 듯 ("as if / as though") or [Verb Stem] + 을게/ㄹ게 ("promissory future").  Japanese: [Verb Stem] + ほど ("the more... the more...") or 〜じゃん ("isn't it?").Cloze Grammar Drills:Take a raw lyric line: 네가 내게 그랬___ 늘 말했___Fill in the particle/ending from a rapid-fire choice matrix (듯 vs 면 vs 니). 
+
+Use Embedded SQLite for the database.
+
+- Python + PyWebView (HTML/CSS/JS frontend)
+- Frontend Display (HTML5 / Tailwind / Vanilla JS):
+
+Renders the flashcards, lyrics, and character furigana using simple CSS flexbox and CSS animations.
+
+When you press Space or 1-4 to rate a card, JavaScript calls window.pywebview.api.submit_review(word_id, rating) directly into your local SQLite review loop.
+
+Audio triggers locally through your existing Python player with zero latency.
+
+Minimal SQLite Schema:
+-- Core vocabulary entry
+CREATE TABLE vocab (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    language TEXT CHECK(language IN ('ja', 'ko')),
+    lemma TEXT NOT NULL,
+    surface TEXT NOT NULL,
+    reading TEXT NOT NULL,
+    traditional_hanzi TEXT,
+    pinyin TEXT,
+    category TEXT,            -- onyomi, kunyomi, jukujigo, etc.
+    meaning_gloss TEXT,
+    UNIQUE(language, lemma)
+);
+
+-- SRS review tracking (Anki SM-2 / Leitner state)
+CREATE TABLE srs_card (
+    vocab_id INTEGER PRIMARY KEY,
+    reading_state INTEGER DEFAULT 0,  -- 0: unseen, 1: learning, 2: mastered
+    meaning_state INTEGER DEFAULT 1,  -- 1: recognized via Hanzi, 0: unknown
+    box INTEGER DEFAULT 1,            -- Current review bucket
+    ease_factor REAL DEFAULT 2.5,
+    interval_days INTEGER DEFAULT 0,
+    due_timestamp INTEGER,
+    FOREIGN KEY(vocab_id) REFERENCES vocab(id) ON DELETE CASCADE
+);
+
+-- Links words back to specific song timestamps
+CREATE TABLE song_occurrences (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    vocab_id INTEGER,
+    group_name TEXT,
+    song_title TEXT,
+    singer_name TEXT,
+    lyric_line TEXT,
+    start_chunk INTEGER,
+    end_chunk INTEGER,
+    FOREIGN KEY(vocab_id) REFERENCES vocab(id) ON DELETE CASCADE
+);

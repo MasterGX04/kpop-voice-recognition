@@ -40,6 +40,18 @@ class VideoTrackItem(TrackItem):
         self.renderAfterId = None
         self.decodeStop = threading.Event()
         self.lastSeekFrameIndex = 0
+
+        # Scrubbing: the GUI thread only ever records the latest requested time here
+        # (never touches cv2 directly) — the decode thread performs the actual seek.
+        # Rapid drag events naturally coalesce onto whatever is newest.
+        self._pendingSeekMs = None
+        self._pendingSeekResync = True
+        self._seekEvent = threading.Event()
+
+        # Cached audio clock, sampled on the main thread only (see _sampleAudioClock).
+        self._audioClockMs = 0
+        self._audioClockAt = time.perf_counter()
+        self._audioClockAfterId = None
         
         # Get video dimensions
         if self.cap.isOpened():
@@ -71,6 +83,7 @@ class VideoTrackItem(TrackItem):
 
         self.isMusicVideo = isMusicVideo
         self.uiBusy = False
+        self._uiBusyCount = 0
         self.lastImg = None   # keep a stable reference (don’t rely on canvas.image)
         self.totalFrames = int(self.cap.get(cv2.CAP_PROP_FRAME_COUNT)) if self.cap.isOpened() else 0
         self.videoDurationMs = 0
@@ -338,23 +351,49 @@ class VideoTrackItem(TrackItem):
         self.isPlaying = True
         self.isPaused = False
         self.decodeStop.clear()
-        
+
+        # Prime the audio clock cache on the main thread BEFORE the decode
+        # thread (re)starts pacing, so its first read isn't stale, then keep
+        # it sampled periodically (self-reschedules while isPlaying). This
+        # must happen EVERY call, not just the first: play() is also how we
+        # resume after a seek (scrub release, jumpToMs, unpause), and at that
+        # moment _audioClockMs still holds whatever was cached up to 50ms ago
+        # (e.g. the pre-drag position while audio sat paused during a scrub).
+        # Without a fresh synchronous sample here, the decode thread's post-
+        # seek resync (see _serviceSeekRequest/_decodeLoop) would re-anchor
+        # itself to that stale value instead of the position audio was just
+        # restarted at, undoing the resync and reintroducing video/audio drift.
+        if self._audioClockAfterId is not None:
+            try:
+                self.canvas.after_cancel(self._audioClockAfterId)
+            except Exception:
+                pass
+            self._audioClockAfterId = None
+        self._sampleAudioClock()
+
         # Start decode thread once
         if not self.thread or not self.thread.is_alive():  # Check if the thread is not already running
             self.thread = threading.Thread(target=self._decodeLoop, daemon=True)
             self.thread.start()
-        
+
         # Start render loop on Tk main thread
         if self.renderAfterId is None:
             self._renderTick()
-        
+
     def pause(self):
         self.isPaused = True
-        
+
     def stop(self):
         self.isPlaying = False
         self.isPaused = False
         self.decodeStop.set()
+
+        if self._audioClockAfterId is not None:
+            try:
+                self.canvas.after_cancel(self._audioClockAfterId)
+            except Exception:
+                pass
+            self._audioClockAfterId = None
 
         if self.renderAfterId is not None:
             try:
@@ -371,12 +410,46 @@ class VideoTrackItem(TrackItem):
         self.tkImg = None
         self._lastPos = None
 
+    def _sampleAudioClock(self):
+        """
+        Runs on the Tk main thread ONLY. pygame's mixer.music API (SDL2_mixer)
+        is not thread-safe — calling get_pos() from the decode thread while the
+        main thread concurrently calls stop()/load()/play() (e.g. restarting
+        audio after a seek, or after the lyrics editor closes) can hang the
+        whole process. So the decode thread never touches pygame directly; it
+        only reads the cache this samples periodically.
+        """
+        # An uncaught exception here (e.g. a transient pygame/SDL hiccup) would
+        # silently stop this after-chain from ever rescheduling itself, freezing
+        # the video's notion of "where the audio is" forever - the decode thread
+        # would then keep reseeking to the same stale/wrong position on every
+        # uiBusy-clear or resume, looking exactly like "video needs a restart".
+        if self.isPaused:
+            self._audioClockAfterId = (
+                self.canvas.after(50, self._sampleAudioClock) if self.isPlaying else None
+            )
+            return
+
+        try:
+            self._audioClockMs = self.parent.clock.currentMs()
+            self._audioClockAt = time.perf_counter()
+        except Exception as exc:
+            print(f"[VideoTrackItem] audio clock sample error (continuing): {exc}")
+
+        if self.isPlaying:
+            self._audioClockAfterId = self.canvas.after(50, self._sampleAudioClock)
+        else:
+            self._audioClockAfterId = None
+
     def _audioTimeMs(self) -> int:
-        # pygame get_pos() is ms since playback/unpause; can be -1 briefly.
-        pos = pygame.mixer.music.get_pos()
-        if pos < 0:
-            pos = 0
-        return int(self.parent.playbackOffset + pos)
+        """Safe to call from the decode thread — reads the main thread's cache
+        instead of calling into pygame. See _sampleAudioClock()."""
+        elapsed = 0.0
+        if not self.isPaused:
+            elapsed = (time.perf_counter() - self._audioClockAt) * 1000.0
+            if elapsed < 0:
+                elapsed = 0.0
+        return int(self._audioClockMs + elapsed)
     
     def _loopFrameIndex(self, frameIndex: int) -> int:
         if self.totalFrames and self.totalFrames > 0:
@@ -397,37 +470,100 @@ class VideoTrackItem(TrackItem):
             except queue.Full:
                 pass
         
+    def _desiredFrameForAudio(self, fps):
+        """Frame index that SHOULD be on screen right now, per the audio clock."""
+        audio_ms = self._audioTimeMs()
+        frameIdx = int((audio_ms / 1000.0) * fps)
+        if self.isMusicVideo:
+            if frameIdx < 0:
+                frameIdx = 0
+            if self.totalFrames > 0 and frameIdx >= self.totalFrames:
+                frameIdx = self.totalFrames - 1
+        else:
+            frameIdx = self._loopFrameIndex(frameIdx)
+        return frameIdx
+
     def _decodeLoop(self):
         fps = self.effective_fps if self.effective_fps > 0 else 30.0
         target_dt = 1.0 / fps
-        next_t = time.perf_counter()
 
         # initial seek: only for looping backgrounds (optional), OR allow MV to start at audio time
         if self.totalFrames > 0:
-            audio_ms = self._audioTimeMs()
-            start_frame = int((audio_ms / 1000.0) * fps)
-            if not self.isMusicVideo:
-                start_frame = self._loopFrameIndex(start_frame)
-            else:
-                # clamp for MV so we don't mod-wrap
-                if start_frame < 0:
-                    start_frame = 0
-                if start_frame >= self.totalFrames:
-                    start_frame = self.totalFrames - 1
-
             with self.cap_lock:
-                self.cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
+                self.cap.set(cv2.CAP_PROP_POS_FRAMES, self._desiredFrameForAudio(fps))
+
+        next_t = None  # None means "resync on next iteration"
 
         while self.isPlaying and self.cap.isOpened() and not self.decodeStop.is_set():
-            if self.isPaused:
-                time.sleep(0.01)
-                continue
-            
+          try:
+            # uiBusy means heavy Tk work is happening on the main thread (e.g. the
+            # Lyrics Manager list) - back off completely, including scrub requests.
+            # A pending seek is NOT dropped, just deferred: _pendingSeekMs/_seekEvent
+            # stay set and get serviced as soon as uiBusy clears. Servicing seeks
+            # DURING uiBusy (this used to be checked first, to support scrubbing
+            # while merely paused) let video decoding and heavy modal UI work fight
+            # over the main thread/cv2 at the same time, which is what was behind
+            # the freeze reported when dragging the progress bar while a lyrics
+            # menu was open.
             if self.uiBusy:
+                next_t = None
                 time.sleep(0.03)  # or even target_dt
                 continue
 
+            # Service scrub requests next, even while merely paused — this is what
+            # makes dragging the progress bar show a live preview instead of
+            # freezing the canvas until the drag ends.
+            if self._seekEvent.is_set():
+                resync = self._serviceSeekRequest()
+                if resync:
+                    # An authoritative jump (scrub release, jumpToMs, resume) —
+                    # audio has just been (re)started at this same target time.
+                    # Force the normal-pacing branch below to treat this like
+                    # coming out of a pause: next_t = None makes it reseek via
+                    # _desiredFrameForAudio() against the freshly-primed audio
+                    # clock (see play()) instead of trusting perf_counter() as
+                    # the pacing anchor. Without this, the loop just started
+                    # counting frames forward from "whenever the seek finished",
+                    # and any latency the cv2 seek itself took (seeking to a
+                    # non-keyframe position can be slow) became a permanent,
+                    # uncorrected offset for the rest of playback — this was
+                    # the root cause of the video always lagging behind audio
+                    # after a seek, worse with every additional scrub.
+                    next_t = None
+                else:
+                    # Live scrub-drag preview: do NOT set next_t = None here —
+                    # that would make the very next iteration reseek to the
+                    # cached audio clock, which is stale during a drag (audio
+                    # is intentionally left paused at the pre-drag position
+                    # until release), yanking the video back and fighting the
+                    # seek we just did on every quiet gap between drag events.
+                    next_t = time.perf_counter()
+                continue
+
+            if self.isPaused:
+                # Same reasoning as the uiBusy branch below: force a resync once we
+                # resume instead of resuming pacing from a now-ancient next_t. Without
+                # this, next_t keeps whatever value it had right before the pause -
+                # once real time moves on, the "else: next_t = time.perf_counter()"
+                # branch further down keeps re-triggering with sleep <= 0 for a burst
+                # of frames right after resuming (since next_t is stuck far in the
+                # past), decoding/pushing them back-to-back with no throttling at all.
+                # The frame POSITION was already correct (decode simply didn't advance
+                # during the pause), but it visibly looks like the video "fast-forwards
+                # to catch up" for a moment instead of cleanly resuming in place.
+                next_t = None
+                time.sleep(0.01)
+                continue
+
             with self.cap_lock:
+                if next_t is None:
+                    # Coming back from a pause/uiBusy stall: reseek to wherever the
+                    # audio clock says we should be right now instead of resuming
+                    # from a now-stale frame position.
+                    if self.totalFrames > 0:
+                        self.cap.set(cv2.CAP_PROP_POS_FRAMES, self._desiredFrameForAudio(fps))
+                    next_t = time.perf_counter()
+
                 ret, frame = self.cap.read()
 
                 if not ret:
@@ -447,7 +583,7 @@ class VideoTrackItem(TrackItem):
             if self.cropEnabled:
                 scaledInsets = self._getScaledCropInsetsForFrame(frame)
                 frame = self._applyCropInsets(frame, scaledInsets)
-                
+
             frame = cv2.resize(frame, (self.newWidth, self.newHeight), interpolation=cv2.INTER_AREA)
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
@@ -460,9 +596,29 @@ class VideoTrackItem(TrackItem):
                 time.sleep(sleep)
             else:
                 next_t = time.perf_counter()
-                
+          except Exception as exc:
+            # An uncaught exception here would silently kill this whole thread -
+            # play() only restarts it if it's not alive, so the video would stay
+            # frozen forever until the user manually toggles play/pause. Log and
+            # keep looping instead of dying, so a single transient hiccup (e.g. a
+            # bad frame read) can't take down playback for good.
+            print(f"[VideoTrackItem] decode loop error (continuing): {exc}")
+            next_t = None
+            time.sleep(0.05)
+
     def setUiBusy(self, busy: bool, autoClearMs: int = 0):
-        self.uiBusy = bool(busy)
+        """
+        Nesting-aware: the Lyrics Manager and the individual Lyric Editor (and
+        the Add-Labels menu) each call this independently, and the Lyric Editor
+        can be opened FROM WITHIN the Lyrics Manager. A plain bool would let the
+        inner dialog's close wipe out the outer dialog's still-active busy state
+        (e.g. edit a lyric from the manager, close the editor, and the video
+        would wrongly resume full-speed decode/render while the manager window
+        is still open, fighting it for the same Tk thread). A counter keeps each
+        caller's open/close pair independent.
+        """
+        self._uiBusyCount = max(0, self._uiBusyCount + (1 if busy else -1))
+        self.uiBusy = self._uiBusyCount > 0
 
         if getattr(self, "_busyAfterId", None) is not None:
             try:
@@ -474,94 +630,196 @@ class VideoTrackItem(TrackItem):
         if self.uiBusy and autoClearMs > 0:
             self._busyAfterId = self.canvas.after(
                 autoClearMs,
-                lambda: setattr(self, "uiBusy", False)
+                lambda: self.setUiBusy(False)
             )
     
+    def _displayFrame(self, frame):
+        try:
+            pilImg = Image.fromarray(frame)
+            if self.tkImg is None:
+                # Create ONCE
+                self.tkImg = ImageTk.PhotoImage(pilImg)
+                self.videoFrameId = self.canvas.create_image(
+                    self.position[0], self.position[1],
+                    image=self.tkImg, anchor="nw", tags="layer_video"
+                )
+                self.canvas.tag_lower(self.videoFrameId)
+                self._lastPos = (self.position[0], self.position[1])
+            else:
+                # Update pixels IN PLACE (huge speedup)
+                self.tkImg.paste(pilImg)
+
+            # Only move if position actually changed
+            pos = (self.position[0], self.position[1])
+            if self._lastPos != pos and self.videoFrameId:
+                self.canvas.coords(self.videoFrameId, pos[0], pos[1])
+                self._lastPos = pos
+        except tk.TclError:
+            pass
+
     def _renderTick(self):
         if not self.isPlaying:
             self.renderAfterId = None
             self._renderNextT = None
             return
 
-        # If busy/paused, just slow down; do NOT touch the queue.
-        if self.uiBusy or self.isPaused:
+        # An uncaught exception anywhere below would stop this after-chain from
+        # ever rescheduling itself, silently freezing the video on screen until
+        # the user manually toggles play/pause (the only thing that restarts it,
+        # via play()'s "if self.renderAfterId is None" check) - so never let that
+        # happen, just log and keep the chain alive at a safe default cadence.
+        try:
+            # Heavy UI work (e.g. the lyrics editor modal) is in progress: the decode
+            # thread is fully frozen too, so there's nothing fresh to show. Suppress.
+            if self.uiBusy:
+                try:
+                    while True:
+                        self.frameQueue.get_nowait()
+                except Exception:
+                    pass
+
+                self.renderAfterId = self.canvas.after(120, self._renderTick)
+                return
+
+            # Paused (includes mid-scrub-drag): still show whatever the decode thread
+            # has produced for the latest seek target, just at a relaxed cadence —
+            # this is what gives scrubbing a live preview instead of a frozen canvas.
+            if self.isPaused:
+                frame = None
+                try:
+                    while True:
+                        frame = self.frameQueue.get_nowait()
+                except Exception:
+                    pass
+
+                if frame is not None:
+                    self._displayFrame(frame)
+
+                self._renderNextT = None
+                self.renderAfterId = self.canvas.after(40, self._renderTick)
+                return
+
+            frame = None
             try:
-                while True:
-                    self.frameQueue.get_nowait()
+                frame = self.frameQueue.get_nowait()
             except Exception:
                 pass
-            
-            self.renderAfterId = self.canvas.after(120, self._renderTick)
-            return
 
-        frame = None
-        try:
-            frame = self.frameQueue.get_nowait()
-        except Exception:
-            pass
+            if frame is not None:
+                self._displayFrame(frame)
 
-        if frame is not None:
-            try:
-                pilImg = Image.fromarray(frame)
-                if self.tkImg is None:
-                    # Create ONCE
-                    self.tkImg = ImageTk.PhotoImage(pilImg)
-                    self.videoFrameId = self.canvas.create_image(
-                        self.position[0], self.position[1],
-                        image=self.tkImg, anchor="nw", tags="layer_video"
-                    )
-                    self.canvas.tag_lower(self.videoFrameId)
-                    self._lastPos = (self.position[0], self.position[1])
-                else:
-                    # Update pixels IN PLACE (huge speedup)
-                    self.tkImg.paste(pilImg)
-
-                # Only move if position actually changed
-                pos = (self.position[0], self.position[1])
-                if self._lastPos != pos and self.videoFrameId:
-                    self.canvas.coords(self.videoFrameId, pos[0], pos[1])
-                    self._lastPos = pos
-            except tk.TclError:
-                pass
-
-        fps = self.effective_fps if self.effective_fps > 0 else 30.0
-        period = 1.0 / fps
-        now = time.perf_counter()
-        if self._renderNextT is None:
-            self._renderNextT = now + period
-        else:
-            self._renderNextT += period
-            # If we're behind, don't try to "repay" debt forever
-            if self._renderNextT < now:
+            fps = self.effective_fps if self.effective_fps > 0 else 30.0
+            period = 1.0 / fps
+            now = time.perf_counter()
+            if self._renderNextT is None:
                 self._renderNextT = now + period
+            else:
+                self._renderNextT += period
+                # If we're behind, don't try to "repay" debt forever
+                if self._renderNextT < now:
+                    self._renderNextT = now + period
 
-        delay_ms = max(1, int((self._renderNextT - now) * 1000.0))
-        self.renderAfterId = self.canvas.after(delay_ms, self._renderTick)
+            delay_ms = max(1, int((self._renderNextT - now) * 1000.0))
+            self.renderAfterId = self.canvas.after(delay_ms, self._renderTick)
+        except Exception as exc:
+            print(f"[VideoTrackItem] render tick error (continuing): {exc}")
+            self._renderNextT = None
+            self.renderAfterId = self.canvas.after(100, self._renderTick)
     
     def setPosition(self):
         x = 300 / 1920 * 1920 * self.scaleX - (self.newWidth / 2)
         return (x, 0)
             
-    def seek(self, timeMs):
-        """Calculate the frame index based on the time in milliseconds"""
+    def seek(self, timeMs, resync=True):
+        """
+        Request a seek to timeMs. This must stay cheap and non-blocking: it only
+        records the target and wakes the decode thread, which performs the actual
+        cv2 seek+read in the background. Calling cv2.VideoCapture.set()/read()
+        directly from here (the GUI thread) is what used to freeze/hang the app
+        during a fast scrub-bar drag, since <B1-Motion> fires on every pixel of
+        mouse movement and each seek can be a slow, non-O(1) keyframe hunt.
+
+        resync: whether the decode thread's playback pacing should re-anchor to
+        the audio clock right after this seek is serviced (see _decodeLoop).
+        True (default) for an authoritative jump — scrub release, jumpToMs,
+        resume — where audio is (about to be) restarted at this same target
+        and the video should snap its pacing to match. Pass False for a live
+        scrub-drag preview seek, where audio is intentionally left paused at
+        the pre-drag position and resyncing to it would yank the preview back.
+        """
+        self._pendingSeekMs = timeMs
+        self._pendingSeekResync = resync
+        self._seekEvent.set()
+
+        # If decoding isn't running (e.g. video never started playing), there's
+        # nothing to service the request, so at least move the read head directly
+        # for consistency with the old behavior.
+        if not self.thread or not self.thread.is_alive():
+            self._seekFrameSync(timeMs)
+
+    def _frameIndexForMs(self, timeMs) -> int:
+        if self.effective_fps <= 0:
+            return 0
+        frameIndex = int((timeMs / 1000.0) * self.effective_fps)
+        if frameIndex < 0:
+            frameIndex = 0
+        if self.isMusicVideo:
+            if self.totalFrames > 0:
+                frameIndex = min(frameIndex, self.totalFrames - 1)
+        else:
+            frameIndex = self._loopFrameIndex(frameIndex)
+        return frameIndex
+
+    def _seekFrameSync(self, timeMs):
+        """Direct, blocking seek (no read/display) — only for when the decode
+        thread isn't alive to service the request asynchronously."""
         if self.effective_fps > 0:
-            frameIndex = int((timeMs / 1000.0) * self.effective_fps)
-            if frameIndex < 0:
-                frameIndex = 0
-            if self.isMusicVideo:
-                if self.totalFrames > 0:
-                    frameIndex = min(frameIndex, self.totalFrames - 1)
-            else:
-                frameIndex = self._loopFrameIndex(frameIndex)
+            frameIndex = self._frameIndexForMs(timeMs)
             with self.cap_lock:
                 self.cap.set(cv2.CAP_PROP_POS_FRAMES, frameIndex)
-                
-        # flush queued frames
+
         try:
             while True:
                 self.frameQueue.get_nowait()
         except Exception:
             pass
+
+    def _serviceSeekRequest(self):
+        """Runs on the decode thread. Performs the actual cv2 seek + read for the
+        latest pending scrub target and pushes a displayable frame, so scrubbing
+        works (and shows live preview) even while paused.
+
+        Returns the `resync` flag that was passed to seek() for this request,
+        so the caller (_decodeLoop) knows whether to re-anchor playback pacing
+        to the audio clock afterward."""
+        timeMs = self._pendingSeekMs
+        resync = self._pendingSeekResync
+        self._seekEvent.clear()
+
+        frameIndex = self._frameIndexForMs(timeMs)
+
+        with self.cap_lock:
+            self.cap.set(cv2.CAP_PROP_POS_FRAMES, frameIndex)
+            ret, frame = self.cap.read()
+
+        # Drop stale queued frames; only the freshest scrub position matters.
+        try:
+            while True:
+                self.frameQueue.get_nowait()
+        except Exception:
+            pass
+
+        if not ret or frame is None:
+            return resync
+
+        if self.cropEnabled:
+            scaledInsets = self._getScaledCropInsetsForFrame(frame)
+            frame = self._applyCropInsets(frame, scaledInsets)
+
+        frame = cv2.resize(frame, (self.newWidth, self.newHeight), interpolation=cv2.INTER_AREA)
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        self._pushLatestFrame(frame)
+        return resync
     
     def captureCanvas(self, canvas):
         canvas.update_idletasks()
@@ -617,8 +875,8 @@ class VideoTrackItem(TrackItem):
         # 2) Reset parent time/index state to baseline
         self.parent.currentChunkIndex = chunkIndex
         self.parent.currentSectionIndex = 0
-        self.parent.playbackOffset = startTimeMs
-        
+        self.parent.clock.seekTo(startTimeMs, resync=False)
+
         self.parent.resetLyricsToChunkStart(chunkIndex)
 
         # 3) Reset lyric incremental state WITHOUT deleting canvas items

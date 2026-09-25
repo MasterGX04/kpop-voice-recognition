@@ -1,0 +1,497 @@
+[
+    {
+        "lyricId": "86c61f4f-224f-4eeb-a23b-2da22ac0c50e",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 15,
+            "endChunk": 69
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "さよならの 前に Let go\nでも心の迷路 の中で迷う",
+        "romanization": "sayonara no mae ni Let go\ndemo kokoro no meero no naka de mayou",
+        "english": "Before the farewell, let go\nBut in the maze of the heart, I’m lost",
+        "startChunk": 4,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "0d11223e-4848-4800-8e5f-bb612ac998dd",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 298,
+            "endChunk": 341
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "Stereo から Mono へ\n分かれ道はそう",
+        "romanization": "Stereo kara Mono e\nwakaremichi wa sou",
+        "english": "Just like how the stereo goes to mono\nThat’s what a parted path is like",
+        "startChunk": 287,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "662328b8-83a3-4cb5-a0b1-fa1c3cbe94fb",
+        "linkedLabel": {
+            "member": "RM",
+            "startChunk": 594,
+            "endChunk": 680
+        },
+        "language": "Japanese",
+        "memberName": [
+            "RM"
+        ],
+        "korean": "これが散りゆく運命ならば My last letter\n綴る言葉、書いては消してる\n君への想いは So many to let go",
+        "romanization": "kore ga chiri yuku unmee nara ba My last letter\ntsuzuru kotoba, kai te wa keshi teru\nkimi e no omoi wa So many to let go",
+        "english": "",
+        "startChunk": 583,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "72e9fb7b-c333-4cf9-b42f-6f830d433a81",
+        "linkedLabel": {
+            "member": "RM",
+            "startChunk": 907,
+            "endChunk": 937
+        },
+        "language": "Japanese",
+        "memberName": [
+            "RM"
+        ],
+        "korean": "Unpuzzle my lego\n元の形に戻れない Level",
+        "romanization": "Unpuzzle my lego\nmoto no katachi ni modore nai Level",
+        "english": "Unpuzzle my lego\nIt’s at the level where it won’t return to its original shape",
+        "startChunk": 896,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "a6b51e61-9593-46bd-b710-54fba53a70f6",
+        "linkedLabel": null,
+        "language": "English",
+        "memberName": [
+            "RM"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "So be it don’t cry\nI’mma let you go and fly",
+        "startChunk": 997,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "15b008a4-3909-4a7f-849c-7c137ada3080",
+        "linkedLabel": {
+            "member": "Suga",
+            "startChunk": 1131,
+            "endChunk": 1177
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Suga"
+        ],
+        "korean": "忙しなくする日々 Keeping myself busy\n紛らわすため埋め込んだ Schedule\nでも忘れられないよ\n脳裏に焼き付いてる Like tattoo",
+        "romanization": "sewashinaku suru hibi Keeping myself busy\nmagirawasu tame umekon da Schedule\nde mo wasure rare nai yo\nnouri ni yakitsui teru Like tattoo",
+        "english": "Keeping myself busy with the days that have become hectic\nIn order to become distracted, the schedule is all filled up\nBut I’m unable to forget\nIt’s burned into my mind like a tattoo",
+        "startChunk": 1120,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "44cc8ba1-1e97-4639-897d-da45441c74ef",
+        "linkedLabel": {
+            "member": "Suga",
+            "startChunk": 1333,
+            "endChunk": 1673
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Suga"
+        ],
+        "korean": "あの頃には戻れないね\n出来ることなら Call your name\nNo but 受け止める Your blame\n本当に It is time to say goodbye",
+        "romanization": "ano koro ni wa modore nai ne\ndekiru koto nara Call your name\nNo but uketomeru Your blame\nhontou ni It is time to say goodbye",
+        "english": "We can’t return to that time, huh\nIf something could be done, then it’d be to call your name\nNo… but I accept your blame\nReally, it’s time to say goodbye",
+        "startChunk": 1399,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "e0f1b441-8fa6-477f-9cc4-8f750f0a43d9",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 1671,
+            "endChunk": 1724
+        },
+        "language": "Japanese",
+        "memberName": [
+            "V"
+        ],
+        "korean": "さよならの 前に Let go\nでも心の迷路 の中で迷う",
+        "romanization": "sayonara no mae ni Let go\ndemo kokoro no meero no naka de mayou",
+        "english": "Before the farewell, let go\nBut in the maze of the heart, I’m lost",
+        "startChunk": 1660,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "0b84c937-14fa-4619-a6cf-4c30fa6fdf2f",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 1955,
+            "endChunk": 1999
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "Stereo から Mono へ\n分かれ道はそう 続くだろう",
+        "romanization": "Stereo kara Mono e\nwakaremichi wa sou tsuzuku darou",
+        "english": "Just like how the stereo goes to mono\nThat’s what a parted path is like, surely, it continues on",
+        "startChunk": 1944,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "a11a1f4d-eeef-491d-b147-eb60c0abe0b5",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 2231,
+            "endChunk": 2366
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook",
+            "J-Hope"
+        ],
+        "korean": "今君の手を\n離せるように",
+        "romanization": "ima kun no te o\nhanaseru you ni",
+        "english": "Right now, so that\nI’m able to let go of your hand",
+        "startChunk": 2220,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "3f712c97-2699-458c-8358-4b52cdc1dc8a",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 2509,
+            "endChunk": 2565
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jimin",
+            "J-Hope"
+        ],
+        "korean": "I gotta let you know that I need to let you go\nHard to say goodbye\nでも逃げない",
+        "romanization": "I gotta let you know that I need to let you go\nHard to say goodbye\ndemo nigenai",
+        "english": "I gotta let you know that I need to let you go\nHard to say goodbye\nBut I won’t run away",
+        "startChunk": 2498,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "e70fb78a-b88a-4a22-86f2-2fbd507be735",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 2763,
+            "endChunk": 2804
+        },
+        "language": "English",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I'm ready to let go",
+        "startChunk": 2752,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "218239c6-2d5a-44c9-972c-a783fa7873ef",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 2902,
+            "endChunk": 2941
+        },
+        "language": "English",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I'm ready to let go",
+        "startChunk": 2891,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "ac396194-67ad-4462-982a-c7dc32aac6f5",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 3039,
+            "endChunk": 3080
+        },
+        "language": "English",
+        "memberName": [
+            "V"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I'm ready to let go",
+        "startChunk": 3028,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "8c7618c6-84c0-4bbf-bf28-28d9b6780d60",
+        "linkedLabel": {
+            "member": "J-Hope",
+            "startChunk": 3342,
+            "endChunk": 3390
+        },
+        "language": "Japanese",
+        "memberName": [
+            "J-Hope"
+        ],
+        "korean": "今頃どこで何をしてる\n遠く離れて誰を想う\n君がいない生活はもう、Unbelievable\nそれでも行くしかねーんだ",
+        "romanization": "imagoro doko de nan o shiteru\ntouku hanare te dare o omou\nkimi ga i nai seikatsu wa mou, Unbelievable\nsore de mo iku shika neinda",
+        "english": "Where and what are you doing now\nWho is on your mind while we’re far apart\nLiving without you is already unbelievable\nBut even so, I have no choice but to go on",
+        "startChunk": 3331,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "f2a3dbbc-2162-437c-a5ea-9b70435461f2",
+        "linkedLabel": {
+            "member": "J-Hope",
+            "startChunk": 3480,
+            "endChunk": 3883
+        },
+        "language": "Japanese",
+        "memberName": [
+            "J-Hope"
+        ],
+        "korean": "俺が愛し過ぎた人\n絡み過ぎて絡みあった糸\n解けなくなって別の道を歩む\nそのために I’ll say goodbye",
+        "romanization": "ore ga aishi sugi ta hito\nkarami sugi te karamiatsu ta ito\ntoke naku natsu te betsu no michi o ayumu\nsono tame ni I’ ll say goodbye",
+        "english": "The person I loved too much\nThe string being too intertwined that it became tangled\nUnable to disentangle, so in order for you\nTo walk on a different path, I’ll say goodbye",
+        "startChunk": 3607,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "475d54bd-0259-4fdd-b651-36206aa5d48a",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 3880,
+            "endChunk": 3931
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "始まりはいつの日も\n雨の中隠した涙の先に",
+        "romanization": "hajimari wa itsu no hi mo\name no naka kakushi ta namida no saki ni",
+        "english": "In the beginning, no matter the day\nBeyond the tears that are concealed in the rain",
+        "startChunk": 3869,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "0de5b778-5ae8-45f8-9ac8-de8415a9e36e",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 4162,
+            "endChunk": 4206
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "待ってるやり直そう\nまた未来で笑顔で 会えるように",
+        "romanization": "matteru yarinaosou\nmata mirai de egao de aeru you ni",
+        "english": "I’m waiting, let’s start over\nSo that in the future, with a smile, we can meet again",
+        "startChunk": 4151,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "91061fff-5cdb-45f0-9a5f-ba1effb4f875",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 4441,
+            "endChunk": 4573
+        },
+        "language": "Japanese",
+        "memberName": [
+            "V",
+            "J-Hope"
+        ],
+        "korean": "今君の手を\n離せるように",
+        "romanization": "ima kun no te o\nhanaseru you ni",
+        "english": "Right now, so that\nI’m able to let go of your hand",
+        "startChunk": 4430,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "7f0da4db-99c1-415c-96f5-5e11ee5c5b73",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 4716,
+            "endChunk": 4774
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "I gotta let you know that I need to let you go\nHard to say goodbye\nでも逃げない",
+        "romanization": "I gotta let you know that I need to let you go\nHard to say goodbye\ndemo nigenai",
+        "english": "I gotta let you know that I need to let you go\nHard to say goodbye\nBut I won’t run away",
+        "startChunk": 4705,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "c252e585-bc72-4205-8430-fddf40efcee4",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 4971,
+            "endChunk": 5012
+        },
+        "language": "English",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I'm ready to let go",
+        "startChunk": 4960,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "c7bc8881-642f-49c6-8f63-4c75974f5fc1",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 5110,
+            "endChunk": 5148
+        },
+        "language": "English",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I'm ready to let go",
+        "startChunk": 5099,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "79d5cd5e-867b-4160-86b1-8b8d982f2457",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 5247,
+            "endChunk": 5287
+        },
+        "language": "English",
+        "memberName": [
+            "V"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I'm ready to let go",
+        "startChunk": 5236,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "fb5fe336-7e16-469d-ad62-eeca033592b7",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 5534,
+            "endChunk": 5588
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jin",
+            "V"
+        ],
+        "korean": "二人で見た空の色",
+        "romanization": "futari de mi ta sora no iro",
+        "english": "The color of the sky that we both watched",
+        "startChunk": 5523,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "13c25935-bbf7-4218-b73f-8b56ffffbb33",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 5810,
+            "endChunk": 5863
+        },
+        "language": "Japanese",
+        "memberName": [
+            "V"
+        ],
+        "korean": "二人がいた道の香り",
+        "romanization": "futari ga i ta michi no kaori",
+        "english": "The scent of the path we both were on",
+        "startChunk": 5799,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "4fe2fed5-2369-4f71-bc9a-611fe128975a",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 6036,
+            "endChunk": 6183
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook",
+            "Jimin"
+        ],
+        "korean": "忘れないでいて",
+        "romanization": "wasurenai de ite",
+        "english": "Don’t forget them",
+        "startChunk": 6025,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    }
+]

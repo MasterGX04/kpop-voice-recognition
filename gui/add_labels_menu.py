@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 import copy
-from core.util_functions import ModalGuard
+from core.util_functions import ModalGuard, findLabelIndexBySpan
+from gui.lyrics_box import LYRIC_LEAD_CHUNKS
 
 class AddLabelsMenu:
     def __init__(self, app):
@@ -20,7 +21,8 @@ class AddLabelsMenu:
         self.labelKeys = []
         self.rowWidgets = {}
         self.deletedLabelIndices = set()
-        
+        self._pendingRows = []  # rows still to be built by _buildRowsChunk()
+
         # Shift-click state
         self.lastClicked = {"main": -1, "repeat": -1, "adlib": -1}
         self.shiftRange = {"main": (-1, -1), "repeat": (-1, -1), "adlib": (-1, -1)}
@@ -30,10 +32,22 @@ class AddLabelsMenu:
     def show(self):
         if not ModalGuard.try_open("labels_menu"):
             return
-        
+        try:
+            self._showImpl()
+        except Exception:
+            # close_menu() normally does this cleanup, but it never runs if
+            # construction blows up before the window can be interacted with -
+            # without this, the guard stays acquired and keybinds/zoom stay
+            # disabled forever, same failure mode fixed in close_menu() above.
+            ModalGuard.close("labels_menu")
+            self.app.enableRootKeybinds()
+            self.app.videoTrackItem.setUiBusy(False)
+            raise
+
+    def _showImpl(self):
         self.app.disableRootKeybinds()
         self.app.videoTrackItem.setUiBusy(True)
-        
+
         self.window = tk.Toplevel(self.app.root)
         self.window.title("Add labels")
         self.window.geometry("700x600")
@@ -57,9 +71,9 @@ class AddLabelsMenu:
         self.scrollFrame.bind("<Configure>", lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
         self._bind_scrolling(checklistFrame)
 
-        # Build the dynamic UI elements
+        # Build the dynamic UI elements. _build_rows() builds in small
+        # batches and calls _build_footer() itself once every row is done.
         self._build_rows()
-        self._build_footer()
 
     # ==========================================
     # SCROLLING LOGIC
@@ -93,13 +107,10 @@ class AddLabelsMenu:
     # DATA UTILITIES
     # ==========================================
     def _findLabelIndexBySpan(self, startPoint, endPoint, member=None):
-        for j, lab in enumerate(self.app.labels):
-            if j in self.deletedLabelIndices:
-                continue
-            if len(lab) >= 3 and lab[1] == startPoint and lab[2] == endPoint:
-                if member is None or lab[0] == member:
-                    return j
-        return None
+        return findLabelIndexBySpan(
+            self.app.labels, startPoint, endPoint, member=member,
+            excludeIndices=self.deletedLabelIndices
+        )
 
     def _rebuildRowToLabelIndex(self):
         for i, (_m, s, e) in enumerate(self.labelKeys):
@@ -127,63 +138,96 @@ class AddLabelsMenu:
     # UI BUILDERS
     # ==========================================
     def _build_rows(self):
-        for i, (member, startPoint, endPoint, isBacking, isAdLib) in enumerate(self.app.getLabels()):
-            var = tk.BooleanVar()
-            backingVar = tk.BooleanVar(value=bool(isBacking))
-            adLibVar = tk.BooleanVar(value=bool(isAdLib))
-            
-            self.checkboxesByIndex.append((var, backingVar, adLibVar))
-            self.labelKeys.append((member, startPoint, endPoint))
+        """
+        Build one row per label in small batches instead of all ~100+ at
+        once. A typical song has 60-113 labels, and each row creates 3
+        Checkbuttons + a Button with several bind() calls - building all of
+        them in a single synchronous call can take long enough (multi-
+        hundred-ms to seconds) that the Tk event loop never gets control
+        back, which is what froze video/audio-sync (both driven by after()
+        timers) while this menu was opening during playback. Yielding to the
+        event loop between batches via after() lets those timers run.
+        """
+        self._pendingRows = list(enumerate(self.app.getLabels()))
+        self._buildRowsChunk()
 
-            labelIndex = self._findLabelIndexBySpan(startPoint, endPoint, member=member)
-            self.rowToLabelIndex.append(labelIndex)
+    def _buildRowsChunk(self, chunkSize=15):
+        if not self.window.winfo_exists():
+            # Menu was closed while a batch was still pending - stop instead
+            # of building rows into a destroyed frame.
+            return
 
-            self.checkboxes[i] = var
-            self.backingVars[i] = backingVar
-            self.adLibVars[i] = adLibVar
+        chunk = self._pendingRows[:chunkSize]
+        self._pendingRows = self._pendingRows[chunkSize:]
 
-            memberText = f" -> {member}" if member is not None else ""
-            text = f"Start: {startPoint}, End: {endPoint}{memberText}"
-            color = self.app.getMemberColor(member) if member else "black"
+        for i, (member, startPoint, endPoint, isBacking, isAdLib) in chunk:
+            self._buildRow(i, member, startPoint, endPoint, isBacking, isAdLib)
 
-            labelCheckbox = tk.Checkbutton(
-                self.scrollFrame, text=text, variable=var,
-                anchor="w", bg="lightgray", fg=color, selectcolor="darkgrey"
-            )
-            labelCheckbox.grid(row=i, column=0, sticky="w", padx=5, pady=2)
+        if self._pendingRows:
+            self.window.after(1, self._buildRowsChunk)
+        else:
+            self._build_footer()
 
-            backingCheckbox = tk.Checkbutton(
-                self.scrollFrame, text="Are they backing vocals?",
-                variable=backingVar, anchor="w",
-                bg="lightgray", fg="darkblue", selectcolor="darkgrey"
-            )
-            backingCheckbox.grid(row=i, column=1, padx=5, pady=2)
+    def _buildRow(self, i, member, startPoint, endPoint, isBacking, isAdLib):
+        var = tk.BooleanVar()
+        backingVar = tk.BooleanVar(value=bool(isBacking))
+        adLibVar = tk.BooleanVar(value=bool(isAdLib))
 
-            adLibCheckBox = tk.Checkbutton(
-                self.scrollFrame, text="Ad Lib",
-                variable=adLibVar, anchor="w",
-                bg="lightgray", fg="purple", selectcolor="darkgrey"
-            )
-            adLibCheckBox.grid(row=i, column=2, padx=5, pady=2)
+        self.checkboxesByIndex.append((var, backingVar, adLibVar))
+        self.labelKeys.append((member, startPoint, endPoint))
 
-            self.rowWidgets[i] = {"labelCb": labelCheckbox, "backCb": backingCheckbox, "adCb": adLibCheckBox}
+        labelIndex = self._findLabelIndexBySpan(startPoint, endPoint, member=member)
+        self.rowToLabelIndex.append(labelIndex)
 
-            # Shift-click bindings
-            labelCheckbox.bind("<Button-1>", lambda event, index=i: self._onCheckboxClick(event, index, "main"))
-            backingCheckbox.bind("<Button-1>", lambda event, index=i: self._onCheckboxClick(event, index, "repeat"))
-            adLibCheckBox.bind("<Button-1>", lambda event, index=i: self._onCheckboxClick(event, index, "adlib"))
+        self.checkboxes[i] = var
+        self.backingVars[i] = backingVar
+        self.adLibVars[i] = adLibVar
 
-            # Right click opens editor
-            labelCheckbox.bind("<Button-3>", lambda event, index=i: (self._openEditDialog(index), "break"))
+        memberText = f" -> {member}" if member is not None else ""
+        text = f"Start: {startPoint}, End: {endPoint}{memberText}"
+        color = self.app.getMemberColor(member) if member else "black"
 
-            if member:
-                def createAddLyricsCallback(sp=startPoint, mn=member):
-                    if self.app.isExportingVideo: return
-                    return lambda: self.app.lyricsEditor.addLyricBox(startChunk=max(0, sp - 11), memberName=mn)
+        labelCheckbox = tk.Checkbutton(
+            self.scrollFrame, text=text, variable=var,
+            anchor="w", bg="lightgray", fg=color, selectcolor="darkgrey"
+        )
+        labelCheckbox.grid(row=i, column=0, sticky="w", padx=5, pady=2)
 
-                addLyricButton = tk.Button(self.scrollFrame, text="Add Lyrics",
-                                           command=createAddLyricsCallback(startPoint, member), bg="lightblue")
-                addLyricButton.grid(row=i, column=3, padx=5, pady=2)
+        backingCheckbox = tk.Checkbutton(
+            self.scrollFrame, text="Are they backing vocals?",
+            variable=backingVar, anchor="w",
+            bg="lightgray", fg="darkblue", selectcolor="darkgrey"
+        )
+        backingCheckbox.grid(row=i, column=1, padx=5, pady=2)
+
+        adLibCheckBox = tk.Checkbutton(
+            self.scrollFrame, text="Ad Lib",
+            variable=adLibVar, anchor="w",
+            bg="lightgray", fg="purple", selectcolor="darkgrey"
+        )
+        adLibCheckBox.grid(row=i, column=2, padx=5, pady=2)
+
+        self.rowWidgets[i] = {"labelCb": labelCheckbox, "backCb": backingCheckbox, "adCb": adLibCheckBox}
+
+        # Shift-click bindings
+        labelCheckbox.bind("<Button-1>", lambda event, index=i: self._onCheckboxClick(event, index, "main"))
+        backingCheckbox.bind("<Button-1>", lambda event, index=i: self._onCheckboxClick(event, index, "repeat"))
+        adLibCheckBox.bind("<Button-1>", lambda event, index=i: self._onCheckboxClick(event, index, "adlib"))
+
+        # Right click opens editor
+        labelCheckbox.bind("<Button-3>", lambda event, index=i: (self._openEditDialog(index), "break"))
+
+        if member:
+            def createAddLyricsCallback(sp=startPoint, ep=endPoint, mn=member):
+                if self.app.isExportingVideo: return
+                linkedLabel = {"member": mn, "startChunk": sp, "endChunk": ep}
+                return lambda: self.app.lyricsEditor.addLyricBox(
+                    startChunk=max(0, sp - LYRIC_LEAD_CHUNKS), memberName=mn, linkedLabel=linkedLabel
+                )
+
+            addLyricButton = tk.Button(self.scrollFrame, text="Add Lyrics",
+                                       command=createAddLyricsCallback(startPoint, endPoint, member), bg="lightblue")
+            addLyricButton.grid(row=i, column=3, padx=5, pady=2)
 
     def _build_footer(self):
         memberLabel = tk.Label(self.window, text="Choose Member:")
@@ -424,9 +468,13 @@ class AddLabelsMenu:
             if changed > 0:
                 self.app.saveLabels(self.app.selectedGroup, True)
 
-        self.app._recomputeOpenStartChunk()
-        self.app.updateLabelMarkersDict()
-        
+        # onLabelsChanged() also refreshes which members are visible on the
+        # canvas (and re-maxes their scale for the new count) - this bulk
+        # save path is how a member commonly gets their first label in a
+        # song, so without this they'd stay off-screen until some other
+        # action happened to trigger a refresh.
+        self.app.onLabelsChanged()
+
         self.app.selectedMarker = None
         self.app.selectedLabel = None
         self.app.originalLabel = None
@@ -438,8 +486,14 @@ class AddLabelsMenu:
         except Exception: pass
         try:
             self.window.destroy()
-            ModalGuard.close("labels_menu")
         except Exception: pass
-        
+
+        # These three must always run, even if grab_release/destroy above
+        # raised - show() unconditionally disabled keybinds/zoom and marked
+        # the guard open, so skipping any of them here (as ModalGuard.close
+        # used to, nested inside the destroy() try) permanently breaks 'e'
+        # and every other canvas shortcut plus zoom until the app restarts.
+        ModalGuard.close("labels_menu")
+        self.app.enableRootKeybinds()
         self.app.videoTrackItem.setUiBusy(False)
         self.app.enableRootKeybinds()

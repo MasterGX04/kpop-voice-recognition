@@ -7,7 +7,9 @@
         "korean": "",
         "romanization": "",
         "english": "Ah-ah, ah-ah",
-        "startChunk": 56
+        "startChunk": 56,
+        "lyricId": "e91bf062-a33a-41ab-93d1-701f6d539d7f",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -17,7 +19,9 @@
         "korean": "내 맘 조금 이상해\n왠지 맘이 조급해",
         "romanization": "nae mam jogeum isanghae\nwaenji mami jogeuphae",
         "english": "My heart feels a little strange\nSomehow I'm getting impatient",
-        "startChunk": 199
+        "startChunk": 199,
+        "lyricId": "b0408bc7-2bc8-405f-8630-00fa54a1366a",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -27,7 +31,9 @@
         "korean": "",
         "romanization": "",
         "english": "I'll wait, I'll wait, I'll wait\nOh, yeah, oh, yeah, oh, yeah",
-        "startChunk": 310
+        "startChunk": 310,
+        "lyricId": "c60be170-34cc-4e27-9170-f8808239c050",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -37,7 +43,9 @@
         "korean": "이 밤 가기도 전에\n내 맘 들킬까 네게",
         "romanization": "i bam gagido jeone\nnae mamdeulkilkka nege",
         "english": "Before the night slips away\nWhat if you find out how I feel",
-        "startChunk": 409
+        "startChunk": 409,
+        "lyricId": "b68a1a3c-403e-478a-add7-d1399b23a0bb",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -47,7 +55,9 @@
         "korean": "",
         "romanization": "",
         "english": "I hate, I hate, I hate\nTo wait, oh, yeah, oh, yeah",
-        "startChunk": 520
+        "startChunk": 520,
+        "lyricId": "904ce360-c596-438f-81c2-e64737b58729",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -57,7 +67,9 @@
         "korean": "숨겨둔 내 Perfect crime\n마음에 새겨 Like that\n알 수 없지 너는 Tonight, ah",
         "romanization": "sumgyeodun nae Perfect crime\nmaeume saegyeo Like that\nal su eopji neoneun Tonight, ah",
         "english": "My perfect crime, hidden deep\nEtched in my heart like that\nYou won't ever know tonight, ah-ah",
-        "startChunk": 628
+        "startChunk": 628,
+        "lyricId": "53abefc0-7bb3-424d-81e3-813e881ae704",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -67,7 +79,9 @@
         "korean": "너를 향해 던진 Dice\nBet I know you like that\n말할 수 없어 Tonight",
         "romanization": "neoreul hyanghae deojin Dice\nBet I know you like that\nmalhal su eopseo Tonight",
         "english": "Dice I threw toward you\nBet I know you like that\nBut I can't say it tonight",
-        "startChunk": 840
+        "startChunk": 840,
+        "lyricId": "615801e5-48fd-498e-b006-5240f20e7ec3",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -77,7 +91,9 @@
         "korean": "",
         "romanization": "",
         "english": "Ah, 1, 2, 3, 4, 5 as I'm falling\nI go crazy, crazy",
-        "startChunk": 1021
+        "startChunk": 1021,
+        "lyricId": "29e70b5a-794a-425a-9d13-44374cf8cdc7",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -87,7 +103,9 @@
         "korean": "",
         "romanization": "",
         "english": "1, 2, 3, 4, 5 as I'm falling\nI go crazy, crazy",
-        "startChunk": 1257
+        "startChunk": 1257,
+        "lyricId": "4d597ca8-8ac6-47fa-a8e4-394f07b029ac",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -97,7 +115,9 @@
         "korean": "",
         "romanization": "",
         "english": "For ya, for ya, for ya, for ya\nFor ya, for ya, for ya",
-        "startChunk": 1450
+        "startChunk": 1450,
+        "lyricId": "1efe1a48-7b9b-45d2-9ed3-3b349fe18d04",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -107,7 +127,9 @@
         "korean": "",
         "romanization": "",
         "english": "For ya, for ya\nCrazy, crazy",
-        "startChunk": 1711
+        "startChunk": 1711,
+        "lyricId": "f16e9856-a112-4fe3-9987-546cc0dcc135",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -117,7 +139,9 @@
         "korean": "떨리는 이 목소리\n너를 기다리잖아",
         "romanization": "ddeollineun i moksori\nneoreul gidarijana",
         "english": "This trembling voice\nKeeps waiting just for you",
-        "startChunk": 1869
+        "startChunk": 1869,
+        "lyricId": "290b2b72-b7c6-4d1d-ad5b-16a5f1b09794",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -127,7 +151,9 @@
         "korean": "",
         "romanization": "",
         "english": "Until you're here, you're here\nOh, yеah, oh, yeah, oh, yeah",
-        "startChunk": 1979
+        "startChunk": 1979,
+        "lyricId": "0974f3b8-b8df-44fa-8c7c-0f166c33ee38",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -137,7 +163,9 @@
         "korean": "조용했던 내 맘에\n너를 마주한 순간",
         "romanization": "joyonghaetteon nae mame\nneoreul majuhan sungan",
         "english": "The momеnt I faced you\nIn my once quiet heart",
-        "startChunk": 2077
+        "startChunk": 2077,
+        "lyricId": "7129f6d2-5b7b-4e27-84a3-9b9de132e21c",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -147,7 +175,9 @@
         "korean": "",
         "romanization": "",
         "english": "You're there, you're there, you're there\nOh, yeah, oh, yeah, oh, yeah, yeah",
-        "startChunk": 2188
+        "startChunk": 2188,
+        "lyricId": "e13bbd7e-11bc-4c49-a68e-53213843188f",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -157,7 +187,9 @@
         "korean": "나를 삼킨 Perfect crime\n마음에 새겨 Like that\n사라지지 않을 Tonight, ah",
         "romanization": "nareul samkin Perfect crime\nmame saegyeo Like that\nsarajiji aneul Tonight, ah",
         "english": "Swallowed up in perfect crime\nEtched in my heart like that\nWon't disappear tonight, ah-ah",
-        "startChunk": 2301
+        "startChunk": 2301,
+        "lyricId": "39480cf9-958d-4146-a6aa-72e7ff423caa",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -167,7 +199,9 @@
         "korean": "너를 향해 던진 Dice\nBet I know you like that\n말할 수 없어 Tonight",
         "romanization": "neoreul hyanghae deojin Dice\nBet I know you like that\nmalhal su eopseo Tonight",
         "english": "Dice I threw toward you\nBet I know you like that\nBut I can't say it tonight",
-        "startChunk": 2507
+        "startChunk": 2507,
+        "lyricId": "b3e5ff73-e55a-49f9-acb9-adc8dd5ae783",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -177,7 +211,9 @@
         "korean": "",
         "romanization": "",
         "english": "Ah, 1, 2, 3, 4, 5 as I'm falling\nI go crazy, crazy",
-        "startChunk": 2690
+        "startChunk": 2690,
+        "lyricId": "fcc2efde-221f-4a87-a005-5fbb2b066e0f",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -187,7 +223,9 @@
         "korean": "",
         "romanization": "",
         "english": "1, 2, 3, 4, 5 as I'm falling\nI go crazy, crazy",
-        "startChunk": 2925
+        "startChunk": 2925,
+        "lyricId": "371af08f-6c3c-4c73-9738-d07d78c7cef2",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -197,7 +235,9 @@
         "korean": "",
         "romanization": "",
         "english": "For ya, for ya, for ya, for ya\nFor ya, for ya, for ya",
-        "startChunk": 3122
+        "startChunk": 3122,
+        "lyricId": "cc91d541-67d6-44da-b9ef-b3d2e1b6ec4f",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -207,7 +247,9 @@
         "korean": "",
         "romanization": "",
         "english": "For ya, for ya\nCrazy, crazy",
-        "startChunk": 3382
+        "startChunk": 3382,
+        "lyricId": "31020668-8640-4752-a922-db62d1b791ec",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -217,7 +259,9 @@
         "korean": "Dream 속에 너를 Hold you like",
         "romanization": "Dream soge neoreul Hold you like",
         "english": "In my dream, I hold you tight",
-        "startChunk": 3552
+        "startChunk": 3552,
+        "lyricId": "473fa836-18ba-4d42-b783-54a585a0e804",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -227,7 +271,9 @@
         "korean": "",
         "romanization": "",
         "english": "Breathe, just imagine a love like this\nEverywhere you go",
-        "startChunk": 3653
+        "startChunk": 3653,
+        "lyricId": "856887c6-8283-43d1-bb06-2b09fc274a39",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -237,7 +283,9 @@
         "korean": "",
         "romanization": "",
         "english": "1, 2, 3, 4, 5 as I'm falling\nI go crazy, crazy",
-        "startChunk": 3968
+        "startChunk": 3968,
+        "lyricId": "a366b842-e18d-4acb-b6cc-d6df06df02a7",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -247,7 +295,9 @@
         "korean": "",
         "romanization": "",
         "english": "1, 2, 3, 4, 5 as I'm falling\nI go crazy, crazy",
-        "startChunk": 4177
+        "startChunk": 4177,
+        "lyricId": "17dc7bba-574e-466d-a6f7-fbd4b8693726",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -257,7 +307,9 @@
         "korean": "",
         "romanization": "",
         "english": "For ya, for ya, for ya, for ya\nFor ya, for ya, for ya",
-        "startChunk": 4373
+        "startChunk": 4373,
+        "lyricId": "4d6ecf58-4efb-4a17-8314-678d6d673a32",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -267,7 +319,9 @@
         "korean": "",
         "romanization": "",
         "english": "1, 2, 3, 4, 5 as I'm falling\nI go crazy, crazy",
-        "startChunk": 4386
+        "startChunk": 4386,
+        "lyricId": "ea774924-4f3b-4b8a-89a4-3c22ca4e7e0a",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -277,7 +331,9 @@
         "korean": "",
         "romanization": "",
         "english": "1, 2, 3, 4, 5 as I'm falling\nI go crazy, crazy",
-        "startChunk": 4596
+        "startChunk": 4596,
+        "lyricId": "9aed990b-8dd4-4a3e-8d01-ea9456bc0cc6",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -287,6 +343,8 @@
         "korean": "",
         "romanization": "",
         "english": "For ya, for ya",
-        "startChunk": 4634
+        "startChunk": 4634,
+        "lyricId": "8182f095-06b0-4434-965c-4849fac1480b",
+        "linkedLabel": null
     }
 ]

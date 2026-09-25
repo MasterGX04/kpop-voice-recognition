@@ -10,7 +10,9 @@
         "startChunk": 133,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "3bcb6758-f9b6-4de5-beed-2cb4c233e7ee",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -23,7 +25,9 @@
         "startChunk": 320,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "8029d050-946b-4129-a2e9-76488177cff8",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -36,7 +40,9 @@
         "startChunk": 512,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "b101bbd4-d7ac-450d-8256-97bd0a003040",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -49,7 +55,9 @@
         "startChunk": 696,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "9ea07674-9898-4557-ab42-cad31c9da26d",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -62,7 +70,9 @@
         "startChunk": 807,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "e5772ab2-fd67-48ca-9606-55f071517f45",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -75,7 +85,9 @@
         "startChunk": 884,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "38eee56a-c542-4b65-b918-15eca86e2b0a",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -88,7 +100,9 @@
         "startChunk": 1013,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "8e423201-4f2c-48b1-8fb0-a81e7b202911",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -101,7 +115,9 @@
         "startChunk": 1073,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "a334c017-792c-4ac9-905e-a1b38d159343",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -114,7 +130,9 @@
         "startChunk": 1285,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "0288c62c-7945-4a8c-98da-39e9f429f21c",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -127,7 +145,9 @@
         "startChunk": 1454,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "f408a08b-d654-4467-846f-5e3af6d86b42",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -140,7 +160,9 @@
         "startChunk": 1642,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "445e0bd8-f13d-4a42-aeea-c71e2a948793",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -153,7 +175,9 @@
         "startChunk": 1883,
         "isAdLib": true,
         "adLibDuration": 100,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "bd7e8acb-6514-41c0-8226-4a8798ac0382",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -166,7 +190,9 @@
         "startChunk": 1930,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "e672e69a-03cd-42cc-a0be-22eef420e4f3",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -179,7 +205,9 @@
         "startChunk": 1969,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "f53f9733-edae-4361-a6ba-ef3e1d1ff7ee",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -192,7 +220,9 @@
         "startChunk": 2018,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "645a0c75-146a-4901-92d8-bf6c1b2c120d",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -205,7 +235,9 @@
         "startChunk": 2121,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "e8b608f7-f20c-43f8-b0bc-2af034f83474",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -218,7 +250,9 @@
         "startChunk": 2310,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "5e1c3c00-36ae-4687-b1b7-1f8274c22b09",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -231,7 +265,9 @@
         "startChunk": 2426,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "90b2d431-2ebb-4e5d-ac68-c536adad325e",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -244,7 +280,9 @@
         "startChunk": 2501,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "52d519b9-9065-4f6a-a766-fb1cd2d31247",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -257,7 +295,9 @@
         "startChunk": 2638,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "1688d4dd-23ea-4d64-a3b0-54471b1504c9",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -270,7 +310,9 @@
         "startChunk": 2692,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "bca44440-1397-41f9-b4dc-589350bef1c9",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -283,7 +325,9 @@
         "startChunk": 2903,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "90375494-f68c-4eb8-91c4-6f79dc05c822",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -296,7 +340,9 @@
         "startChunk": 3096,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "7511769c-2e4a-4bb4-a5b8-ae40d39cc23e",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -309,7 +355,9 @@
         "startChunk": 3285,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "68e79007-027a-49e8-9de9-8d4a0b5f35cf",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -322,7 +370,9 @@
         "startChunk": 3454,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "1bef2d70-374c-406a-9ebd-3c994aa7cad5",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -335,7 +385,9 @@
         "startChunk": 3592,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "eca9d4a6-9d22-48d0-8bf5-5d61eec255c6",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -348,7 +400,9 @@
         "startChunk": 3659,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "04e5f500-8cb2-4a56-96ba-981248704847",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -361,7 +415,9 @@
         "startChunk": 3738,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "ced21d82-cc9f-4543-885e-01be43014a96",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -374,7 +430,9 @@
         "startChunk": 3854,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "a4df288b-9c4a-477d-b23b-acfc2fc01547",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -387,7 +445,9 @@
         "startChunk": 3929,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "c132c542-8c9c-4b15-bfde-11df15640c21",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -400,7 +460,9 @@
         "startChunk": 4001,
         "isAdLib": true,
         "adLibDuration": 100,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "c47aa83d-da4b-4bd7-868c-0d5b20abd71d",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -413,7 +475,9 @@
         "startChunk": 4021,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "541096e0-97a5-4740-ac2e-d3f0aa947964",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -426,7 +490,9 @@
         "startChunk": 4070,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "f3e15485-fc28-4fbe-b348-a0c150dd2843",
+        "linkedLabel": null
     },
     {
         "language": "Korean",
@@ -439,7 +505,9 @@
         "startChunk": 4261,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "01eb4848-ffad-436a-ad3a-512720cfc979",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -452,7 +520,9 @@
         "startChunk": 4475,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "e86f7cf9-bd40-4fc2-a853-f704812f5f5f",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -465,6 +535,8 @@
         "startChunk": 4667,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "5871d496-e59b-4177-bbd6-60bff7f9b45f",
+        "linkedLabel": null
     }
 ]

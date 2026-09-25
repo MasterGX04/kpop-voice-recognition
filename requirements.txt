@@ -11,3 +11,8 @@ Pillow
 transformers
 pygame
 muq
+fugashi
+unidic-lite
+pykakasi
+kiwipiepy
+pywebview==6.2.1

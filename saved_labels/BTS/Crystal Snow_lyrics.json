@@ -1,0 +1,135 @@
+[
+    {
+        "lyricId": "ccdf305d-87ee-4e1c-a158-c50d0777b24e",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 438,
+            "endChunk": 497
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "雪積もるように確かめているよ\n君がくれたもの生きてく勇気",
+        "romanization": "yuki tsumoru yō ni tashikame te iru yo\nkimi ga kure ta mono iki teku yūki",
+        "english": "Like snow piles up, I remember what you gave me\nYou gave me the courage to live",
+        "startChunk": 427,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "74d3b98c-a7a0-4f91-99bf-4aaa9fdcff35",
+        "linkedLabel": {
+            "member": "J-Hope",
+            "startChunk": 818,
+            "endChunk": 828
+        },
+        "language": "Japanese",
+        "memberName": [
+            "J-Hope"
+        ],
+        "korean": "あらゆる時間越えて出逢ったんだ\nそれで How do we do？ 果たせる？\nこの不確か状態 Love",
+        "romanization": "arayuru jikan koe te deattanda\nsore de How do we do？ hataseru？\nkono futashika jōtai Love",
+        "english": "We met each other beyond all time\nSo now how do we do? Can we make it work?\nThis fragile love",
+        "startChunk": 807,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "997a2c5c-0533-47fe-a6a8-6f9571561511",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 1061,
+            "endChunk": 1104
+        },
+        "language": "Japanese",
+        "memberName": [
+            "V"
+        ],
+        "korean": "思ったより世界は早くて",
+        "romanization": "omotta yori sekai wa hayaku te",
+        "english": "The world moves faster than we thought",
+        "startChunk": 1050,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "f9a0f31c-3d5a-4e7a-be08-6c1c77427cf9",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 1214,
+            "endChunk": 1236
+        },
+        "language": "Japanese",
+        "memberName": [
+            "V"
+        ],
+        "korean": "How we gonna change it？\nWe don’t know yet\nでもきっと",
+        "romanization": "How we gonna change it？\nWe don’ t know yet\ndemo kitto",
+        "english": "How we gonna change it?\nWe don’t know yet \nBut for sure we will",
+        "startChunk": 1167,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "cdba7df7-8135-42ec-99dc-fe4f1124cf25",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 1310,
+            "endChunk": 1336
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "愛、僕らの胸に ooh yeah",
+        "romanization": "ai, boku ra no mune ni ooh yeah",
+        "english": "Love in our hearts, ooh yeah",
+        "startChunk": 1299,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "10c59f86-81c2-4271-9684-b8edde862441",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 1519,
+            "endChunk": 1549
+        },
+        "language": "Japanese",
+        "memberName": [
+            "V"
+        ],
+        "korean": "Slowly 響きだして",
+        "romanization": "Slowly hibiki dashi te",
+        "english": "slowly started to grow",
+        "startChunk": 1508,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "0b2d2b8e-523f-4f77-a851-e01682d46fc9",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 1639,
+            "endChunk": 1657
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "君を抱き締めたい\n消えてしまう前にもう一度",
+        "romanization": "kimi o dakishime tai\nkie te shimau mae ni mō ichi do",
+        "english": "I want to hold you one more time \nbefore you disappear",
+        "startChunk": 1628,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    }
+]

@@ -1,0 +1,164 @@
+/* Reuses the two font files already bundled for the rest of the app (see
+   voice_recognition_gui.spec's `datas`) via a plain relative path, instead of adding a new web
+   font the packaging step would have to separately account for. */
+@font-face {
+  font-family: "Pretendard";
+  src: url("../../../fonts/PretendardVariable.ttf");
+}
+@font-face {
+  font-family: "Hiragino Sans GB";
+  src: url("../../../fonts/Hiragino Sans GB W3.ttf");
+}
+
+:root {
+  color-scheme: light dark;
+  --bg: #f7f6f3;
+  --fg: #1d1d1f;
+  --muted: #6b6b70;
+  --accent: #3f6fd1;
+  --danger: #b03a2e;
+  --border: #d8d6d0;
+  --card-bg: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1c1e;
+    --fg: #f2f2f2;
+    --muted: #9a9a9e;
+    --accent: #7aa2ff;
+    --danger: #ff6b5e;
+    --border: #3a3a3c;
+    --card-bg: #2c2c2e;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 16px;
+  font-family: "Pretendard", "Hiragino Sans GB", "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.error-banner {
+  background: var(--danger);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.controls, .filters, .nav, .actions, .rating-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.control-label {
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.korean-only[data-hidden="true"] {
+  display: none;
+}
+
+.prompt {
+  font-size: 28px;
+  font-weight: 600;
+  text-align: center;
+  margin: 18px 0 4px;
+}
+
+.warning {
+  color: var(--danger);
+  text-align: center;
+  min-height: 1.2em;
+  margin-bottom: 8px;
+}
+
+.answer-body {
+  white-space: pre-wrap;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  min-height: 120px;
+  line-height: 1.5;
+}
+
+.occurrence-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  color: var(--muted);
+}
+
+.hanja-picker {
+  margin-top: 10px;
+}
+
+.hanja-candidate-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+button {
+  font: inherit;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--fg);
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: var(--accent);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.rating-row {
+  justify-content: center;
+  margin-top: 14px;
+}
+
+dialog {
+  border: none;
+  border-radius: 10px;
+  padding: 16px;
+  background: var(--card-bg);
+  color: var(--fg);
+  max-width: 420px;
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+textarea {
+  width: 100%;
+  font: inherit;
+}

@@ -41,7 +41,13 @@ vocal_stem_separations/
 checkpoints/
 outputs/
 logs/
-data/
+kanji_reference/
+data/*
+!data/jp2t/
+!data/kanjidic2/
+!data/cedict/
+!data/jmdict/
+!data/ko_wiktionary/
 tmp/
 tmpdir/
 pitch_test/

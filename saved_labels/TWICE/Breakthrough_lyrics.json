@@ -1,0 +1,1000 @@
+[
+    {
+        "lyricId": "568f5e3c-570d-45f1-9399-e8dace52755f",
+        "linkedLabel": {
+            "member": "Jeongyeon",
+            "startChunk": 227,
+            "endChunk": 249
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jeongyeon"
+        ],
+        "korean": "揺るぎない感情は Dreaming",
+        "romanization": "yuruginai kanjou wa Dreaming",
+        "english": "Unwavering feelings are dreaming",
+        "startChunk": 216,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "79b48d0c-7d9b-45a9-970e-588ee82b19b0",
+        "linkedLabel": {
+            "member": "Mina",
+            "startChunk": 334,
+            "endChunk": 382
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "Anytime 私を突き動かすの",
+        "romanization": "Anytime watashi o tsukiugokasu no",
+        "english": "It always drives me to move forward at any time",
+        "startChunk": 323,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "a33292c7-8818-4391-a6bc-070bc9e1478f",
+        "linkedLabel": {
+            "member": "Sana",
+            "startChunk": 435,
+            "endChunk": 468
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Sana"
+        ],
+        "korean": "理想の未来へ Heading",
+        "romanization": "risou no mirai e Heading",
+        "english": "Heading for my ideal future",
+        "startChunk": 424,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "c08401c9-cb40-4811-b13d-28aea051430b",
+        "linkedLabel": {
+            "member": "Nayeon",
+            "startChunk": 540,
+            "endChunk": 597
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Nayeon"
+        ],
+        "korean": "どんな高い壁も乗り越える覚悟",
+        "romanization": "donna takai kabe mo norikoeru kakugo",
+        "english": "A resolve to overcome any obstacle, no matter how high",
+        "startChunk": 529,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "9254e868-2874-4b4d-87ff-89196506e092",
+        "linkedLabel": {
+            "member": "Jihyo",
+            "startChunk": 642,
+            "endChunk": 744
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jihyo"
+        ],
+        "korean": "時間は無限にあっても",
+        "romanization": "jikan wa mugen ni atte mo",
+        "english": "Even if there is no time limit",
+        "startChunk": 631,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "9ef548de-7a36-44ee-8c4f-3881b73dafb7",
+        "linkedLabel": {
+            "member": "Momo",
+            "startChunk": 768,
+            "endChunk": 846
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Momo"
+        ],
+        "korean": "巻き戻しはできない",
+        "romanization": "makimodoshi wa deki nai",
+        "english": "There is no way to rewind",
+        "startChunk": 757,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "b99fb7a0-69dc-4221-a1ff-b861464298ce",
+        "linkedLabel": {
+            "member": "Jihyo",
+            "startChunk": 855,
+            "endChunk": 956
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jihyo"
+        ],
+        "korean": "私という名前の Story",
+        "romanization": "watashi to yū namae no Story",
+        "english": "The story that has my name",
+        "startChunk": 844,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "92cbe5ca-e0b1-407f-854b-6db49923d96d",
+        "linkedLabel": {
+            "member": "Tzuyu",
+            "startChunk": 983,
+            "endChunk": 1072
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Tzuyu"
+        ],
+        "korean": "たった一度しかないから",
+        "romanization": "tatta ichi do shika nai kara",
+        "english": "",
+        "startChunk": 972,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "2db23c36-5018-4c19-b103-5a095467f2b5",
+        "linkedLabel": {
+            "member": "Nayeon",
+            "startChunk": 1077,
+            "endChunk": 1209
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Nayeon"
+        ],
+        "korean": "誰に何だかんだ言われても\n振り切って Going my way",
+        "romanization": "dare ni nan da kan da iwa re te mo\nfurikitte Going my way",
+        "english": "No matter what people say about me\nI’ll shake it off, going my way",
+        "startChunk": 1066,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "3c04cd3c-6473-4410-b049-3d116690dc58",
+        "linkedLabel": {
+            "member": "Dahyun",
+            "startChunk": 1210,
+            "endChunk": 1249
+        },
+        "language": "English",
+        "memberName": [
+            "Dahyun",
+            "Momo"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Say say,| don’t give up\nSay say,| don’t give up",
+        "startChunk": 1199,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "52311fe5-9336-44e7-a5f4-1746e777e7c6",
+        "linkedLabel": {
+            "member": "Mina",
+            "startChunk": 1291,
+            "endChunk": 1426
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "いつか胸張って誇れる\n私になるまで",
+        "romanization": "itsu ka mune hatte hokoreru\nwatashi ni naru made",
+        "english": "Until I become able to\nProudly hold my head high",
+        "startChunk": 1280,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "82011ed0-901d-4788-840f-0a3e5636cffd",
+        "linkedLabel": {
+            "member": "Dahyun",
+            "startChunk": 1425,
+            "endChunk": 1464
+        },
+        "language": "English",
+        "memberName": [
+            "Dahyun",
+            "Momo"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Say say,| don’t give up\nSay say,| don’t give up",
+        "startChunk": 1414,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "be83a505-c560-4488-9fec-657ecaf3ba38",
+        "linkedLabel": {
+            "member": "Jihyo",
+            "startChunk": 1526,
+            "endChunk": 1583
+        },
+        "language": "English",
+        "memberName": [
+            "Jihyo"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Breakthrough breakthrough\nBreakthrough breakthrough",
+        "startChunk": 1515,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "397912df-d143-4495-8af1-54793fa8120b",
+        "linkedLabel": {
+            "member": "Chaeyoung",
+            "startChunk": 1580,
+            "endChunk": 1634
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Chaeyoung"
+        ],
+        "korean": "巡り巡ってく",
+        "romanization": "meguri megutteku",
+        "english": "Going round and round",
+        "startChunk": 1569,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "56c929f7-db6c-4940-aec7-bea4699b8767",
+        "linkedLabel": {
+            "member": "Jihyo",
+            "startChunk": 1633,
+            "endChunk": 1690
+        },
+        "language": "English",
+        "memberName": [
+            "Jihyo"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Breakthrough breakthrough\nBreakthrough breakthrough",
+        "startChunk": 1622,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "3687cbd9-d13e-4bfc-96ea-98a559ebf7cf",
+        "linkedLabel": {
+            "member": "Jeongyeon",
+            "startChunk": 1686,
+            "endChunk": 1739
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jeongyeon"
+        ],
+        "korean": "時に磨かれ",
+        "romanization": "toki ni migakare",
+        "english": "Time that polishes to make",
+        "startChunk": 1675,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "053ec582-87c8-4f90-99a7-a411ef613b3a",
+        "linkedLabel": {
+            "member": "Sana",
+            "startChunk": 1734,
+            "endChunk": 1856
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Sana"
+        ],
+        "korean": "輝く私を世界が待ってるの",
+        "romanization": "kagayaku watashi o sekai ga matteru no",
+        "english": "A shining me that the world is waiting for",
+        "startChunk": 1723,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "5f30df3c-4eea-4489-9d65-a6c91b9669db",
+        "linkedLabel": {
+            "member": "Dahyun",
+            "startChunk": 1852,
+            "endChunk": 1893
+        },
+        "language": "English",
+        "memberName": [
+            "Dahyun",
+            "Momo"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Say say,| don’t give up\nSay say,| don’t give up",
+        "startChunk": 1841,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "005e3373-40e0-440f-abdf-8dd3c4d40418",
+        "linkedLabel": {
+            "member": "Mina",
+            "startChunk": 1955,
+            "endChunk": 1963
+        },
+        "language": "English",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Break break breakthrough\nBreak break breakthrough",
+        "startChunk": 1944,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "d816166e-fc95-49a5-bb4f-3148969feb91",
+        "linkedLabel": {
+            "member": "Jeongyeon",
+            "startChunk": 2062,
+            "endChunk": 2071
+        },
+        "language": "English",
+        "memberName": [
+            "Jeongyeon"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Break break breakthrough\nBreak break breakthrough",
+        "startChunk": 2051,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "853a1506-47c1-438d-9c17-8a25dbea2d4f",
+        "linkedLabel": {
+            "member": "Chaeyoung",
+            "startChunk": 2155,
+            "endChunk": 2179
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Chaeyoung"
+        ],
+        "korean": "Everybody break break breakthrough\n迷いを突き抜け Growing up",
+        "romanization": "Everybody break break breakthrough\nmayoui o tsukinuke Growing up",
+        "english": "Everybody, break break breakthrough\nBreaking through hesitations and growing up",
+        "startChunk": 2144,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "db30ec59-489e-46c4-901f-ae4f00b6d32c",
+        "linkedLabel": {
+            "member": "Dahyun",
+            "startChunk": 2269,
+            "endChunk": 2397
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Dahyun"
+        ],
+        "korean": "ほら Now から Future へ Link する My heart\nビートが Heating さぁ Moving on, moving on",
+        "romanization": "hora Now kara Future e Link suru My heart\nbīto ga Heating sā Moving on, moving on",
+        "english": "Look, the future follows from now, linking into my heart\nBeats are heating, now moving on, moving on",
+        "startChunk": 2258,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "86825102-3736-48e7-a9f8-579459019c4a",
+        "linkedLabel": {
+            "member": "Chaeyoung",
+            "startChunk": 2393,
+            "endChunk": 2499
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Chaeyoung"
+        ],
+        "korean": "弱さとファイティング心で\n強さをゲット重ねたら",
+        "romanization": "yowa sa to faiteingu kokoro de\ntsuyo sa o getto kasane tara",
+        "english": "I’m fighting weakness\nIf I build up strength with my heart",
+        "startChunk": 2382,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "4a5d4072-680a-454b-87b5-76930de0a5e8",
+        "linkedLabel": {
+            "member": "Dahyun",
+            "startChunk": 2497,
+            "endChunk": 2592
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Dahyun"
+        ],
+        "korean": "きっと限界なんて Break\nBaby 突破して行こう Let go",
+        "romanization": "kitto genkai nante Break\nBaby toppa shi te ikō Let go",
+        "english": "Definitely, the limits theyll break\nBaby let’s go break through them",
+        "startChunk": 2486,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "6ee72d15-167d-4041-abc2-ece39fe05039",
+        "linkedLabel": {
+            "member": "Nayeon",
+            "startChunk": 2572,
+            "endChunk": 2676
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Nayeon"
+        ],
+        "korean": "誰かと比べられても",
+        "romanization": "dare ka to kuraberare temo",
+        "english": "No matter who I'm being compared to",
+        "startChunk": 2561,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "13a7c502-5b07-4228-9e6c-cf56e422ef06",
+        "linkedLabel": {
+            "member": "Momo",
+            "startChunk": 2697,
+            "endChunk": 2777
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Momo"
+        ],
+        "korean": "自分を叫び続けたい",
+        "romanization": "jibun wo sakebitsuzuketai",
+        "english": "I want to continue screaming out who I am",
+        "startChunk": 2686,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "fc05d396-e36d-470b-9aa8-ba5793033a92",
+        "linkedLabel": {
+            "member": "Nayeon",
+            "startChunk": 2784,
+            "endChunk": 2894
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Nayeon"
+        ],
+        "korean": "私が目指したマイルストーン",
+        "romanization": "watashi ga mezashi ta mairusutōn",
+        "english": "The milestone that I was aiming for",
+        "startChunk": 2773,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "c83da6d9-e15e-465e-861f-4172c86c66d4",
+        "linkedLabel": {
+            "member": "Tzuyu",
+            "startChunk": 2913,
+            "endChunk": 3005
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Tzuyu"
+        ],
+        "korean": "この胸にある限り",
+        "romanization": "kono mune ni aru kagiri",
+        "english": "Is a limit that is inside my chest",
+        "startChunk": 2902,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "858666bc-bf6c-4b1b-96f3-50ba8659dcf8",
+        "linkedLabel": {
+            "member": "Jihyo",
+            "startChunk": 3006,
+            "endChunk": 3137
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jihyo"
+        ],
+        "korean": "たとえ光が見えない\nトンネルの中でも",
+        "romanization": "tatoe hikari ga mie nai\ntonneru no naka de mo",
+        "english": "For example, even if you’re inside a tunnel\nAnd can’t see light",
+        "startChunk": 2995,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "dcf1d72b-723d-4f6c-85cc-31073fe157af",
+        "linkedLabel": {
+            "member": "Sana",
+            "startChunk": 3138,
+            "endChunk": 3178
+        },
+        "language": "English",
+        "memberName": [
+            "Sana",
+            "Chaeyoung"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Say say,| don’t give up\nSay say,| don’t give up",
+        "startChunk": 3127,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "691e6fa0-81f8-4f6d-b13b-07290f711d23",
+        "linkedLabel": {
+            "member": "Jeongyeon",
+            "startChunk": 3221,
+            "endChunk": 3351
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jeongyeon"
+        ],
+        "korean": "後ろ振り向かないで\n前に進みたいよ",
+        "romanization": "ushiro furimuka nai de\nmae ni susumi tai yo",
+        "english": "Don’t turn back\nI want to progress forwards, okay",
+        "startChunk": 3210,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "0eb9adc6-8a5b-4a7c-a20a-7cccdbf97c2c",
+        "linkedLabel": {
+            "member": "Sana",
+            "startChunk": 3352,
+            "endChunk": 3393
+        },
+        "language": "English",
+        "memberName": [
+            "Sana",
+            "Chaeyoung"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Say say,| don’t give up\nSay say,| don’t give up",
+        "startChunk": 3341,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "21618a9b-9cff-4fbf-bac2-3d1a325b68e2",
+        "linkedLabel": {
+            "member": "Nayeon",
+            "startChunk": 3454,
+            "endChunk": 3511
+        },
+        "language": "English",
+        "memberName": [
+            "Nayeon"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Breakthrough breakthrough\nBreakthrough breakthrough",
+        "startChunk": 3443,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "27d5d66f-2cf8-497a-b673-233a402db4ee",
+        "linkedLabel": {
+            "member": "Dahyun",
+            "startChunk": 3508,
+            "endChunk": 3562
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Dahyun"
+        ],
+        "korean": "変わり続ける",
+        "romanization": "kawari tsuzukeru",
+        "english": "Continue to change",
+        "startChunk": 3497,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "b99d6763-14a4-40fd-b228-342eb41548d5",
+        "linkedLabel": {
+            "member": "Nayeon",
+            "startChunk": 3561,
+            "endChunk": 3618
+        },
+        "language": "English",
+        "memberName": [
+            "Nayeon"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Breakthrough breakthrough\nBreakthrough breakthrough",
+        "startChunk": 3550,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "296f8dac-0388-4b9c-9ddd-405e09580ce9",
+        "linkedLabel": {
+            "member": "Tzuyu",
+            "startChunk": 3615,
+            "endChunk": 3668
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Tzuyu"
+        ],
+        "korean": "時代の中で",
+        "romanization": "jidai no naka de",
+        "english": "In this era",
+        "startChunk": 3604,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "8f6a7ed2-374c-40c3-8e7d-bf19e73fa108",
+        "linkedLabel": {
+            "member": "Mina",
+            "startChunk": 3668,
+            "endChunk": 3782
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "夢見る私が世界を拓くの",
+        "romanization": "yumemiru watashi ga sekai o hiraku no",
+        "english": "My dreaming self will break open the world.",
+        "startChunk": 3657,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "67269aef-6566-4b3b-8b29-8af71e3b6ed4",
+        "linkedLabel": {
+            "member": "Sana",
+            "startChunk": 3780,
+            "endChunk": 3821
+        },
+        "language": "English",
+        "memberName": [
+            "Sana",
+            "Chaeyoung"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Say say,| don’t give up\nSay say,| don’t give up",
+        "startChunk": 3769,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "299e0cd0-f25c-4da9-87d8-47a3ed2df10e",
+        "linkedLabel": {
+            "member": "Tzuyu",
+            "startChunk": 3870,
+            "endChunk": 3972
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Tzuyu"
+        ],
+        "korean": "今の私を Ah\n突き動かすものに",
+        "romanization": "ima no watashi o Ah\ntsuki ugokasu mono ni",
+        "english": "The me right now, ah\nSomething is driving me forwards",
+        "startChunk": 3859,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "b110fe22-c8d1-4d21-999c-1b697c7554c6",
+        "linkedLabel": {
+            "member": "Jihyo",
+            "startChunk": 4098,
+            "endChunk": 4197
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jihyo"
+        ],
+        "korean": "理由なんてない\n明日への衝動",
+        "romanization": "riyū nante nai\nashita e no shōdō",
+        "english": "No reasons needed\nOnly the urge pulling me into tomorrow",
+        "startChunk": 4087,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "3b32a8b5-36fd-4bc5-bd3f-37d9bf1a068b",
+        "linkedLabel": {
+            "member": "Nayeon",
+            "startChunk": 4292,
+            "endChunk": 4424
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Nayeon"
+        ],
+        "korean": "誰に何だかんだ言われても\n振り切って Going my way",
+        "romanization": "dare ni nan da kan da iwa re te mo\nfurikitte Going my way",
+        "english": "No matter what people say about me\nI’ll shake it off, going my way",
+        "startChunk": 4281,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "97113039-a51d-4f00-97ee-71ba93df1148",
+        "linkedLabel": {
+            "member": "Dahyun",
+            "startChunk": 4424,
+            "endChunk": 4464
+        },
+        "language": "English",
+        "memberName": [
+            "Dahyun",
+            "Momo"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Say say,| don’t give up\nSay say,| don’t give up",
+        "startChunk": 4413,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "d279c446-33b4-44bd-9d01-7e3a9d00d88e",
+        "linkedLabel": {
+            "member": "Mina",
+            "startChunk": 4506,
+            "endChunk": 4642
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "いつか胸張って誇れる\n私になるまで",
+        "romanization": "itsu ka mune hatte hokoreru\nwatashi ni naru made",
+        "english": "Until I become able to\nProudly hold my head high",
+        "startChunk": 4495,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "473200e8-1537-4a7a-9570-86b63b66cdf8",
+        "linkedLabel": {
+            "member": "Dahyun",
+            "startChunk": 4690,
+            "endChunk": 4732
+        },
+        "language": "English",
+        "memberName": [
+            "Dahyun",
+            "Momo"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Say say,| don’t give up\nSay say,| don’t give up",
+        "startChunk": 4679,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "725c31da-15d9-4469-a6cd-dfa518008abf",
+        "linkedLabel": {
+            "member": "Jihyo",
+            "startChunk": 4741,
+            "endChunk": 4797
+        },
+        "language": "English",
+        "memberName": [
+            "Jihyo"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Breakthrough breakthrough\nBreakthrough breakthrough",
+        "startChunk": 4730,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "d2b21c69-8377-4aa1-8a0a-f260e140e842",
+        "linkedLabel": {
+            "member": "Chaeyoung",
+            "startChunk": 4795,
+            "endChunk": 4848
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Chaeyoung",
+            "Nayeon"
+        ],
+        "korean": "巡り巡ってく",
+        "romanization": "meguri megutteku",
+        "english": "Going round and round",
+        "startChunk": 4784,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "b1567511-0a59-48d7-897b-9a849bd7bfb4",
+        "linkedLabel": {
+            "member": "Jihyo",
+            "startChunk": 4848,
+            "endChunk": 4904
+        },
+        "language": "English",
+        "memberName": [
+            "Jihyo"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Breakthrough breakthrough\nBreakthrough breakthrough",
+        "startChunk": 4837,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "4dd177cd-71e2-4de3-afc4-b57857ef2040",
+        "linkedLabel": {
+            "member": "Jeongyeon",
+            "startChunk": 4901,
+            "endChunk": 4971
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jeongyeon"
+        ],
+        "korean": "時に磨かれ",
+        "romanization": "toki ni migakare",
+        "english": "Time that polishes to make",
+        "startChunk": 4890,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "58be315b-0e66-49ef-8293-0d0ff687aaaf",
+        "linkedLabel": {
+            "member": "Sana",
+            "startChunk": 4948,
+            "endChunk": 5069
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Sana"
+        ],
+        "korean": "輝く私を世界が待ってるの",
+        "romanization": "kagayaku watashi o sekai ga matteru no",
+        "english": "A shining me that the world is waiting for",
+        "startChunk": 4937,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "8d020c7e-587d-4134-b448-e18ab60acd32",
+        "linkedLabel": {
+            "member": "Dahyun",
+            "startChunk": 5068,
+            "endChunk": 5108
+        },
+        "language": "English",
+        "memberName": [
+            "Dahyun",
+            "Momo"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Say say,| don’t give up\nSay say,| don’t give up",
+        "startChunk": 5057,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "4582771b-18a1-486d-9cad-e9f46563e668",
+        "linkedLabel": {
+            "member": "Mina",
+            "startChunk": 5169,
+            "endChunk": 5177
+        },
+        "language": "English",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Break break breakthrough\nBreak break breakthrough",
+        "startChunk": 5158,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "c5bffb2d-bd02-484c-a680-997b377c9ac9",
+        "linkedLabel": {
+            "member": "Jeongyeon",
+            "startChunk": 5276,
+            "endChunk": 5286
+        },
+        "language": "English",
+        "memberName": [
+            "Jeongyeon"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Break break breakthrough\nBreak break breakthrough",
+        "startChunk": 5265,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    }
+]

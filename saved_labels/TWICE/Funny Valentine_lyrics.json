@@ -1,6 +1,6 @@
 [
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Momo"
         ],
@@ -10,7 +10,9 @@
         "startChunk": 260,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "3dbcabdd-264e-49f3-ae60-a45326c80913",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -23,14 +25,18 @@
         "startChunk": 445,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "dc0cb47c-78dd-4189-9091-8f10ae14db39",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "lyricId": "577a0598-0eeb-428b-b783-6f898f5f6c69",
+        "linkedLabel": null,
+        "language": "Japanese",
         "memberName": [
             "Sana"
         ],
-        "korean": "Tonight　2人の時間の重要性\nわかってないのね",
+        "korean": "Tonight　二人の時間の重要性\n分かってないのね",
         "romanization": "Tonight futari no jikan no juuyousei\nwakattenai no ne",
         "english": "Tonight the time we spend together is important\nYou don't seem to understand",
         "startChunk": 518,
@@ -49,10 +55,12 @@
         "startChunk": 655,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "b745f4cb-6e73-4562-99de-62738b5e9436",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Mina"
         ],
@@ -62,10 +70,12 @@
         "startChunk": 737,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "ad6a7cc5-6d5e-464f-bc10-a9093ceb069d",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Momo"
         ],
@@ -75,10 +85,12 @@
         "startChunk": 833,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "62a7e77e-68eb-4724-8c78-5230892346a1",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Sana"
         ],
@@ -88,10 +100,12 @@
         "startChunk": 914,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "5732c210-7551-4eb5-8eee-6fd8f266d68c",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Mina"
         ],
@@ -101,7 +115,9 @@
         "startChunk": 1026,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "06b3d2c7-cb40-4c46-8453-4a0b0fc972a8",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -114,10 +130,14 @@
         "startChunk": 1260,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "f6e02053-72b8-460c-a498-daaef9d5be66",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "lyricId": "cc672a65-7f4c-4ffc-b43c-94107aee6145",
+        "linkedLabel": null,
+        "language": "Japanese",
         "memberName": [
             "Sana"
         ],
@@ -140,10 +160,12 @@
         "startChunk": 1510,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "c6c5c2b8-e659-4e06-9088-28c0c55e6222",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Momo"
         ],
@@ -153,10 +175,12 @@
         "startChunk": 1703,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "3a38ea7d-4daa-449e-9afb-881b1b869649",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Sana"
         ],
@@ -166,7 +190,9 @@
         "startChunk": 1920,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "09c95159-0756-413d-a4b0-95e220925e82",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -179,7 +205,9 @@
         "startChunk": 2123,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "68d1482c-507c-4fba-9ab2-98f208b15864",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -192,10 +220,12 @@
         "startChunk": 2164,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "acde658b-641b-4d78-b49a-2d2b0fde4dd7",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Mina"
         ],
@@ -205,7 +235,9 @@
         "startChunk": 2168,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "f2d737ef-1e95-4b3c-ba63-d16cd0a1e188",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -218,7 +250,9 @@
         "startChunk": 2219,
         "isAdLib": true,
         "adLibDuration": 80,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "bba31bef-b3f3-4b2d-bc65-a547f76e66de",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -231,10 +265,12 @@
         "startChunk": 2333,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "e95f927e-3c40-49f7-9a5d-b3f6a70d4e56",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Sana",
             "Mina"
@@ -245,7 +281,9 @@
         "startChunk": 2364,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "b26e22b0-5c4f-4af0-9a21-fad97c4023c2",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -258,7 +296,9 @@
         "startChunk": 2474,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "f493d8bd-93f4-4b59-90a7-7b1987513973",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -271,10 +311,12 @@
         "startChunk": 2502,
         "isAdLib": true,
         "adLibDuration": 70,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "89165c60-33f8-4046-8dd6-e0b76a026b5e",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Momo"
         ],
@@ -284,7 +326,9 @@
         "startChunk": 2509,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "1877b4f2-8c15-48ed-9307-fc39caf5fd44",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -297,10 +341,12 @@
         "startChunk": 2575,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "89aa2c43-45fa-47a1-bde3-85efea1ba4d6",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Mina"
         ],
@@ -310,10 +356,12 @@
         "startChunk": 2591,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "ab6cfbfe-59c9-4c4f-834e-9ba03ec45049",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Sana"
         ],
@@ -323,7 +371,9 @@
         "startChunk": 2703,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "65795b13-c7f1-4c7c-8302-9eded4431751",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -336,10 +386,12 @@
         "startChunk": 2938,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "6eb15881-64d5-4d1c-94bd-a6f36600c048",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Mina"
         ],
@@ -349,7 +401,9 @@
         "startChunk": 2962,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "4eee471e-7287-42d4-a9f9-c1f2921e2edd",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -362,7 +416,9 @@
         "startChunk": 3067,
         "isAdLib": true,
         "adLibDuration": 80,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "a3b0fd24-d8a3-4080-89c0-3eccbadef1fc",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -375,10 +431,12 @@
         "startChunk": 3188,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "2f5a190a-7e18-4d1a-87e5-dc69a326752c",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Momo"
         ],
@@ -388,10 +446,12 @@
         "startChunk": 3380,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "96bcd54b-b0f2-41ac-a70a-6f0a2bc9b10e",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Mina"
         ],
@@ -401,10 +461,12 @@
         "startChunk": 3494,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "ff82d2ae-757d-4b41-9a69-ef4fab2ac5eb",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Sana"
         ],
@@ -414,10 +476,12 @@
         "startChunk": 3559,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "42620311-e19d-48a5-abbb-d569fd499616",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Momo"
         ],
@@ -427,7 +491,9 @@
         "startChunk": 3623,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "4f87b49b-3a19-439b-ade7-cf02a30a2705",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -440,7 +506,9 @@
         "startChunk": 3671,
         "isAdLib": true,
         "adLibDuration": 70,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "ea0c7c7c-5065-40f2-b538-fa349e2f4588",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -453,10 +521,12 @@
         "startChunk": 3752,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "b368cc8d-441b-4fee-9465-0c4e8417effc",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Sana"
         ],
@@ -466,10 +536,12 @@
         "startChunk": 3880,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "fa9ec9c0-9e33-4bad-8432-1e4d5290999a",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Mina"
         ],
@@ -479,7 +551,9 @@
         "startChunk": 3993,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "6730e093-3a6b-4192-87e4-184e982fd8d8",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -492,7 +566,9 @@
         "startChunk": 4180,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "0b021b32-e255-4df0-85e0-26e87dc03a3d",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -505,10 +581,12 @@
         "startChunk": 4228,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "878d7f24-0850-4f02-a37d-b32b36a15f9a",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Sana"
         ],
@@ -518,7 +596,9 @@
         "startChunk": 4252,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "3925b3b3-6ea2-44fa-9a7e-c949c42a6d10",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -531,7 +611,9 @@
         "startChunk": 4477,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "85a88b1c-1e3f-4064-aa54-cebb4e966c74",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -544,7 +626,9 @@
         "startChunk": 4535,
         "isAdLib": true,
         "adLibDuration": 70,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "4ad8439a-9ba5-40f5-b505-df178965ef30",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -557,10 +641,12 @@
         "startChunk": 4622,
         "isAdLib": true,
         "adLibDuration": 100,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "8f90796d-e074-4adf-aa29-3fadf34b83f0",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Momo"
         ],
@@ -570,6 +656,8 @@
         "startChunk": 4670,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "54df044a-9ede-41bf-a664-5db392cbbbd3",
+        "linkedLabel": null
     }
 ]

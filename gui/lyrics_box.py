@@ -1,10 +1,15 @@
 from PIL import Image, ImageTk
 import tkinter as tk
 
+LYRIC_ENTRANCE_ANIMATION_CHUNKS = 9   # entrance/push-down animation length, in 40ms chunks
+LYRIC_LEAD_BUFFER_CHUNKS = 2
+LYRIC_LEAD_CHUNKS = LYRIC_ENTRANCE_ANIMATION_CHUNKS + LYRIC_LEAD_BUFFER_CHUNKS  # = 11
+
 class LyricBox:
-    def __init__(self, canvas, parent, memberNames, circleImages, 
-                 koreanLyric, romanization, englishTrans, 
-                 startChunk, language, isAdLib=False, adLibDuration=25):
+    def __init__(self, canvas, parent, memberNames, circleImages,
+                 koreanLyric, romanization, englishTrans,
+                 startChunk, language, lyricId, isAdLib=False, adLibDuration=25,
+                 linkedLabel=None):
         self.canvas = canvas
         self.parent = parent
         self.memberNames = memberNames
@@ -12,8 +17,10 @@ class LyricBox:
         self.romanization = romanization
         self.englishTrans = englishTrans
         self.startChunk = startChunk
+        self.lyricId = lyricId
+        self.linkedLabel = linkedLabel
         self.isAdLib = isAdLib  # New flag for ad-libs
-        self.adLibDuration = adLibDuration 
+        self.adLibDuration = adLibDuration
         
         self.photoY = 0
         
@@ -49,7 +56,7 @@ class LyricBox:
         self.animations = []
         
         self.lyricsPadding = self._pxY(30)
-        self.addLyricDuration = 9
+        self.addLyricDuration = LYRIC_ENTRANCE_ANIMATION_CHUNKS
         
         if isAdLib:
             self.createAdLibDisplay()
@@ -223,7 +230,7 @@ class LyricBox:
         existingLyricBoxes = []
 
         if hasattr(self.parent, "getActiveLyricBoxesAtChunk"):
-            existingLyricBoxes = self.parent.getActiveLyricBoxesAtChunk(startChunk) or []
+            existingLyricBoxes = self.parent.getActiveLyricBoxesAtChunk(startChunk, excludeLyricId=self.lyricId) or []
         elif hasattr(self.parent, "activeLyricIds"):
             for lid in list(self.parent.activeLyricIds):
                 lb = self.parent.lyrics.get(lid)
@@ -372,7 +379,7 @@ class LyricBox:
                     # THIS is the key rule:
                     # If language is Korean → English is bold
                     # If language is English → English uses englishFont
-                    fontToUse = self.boldFont if self.language == "Korean" else self.englishFont
+                    fontToUse = self.boldFont if self.language in ("Korean", "Japanese") else self.englishFont
 
                     tid = self.canvas.create_text(
                         anchorX,
@@ -662,8 +669,8 @@ class LyricBox:
 
         curY += nameHeight + innerGapY
 
-        # --- Korean + Romanization ---
-        if self.language == "Korean":
+        # --- Korean/Japanese + Romanization ---
+        if self.language in ("Korean", "Japanese"):
             for line in (self.koreanLyric or "").split("\n"):
                 if line.strip():
                     self._createColorCodedText(textX, curY, line, self.boldFont, self.memberColors)
@@ -693,7 +700,7 @@ class LyricBox:
         # --- English translation (always) ---
         for line in (self.englishTrans or "").split("\n"):
             if line.strip():
-                fontToUse = self.boldFont if self.language == "Korean" else self.englishFont
+                fontToUse = self.boldFont if self.language in ("Korean", "Japanese") else self.englishFont
                 self._createColorCodedText(textX, curY, line, fontToUse, self.memberColors)
 
                 lastId = self.textItems[-1] if self.textItems else None

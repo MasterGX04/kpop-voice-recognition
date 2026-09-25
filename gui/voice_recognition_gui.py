@@ -1597,7 +1597,8 @@ class VoiceTrainerGUI:
                 # If you used pygame for audio, stop it explicitly
                 try:
                     import pygame
-                    pygame.mixer.music.stop()
+                    if app:
+                        app.clock.stop()
                     pygame.mixer.quit()
                     pygame.quit()
                 except Exception:
@@ -2588,9 +2589,19 @@ def dataDir() -> Path:
         return fallback
        
 if __name__ == "__main__":
+    if "--vocab-review" in sys.argv:
+        # The vocab review screen is a separate PyWebView process (see
+        # gui.vocab_review_launcher); in a frozen build there's no separate python.exe to launch,
+        # so the same exe re-invokes itself with this flag instead. See
+        # .claude/FLASHCARD_WEB_UPGRADE_PLAN.md's "Architecture decision" section.
+        from gui.vocab_review_web_main import runStandalone
+
+        runStandalone(sys.argv)
+        sys.exit(0)
+
     root = tk.Tk()
-    
+
     root.iconbitmap(resourcePath("images", "logo.ico"))
-    
+
     app = VoiceTrainerGUI(root)
     root.mainloop()

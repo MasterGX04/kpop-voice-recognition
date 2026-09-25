@@ -10,7 +10,9 @@
         "startChunk": 781,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "1c5e9ef9-9b57-481e-a724-01619ab28c38",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -23,7 +25,9 @@
         "startChunk": 941,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "86195e19-cb2e-4fee-ab76-1f5f3c16323b",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -36,7 +40,9 @@
         "startChunk": 1035,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "38a3b622-6fc9-489c-84ae-b39f6d23be1f",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -49,7 +55,9 @@
         "startChunk": 1161,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "4274f8e4-0384-46c5-a603-e0cb4347563c",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -62,7 +70,9 @@
         "startChunk": 1279,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "fd618d95-c33f-41ef-aec7-efe716f91cd9",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -75,7 +85,9 @@
         "startChunk": 1517,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "2f8b1107-8312-43c9-9cd7-6c1b303271f2",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -88,7 +100,9 @@
         "startChunk": 1626,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "b4849c53-9d37-4aa3-9de2-79b94525897e",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -101,7 +115,9 @@
         "startChunk": 1790,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "07e4ca0a-eb81-430b-964e-bcee6c9fe067",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -114,7 +130,9 @@
         "startChunk": 1927,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "a4715fd2-74c9-4090-9998-77ea6740684a",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -127,7 +145,9 @@
         "startChunk": 2056,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "3b9d537b-6df8-46ce-91ec-b8a2ffb90b87",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -140,7 +160,9 @@
         "startChunk": 2185,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "3c9d2686-f4a1-42b8-ae09-034a50c4d477",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -153,7 +175,9 @@
         "startChunk": 2311,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "eacb580c-0832-4302-acb2-f7a170cc992b",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -166,7 +190,9 @@
         "startChunk": 2329,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "943234a4-da6f-42e0-8f13-0eca9fb8c661",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -179,7 +205,9 @@
         "startChunk": 2361,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "79193611-eaad-43a0-aa25-b10338c5be3a",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -192,7 +220,9 @@
         "startChunk": 2434,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "c828cb34-a5b1-4ce4-b0d4-156a15f95f3d",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -205,7 +235,9 @@
         "startChunk": 2557,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "7a4dd790-315d-41de-8f06-fbf76215849d",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -219,7 +251,9 @@
         "startChunk": 2811,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "102161c9-eca8-4fdf-874d-0e60200c029a",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -232,7 +266,9 @@
         "startChunk": 2937,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "dc75a8c5-e5a3-464a-8abe-d4d04b399dd4",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -245,7 +281,9 @@
         "startChunk": 2986,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "d6cfd29c-0cde-46d8-a634-950bf1af1045",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -258,7 +296,9 @@
         "startChunk": 3308,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "ad1c5fcf-523d-4501-838d-c98b64faf0b9",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -271,7 +311,9 @@
         "startChunk": 3436,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "46a933fd-b5d9-47f7-9db7-29768e62d3c3",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -284,7 +326,9 @@
         "startChunk": 3563,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "efbc02a5-72e8-4de6-b7cb-773e27fbf85c",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -297,7 +341,9 @@
         "startChunk": 3577,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "0621c081-5717-40bd-a78f-837f27edb4f3",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -310,7 +356,9 @@
         "startChunk": 3611,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "4048586b-31e8-47e5-8d6e-4be243b85cef",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -323,7 +371,9 @@
         "startChunk": 3689,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "5d7a08cc-f274-41e8-bf31-b29d5577389d",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -336,7 +386,9 @@
         "startChunk": 3820,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "0bbb725b-5b0a-48f8-adc0-d975627714f4",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -349,7 +401,9 @@
         "startChunk": 3945,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "612eacb3-ff22-4bdc-94c1-93aabe5cd756",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -362,7 +416,9 @@
         "startChunk": 4085,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "db645f97-3881-4151-bf40-b941108d1080",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -375,7 +431,9 @@
         "startChunk": 4330,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "9ba29edc-1ec7-48ac-b4b8-c6b5f959c99e",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -388,7 +446,9 @@
         "startChunk": 4457,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "b219dcb6-5029-4e3e-84ee-117545651e74",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -401,7 +461,9 @@
         "startChunk": 4585,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "e62720a5-6fee-4724-a617-0b8c001b9aad",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -414,7 +476,9 @@
         "startChunk": 4599,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "f1419d21-88fd-4009-81c7-cefacff33f89",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -427,7 +491,9 @@
         "startChunk": 4633,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "4fa47e41-4a8f-436d-87ab-802d4aeae833",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -440,6 +506,8 @@
         "startChunk": 4710,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "a843f8b7-d4ed-4a85-89bd-272a17b54cd1",
+        "linkedLabel": null
     }
 ]

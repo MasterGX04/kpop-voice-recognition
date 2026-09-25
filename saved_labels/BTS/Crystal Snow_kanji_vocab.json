@@ -1,0 +1,213 @@
+[
+    {
+        "surface": "時間",
+        "reading": "じかん",
+        "lemma": "時間",
+        "lemmaReading": "じかん",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "時間",
+            "pinyin": "shi2 jian1",
+            "gloss": [
+                "(concept of) time",
+                "(duration of) time",
+                "(point in) time"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "time"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "時間",
+            "pinyin": "shi2 jian1"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "J-Hope: あらゆる時間越えて出逢ったんだ\nそれで How do we do？ 果たせる？\nこの不確か状態 Love"
+    },
+    {
+        "surface": "越え",
+        "reading": "こえ",
+        "lemma": "越える",
+        "lemmaReading": "こえる",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Ichidan verb",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to cross over",
+                "to cross",
+                "to pass through",
+                "to pass over (out of)",
+                "to go beyond",
+                "to go past"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "越",
+            "pinyin": "yue4"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "J-Hope: あらゆる時間越えて出逢ったんだ\nそれで How do we do？ 果たせる？\nこの不確か状態 Love"
+    },
+    {
+        "surface": "出逢っ",
+        "reading": "であっ",
+        "lemma": "出会う",
+        "lemmaReading": "であう",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'u' ending",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to meet (by chance)",
+                "to come across",
+                "to run across",
+                "to encounter",
+                "to happen upon"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "出會",
+            "pinyin": "chu1 hui4/kuai4"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "J-Hope: あらゆる時間越えて出逢ったんだ\nそれで How do we do？ 果たせる？\nこの不確か状態 Love"
+    },
+    {
+        "surface": "果たせる",
+        "reading": "はたせる",
+        "lemma": "果たす",
+        "lemmaReading": "はたす",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'su' ending",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to accomplish",
+                "to achieve",
+                "to carry out",
+                "to fulfill",
+                "to fulfil",
+                "to realize",
+                "to execute",
+                "to perform",
+                "to do"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "果",
+            "pinyin": "guo3"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "J-Hope: あらゆる時間越えて出逢ったんだ\nそれで How do we do？ 果たせる？\nこの不確か状態 Love"
+    },
+    {
+        "surface": "不確か",
+        "reading": "ふたしか",
+        "lemma": "不確か",
+        "lemmaReading": "ふたしか",
+        "category": "mixed",
+        "chineseCognate": {
+            "status": "not_attested",
+            "traditional": "不確か",
+            "pinyinFallback": "bu4 que4 か"
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "adjectival nouns or quasi-adjectives (keiyodoshi)",
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "unreliable",
+                "uncertain",
+                "indefinite",
+                "unclear"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "不確か",
+            "pinyin": "bu4 que4 か"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "J-Hope: あらゆる時間越えて出逢ったんだ\nそれで How do we do？ 果たせる？\nこの不確か状態 Love"
+    },
+    {
+        "surface": "状態",
+        "reading": "じょうたい",
+        "lemma": "状態",
+        "lemmaReading": "じょうたい",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "狀態",
+            "pinyin": "zhuang4 tai4",
+            "gloss": [
+                "condition; state; state of affairs"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "state",
+                "condition",
+                "situation",
+                "appearance",
+                "circumstances"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "狀態",
+            "pinyin": "zhuang4 tai4"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "J-Hope: あらゆる時間越えて出逢ったんだ\nそれで How do we do？ 果たせる？\nこの不確か状態 Love"
+    },
+    {
+        "surface": "響き",
+        "reading": "ひびき",
+        "lemma": "響く",
+        "lemmaReading": "ひびく",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'ku' ending",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to resound",
+                "to be heard far away"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "響",
+            "pinyin": "xiang3"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "V: Slowly 響きだして"
+    }
+]

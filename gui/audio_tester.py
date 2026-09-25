@@ -18,7 +18,10 @@ import json, copy
 import codecs
 from gui.lyrics_box import LyricBox
 from gui.zoom_functions import ZoomManager, ProgressBarHandle
-from core.util_functions import ensureReadableOnBackground, getCached720pVideo, ModalGuard
+from core.util_functions import (
+    ensureReadableOnBackground, getCached720pVideo, ModalGuard,
+    ensureAudioForPlayback, CHUNK_DURATION_MS,
+)
 from gui.label_overlay import LabelOverlayController
 from gui.label_lanes import LabelLaneRenderer
 from gui.cut_clip_manager import CutClipManager
@@ -26,24 +29,12 @@ from gui.history_manager import HistoryManager
 from gui.add_labels_menu import AddLabelsMenu
 from gui.line_distribution_panel import LineDistributionPanel
 from core import song_stats
+from core.playback_clock import PlaybackClock
 
 def resourcePath(*parts: str) -> str:
     # When packaged (PyInstaller), sys._MEIPASS points to the temp extracted dir
     base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     return os.path.join(base, *parts)
-
-ffmpegPath = resourcePath("ffmpeg.exe")
-ffprobePath = resourcePath("ffprobe.exe")
-
-AudioSegment.converter = ffmpegPath
-AudioSegment.ffmpeg = ffmpegPath
-AudioSegment.ffprobe = ffprobePath
-
-def cacheKeyForPath(path: str) -> str:
-    # key changes if the file changes (mtime + size)
-    st = os.stat(path)
-    s = f"{os.path.abspath(path)}|{st.st_mtime_ns}|{st.st_size}"
-    return hashlib.sha1(s.encode("utf-8")).hexdigest()
 
 def getOrCreateMenubar(root: tk.Tk) -> tk.Menu:
         """
@@ -59,23 +50,6 @@ def getOrCreateMenubar(root: tk.Tk) -> tk.Menu:
         menubar = tk.Menu(root)
         root.config(menu=menubar)
         return menubar
-
-def ensureAudioForPlayback(path: str, cacheDir: str = "cache_audio", targetSr: int = 22050):
-    """
-    Returns a cached path that is resampled to targetSr and stored as mp3 for size.
-    """
-    os.makedirs(cacheDir, exist_ok=True)
-    key = cacheKeyForPath(path)
-    outPath = os.path.join(cacheDir, f"{key}_sr{targetSr}.mp3")
-
-    if os.path.exists(outPath):
-        return outPath, False
-
-    audio = AudioSegment.from_file(path)  # wav/mp3/etc
-    audio = audio.set_frame_rate(targetSr)
-    # optional: force mono for smaller file + consistent timing
-    audio.export(outPath, format="mp3")
-    return outPath, True
 
 def normalizeLabel(label):
             # supports [member, start, end] or [member, start, end, isBacking, isAdLib]
@@ -183,15 +157,13 @@ class VoiceDetectionApp:
             self.audio = AudioSegment.from_file(self.testSongPath)
         else:
             print("Test song path does not exist:", self.testSongPath)
-        self.chunk_duration = 40
+        self.chunk_duration = CHUNK_DURATION_MS
         self.totalDurationMs = len(self.audio)
         self.chunks = [self.audio[i:i + self.chunk_duration] for i in range(0, len(self.audio), int(self.chunk_duration))]
         self.detectionResults = []
         self.currentChunkIndex = 0  # Track current playback position
-        self.playbackOffset = 0
+        self.clock = PlaybackClock()
         self.previousX = 0
-        self.isPlaying = False
-        self.isPaused = False
         self.isProcessed = False
         self.isManualUpdate = False
         self.skipNextAutoUpdate = False
@@ -208,6 +180,12 @@ class VoiceDetectionApp:
         self.startPointMarkers = {}
         self.openStartChunk = None
         self.endPointMarkers = {}
+        self.markerIdToLabelKey = {}  # canvas markerId -> (member, startChunk, endChunk) or None if unsaved/stray
+        self._keybindDisableDepth = 0  # nesting depth for disableRootKeybinds/enableRootKeybinds
+        self._resizeAfterId = None  # debounce timer for onCanvasResize
+        self._pendingResizeEvent = None
+        self._menuBusyActive = False  # whether a menubar dropdown "browsing session" currently holds videoTrackItem busy
+        self._menuCloseAfterId = None  # debounce timer for _pauseVideoWhileMenuOpen's onUnmap
         
         self.canvasFrame = tk.Frame(root, bd=0, highlightthickness=0, relief="flat")
         self.canvasFrame.pack(fill="both", expand=True)
@@ -367,8 +345,8 @@ class VoiceDetectionApp:
         self.activeLyricIds = set()
         def handleLyrics():
             self.loadLyricsFromFile()
-            self.buildLyricStartEvents()
-            
+            self.rebuildLyricsAnimations()
+
         self.root.after(50, handleLyrics)
         
         if len(self.voiceDetectionResults) > 0:
@@ -419,10 +397,27 @@ class VoiceDetectionApp:
         self.loadVocalPresence()
     # end init
 
+    # Read-only views of self.clock for the many existing readers.
+    @property
+    def playbackOffset(self):
+        return self.clock.offsetMs
+
+    @property
+    def isPaused(self):
+        return self.clock.isPaused
+
+    # Only VideoTrackItem's export path still writes this (see PLAYBACK_CLOCK_PLAN.md).
+    @isPaused.setter
+    def isPaused(self, value):
+        self.clock._paused = value
+
+    @property
+    def isPlaying(self):
+        return self.clock.isPlaying
+
     def onClose(self):
         """Cleanly stop audio/video playback when this window is closed."""
-        self.isPlaying = False
-        self.isPaused = False
+        self.clock.stop()
         self.isManualUpdate = True
         ModalGuard.close("voice_app")
         if self.isExportingVideo:
@@ -431,11 +426,6 @@ class VoiceDetectionApp:
         # Stop music if it's playing
         try:
             if pygame.mixer.get_init():
-                try:
-                    pygame.mixer.music.stop()
-                except Exception:
-                    pass
-
                 # pygame 2.x has unload(); this is what actually releases the file handle
                 try:
                     pygame.mixer.music.unload()
@@ -628,13 +618,6 @@ class VoiceDetectionApp:
         self.canvas.update()
         self.root.update_idletasks()   
         
-    def buildLyricStartEvents(self):
-        self.startEvents = {}
-        self.activeLyricIds = set()
-
-        for startChunk in self.lyrics.keys():
-            self.startEvents.setdefault(startChunk, []).append(startChunk)  
-    
     def setUIHidden(self, hidden: bool):
         """
         Explicitly set UI visibility state.
@@ -710,8 +693,17 @@ class VoiceDetectionApp:
         self.slotHeightPx = int(round(self.slotHeightBase * self.scaleY))
         for t in self.memberImages.values():
             t.rescalePositionTimeline(self.scaleY)
-        self.updateElementPositions() 
+        self.updateElementPositions()
         self.lineDistPanel.update()
+
+        # Establish self.lyricsBackgroundId/self.targetLyricsX here (not only inside the
+        # 120ms-debounced _applyCanvasResize()) - handleLyrics() loads lyrics via a flat 50ms
+        # after() timer, which otherwise wins the race against the resize debounce every time
+        # and crashes in LyricBox._baseAnchor() with "no attribute 'targetLyricsX'". This is
+        # idempotent (addBackgroundImage() deletes any previous rectangle first) so the later,
+        # accurately-sized call from _applyCanvasResize() still happens and just recomputes it.
+        self.addBackgroundImage()
+
         self.enforceCanvasLayering()
     
     def startExportVideo(self, event=None):
@@ -799,61 +791,6 @@ class VoiceDetectionApp:
 
         return activeNames
     
-    def removeMemberFromCanvas(self, memberName):
-        trackItem = self.memberImages.pop(memberName, None)
-        imageId = self.memberImageIds.pop(memberName, None)
-
-        if imageId:
-            try:
-                self.canvas.delete(imageId)
-            except Exception:
-                pass
-
-        if trackItem:
-            if hasattr(trackItem, "progressBarCanvasImage") and trackItem.progressBarCanvasImage:
-                try:
-                    self.canvas.delete(trackItem.progressBarCanvasImage)
-                except Exception:
-                    pass
-
-            if hasattr(trackItem, "timerTextId") and trackItem.timerTextId:
-                try:
-                    self.canvas.delete(trackItem.timerTextId)
-                except Exception:
-                    pass
-
-        self.slotMap.pop(memberName, None)
-    
-    def addMemberToCanvas(self, memberName):
-        if memberName in self.memberImages:
-            return
-
-        if memberName not in self.allImages:
-            return
-
-        scale = getattr(self, "_memberScale", 45)
-
-        trackItem = TrackItem(
-            scale=scale,
-            sourceImages={
-                "dark": self.allImages[memberName]["dark"],
-                "light": self.allImages[memberName]["light"],
-            },
-            animations=[],
-            parent=self,
-            trackMember=memberName,
-        )
-
-        trackItem.initializeTimeline(self.includeBacking)
-        trackItem.resizeImages(scale)
-
-        imageId = self.canvas.create_image(0, 0, image=trackItem.sourceImages["dark"], anchor="nw")
-        trackItem.setImageId(imageId)
-        trackItem.initializeProgressBar()
-
-        self.memberImages[memberName] = trackItem
-        self.memberImageIds[memberName] = imageId
-                        
     def rebuildVisibleMemberLayout(self):
         visibleNamesInOrder = [
             m["name"] for m in self.allMembers
@@ -892,28 +829,47 @@ class VoiceDetectionApp:
         self.updateElementPositions()
     
     def refreshVisibleMembersFromLabels(self):
+        """
+        Keep memberImages in sync with who currently has labels in this song.
+
+        When the visible set actually changes (a member's first label was
+        just added, e.g. via the Add Labels menu, or their last one was
+        removed/deleted), rebuild from scratch via initializeMemberImages()
+        rather than incrementally patching a TrackItem in/out at whatever
+        scale was last computed: initializeMemberImages() is what derives
+        _memberScale/slotHeightBase from the CURRENT member count, so a
+        subgroup song's images correctly re-max their size whether the
+        visible count just grew or shrank, instead of staying stuck at
+        whatever scale happened to be set the first time the song loaded.
+        """
         newVisibleNames = self.getActiveMemberNames()
         oldVisibleNames = set(self.memberImages.keys())
 
-        toRemove = oldVisibleNames - newVisibleNames
-        toAdd = newVisibleNames - oldVisibleNames
+        if newVisibleNames == oldVisibleNames:
+            for trackItem in self.memberImages.values():
+                trackItem.initializeTimeline(includeBacking=self.includeBacking)
+            return
 
-        for memberName in toRemove:
-            self.removeMemberFromCanvas(memberName)
+        # initializeMemberImages() assumes memberImages starts empty (it only
+        # ever ran once, at first load) - it resets the dicts without
+        # deleting the canvas items they were tracking. Since we're calling
+        # it again here with a possibly non-empty memberImages, clean up the
+        # old canvas items first (same teardown countBacking() already does
+        # before its own startLayout() call) or the previous layout's images
+        # leak as orphaned items on the canvas.
+        for trackItem in self.memberImages.values():
+            for attr in ("imageId", "timerTextId", "progressBarCanvasImage"):
+                itemId = getattr(trackItem, attr, None)
+                if itemId:
+                    try:
+                        self.canvas.delete(itemId)
+                    except Exception:
+                        pass
+        self.memberImages = {}
+        self.memberImageIds = {}
+        self.slotMap = {}
 
-        for memberName in toAdd:
-            self.addMemberToCanvas(memberName)
-
-        visibleTrackItems = []
-
-        for memberName, trackItem in self.memberImages.items():
-            trackItem.initializeTimeline(includeBacking=self.includeBacking)
-            visibleTrackItems.append(trackItem)
-
-        maxTime = max((trackItem.timeline[-1] for trackItem in visibleTrackItems), default=0.0)
-        for trackItem in visibleTrackItems:
-            trackItem.setMaxTime(maxTime)
-
+        self.initializeMemberImages()
         self.rebuildVisibleMemberLayout()
                         
     def createThumbnail(self):
@@ -1124,19 +1080,35 @@ class VoiceDetectionApp:
         update arrays, and update JSON.
         """
         member, startChunk, endChunk, _, _ = label
+        labelKey = (member, startChunk, endChunk)
 
-        def _deleteOneMarkerAtChunk(markerDict, chunk, defaultColorType):
+        def _deleteOneMarkerAtChunk(markerDict, chunk):
             """
             Remove and delete exactly one canvas markerId from markerDict[chunk] (multiset-safe).
+            Prefers the id actually bound to this label so, when several
+            labels stack at the same chunk, deleting one doesn't erase a
+            different member's marker instead.
             Returns the deleted markerId or None.
             """
             ids = self._getMarkerIdsAtChunk(markerDict, chunk)
             if not ids:
                 return None
 
-            # pick one to delete (last drawn is usually topmost; any single is fine)
-            markerId = ids.pop()  # removes ONE instance
+            markerId = None
+            for candidate in ids:
+                if self.markerIdToLabelKey.get(candidate) == labelKey:
+                    markerId = candidate
+                    break
+
+            if markerId is None:
+                # No exact match found (shouldn't normally happen) - fall
+                # back to removing any one instance.
+                markerId = ids.pop()
+            else:
+                ids.remove(markerId)
             self._setMarkerIdsAtChunk(markerDict, chunk, ids)
+
+            self.markerIdToLabelKey.pop(markerId, None)
 
             # remove overlay tracking for that one id
             if getattr(self, "labelOverlay", None):
@@ -1152,13 +1124,13 @@ class VoiceDetectionApp:
             return markerId
 
         # --- Remove exactly one start marker instance ---
-        _deleteOneMarkerAtChunk(self.startPointMarkers, startChunk, "start")
+        _deleteOneMarkerAtChunk(self.startPointMarkers, startChunk)
         if startChunk in self.startPoints:
             # remove ONE occurrence
             self.startPoints.remove(startChunk)
 
         # --- Remove exactly one end marker instance ---
-        _deleteOneMarkerAtChunk(self.endPointMarkers, endChunk, "end")
+        _deleteOneMarkerAtChunk(self.endPointMarkers, endChunk)
         if endChunk in self.endPoints:
             self.endPoints.remove(endChunk)
 
@@ -1266,15 +1238,15 @@ class VoiceDetectionApp:
             self.canvas.delete(markerId)
         except tk.TclError:
             pass
-        
-        self.openStartChunk = None
+
+        self.markerIdToLabelKey.pop(markerId, None)
         self.restackMarkersAtChunk(chunkIndex)
 
         # Clear selection
         self.selectedMarker = None
         self.selectedLabel = None
         self.originalLabel = None
-    
+
     def resetMarkerColor(self):
         """
         Reset the color of the previously selected marker, if any.
@@ -1287,7 +1259,8 @@ class VoiceDetectionApp:
 
         if markerId is not None:
             try:
-                self.canvas.itemconfig(markerId, fill=self._defaultMarkerColor(markerType))
+                labelKey = self.markerIdToLabelKey.get(markerId)
+                self.canvas.itemconfig(markerId, fill=self._markerColor(markerType, labelKey))
             except tk.TclError:
                 # marker might have been deleted/redrawn
                 pass
@@ -1326,7 +1299,7 @@ class VoiceDetectionApp:
             ids = markerVal if isinstance(markerVal, list) else [markerVal]
             if clickedId in ids:
                 self.setSelectedMarker(chunkIndex, "start", markerId=clickedId)
-                self.prepareLabelUpdate(chunkIndex, "start")
+                self.prepareLabelUpdate(chunkIndex, "start", markerId=clickedId)
                 self.pendingDrag = True
                 self.dragStartLabels = copy.deepcopy(self.labels)
                 return
@@ -1336,7 +1309,7 @@ class VoiceDetectionApp:
             ids = markerVal if isinstance(markerVal, list) else [markerVal]
             if clickedId in ids:
                 self.setSelectedMarker(chunkIndex, "end", markerId=clickedId)
-                self.prepareLabelUpdate(chunkIndex, "end")
+                self.prepareLabelUpdate(chunkIndex, "end", markerId=clickedId)
                 self.pendingDrag = True
                 self.dragStartLabels = copy.deepcopy(self.labels)
                 return
@@ -1415,7 +1388,10 @@ class VoiceDetectionApp:
         pointsList.append(newChunkIndex)
 
         self.selectedMarker["chunkIndex"] = newChunkIndex
-        
+
+        markerId = self.selectedMarker.get("id")
+        oldLabelKey = self.markerIdToLabelKey.get(markerId)
+
         if self.selectedLabel:
             for label in self.labels:
                 if label == self.selectedLabel:
@@ -1425,26 +1401,35 @@ class VoiceDetectionApp:
                         label[2] = newChunkIndex
                     self.selectedLabel = label  # keep ref up-to-date
                     break
-        
+
+        newLabelKey = self._labelKey(self.selectedLabel) if self.selectedLabel else None
+
+        # Both boundary markers of this label (not just the one dragged) must
+        # keep pointing at its current identity, or the untouched boundary
+        # marker would stop resolving to its label on the next click.
+        if oldLabelKey is not None and newLabelKey != oldLabelKey:
+            for mid, lk in list(self.markerIdToLabelKey.items()):
+                if lk == oldLabelKey:
+                    self.markerIdToLabelKey[mid] = newLabelKey
+
         # --- Update timeMarkers only for old & new sections ---
         oldSection = oldChunkIndex // chunksInView
         newSection = newChunkIndex // chunksInView
-        
+
         if hasattr(self, "labelMarkers"):
             # Remove tuple from oldSection
             if oldSection in self.labelMarkers:
                 try:
-                    self.labelMarkers[oldSection].remove((markerType, oldChunkIndex))
+                    self.labelMarkers[oldSection].remove((markerType, oldChunkIndex, oldLabelKey))
                     if not self.labelMarkers[oldSection]:
                         del self.labelMarkers[oldSection]
                 except ValueError:
                     pass  # out of sync? ignore
-                
+
                 # Add tuple to newSection
-            self.labelMarkers.setdefault(newSection, []).append((markerType, newChunkIndex))
-        
+            self.labelMarkers.setdefault(newSection, []).append((markerType, newChunkIndex, newLabelKey))
+
         # --- Move the actual canvas line to the new X (before stacking) ---
-        markerId = self.selectedMarker.get("id")
         if markerId is not None:
             # Compute new X for newChunkIndex
             relativeX = barX + (newChunkIndex % chunksInView / chunksInView) * barWidth
@@ -1459,9 +1444,17 @@ class VoiceDetectionApp:
                 x_new, baseY
             )
 
-            # Update dict key
-            del markerDict[oldChunkIndex]
-            markerDict[newChunkIndex] = markerId
+            # Update dict entries (multiset-safe: only this one id moves;
+            # any other markers still at oldChunkIndex, or already sitting
+            # at newChunkIndex, must stay tracked instead of being wiped out).
+            oldIds = self._getMarkerIdsAtChunk(markerDict, oldChunkIndex)
+            if markerId in oldIds:
+                oldIds.remove(markerId)
+            self._setMarkerIdsAtChunk(markerDict, oldChunkIndex, oldIds)
+
+            newIds = self._getMarkerIdsAtChunk(markerDict, newChunkIndex)
+            newIds.append(markerId)
+            self._setMarkerIdsAtChunk(markerDict, newChunkIndex, newIds)
         else:
             # Fallback: if marker not found, you *could* regenerate via updateLabelMarkers,
             # but this should normally not happen.
@@ -1488,12 +1481,39 @@ class VoiceDetectionApp:
         self.updateDisplayedTime(newTimeMs)
         self.updateProgressBarHandle(newTimeMs)
 
+        self.clock.suspendForScrub()
+        self.clock.seekTo(newTimeMs, resync=False)
         if hasattr(self, "videoTrackItem"):
-            self.videoTrackItem.seek(newTimeMs)
+            self.videoTrackItem.seek(newTimeMs, resync=False)
 
         self.labelOverlay.updateBoundaryMarker(markerId, chunkIndex=newChunkIndex)
         self.isManualUpdate = True
         
+    def _resyncLinkedLyricsForSelectedLabel(self, preMoveLabels):
+        """
+        After a marker drag/keyboard-move commits, check whether the moved label's
+        OLD span (from preMoveLabels, captured before the move) differs from its
+        current span, and if so, let any lyrics linked to it resync.
+        """
+        if not self.selectedLabel or not preMoveLabels:
+            return
+
+        idx = None
+        for i, lab in enumerate(self.labels):
+            if lab is self.selectedLabel:
+                idx = i
+                break
+        if idx is None or idx >= len(preMoveLabels):
+            return
+
+        oldLabel = preMoveLabels[idx]
+        member, oldStart, oldEnd = oldLabel[0], oldLabel[1], oldLabel[2]
+        newStart, newEnd = self.selectedLabel[1], self.selectedLabel[2]
+        if oldStart == newStart and oldEnd == newEnd:
+            return
+
+        self.lyricsEditor.resyncLinkedLyrics(member, oldStart, oldEnd, newStart, newEnd)
+
     def onMarkerRelease(self, event):
         """
         When the user releases the mouse after dragging a marker,
@@ -1512,7 +1532,14 @@ class VoiceDetectionApp:
         self.pendingDrag = False
         self.isDraggingMarker = False
         self.dragStartXY = None
-        
+
+        if self.clock.isScrubbing:
+            dropMs = self.clock.currentMs()
+            self._restartAudioAtTime(dropMs)
+            if hasattr(self, "videoTrackItem"):
+                self.videoTrackItem.seek(dropMs)
+            self.playWithSavedResults(dropMs)
+
         # only save if marker corresponds to an actual label
         if self.selectedLabel:
             # record previous state into undo stack
@@ -1532,6 +1559,7 @@ class VoiceDetectionApp:
                 trackItem = self.memberImages.get(labelMember)
                 if trackItem:
                     trackItem.initializeTimeline(includeBacking=self.includeBacking)
+                self._resyncLinkedLyricsForSelectedLabel(self.dragStartLabels)
                 self.dragStartLabels = None
 
             # now save the new labels to JSON, update timelines, etc.
@@ -1563,10 +1591,24 @@ class VoiceDetectionApp:
         unsaved_ends = list(end_counts.elements())
         return unsaved_starts, unsaved_ends
 
-    def prepareLabelUpdate(self, chunkIndex, markerType):
+    def prepareLabelUpdate(self, chunkIndex, markerType, markerId=None):
         """
         Check if the selected marker belongs to a saved label and prepare for updates.
+
+        When multiple labels share the same boundary chunk (e.g. two members
+        starting/ending at the same time), markerId disambiguates which
+        specific label was actually clicked/dragged via markerIdToLabelKey,
+        instead of blindly matching the first label in self.labels that
+        happens to share this chunkIndex.
         """
+        if markerId is not None and markerId in self.markerIdToLabelKey:
+            labelKey = self.markerIdToLabelKey[markerId]
+            label = self._findLabelByKey(labelKey)
+            self.selectedLabel = label
+            self.originalLabel = label.copy() if label is not None else None
+            return
+
+        # Fallback: no known markerId/labelKey association, match by chunk.
         for label in self.labels:
             _, start, end = label[:3]
             if (markerType == "start" and start == chunkIndex) or (markerType == "end" and end == chunkIndex):
@@ -1645,6 +1687,19 @@ class VoiceDetectionApp:
             yBot = baseY - (stackIndex * stackOffset)
             self.canvas.coords(markerId, x, yTop, x, yBot)
      
+    def _labelKey(self, label):
+        """Stable identity for a label: (member, startChunk, endChunk)."""
+        return (label[0], label[1], label[2])
+
+    def _findLabelByKey(self, labelKey):
+        """Find the live label object matching a (member, startChunk, endChunk) key."""
+        if labelKey is None:
+            return None
+        for label in self.labels:
+            if self._labelKey(label) == labelKey:
+                return label
+        return None
+
     def _getMarkerIdsAtChunk(self, markerDict, chunkIndex):
         v = markerDict.get(chunkIndex)
         if v is None:
@@ -1702,16 +1757,18 @@ class VoiceDetectionApp:
 
     def commitKeyboardMove(self):
         self._moveTimer = None
-        
+
         # Push the original pre-move state to history
         if getattr(self, "_preMoveState", None):
+            preMoveLabels = self._preMoveState["labels"]
             self.history_manager.pushUndoState(
-                labels=self._preMoveState["labels"],
+                labels=preMoveLabels,
                 unsaved_starts=self._preMoveState["unsaved_starts"],
                 unsaved_ends=self._preMoveState["unsaved_ends"],
                 description="keyboard marker move"
             )
             self._preMoveState = None
+            self._resyncLinkedLyricsForSelectedLabel(preMoveLabels)
 
         # Save the new final state to JSON
         self.updateLabelInJSON()
@@ -1743,18 +1800,31 @@ class VoiceDetectionApp:
         
         # If marker isn't in the current drawn section, jump UI first
         if markerSectionIndex != visibleSectionIndex:
+            # Remember which label this marker belongs to (if any) so that,
+            # once the jump redraws fresh canvas ids, we reconnect to the
+            # SAME marker instead of an arbitrary one stacked at this chunk.
+            desiredLabelKey = self._labelKey(self.selectedLabel) if self.selectedLabel else None
+
             self.jumpToSection(markerSectionIndex)
-            
+
             # after redraw, canvas ids changed; refresh markerId from dict
             if markerType == "start":
                 ids = self._getMarkerIdsAtChunk(self.startPointMarkers, oldChunkIndex)
             else:
                 ids = self._getMarkerIdsAtChunk(self.endPointMarkers, oldChunkIndex)
-                
-            # If still missing, bail safely (keeps selection but prevents coruption)
-            # Choose an id deterministically.
-            # If you don't yet track which stacked lane was selected, choose the topmost/last-drawn.
-            self.selectedMarker["id"] = ids[-1] if ids else None
+
+            newId = None
+            if desiredLabelKey is not None:
+                for candidate in ids:
+                    if self.markerIdToLabelKey.get(candidate) == desiredLabelKey:
+                        newId = candidate
+                        break
+            if newId is None:
+                # Stray marker (or no stronger identity to match on) -
+                # fall back to the topmost/last-drawn id.
+                newId = ids[-1] if ids else None
+
+            self.selectedMarker["id"] = newId
 
             if self.selectedMarker["id"] is None:
                 print("Marker exists logically but isn't drawable in this section right now.")
@@ -1779,15 +1849,18 @@ class VoiceDetectionApp:
 
         if markerType == "start" and getattr(self, "openStartChunk", None) == oldChunkIndex:
             self.openStartChunk = newChunkIndex
-    
+
+        oldLabelKey = self.markerIdToLabelKey.get(markerId)
+
         y = self.progressBarCanvas.winfo_y()
         
         # Find markerId if missing (fallback, keeps code resilient)
         if markerId is None:
             if markerType == "start":
-                markerId = self.startPointMarkers.get(oldChunkIndex)
+                fallbackIds = self._getMarkerIdsAtChunk(self.startPointMarkers, oldChunkIndex)
             else:
-                markerId = self.endPointMarkers.get(oldChunkIndex)
+                fallbackIds = self._getMarkerIdsAtChunk(self.endPointMarkers, oldChunkIndex)
+            markerId = fallbackIds[-1] if fallbackIds else None
 
         if markerId is None:
             print(f"Warning: {markerType} marker at chunkIndex {oldChunkIndex} not found.")
@@ -1836,7 +1909,31 @@ class VoiceDetectionApp:
                     # self.upsertLabel(label, self.selectedLabel)
                     self.selectedLabel = label  # Update the reference to the modified label
                     break
-        
+
+        newLabelKey = self._labelKey(self.selectedLabel) if self.selectedLabel else None
+
+        # Keep every marker tied to this label (both boundaries) pointing at
+        # its current identity, not just the one that moved.
+        if oldLabelKey is not None and newLabelKey != oldLabelKey:
+            for mid, lk in list(self.markerIdToLabelKey.items()):
+                if lk == oldLabelKey:
+                    self.markerIdToLabelKey[mid] = newLabelKey
+
+        # Keep labelMarkers (the per-section tuple list drawLabelMarkers
+        # rebuilds the canvas from) in sync, or a later jumpToSection/zoom
+        # will redraw this marker back at its stale old position.
+        oldSection = oldChunkIndex // chunksInView
+        newSection = newChunkIndex // chunksInView
+        if hasattr(self, "labelMarkers"):
+            if oldSection in self.labelMarkers:
+                try:
+                    self.labelMarkers[oldSection].remove((markerType, oldChunkIndex, oldLabelKey))
+                    if not self.labelMarkers[oldSection]:
+                        del self.labelMarkers[oldSection]
+                except ValueError:
+                    pass
+            self.labelMarkers.setdefault(newSection, []).append((markerType, newChunkIndex, newLabelKey))
+
         # Restack locally at old and new chunk Positions
         self.restackMarkersAtChunk(oldChunkIndex)
         self.restackMarkersAtChunk(newChunkIndex)    
@@ -1864,14 +1961,90 @@ class VoiceDetectionApp:
         self.drawLabelMarkers(sectionIndex)
         self.drawTimeMarkers()
 
+    def _pauseVideoWhileMenuOpen(self, menu):
+        """
+        Root cause of "Edit/View (or any menubar dropdown) crashes the app
+        during playback": while a native menubar menu is posted on Windows,
+        Tk enters a nested Win32 message loop for it. VideoTrackItem's
+        render loop keeps mutating the SAME PhotoImage backing the main
+        canvas (~every 33ms, via _renderTick's after() callback) the whole
+        time that menu is open and sitting on top of that canvas - mutating
+        a Tk photo image from inside that nested loop is a known source of
+        Tcl/Tk-level corruption on Windows, not something a Python
+        try/except can catch. Disabling the whole menubar during playback
+        would dodge it, but the actual fix is the same uiBusy pause already
+        used for heavy modal dialogs (see VideoTrackItem.setUiBusy) - just
+        keyed to this menu's own post/unpost lifecycle instead.
+
+        postcommand fires right before the menu is posted. <Unmap> fires
+        when a command is selected or Escape is pressed, but NOT reliably
+        when the menu is dismissed by clicking outside it - relying on
+        <Unmap> as the only way back to "not busy" left it stuck busy
+        forever for that dismissal path (a looping background video would
+        finish its current cycle, decode thread hits `if self.uiBusy:
+        continue`, and never reads another frame again). Sliding the mouse
+        across adjacent top-level cascades (Edit -> View) is a second way
+        to get an unbalanced post/unmap count even when <Unmap> DOES fire,
+        since Tk doesn't fire it exactly once per cascade crossed.
+
+        So recovery here does NOT depend on <Unmap> firing at all: every
+        postcommand (re)arms a short hard-ceiling timer that clears busy on
+        its own regardless of how the menu ends up dismissed. <Unmap>, when
+        it does fire, just reschedules that same timer sooner for snappier
+        resume. Either way busy clears within ~1.2s of the last time any
+        cascade was posted - bounded, and only calls setUiBusy(True) once
+        per browsing session (guarded by _menuBusyActive) no matter how many
+        cascades get crossed in between.
+        """
+        def onPost():
+            self._cancelPendingMenuClose()
+
+            if not getattr(self, "_menuBusyActive", False):
+                self._menuBusyActive = True
+                if hasattr(self, "videoTrackItem"):
+                    self.videoTrackItem.setUiBusy(True)
+
+            # Hard ceiling: fires even if this open is never followed by an
+            # <Unmap> at all (e.g. dismissed by clicking outside the menu).
+            self._menuCloseAfterId = self.root.after(1200, self._forceMenuBusyClear)
+
+        def onUnmap(_event=None):
+            self._cancelPendingMenuClose()
+            # Faster resume for the case <Unmap> actually does fire (a
+            # command was chosen, or Escape closed it).
+            self._menuCloseAfterId = self.root.after(150, self._forceMenuBusyClear)
+
+        menu.configure(postcommand=onPost)
+        menu.bind("<Unmap>", onUnmap)
+
+    def _cancelPendingMenuClose(self):
+        if getattr(self, "_menuCloseAfterId", None):
+            try:
+                self.root.after_cancel(self._menuCloseAfterId)
+            except Exception:
+                pass
+            self._menuCloseAfterId = None
+
+    def _forceMenuBusyClear(self):
+        self._menuCloseAfterId = None
+        if getattr(self, "_menuBusyActive", False):
+            self._menuBusyActive = False
+            if hasattr(self, "videoTrackItem"):
+                self.videoTrackItem.setUiBusy(False)
+
     def setupMenubar(self, root: tk.Tk):
         # This replaces addControls entirely (no bottom frame!)
         self.menubar = getOrCreateMenubar(root)
-        
+
+        def newMenu():
+            m = tk.Menu(self.menubar, tearoff=0)
+            self._pauseVideoWhileMenuOpen(m)
+            return m
+
         # =========================
         # RECORD MENU (DEDICATED)
         # =========================
-        recordMenu = tk.Menu(self.menubar, tearoff=0)
+        recordMenu = newMenu()
 
         recordMenu.add_command(
             label="Start Recording / Export…",
@@ -1890,9 +2063,9 @@ class VoiceDetectionApp:
         # =========================
         # --- Editing / Labels menu ---
         self.editingEnabledVar = tk.BooleanVar(value=getattr(self.clipManager, "enabled", True))
-        labelsMenu = tk.Menu(self.menubar, tearoff=0)
-            
-        editMenu = tk.Menu(self.menubar, tearoff=0)
+        labelsMenu = newMenu()
+
+        editMenu = newMenu()
 
         editMenu.add_command(
             label="Undo",
@@ -1949,7 +2122,7 @@ class VoiceDetectionApp:
         # =========================
         # PLAYBACK MENU
         # =========================
-        playbackMenu = tk.Menu(self.menubar, tearoff=0)
+        playbackMenu = newMenu()
 
         playbackMenu.add_command(
             label="Play / Pause",
@@ -1967,7 +2140,7 @@ class VoiceDetectionApp:
         # =========================
         # VIEW MENU
         # =========================
-        viewMenu = tk.Menu(self.menubar, tearoff=0)
+        viewMenu = newMenu()
 
         viewMenu.add_command(
             label="Toggle UI",
@@ -1989,7 +2162,7 @@ class VoiceDetectionApp:
         self.menubar.add_cascade(label="View", menu=viewMenu)
         
         # --- Lyrics menu ---
-        lyricsMenu = tk.Menu(self.menubar, tearoff=0)
+        lyricsMenu = newMenu()
         lyricsMenu.add_command(
             label="Open Lyrics Menu…",
             accelerator="L",
@@ -1997,14 +2170,80 @@ class VoiceDetectionApp:
         )
         self.menubar.add_cascade(label="Lyrics", menu=lyricsMenu)
 
+        # --- Vocab menu (Kanji/Hanja vocab + SRS compile & review - core.vocab_sync) ---
+        vocabMenu = newMenu()
+        vocabMenu.add_command(label="Compile This Song's Vocab", command=self.compileThisSongVocab)
+        vocabMenu.add_command(label="Compile All Songs' Vocab", command=self.compileAllSongsVocab)
+        vocabMenu.add_separator()
+        vocabMenu.add_command(label="Review Vocab…", command=self.openVocabReview)
+        self.menubar.add_cascade(label="Vocab", menu=vocabMenu)
+
         # --- Tools menu (your “count backing” + reset positions) ---
-        toolsMenu = tk.Menu(self.menubar, tearoff=0)
+        toolsMenu = newMenu()
         toolsMenu.add_command(label="Reset Positions: Ctrl-R", command=lambda: self.countBacking(switch=False))
         toolsMenu.add_command(label="Count Backing", command=lambda: self.countBacking(switch=True))
         self.menubar.add_cascade(label="Tools", menu=toolsMenu)
         
         self.updateChunkIndexDisplay(self.currentChunkIndex)
-    
+
+    def compileThisSongVocab(self):
+        """Scan just the currently open song's lyrics into the vocab/SRS DB (core.vocab_sync)."""
+        from core.vocab_sync import scanSongForVocab
+
+        # A full scan is now sub-second in practice (see compileAllSongsVocab's comment for why
+        # it used to take 60-85s and looked hung) - this busy-cursor swap is just a cheap, no-risk
+        # visual cue for the rare slow first run, not a fix in itself.
+        self.root.config(cursor="watch")
+        self.root.update_idletasks()
+        try:
+            result = scanSongForVocab(self.selectedGroup, self.songName)
+        finally:
+            self.root.config(cursor="")
+        messagebox.showinfo(
+            "Compile Vocab",
+            f"Japanese words added: {result['jaAdded']}\n"
+            f"Korean words added: {result['koAdded']}\n"
+            f"Occurrences linked: {result['occurrencesLinked']}",
+            parent=self.root,
+        )
+
+    def compileAllSongsVocab(self):
+        """
+        Scan every song under saved_labels/ into the vocab/SRS DB (core.vocab_sync).
+
+        This used to take 64-85s and freeze the whole app for that entire time (Tkinter runs this
+        synchronously on the main thread, so nothing could repaint or respond) - traced to
+        core.vocab_sync opening a fresh SQLite connection, re-running the full schema script, and
+        committing individually for every single word/occurrence (~4,262 times for this library).
+        Fixed at the DB layer (core.vocab_db/vocab_store_ja/vocab_store_ko/vocab_sync now share one
+        connection and commit once per scan) - measured 64.5s -> 4.7s for a fresh compile and
+        85.7s -> 0.4s for a re-scan, so a background thread/progress bar isn't needed here anymore.
+        """
+        from core.vocab_sync import scanAllSongsForVocab
+
+        self.root.config(cursor="watch")
+        self.root.update_idletasks()
+        try:
+            summary = scanAllSongsForVocab()
+        finally:
+            self.root.config(cursor="")
+        totalJa = sum(r["jaAdded"] for r in summary.values())
+        totalKo = sum(r["koAdded"] for r in summary.values())
+        totalOcc = sum(r["occurrencesLinked"] for r in summary.values())
+        messagebox.showinfo(
+            "Compile All Songs' Vocab",
+            f"Songs scanned: {len(summary)}\n"
+            f"Japanese words added: {totalJa}\n"
+            f"Korean words added: {totalKo}\n"
+            f"Occurrences linked: {totalOcc}",
+            parent=self.root,
+        )
+
+    def openVocabReview(self):
+        from gui.vocab_review_launcher import openVocabReviewWindow
+
+        openVocabReviewWindow(self.root)
+
     def initChunkIndexInTitle(self, root: tk.Tk):
         self._titleRoot = root
         self._baseTitle = root.title() or "Line Distribution Creator"
@@ -2058,10 +2297,34 @@ class VoiceDetectionApp:
         self._execute_history_action("redo")
         
     def onCanvasResize(self, event):
+        """
+        Debounce the actual resize work.
+
+        Tk fires <Configure> continuously while a window is being dragged,
+        maximized, or moved to a monitor with a different DPI/resolution -
+        often dozens of times for a single user gesture. The real handler
+        below does real work per call (rescales every member image, rebuilds
+        the lyrics layout, resizes the video, redraws markers, ...), so
+        running it on every intermediate event compounds into seconds of
+        synchronous main-thread work and is what made shrinking/maximizing
+        the window (or moving it across monitors) feel like it "messes with
+        things" - only the settled final size actually needs to be applied.
+        """
         if event.width <= 1 or event.height <= 1:
             return
-        
-        aspectRatio = self.baseWidth / self.baseHeight 
+
+        self._pendingResizeEvent = event
+        if getattr(self, "_resizeAfterId", None):
+            self.root.after_cancel(self._resizeAfterId)
+        self._resizeAfterId = self.root.after(120, self._applyCanvasResize)
+
+    def _applyCanvasResize(self):
+        self._resizeAfterId = None
+        event = getattr(self, "_pendingResizeEvent", None)
+        if event is None:
+            return
+
+        aspectRatio = self.baseWidth / self.baseHeight
         newWidth = int(self.canvas.winfo_width() * 0.75)
         self.progressBarWidth = newWidth
         
@@ -2192,8 +2455,29 @@ class VoiceDetectionApp:
 
         return renderable
     
+    def getSingingMembers(self):
+        """
+        Members who actually appear in this song's labels (real members only -
+        banned pseudo-members like 'Gang Vocal'/'Cut' are excluded, same as
+        the fairness/song-length calculations elsewhere).
+
+        Used so subgroup songs (e.g. a 3-member MISAMO track) lay out and
+        scale memberImages as if the group only has those members, instead of
+        always assuming the full roster (self.members) is present - which is
+        what made every subgroup song render at full-group-sized (tiny) scale.
+
+        Falls back to the full roster when the song has no labels yet, so a
+        brand new song still has every member on screen to label against.
+        """
+        rosterOrder = [m["name"] for m in self.members]
+        singing = self.getActiveMemberNames()
+        if not singing:
+            return rosterOrder
+        # Preserve the roster's canonical order instead of label insertion order
+        return [name for name in rosterOrder if name in singing]
+
     def initializeMemberImages(self):
-        candidateMembers = [m["name"] for m in self.members]
+        candidateMembers = self.getSingingMembers()
         groupMembers = self.getRenderableMemberNames(candidateMembers)
         numMembers = len(groupMembers)
 
@@ -2337,29 +2621,29 @@ class VoiceDetectionApp:
         self.labelMarkers = {}
         chunksInView = self.zoomManager.currentChunksInView
 
-        def add(markerType, chunkIndex):
+        def add(markerType, chunkIndex, labelKey=None):
             sectionIndex = chunkIndex // chunksInView
-            self.labelMarkers.setdefault(sectionIndex, []).append((markerType, chunkIndex))
+            self.labelMarkers.setdefault(sectionIndex, []).append((markerType, chunkIndex, labelKey))
 
-        # 1) Committed labels + record their boundaries
-        committed = set()  # (markerType, chunkIndex)
+        # 1) Committed labels + record their boundaries, keyed by the exact
+        # label they belong to so overlapping boundaries stay disambiguated.
         for lab in self.labels:
             if len(lab) < 3:
                 continue
-            _, startChunk, endChunk = lab[:3]
-            add("start", startChunk)
-            add("end", endChunk)
-            committed.add(("start", startChunk))
-            committed.add(("end", endChunk))
+            startChunk, endChunk = lab[1], lab[2]
+            labelKey = self._labelKey(lab)
+            add("start", startChunk, labelKey)
+            add("end", endChunk, labelKey)
 
-        # 2) Pending / stray markers: only add if NOT already a committed boundary
-        for chunkIndex in getattr(self, "startPoints", []):
-            if ("start", chunkIndex) not in committed:
-                add("start", chunkIndex)
-
-        for chunkIndex in getattr(self, "endPoints", []):
-            if ("end", chunkIndex) not in committed:
-                add("end", chunkIndex)
+        # 2) Pending / stray markers: only the counts NOT already accounted
+        # for by a committed label (multiset-safe, unlike a plain set lookup,
+        # so a stray point sharing a chunk with a committed boundary still
+        # gets its own marker drawn instead of silently vanishing).
+        unsaved_starts, unsaved_ends = self.getUnsavedPoints()
+        for chunkIndex in unsaved_starts:
+            add("start", chunkIndex, None)
+        for chunkIndex in unsaved_ends:
+            add("end", chunkIndex, None)
 
         self.drawLabelMarkers(self.currentSectionIndex)
         
@@ -2467,7 +2751,7 @@ class VoiceDetectionApp:
         x = max(0, min(event.x, self.progressBarWidth))
         self.progressBarHandle.jump(x, self.currentSectionIndex)
         
-        pygame.mixer.music.pause()
+        self.clock.suspendForScrub()
         if hasattr(self, "videoTrackItem"):
             self.videoTrackItem.pause()
         
@@ -2485,13 +2769,17 @@ class VoiceDetectionApp:
         self.updateDisplayedTime(newTimeMs)
         
         if hasattr(self, "videoTrackItem"):
-            self.videoTrackItem.seek(newTimeMs)
-        
+            # Live drag preview, not a resume — audio is intentionally left
+            # paused at the pre-drag position until release, so don't let the
+            # decode thread resync its pacing to that stale clock (see
+            # VideoTrackItem.seek's resync param).
+            self.videoTrackItem.seek(newTimeMs, resync=False)
+
         self.isManualUpdate = True
         
     def updateProgressBar(self):
         """Redraw progress bar based on visible range"""
-        playbackTime = self.playbackOffset + pygame.mixer.music.get_pos()
+        playbackTime = self.clock.currentMs()
         self.updateLabelMarkersDict()
         self.updateProgressBarHandle(playbackTime)
                     
@@ -2682,6 +2970,11 @@ class VoiceDetectionApp:
 
         # 3) boundary markers
         self.updateLabelMarkersDict()
+
+        # 4) a label committed for a member not currently on screen (or the
+        # last label for a visible member just got removed) should
+        # add/remove them and re-max the scale for the new count
+        self.refreshVisibleMembersFromLabels()
         
     def showAddLabelsMenu(self, event=None):
         menu = AddLabelsMenu(self)  
@@ -2708,23 +3001,23 @@ class VoiceDetectionApp:
                 lb.resetAnimCursor()
 
         # Rebuild startEvents from lyrics dict
-        # startEvents[chunk] = [startChunkId, ...]
+        # startEvents[chunk] = [lyricId, ...]
         startEvents = {}
-        for startChunk in self.lyrics.keys():
-            startEvents.setdefault(startChunk, []).append(startChunk)
+        for lid, lb in self.lyrics.items():
+            startEvents.setdefault(lb.startChunk, []).append(lid)
         self.startEvents = startEvents
 
         # Now rebuild the stacking/push-down logic in chronological order.
         # We simulate “building” from earliest to latest.
-        sortedIds = sorted(self.lyrics.keys())
+        sortedIds = sorted(self.lyrics.keys(), key=lambda lid: self.lyrics[lid].startChunk)
         self._buildActiveLyricIds = []  # ordered list of ids already placed
 
-        def getActiveLyricBoxesAtChunk_builder(_chunk):
+        def getActiveLyricBoxesAtChunk_builder(_chunk, excludeLyricId=None):
             # during rebuild, “active” means “already inserted before this lyric”
             return [
                 self.lyrics[lid]
                 for lid in self._buildActiveLyricIds
-                if lid in self.lyrics and not getattr(self.lyrics[lid], "isAdLib", False)
+                if lid != excludeLyricId and lid in self.lyrics and not getattr(self.lyrics[lid], "isAdLib", False)
             ]
 
         # Temporarily expose the builder method expected by LyricBox.initializeLyricPosition
@@ -2740,7 +3033,21 @@ class VoiceDetectionApp:
                 lb.rebuildAdLibAnimation()
     
     def disableRootKeybinds(self):
-        """Temporarily unbind all root-level keybindings while user is typing."""
+        """
+        Temporarily unbind all root-level keybindings while user is typing.
+
+        Reentrant: the Lyrics Manager, the Lyric Editor form (which can be
+        opened FROM WITHIN the Lyrics Manager) and the Add Labels menu each
+        call this independently. A plain unbind/bind pair would let the inner
+        dialog's close re-enable shortcuts and zoom while the outer dialog is
+        still open and modal - a depth counter (mirroring VideoTrackItem's
+        setUiBusy) keeps each caller's disable/enable independent so keybinds
+        only actually come back once every nested caller has re-enabled them.
+        """
+        self._keybindDisableDepth = getattr(self, "_keybindDisableDepth", 0) + 1
+        if self._keybindDisableDepth > 1:
+            return
+
         self.canvas.unbind("<Button-1>")
         self.canvas.unbind("<KeyPress-a>")
         self.canvas.unbind("<KeyPress-d>")
@@ -2764,8 +3071,18 @@ class VoiceDetectionApp:
         self.zoomManager.disableScrollZoom(self.root)
 
     def enableRootKeybinds(self):
-        """Rebind all root-level keybindings after the lyric window is closed."""
-        
+        """
+        Rebind all root-level keybindings after a modal dialog is closed.
+
+        Reentrant counterpart to disableRootKeybinds(): only actually rebinds
+        once the depth counter drops back to zero, i.e. every nested caller
+        (Lyrics Manager + a Lyric Editor form opened from within it, etc.)
+        has released its own disable.
+        """
+        self._keybindDisableDepth = max(0, getattr(self, "_keybindDisableDepth", 0) - 1)
+        if self._keybindDisableDepth > 0:
+            return
+
         # Drag / release for markers on the main canvas
         self.canvas.bind("<ButtonPress-1>", self.onMarkerClick)
         self.canvas.bind("<B1-Motion>", self.onMarkerMotion)
@@ -2821,45 +3138,30 @@ class VoiceDetectionApp:
     def loadLyricsFromFile(self):
         """Loads lyrics from a JSON file and adds them to self.lyrics."""
         lyricsFilePath = f"./saved_labels/{self.selectedGroup}/{self.songName}_lyrics.json"
-        
+
         if not os.path.exists(lyricsFilePath):
             print(f"Lyrics file not found: {lyricsFilePath}")
             return
-        
-        try:
-            with codecs.open(lyricsFilePath, "r", encoding="utf-8", errors="ignore") as file:
-                lyricsData = json.load(file)
-        except json.JSONDecodeError:
-            print(f"Error loading JSON file: {lyricsFilePath}")
-            return
+
+        lyricsData = self.lyricsEditor._loadAndMigrateLyricsJsonList()
 
         for lyric in lyricsData:
             language = lyric["language"]
             startChunk = lyric["startChunk"]
             memberName = lyric["memberName"]
+            lyricId = lyric["lyricId"]
+            linkedLabel = lyric.get("linkedLabel")
             koreanLyric = lyric.get("korean", "")
             romanization = lyric.get("romanization", "")
             englishTrans = lyric.get("english", "")
             isAdLib = lyric.get("isAdLib", False)
             adLibDuration= lyric.get("adLibDuration", 50)
-            
+
             circleImages = self._getCircleImages(memberName)
-            
-            lyricBox = LyricBox(canvas=self.canvas, parent=self, memberNames=memberName, circleImages=circleImages, koreanLyric=koreanLyric, romanization=romanization, englishTrans=englishTrans, startChunk=startChunk, language=language, isAdLib=isAdLib, adLibDuration=adLibDuration)
-            self.lyrics[startChunk] = lyricBox
+
+            lyricBox = LyricBox(canvas=self.canvas, parent=self, memberNames=memberName, circleImages=circleImages, koreanLyric=koreanLyric, romanization=romanization, englishTrans=englishTrans, startChunk=startChunk, language=language, lyricId=lyricId, isAdLib=isAdLib, adLibDuration=adLibDuration, linkedLabel=linkedLabel)
+            self.lyrics[lyricId] = lyricBox
     
-    def resetLyricsToChunkStart(self, startChunk: int):
-        startChunk = max(0, int(startChunk))
-
-        # Parent trackers
-        self.activeLyricIds.clear()
-        self.lastChunkSeen = startChunk - 1   # safe even if startChunk==0 => -1
-
-        # Reset every lyric's internal cursor so getBaseYAt() works from the start
-        for lb in self.lyrics.values():
-            lb.resetAnimCursor()              # <-- THIS is the missing reset :contentReference[oaicite:1]{index=1}
-            lb.hide()  
-            
     def hideAllLyrics(self, lyricsSurpressed=True):
         """Hides all lyric box objects stored in self.lyrics."""
         self.lyricsSuppressed = lyricsSurpressed
@@ -2874,16 +3176,16 @@ class VoiceDetectionApp:
         self.lastChunkSeen = self.currentChunkIndex - 1
         self.renderLyrics(self.currentChunkIndex)
            
-    def getActiveLyricBoxesAtChunk(self, chunkIndex):
+    def getActiveLyricBoxesAtChunk(self, chunkIndex, excludeLyricId=None):
         boxes = []
-        for sc, lb in self.lyrics.items():
-            if sc == chunkIndex:
+        for lid, lb in self.lyrics.items():
+            if lid == excludeLyricId:
                 # this is usually the new lyric starting now; skip
                 continue
             baseY = lb.getBaseYAt(chunkIndex)
             if baseY is not None:
                 boxes.append(lb)
-        return boxes  
+        return boxes
             
     def renderLyrics(self, chunkIndex):
         if self.lyricsSuppressed:
@@ -3052,15 +3354,8 @@ class VoiceDetectionApp:
             self.canvas.itemconfig(imageId, image=trackItem.sourceImages[trackItem.currentImageKey])
     
     def _restartAudioAtTime(self, newTimeMs):
-        try: 
-            if not self.isPaused and pygame.mixer.get_init():
-                pygame.mixer.music.stop()
-                pygame.mixer.music.play(start=newTimeMs / 1000.0)
-                self.playbackOffset = newTimeMs  # keep video sync source correct
-                self.isPlaying = True
-                self.isManualUpdate = False  # you're done seeking
-        except:
-            return
+        self.clock.seekTo(newTimeMs)
+        self.isManualUpdate = False  # you're done seeking
     
     def onProgressBarClick(self, event):
         self.isManualUpdate = True
@@ -3090,9 +3385,17 @@ class VoiceDetectionApp:
         self._restartAudioAtTime(newTimeMs)
         if hasattr(self, "videoTrackItem"):
             self.videoTrackItem.seek(newTimeMs)
-            
+
         if not self.isPaused:
             self.playWithSavedResults(newTimeMs) # Annoying issue
+            # playWithSavedResults() just started/resumed audio (isPlaying is
+            # now True) - the video was only seek()'d above, never told to
+            # play, so without this it sits frozen on the scrubbed-to frame
+            # while audio and the timeline keep moving. This also covers
+            # scrubbing before Space/Play has ever been pressed, since
+            # isPaused starts False.
+            if hasattr(self, "videoTrackItem"):
+                self.videoTrackItem.play()
         # Sync music playback with the new chunk index
       
     def resetLyricsToChunk(self, chunkIndex: int):
@@ -3110,9 +3413,9 @@ class VoiceDetectionApp:
         # 4) Rebuild which lyrics should be “active” at this chunk.
         # Rule of thumb: anything with startChunk <= chunkIndex is eligible to be active.
         # (renderLyrics will still hide it if it’s off-screen.)
-        for startChunk in self.lyrics.keys():
-            if startChunk <= chunkIndex:
-                self.activeLyricIds.add(startChunk)
+        for lid, lb in self.lyrics.items():
+            if lb.startChunk <= chunkIndex:
+                self.activeLyricIds.add(lid)
       
     def seekToChunk(self, newChunkIndex):
         # reset per-lyric cursors so getBaseYAt works from scratch at this chunk
@@ -3130,46 +3433,24 @@ class VoiceDetectionApp:
         
         self.lastKeyPressTime = currentTime
         
-        newPlaybackTime = max(0, self.playbackOffset - 5000)
-        
-        self.currentChunkIndex = int(newPlaybackTime / self.chunk_duration)
-        self.playbackOffset = newPlaybackTime
-        print(f"Moved backward to chunk index: {self.currentChunkIndex}, Playback time: {newPlaybackTime}ms")
-        self.updateProgressBarHandle(newPlaybackTime)
-        self.updateProgressBar(newPlaybackTime)
-        self.updateCanvasForCurrentPosition()
-        
-        if self.isPaused:
-            return
-        
-        # Update playback position
-        pygame.mixer.music.stop()
-        pygame.mixer.music.play(start=newPlaybackTime / 1000)
+        self._nudgeByMs(-5000)
 
     def moveForwardByChunks(self, event):
-        """Move forward by five chunks."""
+        """Move forward by five seconds."""
         currentTime = int(time.time() * 1000)
         if currentTime - self.lastKeyPressTime < 250: return
-        
-        self.lastKeyPressTime = currentTime
-        
-        newPlaybackTime = min(self.totalDurationMs, self.playbackOffset + 5000)
-        
-        # Calculate the playback time
-        self.currentChunkIndex = int(newPlaybackTime / self.chunk_duration)
-        self.playbackOffset = newPlaybackTime
-        print(f"Moved forward to chunk index: {self.currentChunkIndex}, Playback time: {newPlaybackTime}ms")
 
-        # Update UI
-        self.updateProgressBar(newPlaybackTime)
-        self.updateProgressBarHandle(newPlaybackTime)
+        self.lastKeyPressTime = currentTime
+        self._nudgeByMs(5000)
+
+    def _nudgeByMs(self, deltaMs):
+        newPlaybackTime = max(0, min(self.totalDurationMs, self.clock.currentMs() + deltaMs))
+        self.clock.seekTo(newPlaybackTime)
+        self.currentChunkIndex = min(int(newPlaybackTime / self.chunk_duration), len(self.chunks) - 1)
+        self.updateProgressBar()
         self.updateCanvasForCurrentPosition()
-        
-        if self.isPaused: return
-        
-        # Update playback position
-        pygame.mixer.music.stop()
-        pygame.mixer.music.play(start=newPlaybackTime / 1000)
+        if hasattr(self, "videoTrackItem") and self.videoTrackItem:
+            self.videoTrackItem.seek(newPlaybackTime)
     
     def getLabels(self):
         matchedPoints = []
@@ -3353,21 +3634,41 @@ class VoiceDetectionApp:
         # Reset state
         self.startPointMarkers.clear()
         self.endPointMarkers.clear()
-        
+        self.markerIdToLabelKey.clear()
+
+    def _labelKeySortKey(self, labelKey):
+        # Stray (unsaved) markers have labelKey=None; sort them after any
+        # labeled ones instead of raising a TypeError comparing None to a tuple.
+        return (1, "") if labelKey is None else (0, labelKey)
+
+    def _markerColor(self, markerType, labelKey):
+        """
+        Color a marker by the member it belongs to (when known) so that
+        markers stacked at the same chunkIndex are visually distinguishable
+        even when they share a start/end time. Falls back to the plain
+        green/red default for stray (not-yet-labeled) markers.
+        """
+        if labelKey is not None:
+            member = labelKey[0]
+            color = self.labelOverlay.memberColorByName.get(member)
+            if color:
+                return color
+        return self._defaultMarkerColor(markerType)
+
     def drawLabelMarkers(self, sectionIndex):
         """
         Draw start/end markers for the current section.
 
         If multiple markers share the same chunkIndex (e.g., start + end at the
         same point, or multiple labels with same boundary), we "stack" them
-        vertically so they don't hide each other.
-
-        Up to 3 markers are stacked per chunkIndex.
+        vertically so they don't hide each other. Every marker is drawn (no
+        stacking cap) so a marker can never become invisible just because
+        several others share its chunk.
         """
         self.clearAllMarkers()
         if hasattr(self, "uiHidden") and self.uiHidden:
             return
-        
+
         if hasattr(self, "labelLaneRenderer") and self.labelLaneRenderer:
             self.labelLaneRenderer.drawSection(sectionIndex, self.progressBarWidth)
 
@@ -3376,14 +3677,14 @@ class VoiceDetectionApp:
 
         # Group markers by chunkIndex for this section
         markersByChunk = {}
-        for markerType, chunkIndex in self.labelMarkers[sectionIndex]:
-            markersByChunk.setdefault(chunkIndex, []).append(markerType)
+        for markerType, chunkIndex, labelKey in self.labelMarkers[sectionIndex]:
+            markersByChunk.setdefault(chunkIndex, []).append((markerType, labelKey))
 
         chunksInView = self.zoomManager.currentChunksInView
 
         selectedId = self.selectedMarker.get("id") if self.selectedMarker else None
 
-        for chunkIndex, typeList in markersByChunk.items():
+        for chunkIndex, entries in markersByChunk.items():
             relativeX = (
                 self.progressBarCanvas.winfo_x()
                 + (chunkIndex % chunksInView / chunksInView) * self.progressBarWidth
@@ -3394,23 +3695,38 @@ class VoiceDetectionApp:
             if x < 0 or x > self.canvas.winfo_width():
                 continue
 
-            maxStack = 3
-            for stackIndex, markerType in enumerate(typeList[:maxStack]):
+            # Stack starts before ends, each group in a stable, deterministic
+            # order (by labelKey) so a later incremental restack
+            # (restackMarkersAtChunk) lines up with a full redraw instead of
+            # shuffling stack positions around.
+            starts = sorted(
+                (lk for mt, lk in entries if mt == "start"),
+                key=self._labelKeySortKey
+            )
+            ends = sorted(
+                (lk for mt, lk in entries if mt == "end"),
+                key=self._labelKeySortKey
+            )
+            orderedEntries = [("start", lk) for lk in starts] + [("end", lk) for lk in ends]
+
+            for stackIndex, (markerType, labelKey) in enumerate(orderedEntries):
                 stackOffset = stackIndex * 20
                 yTop = baseY - 20 - stackOffset
                 yBottom = baseY - stackOffset
 
-                # default color first
-                defaultColor = "green" if markerType == "start" else "red"
+                color = self._markerColor(markerType, labelKey)
 
                 markerId = self.canvas.create_line(
                     x, yTop,
                     x, yBottom,
-                    fill=defaultColor,
+                    fill=color,
                     width=4,
+                    arrow=(tk.FIRST if markerType == "start" else tk.LAST),
+                    arrowshape=(6, 8, 3),
                     tags=("marker", "start_marker" if markerType == "start" else "end_marker")
                 )
                 self.canvas.addtag_withtag("ui", markerId)
+                self.markerIdToLabelKey[markerId] = labelKey
 
                 # record in multiset dict
                 if markerType == "start":
@@ -3430,14 +3746,14 @@ class VoiceDetectionApp:
                     # keep chunk/type consistent after redraw
                     self.selectedMarker["chunkIndex"] = chunkIndex
                     self.selectedMarker["type"] = markerType
-    # end drawLabelMarkers  
+    # end drawLabelMarkers
     
     def updateCurrentTime(self, newTimeMs):
         """Update the current time based on the progress bar value."""
         if not self.isManualUpdate: return
-        
-        self.playbackOffset = newTimeMs
-        
+
+        self.clock.seekTo(newTimeMs, resync=False)
+
         self.skipNextAutoUpdate = True
         self.updateDisplayedTime(newTimeMs)
         self.updateProgressBarHandle(newTimeMs)
@@ -3689,15 +4005,7 @@ class VoiceDetectionApp:
             self.pause()
             return
         
-        self.playbackOffset = targetMs
-
-        try:
-            pygame.mixer.music.stop()
-            pygame.mixer.music.load(self.currentAudioPath)
-            pygame.mixer.music.play(start=targetMs / 1000.0)
-        except Exception as e:
-            print("Jump failed:", e)
-            return
+        self.clock.seekTo(targetMs)
 
         if hasattr(self, "videoTrackItem") and self.videoTrackItem:
             self.videoTrackItem.seek(targetMs)
@@ -3707,23 +4015,17 @@ class VoiceDetectionApp:
     def play(self):
         # Play from saved detection results
         if not self.isPlaying and self.currentChunkIndex >= len(self.chunks) - 1:
-            self.playbackOffset = 0
+            self.clock.seekTo(0, resync=False)
             self.currentChunkIndex = 0
             self.updateProgressBarHandle(0)
             self.updateDisplayedTime(0)
 
-        if self.playbackOffset < 0:
-            self.playbackOffset = 0
-        
         if self.isPlaying:
             if self.isPaused:
-                pygame.mixer.music.unpause()
-                # print(f"Play Playback time: {playbackTime}\n Current chunk: {self.currentChunkIndex}")
-                self.isPaused = False
-                
+                self.clock.resume()
                 if hasattr(self, "videoTrackItem"):
                     self.videoTrackItem.play()
-                self.playWithSavedResults(self.currentChunkIndex * self.chunk_duration)
+                self.playWithSavedResults(self.clock.currentMs())
             return
         else:  
             if hasattr(self, "videoTrackItem"):
@@ -3733,9 +4035,7 @@ class VoiceDetectionApp:
         
     def pause(self):
         if self.isPlaying and not self.isPaused:
-            self.isPaused = True
-            #self.playbackOffset = self.currentChunkIndex * self.chunk_duration
-            pygame.mixer.music.pause()
+            self.clock.pause()
             if hasattr(self, "videoTrackItem"):
                 self.videoTrackItem.pause()
      
@@ -3798,61 +4098,79 @@ class VoiceDetectionApp:
         if not self.isPlaying or self.isManualUpdate:
             try:
                 if not self.isPlaying:
-                    pygame.mixer.music.load(self.currentAudioPath)
-                pygame.mixer.music.play(start=startTimeMs / 1000)
+                    self.clock.load(self.currentAudioPath)
+                self.clock.start(startTimeMs)
             except pygame.error as e:
                 self.showStatus(f"Error loading audio file: {e}")
-                self.isPlaying = False
+                self.clock.stop()
                 return
 
-            self.playbackOffset = startTimeMs
             self.currentChunkIndex = min(int(startTimeMs / self.chunk_duration), len(self.chunks) - 1)
-            self.isPlaying = True
-            self.isPaused = False
             self.isManualUpdate = False
         
         def updateChunk():
-            if not self.isPlaying or self.isManualUpdate: 
+            # isPaused must bail here too, WITHOUT rescheduling: playbackOffset
+            # is the timestamp of the last real play(start=...) call, and
+            # get_pos() is elapsed time since THAT call - their sum is only
+            # valid while actively playing unbroken. pause() snapshots the
+            # true paused position into playbackOffset directly (so a second
+            # pause/resume with no seek in between resumes correctly - see
+            # pause()), but get_pos() itself stays frozen at whatever it was
+            # when paused (verified empirically), so if this loop kept
+            # running it would add that same frozen get_pos() AGAIN on top of
+            # the already-corrected playbackOffset every ~chunk_duration ms -
+            # a one-time jump-ahead the instant you pause, then held there,
+            # making the progress bar handle drift visibly ahead of the real
+            # (paused, unmoving) audio. Resuming restarts this loop fresh via
+            # play() -> playWithSavedResults() -> updateChunk().
+            if not self.isPlaying or self.isPaused or self.isManualUpdate:
                 return
-        
-            # Get current playback position in milliseconds
-            playbackPos = pygame.mixer.music.get_pos()
-            if playbackPos == -1:
-                #print("Playback not started or stopped unexpectedly.")
-                self.isPlaying = False
-                return 
-            
-            playbackTime = self.playbackOffset + playbackPos
-            self.currentChunkIndex = min(
-                int(playbackTime / self.chunk_duration),
-                len(self.chunks) - 1
-            )
-            
-            # ✅ CLIP SKIP HERE (playback-only)
-            if hasattr(self, "clipManager") and self.clipManager.enabled:
-                # Use maybeSkipNext for Skip cut
-                jumped = self.clipManager.maybeSkipNext(self.currentChunkIndex)
-                if jumped:
-                    self.root.after(self.chunk_duration, updateChunk)
-                    return
-                
-            self.syncVisualsToTime(playbackTime)
-            
-            # Update UI for voice detection
-            if len(self.detectionResults) > 0:
-                for member, trackItem in self.memberImages.items():
-                    isVoiceDetected = self.detectionResults[self.currentChunkIndex].get(member, False)
-                    if isVoiceDetected:
-                        trackItem.currentImageKey = "light"
-                    else:
-                        trackItem.currentImageKey = "dark"
-                    
-                    # Update the canvas with the current image
-                    imageId = self.memberImageIds[member]
-                    self.canvas.itemconfig(imageId, image=trackItem.sourceImages[trackItem.currentImageKey])
-                
-            if self.currentChunkIndex >= len(self.chunks):
-                self.pause()
+
+            if self.clock.hasEnded():
+                self.clock.stop()
+                return
+
+            try:
+                playbackTime = self.clock.currentMs()
+                self.currentChunkIndex = min(
+                    int(playbackTime / self.chunk_duration),
+                    len(self.chunks) - 1
+                )
+
+                # ✅ CLIP SKIP HERE (playback-only)
+                if hasattr(self, "clipManager") and self.clipManager.enabled:
+                    # Use maybeSkipNext for Skip cut
+                    jumped = self.clipManager.maybeSkipNext(self.currentChunkIndex)
+                    if jumped:
+                        self.root.after(self.chunk_duration, updateChunk)
+                        return
+
+                self.syncVisualsToTime(playbackTime)
+
+                # Update UI for voice detection
+                if len(self.detectionResults) > 0:
+                    for member, trackItem in self.memberImages.items():
+                        isVoiceDetected = self.detectionResults[self.currentChunkIndex].get(member, False)
+                        if isVoiceDetected:
+                            trackItem.currentImageKey = "light"
+                        else:
+                            trackItem.currentImageKey = "dark"
+
+                        # Update the canvas with the current image
+                        imageId = self.memberImageIds[member]
+                        self.canvas.itemconfig(imageId, image=trackItem.sourceImages[trackItem.currentImageKey])
+
+                if self.currentChunkIndex >= len(self.chunks):
+                    self.pause()
+            except Exception as exc:
+                # An uncaught exception here (e.g. a canvas item deleted out
+                # from under us by a concurrent zoom-triggered redraw) would
+                # silently kill this recursive after() chain: audio keeps
+                # playing but the timeline/markers/video sync freeze forever
+                # with no way to recover short of restarting. Log and keep
+                # the loop alive instead - same fix already applied to
+                # VideoTrackItem's decode loop for the analogous failure mode.
+                print(f"[playWithSavedResults] updateChunk error (continuing): {exc}")
 
             # Schedule the next chunk update
             self.root.after(self.chunk_duration, updateChunk)
@@ -3862,10 +4180,8 @@ class VoiceDetectionApp:
     # end playWIthSavedResults
     
     def getPlaybackTimeMs(self):
-        if self.isPlaying and not self.isPaused and pygame.mixer.get_init():
-            pos = pygame.mixer.music.get_pos()
-            if pos < 0: pos = 0
-            return self.playbackOffset + pos
+        if self.isPlaying:
+            return self.clock.currentMs()
         return self.currentChunkIndex * self.chunk_duration
     
     def _submixKey(self, leadOn: bool, backOn: bool, panMode: str) -> str:
@@ -3932,11 +4248,8 @@ class VoiceDetectionApp:
 
     def switchAudioPathPreserveTime(self, newPath: str, playbackTimeMs: int):
         self.currentAudioPath = newPath
-        if self.isPlaying and not self.isPaused:
-            pygame.mixer.music.stop()
-            pygame.mixer.music.load(self.currentAudioPath)
-            pygame.mixer.music.play(start=playbackTimeMs / 1000.0)
-            self.playbackOffset = playbackTimeMs
+        if self.isPlaying:
+            self.clock.switchSource(self.currentAudioPath, playbackTimeMs)
 
         # UI sync
         self.currentChunkIndex = min(int(playbackTimeMs / self.chunk_duration), len(self.chunks) - 1)
@@ -4014,15 +4327,7 @@ class VoiceDetectionApp:
             self.showStatus("⚠️ Vocals-only file not found; cannot toggle audio mode.")
             return
         
-        # Figure out where we are in the song (in ms)
-        if self.isPlaying and not self.isPaused and pygame.mixer.get_init():
-            pos = pygame.mixer.music.get_pos()
-            if pos < 0:
-                pos = 0
-            playbackTime = self.playbackOffset + pos
-        else:
-            # Fallback: use current chunk index
-            playbackTime = self.currentChunkIndex * self.chunk_duration
+        playbackTime = self.getPlaybackTimeMs()
 
         # Toggle mode + path
         if self.currentAudioPath == self.testSongPath:
@@ -4034,15 +4339,10 @@ class VoiceDetectionApp:
             self.audioMode = "mix"
             self.showStatus("🎵 Switched to *full mix* audio.")
 
-        # If we're currently playing (and not paused), restart playback on the new source
-        if self.isPlaying and not self.isPaused:
+        # Paused counts too: loading now means resume() plays the new source.
+        if self.isPlaying:
             try:
-                pygame.mixer.music.stop()
-                pygame.mixer.music.load(self.currentAudioPath)
-                pygame.mixer.music.play(start=playbackTime / 1000.0)
-
-                # Keep our offset consistent with this new start
-                self.playbackOffset = playbackTime
+                self.clock.switchSource(self.currentAudioPath, playbackTime)
             except pygame.error as e:
                 self.showStatus(f"Error switching audio source: {e}")
                 return
@@ -4069,7 +4369,8 @@ class VoiceDetectionApp:
             oldId = self.selectedMarker["id"]
             oldType = self.selectedMarker["type"]
             try:
-                self.canvas.itemconfig(oldId, fill=self._defaultMarkerColor(oldType))
+                oldLabelKey = self.markerIdToLabelKey.get(oldId)
+                self.canvas.itemconfig(oldId, fill=self._markerColor(oldType, oldLabelKey))
             except tk.TclError:
                 # marker might have been deleted/redrawn
                 pass
@@ -4101,10 +4402,10 @@ class VoiceDetectionApp:
         sectionIndex = chunkIndex // self.zoomManager.currentChunksInView
         if sectionIndex not in self.labelMarkers:
             self.labelMarkers[sectionIndex] = []
-            
-        self.labelMarkers[sectionIndex].append((markerType, chunkIndex))
+
+        self.labelMarkers[sectionIndex].append((markerType, chunkIndex, None))
         markerId = None
-        
+
         x = self.progressBarCanvas.winfo_x() + (
             (chunkIndex % self.zoomManager.currentChunksInView)
             / self.zoomManager.currentChunksInView
@@ -4117,6 +4418,8 @@ class VoiceDetectionApp:
                 x, yTop, x, yBottom,
                 fill=self._defaultMarkerColor(markerType),
                 width=4,
+                arrow=tk.FIRST,
+                arrowshape=(6, 8, 3),
                 tags=("marker", "start_marker")
             )
             self.labelOverlay.bindBoundaryMarker(markerId, chunkIndex, "start")
@@ -4130,6 +4433,8 @@ class VoiceDetectionApp:
                 x, yTop, x, yBottom,
                 fill=self._defaultMarkerColor(markerType),
                 width=4,
+                arrow=tk.LAST,
+                arrowshape=(6, 8, 3),
                 tags=("marker", "end_marker")
             )
             self.labelOverlay.bindBoundaryMarker(markerId, chunkIndex, "end")
@@ -4137,7 +4442,13 @@ class VoiceDetectionApp:
             ids = self._getMarkerIdsAtChunk(self.endPointMarkers, chunkIndex)
             ids.append(markerId)
             self._setMarkerIdsAtChunk(self.endPointMarkers, chunkIndex, ids)
-         
+
+        if markerId is not None:
+            self.markerIdToLabelKey[markerId] = None
+            # Re-stack so a new marker sharing this chunk with existing ones
+            # doesn't get drawn directly on top of them.
+            self.restackMarkersAtChunk(chunkIndex)
+
         self.selectedLabel = None
         self.setSelectedMarker(chunkIndex, markerType, markerId=markerId)
         self.restackMarkersAtChunk(chunkIndex)

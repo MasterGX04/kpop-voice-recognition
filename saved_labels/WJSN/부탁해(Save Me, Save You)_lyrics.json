@@ -1,0 +1,59 @@
+[
+    {
+        "lyricId": "5a999f0a-02b1-4cc3-a957-77e72c724f11",
+        "linkedLabel": {
+            "member": "Bona",
+            "startChunk": 6,
+            "endChunk": 36
+        },
+        "language": "Korean",
+        "memberName": [
+            "Bona"
+        ],
+        "korean": "부탁해 너의 얘길 들려줄래\n알고 싶어 그래",
+        "romanization": "butakhae neoye yaegil deullyeojullae\nalgo shipeo geurae",
+        "english": "I’m asking, please will you tell me your story?\nI wanna know",
+        "startChunk": 0,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "4e74d4db-e33c-4000-ad83-7ca981cc40fc",
+        "linkedLabel": {
+            "member": "Seola",
+            "startChunk": 660,
+            "endChunk": 748
+        },
+        "language": "Korean",
+        "memberName": [
+            "Seola"
+        ],
+        "korean": "네가 내게 그랬듯 늘 말했듯\n조심히 따스히 안아줄게",
+        "romanization": "niga naege geuraetteut neul malhaetteut\njoshimhi ttaseuhi anajulge",
+        "english": "Just like you did for me, just like I always said\nI’ll carefully and warmly hug you",
+        "startChunk": 649,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "a5e99ac9-7b79-4cae-ba3d-29d80b2f862a",
+        "linkedLabel": {
+            "member": "Bona",
+            "startChunk": 867,
+            "endChunk": 1034
+        },
+        "language": "Korean",
+        "memberName": [
+            "Bona"
+        ],
+        "korean": "우리 서로 몰랐던 지나쳤던\n시간은 모른 척 눈감을게",
+        "romanization": "uri seoro mollateon jinachyeotteon\nshiganeun moreun cheok nungameulge",
+        "english": "All the times we didn’t know each other\nI’ll act like it never existed",
+        "startChunk": 856,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    }
+]

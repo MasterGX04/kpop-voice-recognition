@@ -1,0 +1,790 @@
+[
+    {
+        "surface": "私",
+        "reading": "わたし",
+        "lemma": "私",
+        "lemmaReading": "わたくし",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "pronoun"
+            ],
+            "gloss": [
+                "I",
+                "me"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "私",
+            "pinyin": "si1"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Nayeon: 私が目指したマイルストーン"
+    },
+    {
+        "surface": "突き動かす",
+        "reading": "つきうごかす",
+        "lemma": "突き動かす",
+        "lemmaReading": "つきうごかす",
+        "category": "jukujigo",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'su' ending",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to push",
+                "to propel",
+                "to shove"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "突動",
+            "pinyin": "tu1 dong4"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Mina: Anytime 私を突き動かすの"
+    },
+    {
+        "surface": "高い",
+        "reading": "たかい",
+        "lemma": "高い",
+        "lemmaReading": "たかい",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "adjective (keiyoushi)"
+            ],
+            "gloss": [
+                "high",
+                "tall"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "高",
+            "pinyin": "gao1"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Nayeon: どんな高い壁も乗り越える覚悟"
+    },
+    {
+        "surface": "壁",
+        "reading": "かべ",
+        "lemma": "壁",
+        "lemmaReading": "かべ",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "wall",
+                "partition"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "壁",
+            "pinyin": "bi4"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Nayeon: どんな高い壁も乗り越える覚悟"
+    },
+    {
+        "surface": "乗り越える",
+        "reading": "のりこえる",
+        "lemma": "乗り越える",
+        "lemmaReading": "のりこえる",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Ichidan verb",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to climb over",
+                "to get over",
+                "to cross (a mountain)"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "乘越",
+            "pinyin": "cheng2 yue4"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Nayeon: どんな高い壁も乗り越える覚悟"
+    },
+    {
+        "surface": "覚悟",
+        "reading": "かくご",
+        "lemma": "覚悟",
+        "lemmaReading": "かくご",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "覺悟",
+            "pinyin": "jue2 wu4",
+            "gloss": [
+                "to come to understand",
+                "to realize",
+                "consciousness",
+                "awareness",
+                "Buddhist enlightenment (Sanskrit: cittotpāda)"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)",
+                "noun or participle which takes the aux. verb suru",
+                "transitive verb"
+            ],
+            "gloss": [
+                "readiness",
+                "(mental) preparedness"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "覺悟",
+            "pinyin": "jue2 wu4"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Nayeon: どんな高い壁も乗り越える覚悟"
+    },
+    {
+        "surface": "時間",
+        "reading": "じかん",
+        "lemma": "時間",
+        "lemmaReading": "じかん",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "時間",
+            "pinyin": "shi2 jian1",
+            "gloss": [
+                "(concept of) time",
+                "(duration of) time",
+                "(point in) time"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "time"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "時間",
+            "pinyin": "shi2 jian1"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Jihyo: 時間は無限にあっても"
+    },
+    {
+        "surface": "無限",
+        "reading": "むげん",
+        "lemma": "無限",
+        "lemmaReading": "むげん",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "無限",
+            "pinyin": "wu2 xian4",
+            "gloss": [
+                "unlimited",
+                "unbounded"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "infinity",
+                "infinitude",
+                "eternity"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "無限",
+            "pinyin": "wu2 xian4"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Jihyo: 時間は無限にあっても"
+    },
+    {
+        "surface": "時",
+        "reading": "とき",
+        "lemma": "時",
+        "lemmaReading": "とき",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "time",
+                "hour",
+                "moment"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "時",
+            "pinyin": "shi2"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Jeongyeon: 時に磨かれ"
+    },
+    {
+        "surface": "磨か",
+        "reading": "みがか",
+        "lemma": "磨く",
+        "lemmaReading": "みがく",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'ku' ending",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to polish",
+                "to shine",
+                "to burnish",
+                "to scour",
+                "to scrub",
+                "to brush (teeth)",
+                "to grind (e.g. a lens)"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "磨",
+            "pinyin": "mo2"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Jeongyeon: 時に磨かれ"
+    },
+    {
+        "surface": "輝く",
+        "reading": "かがやく",
+        "lemma": "輝く",
+        "lemmaReading": "かがやく",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'ku' ending",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to shine",
+                "to sparkle",
+                "to twinkle",
+                "to glitter",
+                "to glisten"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "輝",
+            "pinyin": "hui1"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Sana: 輝く私を世界が待ってるの"
+    },
+    {
+        "surface": "世界",
+        "reading": "せかい",
+        "lemma": "世界",
+        "lemmaReading": "せかい",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "世界",
+            "pinyin": "shi4 jie4",
+            "gloss": [
+                "world"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "the world",
+                "society",
+                "the universe"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "世界",
+            "pinyin": "shi4 jie4"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Sana: 輝く私を世界が待ってるの"
+    },
+    {
+        "surface": "待っ",
+        "reading": "まっ",
+        "lemma": "待つ",
+        "lemmaReading": "まつ",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'tsu' ending",
+                "transitive verb",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to wait"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "待",
+            "pinyin": "dai1"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Sana: 輝く私を世界が待ってるの"
+    },
+    {
+        "surface": "弱",
+        "reading": "よわ",
+        "lemma": "弱い",
+        "lemmaReading": "よわい",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "adjective (keiyoushi)"
+            ],
+            "gloss": [
+                "weak",
+                "frail",
+                "delicate",
+                "tender",
+                "unskilled",
+                "weak (wine)"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "弱",
+            "pinyin": "ruo4"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Chaeyoung: 弱さとファイティング心で\n強さをゲット重ねたら"
+    },
+    {
+        "surface": "心",
+        "reading": "しん",
+        "lemma": "心",
+        "lemmaReading": "しん",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "心",
+            "pinyin": "xin1",
+            "gloss": [
+                "heart",
+                "mind",
+                "intention",
+                "center",
+                "core",
+                "CL:顆|颗[ke1],個|个[ge4]"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "heart",
+                "mind",
+                "spirit",
+                "vitality",
+                "inner strength"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "心",
+            "pinyin": "xin1"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Chaeyoung: 弱さとファイティング心で\n強さをゲット重ねたら"
+    },
+    {
+        "surface": "強",
+        "reading": "つよ",
+        "lemma": "強い",
+        "lemmaReading": "つよい",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "adjective (keiyoushi)"
+            ],
+            "gloss": [
+                "strong",
+                "potent",
+                "competent",
+                "domineering",
+                "tough"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "強",
+            "pinyin": "jiang4"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Chaeyoung: 弱さとファイティング心で\n強さをゲット重ねたら"
+    },
+    {
+        "surface": "重ね",
+        "reading": "かさね",
+        "lemma": "重ねる",
+        "lemmaReading": "かさねる",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Ichidan verb",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to pile up",
+                "to heap up",
+                "to stack up",
+                "to put on top of another"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "重",
+            "pinyin": "chong2"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Chaeyoung: 弱さとファイティング心で\n強さをゲット重ねたら"
+    },
+    {
+        "surface": "限界",
+        "reading": "げんかい",
+        "lemma": "限界",
+        "lemmaReading": "げんかい",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "not_attested",
+            "traditional": "限界",
+            "pinyinFallback": "xian4 jie4"
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)",
+                "nouns which may take the genitive case particle 'no'"
+            ],
+            "gloss": [
+                "limit",
+                "bound"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "限界",
+            "pinyin": "xian4 jie4"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Dahyun: きっと限界なんて Break\nBaby 突破して行こう Let go"
+    },
+    {
+        "surface": "突破",
+        "reading": "とっぱ",
+        "lemma": "突破",
+        "lemmaReading": "とっぱ",
+        "category": "jukujigo",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)",
+                "noun or participle which takes the aux. verb suru",
+                "transitive verb"
+            ],
+            "gloss": [
+                "breaking through",
+                "breakthrough",
+                "penetration"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "突破",
+            "pinyin": "tu1 po4"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Dahyun: きっと限界なんて Break\nBaby 突破して行こう Let go"
+    },
+    {
+        "surface": "行こう",
+        "reading": "いこう",
+        "lemma": "行く",
+        "lemmaReading": "いく",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb - Iku/Yuku special class",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to go",
+                "to move (towards)",
+                "to head (towards)",
+                "to leave (for)"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "行",
+            "pinyin": "hang2"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Dahyun: きっと限界なんて Break\nBaby 突破して行こう Let go"
+    },
+    {
+        "surface": "自分",
+        "reading": "じぶん",
+        "lemma": "自分",
+        "lemmaReading": "じぶん",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "not_attested",
+            "traditional": "自分",
+            "pinyinFallback": "zi4 fen1"
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "pronoun"
+            ],
+            "gloss": [
+                "myself",
+                "yourself",
+                "oneself",
+                "himself",
+                "herself"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "自分",
+            "pinyin": "zi4 fen1"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Momo: 自分を叫び続けたい"
+    },
+    {
+        "surface": "叫び",
+        "reading": "さけび",
+        "lemma": "叫ぶ",
+        "lemmaReading": "さけぶ",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'bu' ending",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to shout",
+                "to cry (out)",
+                "to scream",
+                "to shriek",
+                "to yell",
+                "to exclaim"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "叫",
+            "pinyin": "jiao4"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Momo: 自分を叫び続けたい"
+    },
+    {
+        "surface": "続け",
+        "reading": "つずけ",
+        "lemma": "続ける",
+        "lemmaReading": "つづける",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Ichidan verb",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to continue",
+                "to keep up",
+                "to keep on"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "續",
+            "pinyin": "xu4"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Momo: 自分を叫び続けたい"
+    },
+    {
+        "surface": "目指し",
+        "reading": "めざし",
+        "lemma": "目指す",
+        "lemmaReading": "めざす",
+        "category": "jukujigo",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'su' ending",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to aim at (for, to do, to become)",
+                "to try for",
+                "to have an eye on"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "目指",
+            "pinyin": "mu4 zhi3"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Nayeon: 私が目指したマイルストーン"
+    },
+    {
+        "surface": "胸",
+        "reading": "むね",
+        "lemma": "胸",
+        "lemmaReading": "むね",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "chest",
+                "breast"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "胸",
+            "pinyin": "xiong1"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Tzuyu: この胸にある限り"
+    },
+    {
+        "surface": "限り",
+        "reading": "かぎり",
+        "lemma": "限り",
+        "lemmaReading": "かぎり",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "limit",
+                "limits",
+                "bounds"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "限",
+            "pinyin": "xian4"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Tzuyu: この胸にある限り"
+    },
+    {
+        "surface": "時代",
+        "reading": "じだい",
+        "lemma": "時代",
+        "lemmaReading": "じだい",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "時代",
+            "pinyin": "Shi2 dai4",
+            "gloss": [
+                "Time, US weekly news magazine"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "period",
+                "epoch",
+                "era",
+                "age"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "時代",
+            "pinyin": "Shi2 dai4"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Tzuyu: 時代の中で"
+    },
+    {
+        "surface": "中",
+        "reading": "なか",
+        "lemma": "中",
+        "lemmaReading": "なか",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "inside",
+                "interior"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "中",
+            "pinyin": "zhong1"
+        },
+        "dateAdded": "2026-09-10",
+        "sourceLine": "Tzuyu: 時代の中で"
+    }
+]

@@ -1,0 +1,1113 @@
+[
+    {
+        "lyricId": "e635715e-e023-4722-918d-2c2f413e998d",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 52,
+            "endChunk": 98
+        },
+        "language": "English",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Ooh ooh\nIn a world where you feel cold\nYou gotta stay gold\nOh baby, Yeah",
+        "startChunk": 41,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "9ca525f7-c3d2-4a6b-8c84-7f2869face8f",
+        "linkedLabel": {
+            "member": "Suga",
+            "startChunk": 399,
+            "endChunk": 446
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Suga"
+        ],
+        "korean": "魅惑的な Moon Light\n今宵も眠らない\n月明かりを頼りに\n君の元へ Hide and Seek",
+        "romanization": "miwaku teki na Moon Light\nkoyoi mo nemura nai\ntsukiakari o tayori ni\nkimi no moto e Hide and Seek",
+        "english": "The alluring moon light\nI can’t sleep again tonight\nRelying on the light of the moon\nPlaying hide and see towards you",
+        "startChunk": 388,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "52a3526d-d72d-455e-85d4-c48720c84469",
+        "linkedLabel": {
+            "member": "Suga",
+            "startChunk": 494,
+            "endChunk": 766
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Suga"
+        ],
+        "korean": "心へと忍び込んで　君の間近\n近づくのさ　いつの間にか",
+        "romanization": "kokoro e to shinobikon de kimi no majika\nchikazuku no sa itsu no aida ni ka",
+        "english": "Stealthily towards your heart, the distance with you\nIs getting closer, before I knew it",
+        "startChunk": 596,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "47cfd0af-2e27-45fa-af81-bdc140fa579e",
+        "linkedLabel": {
+            "member": "RM",
+            "startChunk": 773,
+            "endChunk": 816
+        },
+        "language": "Japanese",
+        "memberName": [
+            "RM"
+        ],
+        "korean": "穢れを知らないな\nその瞳はダイヤ\nどんな宝石よりも Beautiful",
+        "romanization": "kegare o shira nai na\nsono hitomi wa daiya\ndonna houseki yori mo Beautiful",
+        "english": "Free from any impurity\nYour eyes are diamonds\nMore beautiful than any precious stone",
+        "startChunk": 762,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "02cd95ef-a259-4d5e-913c-047b982cbb43",
+        "linkedLabel": {
+            "member": "RM",
+            "startChunk": 867,
+            "endChunk": 1133
+        },
+        "language": "Japanese",
+        "memberName": [
+            "RM"
+        ],
+        "korean": "何度も見惚れてしまうほど\n君から目離せない No more",
+        "romanization": "nan do mo mitore te shimau hodo\nkimi kara me hanasenai No more",
+        "english": "",
+        "startChunk": 966,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "33531ee4-ec80-4a70-9197-9a35e0dc4f67",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 1133,
+            "endChunk": 1179
+        },
+        "language": "Japanese",
+        "memberName": [
+            "V"
+        ],
+        "korean": "時計の針さえ\n動きを止めるよ\nUh let it glow",
+        "romanization": "tokei no hari sae\nugoki o tomeru yo\nUh let it glow",
+        "english": "Even the hand of a clock\nWould stop its moving\nUh let it glow",
+        "startChunk": 1122,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "ce2111f2-5fa2-4608-bd9b-178724cc4eb5",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 1478,
+            "endChunk": 1541
+        },
+        "language": "English",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold",
+        "startChunk": 1467,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "8cfd73e1-973c-450d-9c72-9a4dfabf65fd",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 1537,
+            "endChunk": 1586
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "夢の中でも",
+        "romanization": "yume no naka demo",
+        "english": "Even in your dreams",
+        "startChunk": 1526,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "589147b4-a1bb-4ea5-bb20-a53d4a379ce8",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 1573,
+            "endChunk": 1636
+        },
+        "language": "English",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold",
+        "startChunk": 1562,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "0427222c-cc7d-4a90-94d3-69685fbeb55e",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 1629,
+            "endChunk": 1678
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "探しあてるよ",
+        "romanization": "sagashiateru yo",
+        "english": "I’ll find you",
+        "startChunk": 1618,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "2d753e58-0263-445f-8639-65dd2edc8b0f",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 1666,
+            "endChunk": 1725
+        },
+        "language": "English",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold, Gold",
+        "startChunk": 1655,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "430e2787-3132-495a-8bfc-9bae191aee4a",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 1770,
+            "endChunk": 1833
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "君に触れたくて",
+        "romanization": "kimi ni furetakute",
+        "english": "I want to feel your touch",
+        "startChunk": 1759,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "7e2bf329-e975-4ea0-9e4d-bbc9f57d3644",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 1850,
+            "endChunk": 1912
+        },
+        "language": "English",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold",
+        "startChunk": 1839,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "3bdf25c8-cd75-4a00-aedb-fba8904ede0c",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 1909,
+            "endChunk": 1952
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "君の全てに",
+        "romanization": "kimi no subete ni",
+        "english": "Everything about you",
+        "startChunk": 1898,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "5610576c-8dfa-45b5-ae53-f290f4fd9c04",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 1946,
+            "endChunk": 2009
+        },
+        "language": "English",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold",
+        "startChunk": 1935,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "e319fd8d-d826-4028-a9ae-97e8aaba60c9",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 2002,
+            "endChunk": 2046
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "心惹かれて",
+        "romanization": "kokoro hikarete",
+        "english": "Captivates my heart",
+        "startChunk": 1991,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "08679ee3-457f-4b96-81a0-b2321901b888",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 2037,
+            "endChunk": 2172
+        },
+        "language": "English",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold",
+        "startChunk": 2026,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "cf6a9ab0-9923-4caa-aa20-00f5b26416aa",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 2193,
+            "endChunk": 2246
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "手に入れたくて",
+        "romanization": "te ni iretakute",
+        "english": "I want to have you",
+        "startChunk": 2182,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "4619b490-0b44-444b-b71b-29b3bfb6e9a4",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 2247,
+            "endChunk": 2270
+        },
+        "language": "English",
+        "memberName": [
+            "Jungkook",
+            "Jimin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold Stay Gold Stay Gold\nStay Gold Stay Gold Stay Gold\nStay Gold Stay Gold Stay Gold\nStay Gold",
+        "startChunk": 2236,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "80864f6b-011d-401a-a72e-c8711866324c",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 2561,
+            "endChunk": 2624
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "いつまでも Forever Gold",
+        "romanization": "itsu made mo Forever Gold",
+        "english": "Stay gold forever, forever gold",
+        "startChunk": 2550,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "ae2ca42b-5312-4f2e-8d4d-aafff74428d7",
+        "linkedLabel": {
+            "member": "J-Hope",
+            "startChunk": 2635,
+            "endChunk": 2677
+        },
+        "language": "Japanese",
+        "memberName": [
+            "J-Hope"
+        ],
+        "korean": "気づかれないように\n近づいてく Slowly\n予告するよ Baby 無防備な",
+        "romanization": "kizuka re nai yō ni\nchikazui teku Slowly\nyokoku suru yo Baby mu bōbi na",
+        "english": "Without you noticing\nI’m getting closer, slowly\nI’m not notifying you in advance baby",
+        "startChunk": 2624,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "f7d2b113-1377-4fd0-8216-5d3e54694ed9",
+        "linkedLabel": {
+            "member": "J-Hope",
+            "startChunk": 2727,
+            "endChunk": 2996
+        },
+        "language": "Japanese",
+        "memberName": [
+            "J-Hope",
+            "Jungkook"
+        ],
+        "korean": "君を優しく\nいただくのさ\n君の深いところ now…",
+        "romanization": "kimi o yasashiku\nitadaku no sa\nkimi no fukai tokoro now…",
+        "english": "The defenceless you\nI’ll gently take\nThe deepest parts of you now…",
+        "startChunk": 2787,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "1c5ccb74-cf8c-47d4-8451-f07b69d71812",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 2992,
+            "endChunk": 3039
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "高鳴る想いは\n鼓動を早める\nUh let it show",
+        "romanization": "takanaru omoi wa\nkodō o hayameru\nUh let it show",
+        "english": "My ringing thoughts\nThe palpitations are accelerating\nUh let it show",
+        "startChunk": 2981,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "89f892b9-41a4-418e-b146-b32520dfa358",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 3340,
+            "endChunk": 3401
+        },
+        "language": "English",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold",
+        "startChunk": 3329,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "a7144b06-cade-4328-9732-f48dfd89c09e",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 3397,
+            "endChunk": 3443
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "君さえいれば",
+        "romanization": "kimi sae ire ba",
+        "english": "As long as you’re here",
+        "startChunk": 3386,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "e484ea9a-7f6f-4e0c-ae2d-3a83b0347e53",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 3434,
+            "endChunk": 3496
+        },
+        "language": "English",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold",
+        "startChunk": 3423,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "9dbe7ccc-ffec-46e0-982e-57ab60ef755e",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 3490,
+            "endChunk": 3536
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "何もいらない",
+        "romanization": "nani mo iranai",
+        "english": "I don’t need anything",
+        "startChunk": 3479,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "227ef292-108a-45dd-9b4d-39b018e96c9a",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 3528,
+            "endChunk": 3585
+        },
+        "language": "English",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold, Gold",
+        "startChunk": 3517,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "9a892fc2-2f1f-4c57-9204-6c7d34920244",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 3634,
+            "endChunk": 3694
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "抱きしめたくて",
+        "romanization": "dakishime taku te",
+        "english": "I want to hug you",
+        "startChunk": 3623,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "819739f1-b40d-46f7-b10d-7e59d24171a6",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 3711,
+            "endChunk": 3773
+        },
+        "language": "English",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold",
+        "startChunk": 3700,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "b4c3caa4-2f04-44b3-9dba-052283445b91",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 3769,
+            "endChunk": 3818
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "愛は果てなく",
+        "romanization": "ai wa hatenaku",
+        "english": "Love will not perish",
+        "startChunk": 3758,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "00406453-5d56-444f-9e76-6e02cc4005ce",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 3805,
+            "endChunk": 3868
+        },
+        "language": "English",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold",
+        "startChunk": 3794,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "d1905bd7-d918-4657-b0aa-422252a23094",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 3862,
+            "endChunk": 3908
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "光を放つ",
+        "romanization": "hikari o hanatsu",
+        "english": "Cast the light",
+        "startChunk": 3851,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "efa556b4-cc1b-46d8-b4a1-dfde7797cbb3",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 3898,
+            "endChunk": 4033
+        },
+        "language": "English",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold",
+        "startChunk": 3887,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "657a2175-3619-452f-bb7b-f5fbc6a6634a",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 4049,
+            "endChunk": 4107
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "どんな星よりも",
+        "romanization": "donna hoshi yori mo",
+        "english": "More than any star",
+        "startChunk": 4038,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "082fa69e-d121-46f8-86e7-1f0cc4b79c6f",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 4107,
+            "endChunk": 4130
+        },
+        "language": "English",
+        "memberName": [
+            "Jimin",
+            "V"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold Stay Gold Stay Gold\nStay Gold Stay Gold Stay Gold\nStay Gold Stay Gold Stay Gold\nStay Gold",
+        "startChunk": 4096,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "e0d3fa05-5a2d-40ec-a655-5cff67aac40a",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 4385,
+            "endChunk": 4412
+        },
+        "language": "Japanese",
+        "memberName": [
+            "V",
+            "Jimin"
+        ],
+        "korean": "いつまでも Forever Gold",
+        "romanization": "itsu made mo Forever Gold",
+        "english": "Stay gold forever, forever gold",
+        "startChunk": 4410,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "beae0d38-ac2d-498b-b909-e3cdcb4022e7",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 4484,
+            "endChunk": 4540
+        },
+        "language": "English",
+        "memberName": [
+            "V",
+            "Jungkook"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Just close your eyes",
+        "startChunk": 4473,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "4eebcbe5-2b48-4249-9310-d94c9110e6ab",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 4537,
+            "endChunk": 4572
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "何も言わない",
+        "romanization": "nani mo iwanai",
+        "english": "Without saying anything",
+        "startChunk": 4526,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "5b6e06d6-4354-494c-aa10-7816dfe37dde",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 4577,
+            "endChunk": 4626
+        },
+        "language": "English",
+        "memberName": [
+            "Jin",
+            "Jungkook"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "I’ll steal your heart",
+        "startChunk": 4566,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "423d0b66-ed79-4ec8-97ef-14b6bb8d4fdf",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 4630,
+            "endChunk": 4664
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "魔法のように\n奇跡なら僕が見せてあげる",
+        "romanization": "mahō no yō ni\nkiseki nara boku ga mise te ageru",
+        "english": "Like magic\nIf there’s a miracle I’ll show it to you",
+        "startChunk": 4619,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "5b9740fc-5e6b-40bf-9ffb-8c2fcce293c9",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 4793,
+            "endChunk": 4890
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "その手を出して",
+        "romanization": "sono te o dashite",
+        "english": "Reach out your hand",
+        "startChunk": 4782,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "662c4ee9-d1de-45e3-ade4-2aa1288a149d",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 4828,
+            "endChunk": 4888
+        },
+        "language": "English",
+        "memberName": [
+            "Jungkook",
+            "Jimin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold",
+        "startChunk": 4817,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "4e9fa710-c01d-4249-8ebd-c340b22c1934",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 4885,
+            "endChunk": 4931
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "夢の中でも",
+        "romanization": "yume no naka demo",
+        "english": "Even in your dreams",
+        "startChunk": 4874,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "cf838a16-4ddd-4dd4-9b67-03321d44174c",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 4921,
+            "endChunk": 4980
+        },
+        "language": "English",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold",
+        "startChunk": 4910,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "56bf0708-2b46-4126-a4f0-fef01e5a3444",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 4976,
+            "endChunk": 5026
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jin",
+            "Jungkook"
+        ],
+        "korean": "探しあてるよ",
+        "romanization": "sagashiateru yo",
+        "english": "I’ll find you",
+        "startChunk": 4965,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "16b0aad9-fd84-4b61-b31d-428759816317",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 5014,
+            "endChunk": 5073
+        },
+        "language": "English",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold, Gold",
+        "startChunk": 5003,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "d81e2a8a-6549-4816-a0f2-a3d8081f7f0c",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 5119,
+            "endChunk": 5180
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "君に触れたくて",
+        "romanization": "kimi ni furetakute",
+        "english": "I want to feel your touch",
+        "startChunk": 5108,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "fe6356d2-9fbc-4327-90d6-d26411a57de8",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 5199,
+            "endChunk": 5261
+        },
+        "language": "English",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold",
+        "startChunk": 5188,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "7af26c62-5de1-4755-b29b-6b39b56d361f",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 5258,
+            "endChunk": 5301
+        },
+        "language": "Japanese",
+        "memberName": [
+            "V"
+        ],
+        "korean": "君の全てに",
+        "romanization": "kimi no subete ni",
+        "english": "Everything about you",
+        "startChunk": 5247,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "ddd37e21-fef6-4756-97f0-525cf8aea749",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 5293,
+            "endChunk": 5357
+        },
+        "language": "English",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold",
+        "startChunk": 5282,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "59aabe0e-12c6-4e23-ad1a-9a542633b460",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 5352,
+            "endChunk": 5395
+        },
+        "language": "Japanese",
+        "memberName": [
+            "V"
+        ],
+        "korean": "心惹かれて",
+        "romanization": "kokoro hikarete",
+        "english": "Captivates my heart",
+        "startChunk": 5341,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "afbc0f74-0bb9-4e37-9167-5d7e1ff403f0",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 5387,
+            "endChunk": 5534
+        },
+        "language": "English",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold",
+        "startChunk": 5376,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "002ae738-e1f1-46dc-b361-73d5469bf883",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 5538,
+            "endChunk": 5598
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "手に入れたくて",
+        "romanization": "te ni iretakute",
+        "english": "I want to have you",
+        "startChunk": 5527,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "311e593d-6b1d-473c-be02-e78e62257088",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 5610,
+            "endChunk": 5654
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "覗き見する Moon Light",
+        "romanization": "nozokimi suru Moon Light",
+        "english": "The moonlight that’s peeking through",
+        "startChunk": 5599,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "4b6f4764-b6ba-43df-86b1-4a212b21a738",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 5654,
+            "endChunk": 5703
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "今宵眠らせない",
+        "romanization": "koyoi nemura se nai",
+        "english": "Is not letting me sleep tonight",
+        "startChunk": 5643,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "0a9622b2-f9ba-48d0-96f2-aeb7aa7a288a",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 5705,
+            "endChunk": 5818
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "握りしめたその手を\n離したくはないよ",
+        "romanization": "nigirishime ta sono te o\nhanashi taku wa nai yo",
+        "english": "Your hand that I’m grasping tightly\nI don’t want to let it go",
+        "startChunk": 5694,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "d1f53d39-ed23-416a-91b6-06c23674ca84",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 5854,
+            "endChunk": 5899
+        },
+        "language": "English",
+        "memberName": [
+            "Jungkook",
+            "Jimin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Stay Gold\nOoh yeah yeah",
+        "startChunk": 5843,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    }
+]

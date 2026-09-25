@@ -1,0 +1,217 @@
+[
+    {
+        "surface": "美しい",
+        "reading": "うつくしい",
+        "lemma": "美しい",
+        "lemmaReading": "うつくしい",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "adjective (keiyoushi)"
+            ],
+            "gloss": [
+                "beautiful",
+                "pretty",
+                "lovely",
+                "sweet",
+                "pure (heart, friendship, etc.)"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "美",
+            "pinyin": "mei3"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Mina: 美しいはずその時に\n体と心一緒に"
+    },
+    {
+        "surface": "時",
+        "reading": "とき",
+        "lemma": "時",
+        "lemmaReading": "とき",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "time",
+                "hour",
+                "moment"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "時",
+            "pinyin": "shi2"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Mina: 美しいはずその時に\n体と心一緒に"
+    },
+    {
+        "surface": "体",
+        "reading": "からだ",
+        "lemma": "体",
+        "lemmaReading": "からだ",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "body"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "體",
+            "pinyin": "ti1"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Mina: 美しいはずその時に\n体と心一緒に"
+    },
+    {
+        "surface": "心",
+        "reading": "しん",
+        "lemma": "心",
+        "lemmaReading": "しん",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "心",
+            "pinyin": "xin1",
+            "gloss": [
+                "heart",
+                "mind",
+                "intention",
+                "center",
+                "core",
+                "CL:顆|颗[ke1],個|个[ge4]"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "heart",
+                "mind",
+                "spirit",
+                "vitality",
+                "inner strength"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "心",
+            "pinyin": "xin1"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Mina: 美しいはずその時に\n体と心一緒に"
+    },
+    {
+        "surface": "一緒",
+        "reading": "いっしょ",
+        "lemma": "一緒",
+        "lemmaReading": "いっしょ",
+        "category": "jukujigo",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "(doing) together"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "一緖",
+            "pinyin": "yi1 xu4"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Mina: 美しいはずその時に\n体と心一緒に"
+    },
+    {
+        "surface": "来る",
+        "reading": "くる",
+        "lemma": "来る",
+        "lemmaReading": "くる",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Kuru verb - special class",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to come (spatially or temporally)",
+                "to approach",
+                "to arrive"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "來",
+            "pinyin": "lai2"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Momo: 来るわ Yes, it’ll be\nRopeを片付ける日"
+    },
+    {
+        "surface": "片付ける",
+        "reading": "かたずける",
+        "lemma": "片付ける",
+        "lemmaReading": "かたづける",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Ichidan verb",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to put in order",
+                "to tidy up",
+                "to clean up",
+                "to put away",
+                "to clear away"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "片付",
+            "pinyin": "pian1 fu4"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Momo: 来るわ Yes, it’ll be\nRopeを片付ける日"
+    },
+    {
+        "surface": "日",
+        "reading": "ひ",
+        "lemma": "日",
+        "lemmaReading": "ひ",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "day",
+                "days"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "日",
+            "pinyin": "ri4"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Momo: 来るわ Yes, it’ll be\nRopeを片付ける日"
+    }
+]

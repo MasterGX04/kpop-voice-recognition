@@ -1,6 +1,6 @@
 [
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Sana"
         ],
@@ -10,10 +10,12 @@
         "startChunk": 332,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "d78083a5-2421-442f-8f28-e75b776c24a1",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Mina"
         ],
@@ -23,10 +25,12 @@
         "startChunk": 650,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "0eb04493-1854-4273-a9ec-044f0470ff48",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Momo"
         ],
@@ -36,10 +40,12 @@
         "startChunk": 977,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "1e5d823e-cac6-495c-82cd-80ddc13711d9",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Sana"
         ],
@@ -49,7 +55,9 @@
         "startChunk": 1137,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "7dd58b2e-cabe-473d-b212-e9bebc31912c",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -62,7 +70,9 @@
         "startChunk": 1255,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "d30c7290-b167-42cc-a5d0-912c906568f9",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -75,7 +85,9 @@
         "startChunk": 1282,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "8be2b595-bb3c-4c22-9d65-35b6df2a57c1",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -88,7 +100,9 @@
         "startChunk": 1307,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "cdfb5ae1-b132-4040-89b4-414fee3a96fa",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -101,10 +115,12 @@
         "startChunk": 1387,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "50b29aba-8834-4584-a849-7f5767e2649f",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Sana"
         ],
@@ -114,10 +130,12 @@
         "startChunk": 1442,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "44e801a7-1012-4db3-94a6-8c7be2d569dd",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Momo"
         ],
@@ -127,7 +145,9 @@
         "startChunk": 1468,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "c14ed540-8585-4274-8467-58cc13dde0f7",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -140,7 +160,9 @@
         "startChunk": 1522,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "34542081-580a-4dc3-86a5-cb422bd6fb08",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -153,7 +175,9 @@
         "startChunk": 1605,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "cc2f0e87-cf09-4935-a4fa-a2756c2b47b5",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -166,10 +190,12 @@
         "startChunk": 1741,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "6c25e617-bfe1-4dea-84d6-62bb6f62929a",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Sana"
         ],
@@ -179,10 +205,14 @@
         "startChunk": 1761,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "c05e2664-eccc-46d7-ac5f-bf3b40e280c5",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "lyricId": "5bb0561d-0514-4fc6-92dc-43b74eecedcd",
+        "linkedLabel": null,
+        "language": "Japanese",
         "memberName": [
             "Momo"
         ],
@@ -190,8 +220,8 @@
         "romanization": "toki",
         "english": "time",
         "startChunk": 1787,
-        "isAdLib": false,
-        "adLibDuration": 0,
+        "isAdLib": true,
+        "adLibDuration": 50,
         "anchorMode": "startChunk"
     },
     {
@@ -205,15 +235,19 @@
         "startChunk": 1842,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "ff22417e-002b-4c38-b59b-d4bb500a666b",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "lyricId": "950e4325-0023-4675-b49c-480c1dcf7203",
+        "linkedLabel": null,
+        "language": "Japanese",
         "memberName": [
             "Sana"
         ],
         "korean": "まずは想いを \nLips より言葉を\n同じ想いならば",
-        "romanization": "masu wa omoi wo\nLip yori kotoba wo\nonaji omoi naraba",
+        "romanization": "mazu wa omoi wo\nLip yori kotoba wo\nonaji omoi naraba",
         "english": "Show me how you feel\nWords more than lips\nIf we feel the same",
         "startChunk": 1932,
         "isAdLib": false,
@@ -231,7 +265,9 @@
         "startChunk": 1970,
         "isAdLib": true,
         "adLibDuration": 75,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "082f973e-4c73-4d84-b657-f143037e6976",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -244,7 +280,9 @@
         "startChunk": 2051,
         "isAdLib": true,
         "adLibDuration": 75,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "be45e77f-10f7-421c-b868-d8e396ff9b7b",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -257,7 +295,9 @@
         "startChunk": 2168,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "dfa1efb5-9141-4b5a-bc6d-ee05aa3fbe47",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -270,7 +310,9 @@
         "startChunk": 2187,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "6851da96-d644-486e-ad46-668c323be6ff",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -283,10 +325,12 @@
         "startChunk": 2236,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "d4641d4c-0319-4e4c-972d-9f52e2575643",
+        "linkedLabel": null
     },
     {
-        "language": "Korean",
+        "language": "Japanese",
         "memberName": [
             "Momo"
         ],
@@ -296,7 +340,9 @@
         "startChunk": 2257,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "351f401c-0e68-4254-b7fd-57365c8c7183",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -309,7 +355,9 @@
         "startChunk": 2406,
         "isAdLib": true,
         "adLibDuration": 50,
-        "anchorMode": "startChunk"
+        "anchorMode": "startChunk",
+        "lyricId": "dd5a2a5d-27b0-4d1d-ba44-d38084b8f17b",
+        "linkedLabel": null
     },
     {
         "language": "English",
@@ -322,6 +370,274 @@
         "startChunk": 2415,
         "isAdLib": true,
         "adLibDuration": 70,
+        "anchorMode": "startChunk",
+        "lyricId": "007fac9b-4bbe-4020-8d51-076c72794d22",
+        "linkedLabel": null
+    },
+    {
+        "lyricId": "8b62ec67-6a14-4cc0-b23d-3bac5b054ae5",
+        "linkedLabel": {
+            "member": "Mina",
+            "startChunk": 2441,
+            "endChunk": 2469
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "ゴールは遠くない\n見え出したじゃない",
+        "romanization": "gouru wa touku nai\nmie dashi ta ja nai",
+        "english": "The goal is not that far\nYou can almost see it",
+        "startChunk": 2430,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "655b0a16-5653-4d95-83e4-ae3dbeb89de5",
+        "linkedLabel": {
+            "member": "Momo",
+            "startChunk": 2466,
+            "endChunk": 2489
+        },
+        "language": "English",
+        "memberName": [
+            "Momo"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Loom",
+        "startChunk": 2455,
+        "isAdLib": true,
+        "adLibDuration": 50,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "09779824-2dcc-4d96-a679-6aff95254e24",
+        "linkedLabel": {
+            "member": "Momo",
+            "startChunk": 2505,
+            "endChunk": 2540
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Momo"
+        ],
+        "korean": "悪いけどその瞬間が来るその時までは",
+        "romanization": "warui kedo sono shunkan ga kuru sono toki made wa",
+        "english": "I’m sorry but until that moment arrives",
+        "startChunk": 2494,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "d0607100-bebf-4066-80a5-9db798d2440b",
+        "linkedLabel": {
+            "member": "Sana",
+            "startChunk": 2574,
+            "endChunk": 2604
+        },
+        "language": "English",
+        "memberName": [
+            "Sana"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Yes, you can watch me (If if you love me)\nBut you can‘t touch me (If if you love me)",
+        "startChunk": 2563,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "214f9e5f-6a3e-49f6-8502-f2a95d6962b1",
+        "linkedLabel": {
+            "member": "Mina",
+            "startChunk": 2733,
+            "endChunk": 2762
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "心の準備ととのう前は",
+        "romanization": "kokoro junbi totonou mae wa",
+        "english": "Until I feel ready",
+        "startChunk": 2722,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "dd54d359-6127-46db-a362-4d8754b178fc",
+        "linkedLabel": {
+            "member": "Momo",
+            "startChunk": 2813,
+            "endChunk": 2853
+        },
+        "language": "English",
+        "memberName": [
+            "Momo"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Yes, you can watch me watch me\nBut you can’t touch me touch me",
+        "startChunk": 2802,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "e9267c8e-b5a7-4ba2-906b-0f320e9c9d26",
+        "linkedLabel": {
+            "member": "Sana",
+            "startChunk": 2897,
+            "endChunk": 2964
+        },
+        "language": "English",
+        "memberName": [
+            "Sana"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "When I say it’s okay",
+        "startChunk": 2886,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "e105d716-2899-4c28-b973-64c5cd62defc",
+        "linkedLabel": {
+            "member": "Mina",
+            "startChunk": 3053,
+            "endChunk": 3082
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "運命の時までは Sorry but",
+        "romanization": "unmei no toki made wa Sorry but",
+        "english": "Until the time is right, Sorry but",
+        "startChunk": 3042,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "8448959e-ebfd-43dd-a420-9bb2006cc6fe",
+        "linkedLabel": {
+            "member": "Momo",
+            "startChunk": 3133,
+            "endChunk": 3171
+        },
+        "language": "English",
+        "memberName": [
+            "Momo"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Yes, you can watch me watch me\nBut you can’t touch me touch me",
+        "startChunk": 3122,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "ab10867d-03ea-4d00-9ee4-ed751d8a450d",
+        "linkedLabel": {
+            "member": "Mina",
+            "startChunk": 3221,
+            "endChunk": 3305
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "美しいはずその時に\n体と心一緒に",
+        "romanization": "utsukushii hazu sono toki ni\nkarada to shin issho ni",
+        "english": "The moment will be so beautiful\nWe’ll be together body and soul",
+        "startChunk": 3210,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "968b4100-6320-4bb4-abe8-0f23c1415adb",
+        "linkedLabel": {
+            "member": "Sana",
+            "startChunk": 3378,
+            "endChunk": 3451
+        },
+        "language": "English",
+        "memberName": [
+            "Sana"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "When we’re ready to go steady",
+        "startChunk": 3367,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "59c5a3cd-82d7-4d93-8278-8f38a0f6512e",
+        "linkedLabel": {
+            "member": "Mina",
+            "startChunk": 3527,
+            "endChunk": 3605
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "だんだんと消える Questions　遠くに\nGone gone　いらなくなる理由すぐに",
+        "romanization": "dandan to kieru Questions tooku ni\nGone gone ira naku naru riyuu sugu ni",
+        "english": "The questions will slowly disappear into the distance\nGone, gone, we won’t need anymore reason",
+        "startChunk": 3516,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "0e3dd797-be05-4ad3-9225-14a2e231b1eb",
+        "linkedLabel": {
+            "member": "Momo",
+            "startChunk": 3687,
+            "endChunk": 3731
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Momo"
+        ],
+        "korean": "来るわ Yes, it’ll be\nRopeを片付ける日",
+        "romanization": "kuru wa Yes, it’ ll be\nRope o katazukeru hi",
+        "english": "It will come, yes, it will\nThe day we’ll get rid of the rope barrier",
+        "startChunk": 3676,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "1702a823-ecce-43eb-ba35-01673a22b032",
+        "linkedLabel": {
+            "member": "Momo",
+            "startChunk": 3773,
+            "endChunk": 3822
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Momo"
+        ],
+        "korean": "That’s when I touch you, you touch me\nだから、Wait for it",
+        "romanization": "That’ s when I touch you, you touch me\ndakara, Wait for it",
+        "english": "That’s when I touch you, you touch me\nSo, wait for it",
+        "startChunk": 3762,
+        "isAdLib": false,
+        "adLibDuration": 0,
         "anchorMode": "startChunk"
     }
 ]

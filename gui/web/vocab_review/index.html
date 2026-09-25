@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Vocab Review</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="error-banner" class="error-banner" hidden></div>
+
+  <div class="controls">
+    <div class="control-group">
+      <span class="control-label">Language:</span>
+      <label><input type="radio" name="language" value="Japanese" checked> Japanese</label>
+      <label><input type="radio" name="language" value="Korean"> Korean</label>
+    </div>
+    <div class="control-group">
+      <span class="control-label">Track:</span>
+      <label><input type="radio" name="track" value="reading" checked> Reading</label>
+      <label><input type="radio" name="track" value="meaning"> Meaning</label>
+    </div>
+  </div>
+
+  <div class="filters">
+    <label><input type="checkbox" id="showAll"> Show all words (ignore due date)</label>
+    <label><input type="checkbox" id="missingMeaningOnly"> Only missing meaning</label>
+    <label id="ambiguousFilterRow" class="korean-only">
+      <input type="checkbox" id="ambiguousOnly"> Only ambiguous Hanja (2+)
+    </label>
+    <label><input type="checkbox" id="shuffleOrder"> Shuffle order</label>
+  </div>
+
+  <div class="nav">
+    <button id="prevBtn">&#9664; Prev</button>
+    <span id="positionLabel"></span>
+    <button id="nextBtn">Next &#9654;</button>
+    <button id="randomCardBtn">&#127922; Random Card</button>
+  </div>
+
+  <div id="prompt" class="prompt"></div>
+  <div id="warning" class="warning"></div>
+  <div id="answerBody" class="answer-body"></div>
+  <div id="occurrenceRow" class="occurrence-row" hidden>
+    <button id="playAudioBtn">&#9654; Play line</button>
+    <span id="occurrenceLine"></span>
+  </div>
+
+  <div id="hanjaPicker" class="hanja-picker"></div>
+
+  <div class="actions">
+    <button id="editMeaningBtn">Edit Meaning</button>
+    <button id="deleteBtn">Delete Word</button>
+    <button id="reloadBtn">Reload</button>
+  </div>
+
+  <div class="rating-row">
+    <button class="rate-btn" data-rating="again">Again</button>
+    <button class="rate-btn" data-rating="good">Good</button>
+    <button class="rate-btn" data-rating="easy">Easy</button>
+  </div>
+
+  <dialog id="editMeaningDialog">
+    <label for="editMeaningInput">Gloss (separate multiple senses with ;):</label>
+    <textarea id="editMeaningInput" rows="3"></textarea>
+    <div class="dialog-actions">
+      <button type="button" id="editMeaningCancel">Cancel</button>
+      <button type="button" id="editMeaningSave">Save</button>
+    </div>
+  </dialog>
+
+  <dialog id="deleteConfirmDialog">
+    <p id="deleteConfirmText"></p>
+    <div class="dialog-actions">
+      <button type="button" id="deleteCancel">Cancel</button>
+      <button type="button" id="deleteConfirm">Delete</button>
+    </div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

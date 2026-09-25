@@ -1,0 +1,534 @@
+[
+    {
+        "lyricId": "2d0f9bc1-340d-41e5-a219-32665efac9e8",
+        "linkedLabel": {
+            "member": "Nayeon",
+            "startChunk": 631,
+            "endChunk": 642
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Nayeon"
+        ],
+        "korean": "手を振って\n背を向けた瞬間に\nすぐにさみしさにやられた",
+        "romanization": "te o futte\nse o muke ta shunkan ni\nsugu ni samishi sa ni yara re ta",
+        "english": "The moment I waved\nand turned around\nI was overcome with loneliness",
+        "startChunk": 620,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "b05b5fc4-22f2-4d0a-b68b-31c5037fb8c6",
+        "linkedLabel": {
+            "member": "Sana",
+            "startChunk": 922,
+            "endChunk": 936
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Sana"
+        ],
+        "korean": "恋をしてから\n君に埋め尽くされた Mind\nしあわせと切なさが忙しいな (Na na na na)",
+        "romanization": "koi wo shite kara\nkimi ni umetsuku sarata Mind\nshiawase to setsunasa ga isogashii na (Na na na na)",
+        "english": "Since falling in love\nyou have occupied my mind you have occupied my mind\nOverloaded with happiness and torment (na na na)",
+        "startChunk": 911,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "2e5609e9-83f5-41a6-ba26-847165aaca54",
+        "linkedLabel": {
+            "member": "Dahyun",
+            "startChunk": 1270,
+            "endChunk": 1330
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Dahyun"
+        ],
+        "korean": "I miss you の文字で繋がりを感じた",
+        "romanization": "I miss you no moji de tsunagari o kanji ta",
+        "english": "“I miss you” are the words that connect us",
+        "startChunk": 1259,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "953c8784-de8a-4422-b7b8-e8929f22ee79",
+        "linkedLabel": {
+            "member": "Jihyo",
+            "startChunk": 1417,
+            "endChunk": 1462
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jihyo"
+        ],
+        "korean": "Ah 柔らかく甘い気分\nふわふわしてる",
+        "romanization": "Ah yawarakaku amai kibun\nfuwafuwa shiteru",
+        "english": "A soft and sweet sensation\nSo fluffy",
+        "startChunk": 1406,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "af2355a0-e039-4c40-8f10-eedd1a5563a1",
+        "linkedLabel": {
+            "member": "Tzuyu",
+            "startChunk": 1582,
+            "endChunk": 1611
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Tzuyu"
+        ],
+        "korean": "心には君形の\n穴が空いてるの",
+        "romanization": "kokoro ni wa kimi gata no\nana ga aiteru no",
+        "english": "My heart has a hole\nin the shape of you",
+        "startChunk": 1571,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "f82d16d0-d761-4591-848b-ac7d93ce155e",
+        "linkedLabel": {
+            "member": "Mina",
+            "startChunk": 1736,
+            "endChunk": 1892
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "Just like a doughnut\n迷い込んだ恋の Loop\n始まりも終わりもない",
+        "romanization": "Just like a doughnut\nmayoikonda koi no Loop\nhajimari mo owari monai",
+        "english": "Just like a doughnut\nI’ve wondered into a love loop\nNo beginning or end",
+        "startChunk": 1725,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "d5f53844-ef47-4224-9f70-e3036ac77022",
+        "linkedLabel": {
+            "member": "Momo",
+            "startChunk": 1987,
+            "endChunk": 2041
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Momo"
+        ],
+        "korean": "二人の Love loop",
+        "romanization": "futari no Love loop",
+        "english": "Our love loop",
+        "startChunk": 1976,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "bcd2ae3c-0317-4aea-8aae-ca28f433f172",
+        "linkedLabel": {
+            "member": "Chaeyoung",
+            "startChunk": 2062,
+            "endChunk": 2116
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Chaeyoung"
+        ],
+        "korean": "二人の Love loop yeah yeah yeah",
+        "romanization": "futari no Love loop yeah yeah yeah",
+        "english": "Our love loop yeah yeah yeah",
+        "startChunk": 2051,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "4b33d248-8a4f-4d93-ae09-f4dc91025796",
+        "linkedLabel": {
+            "member": "Jeongyeon",
+            "startChunk": 2168,
+            "endChunk": 2181
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jeongyeon"
+        ],
+        "korean": "Every single day\n何度も君が浮かんで\nいつの間にか染められてく",
+        "romanization": "Every single day\nnan do mo kimi ga ukande\nitsunomanika somerareteku",
+        "english": "Every single day\nI thought about you many times\nYou’re growing on me",
+        "startChunk": 2157,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "4b5151bb-9132-4d1c-bf6a-650ecc2f07c0",
+        "linkedLabel": {
+            "member": "Tzuyu",
+            "startChunk": 2456,
+            "endChunk": 2473
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Tzuyu"
+        ],
+        "korean": "そばにいなくても\n切れずにリンクしてるね\nMemory の余韻に浸っていたい (I, I, I, I)",
+        "romanization": "soba ni inakute mo\nkirezu ni rinkushiteru ne\nMemory no yoin ni hitatteitai (I, I, I, I)",
+        "english": "Even when we’re not together\nWe stay linked\nI want to immerse myself in the afterglow of our memory",
+        "startChunk": 2445,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "e8976abd-149d-4e01-b2c7-090d002bc974",
+        "linkedLabel": {
+            "member": "Chaeyoung",
+            "startChunk": 2806,
+            "endChunk": 2867
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Chaeyoung"
+        ],
+        "korean": "もう後戻りはする気はないから",
+        "romanization": "mou atomodori wa suru ki wa nai kara",
+        "english": "I have no intention of going back",
+        "startChunk": 2795,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "ec5196f6-5f34-43fc-9cc1-5c1dbb73865d",
+        "linkedLabel": {
+            "member": "Jeongyeon",
+            "startChunk": 2953,
+            "endChunk": 3001
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jeongyeon"
+        ],
+        "korean": "Ah 柔らかく甘い気分\nふわふわしてる",
+        "romanization": "Ah yawarakaku amai kibun\nfuwafuwa shiteru",
+        "english": "A soft and sweet sensation\nSo fluffy",
+        "startChunk": 2942,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "687c2281-9db5-4b14-a5c9-7fa764415bb5",
+        "linkedLabel": {
+            "member": "Sana",
+            "startChunk": 3119,
+            "endChunk": 3149
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Sana"
+        ],
+        "korean": "心には君形の\n穴が空いてるの",
+        "romanization": "kokoro ni wa kimi gata no\nana ga aiteru no",
+        "english": "My heart has a hole\nin the shape of you",
+        "startChunk": 3108,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "a007d032-03ba-4a94-aec1-521583d8b22f",
+        "linkedLabel": {
+            "member": "Jihyo",
+            "startChunk": 3273,
+            "endChunk": 3429
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jihyo"
+        ],
+        "korean": "Just like a doughnut\n迷い込んだ恋の Loop\n始まりも終わりもない",
+        "romanization": "Just like a doughnut\nmayoikonda koi no Loop\nhajimari mo owari monai",
+        "english": "Just like a doughnut\nI’ve wondered into a love loop\nNo beginning or end",
+        "startChunk": 3262,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "278260e2-9678-466f-bd3d-2f391f6dd9c4",
+        "linkedLabel": {
+            "member": "Momo",
+            "startChunk": 3526,
+            "endChunk": 3578
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Momo"
+        ],
+        "korean": "二人の Love loop",
+        "romanization": "futari no Love loop",
+        "english": "Our love loop",
+        "startChunk": 3515,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "4bea4379-91bf-4172-b424-7f788cc63bed",
+        "linkedLabel": {
+            "member": "Chaeyoung",
+            "startChunk": 3595,
+            "endChunk": 3653
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Chaeyoung"
+        ],
+        "korean": "二人の Love loop yeah yeah yeah",
+        "romanization": "futari no Love loop yeah yeah yeah",
+        "english": "Our love loop yeah yeah yeah",
+        "startChunk": 3584,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "a4fbf0e9-cbad-4bf5-988f-93a04413472c",
+        "linkedLabel": {
+            "member": "Dahyun",
+            "startChunk": 3711,
+            "endChunk": 3726
+        },
+        "language": "English",
+        "memberName": [
+            "Dahyun"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "So deep, so empty, I need thee\nSo deep, so empty, I need thee",
+        "startChunk": 3700,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "c32ff0ed-59fd-4ad6-b987-f2d74872f60e",
+        "linkedLabel": {
+            "member": "Mina",
+            "startChunk": 4022,
+            "endChunk": 4087
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "クルクル巡る Feeling\n君を好きになって",
+        "romanization": "kurukuru meguru Feeling\nkimi wo suki ni natte",
+        "english": "Rotating feeling\nFalling in love with you",
+        "startChunk": 4011,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "2d0f2819-eb1a-4579-b80a-8a1da01dddf6",
+        "linkedLabel": {
+            "member": "Chaeyoung",
+            "startChunk": 4169,
+            "endChunk": 4279
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Chaeyoung"
+        ],
+        "korean": "君のカタチの穴が空いたみたい",
+        "romanization": "kimi no katachi no ana ga aita mitai",
+        "english": "I think there’s a hole in the shape of you",
+        "startChunk": 4158,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "7e3b9ee0-a6e2-4129-b354-46fb59215530",
+        "linkedLabel": {
+            "member": "Jihyo",
+            "startChunk": 4289,
+            "endChunk": 4412
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jihyo"
+        ],
+        "korean": "ハートの真ん中は",
+        "romanization": "haato no mannaka wa",
+        "english": "In the middle of my heart",
+        "startChunk": 4278,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "9e17d66b-282a-4434-a14c-e82acb7730a4",
+        "linkedLabel": {
+            "member": "Dahyun",
+            "startChunk": 4518,
+            "endChunk": 4531
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Dahyun"
+        ],
+        "korean": "君だけの Space",
+        "romanization": "kimi dake no Space",
+        "english": "A space just for you",
+        "startChunk": 4507,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "b5f09e21-6131-402a-9335-b58d11c993da",
+        "linkedLabel": {
+            "member": "Sana",
+            "startChunk": 4564,
+            "endChunk": 4612
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Sana"
+        ],
+        "korean": "Ah 好きなんだ 好きなのよ\nありきたりでも",
+        "romanization": "Ah suki nan da suki na no yo\nari ki tari demo",
+        "english": "I love you, I love you\nThis may sound like a cliche",
+        "startChunk": 4553,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "7ccbc2f9-7904-48e4-971b-6506b730cd79",
+        "linkedLabel": {
+            "member": "Momo",
+            "startChunk": 4729,
+            "endChunk": 4757
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Momo"
+        ],
+        "korean": "心には君形の\n穴が空いてるの",
+        "romanization": "kokoro ni wa kimi gata no\nana ga aiteru no",
+        "english": "My heart has a hole\nin the shape of you",
+        "startChunk": 4718,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "cba2fbcc-d949-4302-9336-f3042076279d",
+        "linkedLabel": {
+            "member": "Mina",
+            "startChunk": 4883,
+            "endChunk": 5034
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Mina"
+        ],
+        "korean": "Just like a doughnut\n味わっていたい永遠の Loop\nきっと世界でひとつ",
+        "romanization": "Just like a doughnut\najiwatteitai eien no Loop\nkitto sekai de hitotsu",
+        "english": "Just like a doughnut\nWant to taste this infinite loop\nI bet it’s the only one in the world",
+        "startChunk": 4872,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "e734924e-07be-4a3a-835f-e1339e574e27",
+        "linkedLabel": {
+            "member": "Dahyun",
+            "startChunk": 5104,
+            "endChunk": 5162
+        },
+        "language": "English",
+        "memberName": [
+            "Dahyun"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "There is a place for ya",
+        "startChunk": 5093,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "b02dad9c-8b97-4742-a2e2-32d344bca724",
+        "linkedLabel": {
+            "member": "Jihyo",
+            "startChunk": 5149,
+            "endChunk": 5196
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jihyo"
+        ],
+        "korean": "Ah 柔らかく甘い気分\nふわふわしてる",
+        "romanization": "Ah yawarakaku amai kibun\nfuwafuwa shiteru",
+        "english": "A soft and sweet sensation\nSo fluffy",
+        "startChunk": 5138,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "6c3e2954-f543-4e17-a12d-b26d00d84cde",
+        "linkedLabel": {
+            "member": "Tzuyu",
+            "startChunk": 5314,
+            "endChunk": 5343
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Tzuyu"
+        ],
+        "korean": "心には君形の\n穴が空いてるの",
+        "romanization": "kokoro ni wa kimi gata no\nana ga aiteru no",
+        "english": "My heart has a hole\nin the shape of you",
+        "startChunk": 5303,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "b180fd1b-173f-4153-9e9c-2232347463fa",
+        "linkedLabel": {
+            "member": "Nayeon",
+            "startChunk": 5470,
+            "endChunk": 5622
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Nayeon"
+        ],
+        "korean": "Just like a doughnut\n迷い込んだ恋の Loop\nきっと世界でひとつ",
+        "romanization": "Just like a doughnut\nmayoikonda koi no Loop\nkitto sekai de hitotsu",
+        "english": "Just like a doughnut\nI’ve wondered into a love loop\nI bet it’s the only one in the world",
+        "startChunk": 5459,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    }
+]

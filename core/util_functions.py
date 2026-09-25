@@ -1,9 +1,20 @@
 import subprocess
 import json
 import os, sys
+import hashlib
 from pathlib import Path
 import re
 from dataclasses import dataclass
+from pydub import AudioSegment
+
+# Single source of truth for the audio-chunk grain used across Audio Tester (gui/audio_tester.py's
+# VoiceDetectionApp.chunk_duration) and the vocab review Api (gui/vocab_review_api.py) - was
+# previously two separate hardcoded `40`s. See .claude/FLASHCARD_WEB_UPGRADE_PLAN.md Milestone 2.
+CHUNK_DURATION_MS = 40
+
+
+def chunkToMs(chunk: int) -> int:
+    return chunk * CHUNK_DURATION_MS
 
 def hexToRgb01(hexColor: str):
     hexColor = hexColor.strip().lstrip("#")
@@ -297,6 +308,50 @@ def pickBestAudioForStem(songDir: str, stem: str):
             bestSize = size
 
     return bestPath
+
+# Point pydub at the bundled ffmpeg/ffprobe (not whatever's on PATH) so ensureAudioForPlayback()
+# behaves the same in a frozen build as it did when this setup lived only in gui/audio_tester.py.
+AudioSegment.converter = resourcePath("ffmpeg.exe")
+AudioSegment.ffmpeg = resourcePath("ffmpeg.exe")
+AudioSegment.ffprobe = resourcePath("ffprobe.exe")
+
+def cacheKeyForPath(path: str) -> str:
+    # key changes if the file changes (mtime + size)
+    st = os.stat(path)
+    s = f"{os.path.abspath(path)}|{st.st_mtime_ns}|{st.st_size}"
+    return hashlib.sha1(s.encode("utf-8")).hexdigest()
+
+def ensureAudioForPlayback(path: str, cacheDir: str = "cache_audio", targetSr: int = 22050):
+    """
+    Returns a cached path that is resampled to targetSr and stored as mp3 for size.
+    """
+    os.makedirs(cacheDir, exist_ok=True)
+    key = cacheKeyForPath(path)
+    outPath = os.path.join(cacheDir, f"{key}_sr{targetSr}.mp3")
+
+    if os.path.exists(outPath):
+        return outPath, False
+
+    audio = AudioSegment.from_file(path)  # wav/mp3/etc
+    audio = audio.set_frame_rate(targetSr)
+    # optional: force mono for smaller file + consistent timing
+    audio.export(outPath, format="mp3")
+    return outPath, True
+
+def findLabelIndexBySpan(labels, startChunk, endChunk, member=None, excludeIndices=None):
+    """
+    Resolve a label's current index by matching its (member, startChunk, endChunk) span.
+    Labels have no stable id, so this span match is the only way to re-find a label
+    across edits/undo/re-sorts that shuffle list position.
+    """
+    excludeIndices = excludeIndices or set()
+    for j, lab in enumerate(labels):
+        if j in excludeIndices:
+            continue
+        if len(lab) >= 3 and lab[1] == startChunk and lab[2] == endChunk:
+            if member is None or lab[0] == member:
+                return j
+    return None
 
 class ModalGuard:
     _open_modals = set()

@@ -413,7 +413,8 @@
                 "albumArtUrl": "https://static.wikia.nocookie.net/kpop/images/6/69/FIFTY_FIFTY_Imperfect-I%27mperfect_digital_album_cover.png",
                 "songs": [
                     "Genie Magic",
-                    "Starstruck"
+                    "Starstruck",
+                    "Like A Bubble"
                 ]
             }
         },
@@ -426,7 +427,8 @@
             "Push Your Love": "love_tune",
             "Wish You Were Here": "too_much_pt__1",
             "Genie Magic": "imperfect_i_mperfect",
-            "Starstruck": "imperfect_i_mperfect"
+            "Starstruck": "imperfect_i_mperfect",
+            "Like A Bubble": "imperfect_i_mperfect"
         },
         "defaultAlbumId": "love_tune"
     },
@@ -634,6 +636,14 @@
                     "Marshmallow",
                     "Do Not Touch"
                 ]
+            },
+            "doughnut": {
+                "displayName": "Doughnut",
+                "albumArtCachePath": "member_images\\TWICE\\_album_art\\doughnut.png",
+                "albumArtUrl": "https://static.wikia.nocookie.net/kpop/images/e/ed/TWICE_Doughnut_Limited_Edition_B_album_cover.png",
+                "songs": [
+                    "Doughnut"
+                ]
             }
         },
         "songToAlbum": {
@@ -648,7 +658,8 @@
             "Funny Valentine": "masterpiece",
             "Marshmallow": "masterpiece",
             "UP NO MORE": "eyes_wide_open",
-            "Do Not Touch": "masterpiece"
+            "Do Not Touch": "masterpiece",
+            "Doughnut": "doughnut"
         },
         "defaultAlbumId": "fancy_you"
     },
@@ -959,7 +970,11 @@
             }
         ],
         "songToAlbum": {
-            "Dreams Come True": "dream_your_dream"
+            "Dreams Come True": "dream_your_dream",
+            "가면무도회 (Masquerade)": "wj_please",
+            "부탁해(Save Me, Save You)": "wj_please",
+            "Pantomime": "neverland",
+            "Butterfly": "neverland"
         },
         "defaultAlbumId": "dream_your_dream",
         "albums": {
@@ -969,6 +984,24 @@
                 "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/c/c0/Dream_Your_Dream_album_cover.jpg",
                 "songs": [
                     "Dreams Come True"
+                ]
+            },
+            "wj_please": {
+                "displayName": "WJ Please",
+                "albumArtCachePath": "member_images\\WJSN\\_album_art\\wj_please.png",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/4/41/WJSN_-_WJ_Please%3F.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
+                "songs": [
+                    "가면무도회 (Masquerade)",
+                    "부탁해(Save Me, Save You)"
+                ]
+            },
+            "neverland": {
+                "displayName": "Neverland",
+                "albumArtCachePath": "member_images\\WJSN\\_album_art\\neverland.png",
+                "albumArtUrl": "https://upload.wikimedia.org/wikipedia/en/d/d2/Cosmic_Girls_-_Neverland.png",
+                "songs": [
+                    "Pantomime",
+                    "Butterfly"
                 ]
             }
         }

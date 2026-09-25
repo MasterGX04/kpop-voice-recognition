@@ -1,0 +1,1159 @@
+[
+    {
+        "surface": "魅惑",
+        "reading": "みわく",
+        "lemma": "魅惑",
+        "lemmaReading": "みわく",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "魅惑",
+            "pinyin": "mei4 huo4",
+            "gloss": [
+                "to bewitch; to captivate"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)",
+                "noun or participle which takes the aux. verb suru",
+                "transitive verb"
+            ],
+            "gloss": [
+                "fascination",
+                "captivation",
+                "charm",
+                "lure",
+                "allurement"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "魅惑",
+            "pinyin": "mei4 huo4"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Suga: 魅惑的な Moon Light\n今宵も眠らない\n月明かりを頼りに\n君の元へ Hide and Seek"
+    },
+    {
+        "surface": "的",
+        "reading": "てき",
+        "lemma": "的",
+        "lemmaReading": "てき",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "的",
+            "pinyin": "de5",
+            "gloss": [
+                "of; ~'s (possessive particle)",
+                "(used after an attribute when it modifies a noun)",
+                "(used at the end of a declarative sentence for emphasis)",
+                "(used after a noun, verb or adjective to form a nominal expression, as in 皮革的[pi2 ge2 de5] \"one made of leather\" or 跑堂兒的|跑堂儿的[pao3 tang2 r5 de5] \"a waiter (literally, one who runs back and forth in a restaurant)\" or 新的[xin1 de5] \"new one\")",
+                "also pr. [di4] or [di5] in poetry and songs"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "suffix",
+                "adjectival nouns or quasi-adjectives (keiyodoshi)"
+            ],
+            "gloss": [
+                "-ical",
+                "-ive",
+                "-al",
+                "-ic",
+                "-y"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "的",
+            "pinyin": "de5"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Suga: 魅惑的な Moon Light\n今宵も眠らない\n月明かりを頼りに\n君の元へ Hide and Seek"
+    },
+    {
+        "surface": "今宵",
+        "reading": "こよい",
+        "lemma": "今宵",
+        "lemmaReading": "こよい",
+        "category": "jukujigo",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)",
+                "adverb (fukushi)"
+            ],
+            "gloss": [
+                "this evening",
+                "tonight"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "今宵",
+            "pinyin": "jin1 xiao1"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Jimin: 今宵眠らせない"
+    },
+    {
+        "surface": "眠ら",
+        "reading": "ねむら",
+        "lemma": "眠る",
+        "lemmaReading": "ねむる",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'ru' ending",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to sleep"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "眠",
+            "pinyin": "mian2"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Jimin: 今宵眠らせない"
+    },
+    {
+        "surface": "月明かり",
+        "reading": "つきあかり",
+        "lemma": "月明かり",
+        "lemmaReading": "つきあかり",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "moonlight"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "月明",
+            "pinyin": "yue4 ming2"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Suga: 魅惑的な Moon Light\n今宵も眠らない\n月明かりを頼りに\n君の元へ Hide and Seek"
+    },
+    {
+        "surface": "頼り",
+        "reading": "たより",
+        "lemma": "頼り",
+        "lemmaReading": "たより",
+        "category": "jukujigo",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "reliance",
+                "dependence"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "賴",
+            "pinyin": "lai4"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Suga: 魅惑的な Moon Light\n今宵も眠らない\n月明かりを頼りに\n君の元へ Hide and Seek"
+    },
+    {
+        "surface": "君",
+        "reading": "きみ",
+        "lemma": "君",
+        "lemmaReading": "きみ",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "pronoun"
+            ],
+            "gloss": [
+                "you",
+                "buddy",
+                "pal"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "君",
+            "pinyin": "jun1"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "RM: 何度も見惚れてしまうほど\n君から目離せない No more"
+    },
+    {
+        "surface": "元",
+        "reading": "もと",
+        "lemma": "元",
+        "lemmaReading": "もと",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "origin",
+                "source",
+                "beginning"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "元",
+            "pinyin": "yuan2"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Suga: 魅惑的な Moon Light\n今宵も眠らない\n月明かりを頼りに\n君の元へ Hide and Seek"
+    },
+    {
+        "surface": "穢れ",
+        "reading": "けがれ",
+        "lemma": "汚れ",
+        "lemmaReading": "けがれ",
+        "category": "jukujigo",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "uncleanness",
+                "impurity",
+                "defilement"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "汚",
+            "pinyin": "wu1"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "RM: 穢れを知らないな\nその瞳はダイヤ\nどんな宝石よりも Beautiful"
+    },
+    {
+        "surface": "知ら",
+        "reading": "しら",
+        "lemma": "知る",
+        "lemmaReading": "しる",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'ru' ending",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to know",
+                "to be aware (of)",
+                "to be conscious (of)",
+                "to learn (of)",
+                "to find out",
+                "to discover"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "知",
+            "pinyin": "zhi1"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "RM: 穢れを知らないな\nその瞳はダイヤ\nどんな宝石よりも Beautiful"
+    },
+    {
+        "surface": "瞳",
+        "reading": "ひとみ",
+        "lemma": "瞳",
+        "lemmaReading": "ひとみ",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "pupil (of the eye)"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "瞳",
+            "pinyin": "tong2"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "RM: 穢れを知らないな\nその瞳はダイヤ\nどんな宝石よりも Beautiful"
+    },
+    {
+        "surface": "宝石",
+        "reading": "ほうせき",
+        "lemma": "宝石",
+        "lemmaReading": "ほうせき",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "寶石",
+            "pinyin": "bao3 shi2",
+            "gloss": [
+                "precious stone; gem",
+                "CL:枚[mei2],顆|颗[ke1]"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "gem",
+                "jewel",
+                "precious stone"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "寶石",
+            "pinyin": "bao3 shi2"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "RM: 穢れを知らないな\nその瞳はダイヤ\nどんな宝石よりも Beautiful"
+    },
+    {
+        "surface": "何",
+        "reading": "なん",
+        "lemma": "何",
+        "lemmaReading": "なん",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "pronoun"
+            ],
+            "gloss": [
+                "what"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "何",
+            "pinyin": "he2"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "RM: 何度も見惚れてしまうほど\n君から目離せない No more"
+    },
+    {
+        "surface": "度",
+        "reading": "ど",
+        "lemma": "度",
+        "lemmaReading": "ど",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "度",
+            "pinyin": "du4",
+            "gloss": [
+                "to pass",
+                "to spend (time)",
+                "measure",
+                "limit",
+                "extent",
+                "degree of intensity",
+                "degree (angles, temperature etc)",
+                "kilowatt-hour",
+                "classifier for events and occurrences"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)",
+                "noun, used as a suffix"
+            ],
+            "gloss": [
+                "degree (angle, temperature, scale, etc.)"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "度",
+            "pinyin": "du4"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "RM: 何度も見惚れてしまうほど\n君から目離せない No more"
+    },
+    {
+        "surface": "見惚れ",
+        "reading": "みとれ",
+        "lemma": "見惚れる",
+        "lemmaReading": "みとれる",
+        "category": "jukujigo",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Ichidan verb",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to be fascinated (by)",
+                "to be captivated by",
+                "to be enchanted by",
+                "to gaze admiringly at",
+                "to watch in fascination"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "見惚",
+            "pinyin": "jian4 hu1"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "RM: 何度も見惚れてしまうほど\n君から目離せない No more"
+    },
+    {
+        "surface": "目",
+        "reading": "め",
+        "lemma": "目",
+        "lemmaReading": "め",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "eye",
+                "eyeball"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "目",
+            "pinyin": "mu4"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "RM: 何度も見惚れてしまうほど\n君から目離せない No more"
+    },
+    {
+        "surface": "離せ",
+        "reading": "はなせ",
+        "lemma": "離す",
+        "lemmaReading": "はなす",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'su' ending",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to separate",
+                "to part",
+                "to divide",
+                "to keep apart"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "離",
+            "pinyin": "li2"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "RM: 何度も見惚れてしまうほど\n君から目離せない No more"
+    },
+    {
+        "surface": "時計",
+        "reading": "とけい",
+        "lemma": "時計",
+        "lemmaReading": "とけい",
+        "category": "jukujigo",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "clock",
+                "watch",
+                "timepiece"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "時計",
+            "pinyin": "shi2 ji4"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "V: 時計の針さえ\n動きを止めるよ\nUh let it glow"
+    },
+    {
+        "surface": "針",
+        "reading": "はり",
+        "lemma": "針",
+        "lemmaReading": "はり",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "needle",
+                "pin"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "針",
+            "pinyin": "zhen1"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "V: 時計の針さえ\n動きを止めるよ\nUh let it glow"
+    },
+    {
+        "surface": "動き",
+        "reading": "うごき",
+        "lemma": "動き",
+        "lemmaReading": "うごき",
+        "category": "jukujigo",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "movement",
+                "move",
+                "motion"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "動",
+            "pinyin": "dong4"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "V: 時計の針さえ\n動きを止めるよ\nUh let it glow"
+    },
+    {
+        "surface": "止める",
+        "reading": "とめる",
+        "lemma": "止める",
+        "lemmaReading": "とめる",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Ichidan verb",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to stop",
+                "to turn off"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "止",
+            "pinyin": "zhi3"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "V: 時計の針さえ\n動きを止めるよ\nUh let it glow"
+    },
+    {
+        "surface": "探しあてる",
+        "reading": "さがしあてる",
+        "lemma": "捜し当てる",
+        "lemmaReading": "さがしあてる",
+        "category": "jukujigo",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Ichidan verb",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to find (after searching everywhere)",
+                "to locate",
+                "to discover"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "搜當",
+            "pinyin": "sou1 dang1"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Jungkook: 探しあてるよ"
+    },
+    {
+        "surface": "心",
+        "reading": "こころ",
+        "lemma": "心",
+        "lemmaReading": "こころ",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "mind",
+                "heart",
+                "spirit"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "心",
+            "pinyin": "xin1"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Jin: 心惹かれて"
+    },
+    {
+        "surface": "惹か",
+        "reading": "ひか",
+        "lemma": "引く",
+        "lemmaReading": "ひく",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'ku' ending",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to pull",
+                "to tug",
+                "to lead (e.g. a horse)"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "引",
+            "pinyin": "yin3"
+        },
+        "dateAdded": "2026-09-08",
+        "sourceLine": "Jin: 心惹かれて"
+    },
+    {
+        "surface": "気づか",
+        "reading": "きずか",
+        "lemma": "気付く",
+        "lemmaReading": "きづく",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'ku' ending",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to notice",
+                "to realize",
+                "to realise",
+                "to become aware (of)",
+                "to perceive",
+                "to sense",
+                "to suspect"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "氣付",
+            "pinyin": "qi4 fu4"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "J-Hope: 気づかれないように\n近づいてく Slowly\n予告するよ Baby 無防備な"
+    },
+    {
+        "surface": "近づい",
+        "reading": "ちかずい",
+        "lemma": "近付く",
+        "lemmaReading": "ちかづく",
+        "category": "jukujigo",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'ku' ending",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to approach",
+                "to draw near",
+                "to get close"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "近付",
+            "pinyin": "jin4 fu4"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "J-Hope: 気づかれないように\n近づいてく Slowly\n予告するよ Baby 無防備な"
+    },
+    {
+        "surface": "予告",
+        "reading": "よこく",
+        "lemma": "予告",
+        "lemmaReading": "よこく",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "預告",
+            "pinyin": "yu4 gao4",
+            "gloss": [
+                "to forecast",
+                "to predict",
+                "advance notice"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)",
+                "noun or participle which takes the aux. verb suru",
+                "transitive verb"
+            ],
+            "gloss": [
+                "(advance) notice",
+                "preliminary announcement",
+                "warning"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "預告",
+            "pinyin": "yu4 gao4"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "J-Hope: 気づかれないように\n近づいてく Slowly\n予告するよ Baby 無防備な"
+    },
+    {
+        "surface": "無",
+        "reading": "む",
+        "lemma": "無",
+        "lemmaReading": "む",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "無",
+            "pinyin": "mo2",
+            "gloss": [
+                "used in 南無|南无[na1 mo2]"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "nothing",
+                "naught",
+                "nought",
+                "nil",
+                "zero"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "無",
+            "pinyin": "mo2"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "J-Hope: 気づかれないように\n近づいてく Slowly\n予告するよ Baby 無防備な"
+    },
+    {
+        "surface": "防備",
+        "reading": "ぼうび",
+        "lemma": "防備",
+        "lemmaReading": "ぼうび",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "防備",
+            "pinyin": "fang2 bei4",
+            "gloss": [
+                "to guard against"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)",
+                "noun or participle which takes the aux. verb suru",
+                "transitive verb"
+            ],
+            "gloss": [
+                "defense",
+                "defence",
+                "defensive preparations"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "防備",
+            "pinyin": "fang2 bei4"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "J-Hope: 気づかれないように\n近づいてく Slowly\n予告するよ Baby 無防備な"
+    },
+    {
+        "surface": "高鳴る",
+        "reading": "たかなる",
+        "lemma": "高鳴る",
+        "lemmaReading": "たかなる",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Godan verb with 'ru' ending",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to throb",
+                "to beat fast"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "高鳴",
+            "pinyin": "gao1 ming2"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Jungkook: 高鳴る想いは\n鼓動を早める\nUh let it show"
+    },
+    {
+        "surface": "想い",
+        "reading": "おもい",
+        "lemma": "思い",
+        "lemmaReading": "おもい",
+        "category": "jukujigo",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "thought"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "思",
+            "pinyin": "si1"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Jungkook: 高鳴る想いは\n鼓動を早める\nUh let it show"
+    },
+    {
+        "surface": "鼓動",
+        "reading": "こどう",
+        "lemma": "鼓動",
+        "lemmaReading": "こどう",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "鼓動",
+            "pinyin": "gu3 dong4",
+            "gloss": [
+                "to urge (an activity that may be beneficial, harmful or neutral); to encourage; to agitate; to instigate; to incite",
+                "to beat; to flap (wings, a fan etc)"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)",
+                "noun or participle which takes the aux. verb suru",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "beat",
+                "palpitation",
+                "pulsation",
+                "throbbing"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "鼓動",
+            "pinyin": "gu3 dong4"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Jungkook: 高鳴る想いは\n鼓動を早める\nUh let it show"
+    },
+    {
+        "surface": "早める",
+        "reading": "はやめる",
+        "lemma": "早める",
+        "lemmaReading": "はやめる",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Ichidan verb",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to bring forward (e.g. by 3 hours)",
+                "to advance",
+                "to hasten (e.g. one's death)",
+                "to expedite",
+                "to precipitate"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "早",
+            "pinyin": "zao3"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Jungkook: 高鳴る想いは\n鼓動を早める\nUh let it show"
+    },
+    {
+        "surface": "愛",
+        "reading": "あい",
+        "lemma": "愛",
+        "lemmaReading": "あい",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "愛",
+            "pinyin": "ai4",
+            "gloss": [
+                "to love; to be fond of; to like",
+                "affection",
+                "to be inclined (to do sth); to tend to (happen)"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)",
+                "noun, used as a suffix"
+            ],
+            "gloss": [
+                "love",
+                "affection",
+                "care"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "愛",
+            "pinyin": "ai4"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Jimin: 愛は果てなく"
+    },
+    {
+        "surface": "果て",
+        "reading": "はて",
+        "lemma": "果てる",
+        "lemmaReading": "はてる",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Ichidan verb",
+                "intransitive verb"
+            ],
+            "gloss": [
+                "to end",
+                "to be finished",
+                "to be exhausted"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "果",
+            "pinyin": "guo3"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Jimin: 愛は果てなく"
+    },
+    {
+        "surface": "星",
+        "reading": "ほし",
+        "lemma": "星",
+        "lemmaReading": "ほし",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)"
+            ],
+            "gloss": [
+                "star (usu. excluding the Sun)",
+                "planet (usu. excluding Earth)",
+                "heavenly body"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "星",
+            "pinyin": "xing1"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Jimin: どんな星よりも"
+    },
+    {
+        "surface": "魔法",
+        "reading": "まほう",
+        "lemma": "魔法",
+        "lemmaReading": "まほう",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "魔法",
+            "pinyin": "mo2 fa3",
+            "gloss": [
+                "enchantment",
+                "magic"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)",
+                "nouns which may take the genitive case particle 'no'"
+            ],
+            "gloss": [
+                "magic",
+                "witchcraft",
+                "sorcery",
+                "spell"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "魔法",
+            "pinyin": "mo2 fa3"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Jungkook: 魔法のように\n奇跡なら僕が見せてあげる"
+    },
+    {
+        "surface": "奇跡",
+        "reading": "きせき",
+        "lemma": "奇跡",
+        "lemmaReading": "きせき",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "奇跡",
+            "pinyin": "qi2 ji4",
+            "gloss": [
+                "variant of 奇蹟|奇迹[qi2 ji4]"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)",
+                "nouns which may take the genitive case particle 'no'"
+            ],
+            "gloss": [
+                "miracle",
+                "wonder",
+                "marvel"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "奇跡",
+            "pinyin": "qi2 ji4"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Jungkook: 魔法のように\n奇跡なら僕が見せてあげる"
+    },
+    {
+        "surface": "僕",
+        "reading": "ぼく",
+        "lemma": "僕",
+        "lemmaReading": "ぼく",
+        "category": "onyomi",
+        "chineseCognate": {
+            "status": "confirmed",
+            "traditional": "僕",
+            "pinyin": "pu2",
+            "gloss": [
+                "servant"
+            ]
+        },
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "pronoun"
+            ],
+            "gloss": [
+                "I",
+                "me"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "僕",
+            "pinyin": "pu2"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Jungkook: 魔法のように\n奇跡なら僕が見せてあげる"
+    },
+    {
+        "surface": "見せ",
+        "reading": "みせ",
+        "lemma": "見せる",
+        "lemmaReading": "みせる",
+        "category": "kunyomi",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "Ichidan verb",
+                "transitive verb"
+            ],
+            "gloss": [
+                "to show",
+                "to display"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "見",
+            "pinyin": "jian4"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Jungkook: 魔法のように\n奇跡なら僕が見せてあげる"
+    },
+    {
+        "surface": "覗き見",
+        "reading": "のぞきみ",
+        "lemma": "覗き見",
+        "lemmaReading": "のぞきみ",
+        "category": "jukujigo",
+        "chineseCognate": null,
+        "japaneseMeaning": {
+            "status": "found",
+            "pos": [
+                "noun (common) (futsuumeishi)",
+                "noun or participle which takes the aux. verb suru",
+                "transitive verb"
+            ],
+            "gloss": [
+                "peek",
+                "peeping",
+                "peeking"
+            ]
+        },
+        "mandarinPinyin": {
+            "traditional": "覗見",
+            "pinyin": "si1 jian4"
+        },
+        "dateAdded": "2026-09-09",
+        "sourceLine": "Jungkook: 覗き見する Moon Light"
+    }
+]
