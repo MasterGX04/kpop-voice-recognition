@@ -16,6 +16,21 @@ CHUNK_DURATION_MS = 40
 def chunkToMs(chunk: int) -> int:
     return chunk * CHUNK_DURATION_MS
 
+
+# "Play from this word" (.claude/KARAOKE_PLAN.md A5): word onsets are only estimates (proportional
+# to character count - the data has per-line timing only), so start a bit before the estimate, and
+# never so late that less than MIN_TAIL_MS of the clip remains.
+WORD_LEAD_MS = 300
+MIN_TAIL_MS = 600
+
+
+def clipStartOffsetMs(durationMs: int, fraction: float) -> int:
+    """Offset (ms from the clip start) to begin playback for a word estimated to start `fraction`
+    (0..1) of the way through a clip `durationMs` long."""
+    fraction = min(1.0, max(0.0, float(fraction or 0)))
+    latest = max(0, durationMs - MIN_TAIL_MS)
+    return int(min(latest, max(0, fraction * durationMs - WORD_LEAD_MS)))
+
 def hexToRgb01(hexColor: str):
     hexColor = hexColor.strip().lstrip("#")
     if len(hexColor) == 3:

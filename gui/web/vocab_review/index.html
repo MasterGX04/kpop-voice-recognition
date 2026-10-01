@@ -18,46 +18,139 @@
       <span class="control-label">Track:</span>
       <label><input type="radio" name="track" value="reading" checked> Reading</label>
       <label><input type="radio" name="track" value="meaning"> Meaning</label>
+      <label><input type="radio" name="track" value="cloze"> Cloze</label>
     </div>
   </div>
 
-  <div class="filters">
+  <div class="controls">
+    <div class="control-group">
+      <span class="control-label">Mode:</span>
+      <label><input type="radio" name="mode" value="study" checked> Study</label>
+      <label><input type="radio" name="mode" value="browse"> Browse / edit</label>
+      <label><input type="radio" name="mode" value="triage"> Triage known words</label>
+    </div>
+  </div>
+
+  <div class="controls song-bar">
+    <div class="control-group">
+      <span class="control-label">Song:</span>
+      <button id="songPickBtn" class="song-pick-btn">All songs &#9662;</button>
+      <button id="songClearBtn" title="Back to all songs" hidden>&#10005;</button>
+    </div>
+    <div class="control-group">
+      <label><input type="checkbox" id="shuffleOrder"> &#128256; Shuffle</label>
+      <button id="reshuffleBtn" title="Reshuffle the current list" hidden>Reshuffle</button>
+    </div>
+  </div>
+
+  <div class="filters" id="browseFilters" hidden>
     <label><input type="checkbox" id="showAll"> Show all words (ignore due date)</label>
     <label><input type="checkbox" id="missingMeaningOnly"> Only missing meaning</label>
     <label id="ambiguousFilterRow" class="korean-only">
       <input type="checkbox" id="ambiguousOnly"> Only ambiguous Hanja (2+)
     </label>
-    <label><input type="checkbox" id="shuffleOrder"> Shuffle order</label>
   </div>
 
-  <div class="nav">
+  <div class="nav" id="browseNav" hidden>
     <button id="prevBtn">&#9664; Prev</button>
     <span id="positionLabel"></span>
     <button id="nextBtn">Next &#9654;</button>
     <button id="randomCardBtn">&#127922; Random Card</button>
   </div>
 
-  <div id="prompt" class="prompt"></div>
-  <div id="warning" class="warning"></div>
-  <div id="answerBody" class="answer-body"></div>
-  <div id="occurrenceRow" class="occurrence-row" hidden>
-    <button id="playAudioBtn">&#9654; Play line</button>
-    <span id="occurrenceLine"></span>
+  <div id="triagePanel" hidden>
+    <p class="control-label">
+      Untouched words, most frequent in your lyrics first. Tick the ones you already know
+      (they come back once, in about 2 months, as a check) or do not want to study (suspended).
+    </p>
+    <div class="actions">
+      <button id="triageSelectAll">Select all</button>
+      <button id="triageSelectNone">Select none</button>
+      <button id="triageKnown">Mark selected as known</button>
+      <button id="triageSuspend">Suspend selected</button>
+      <span id="triageCount" class="control-label"></span>
+    </div>
+    <div id="triageList" class="triage-list"></div>
   </div>
 
-  <div id="hanjaPicker" class="hanja-picker"></div>
+  <details id="songWords" class="song-words" hidden>
+    <summary id="songWordsSummary"></summary>
+    <div id="songWordsList" class="song-words-list"></div>
+  </details>
 
-  <div class="actions">
+  <div id="queueBadge" class="control-label"></div>
+
+  <div id="standardView">
+    <div id="prompt" class="prompt"></div>
+    <div id="warning" class="warning"></div>
+    <div id="answerBody" class="answer-body"></div>
+    <div id="occurrenceRow" class="occurrence-row" hidden>
+      <div class="occurrence-controls">
+        <button id="playAudioBtn">&#9654; Play line</button>
+        <button id="playLastWordBtn" title="Play from the last word (estimated position)">&#9654; Last word</button>
+        <button id="editPausesBtn" title="Add or remove pauses in this lyric - saved straight to the song's lyrics file">&#9998; Edit pauses</button>
+      </div>
+      <div class="occurrence-body">
+        <div id="occurrenceSource" class="control-label"></div>
+        <div id="occurrenceLine" class="occurrence-line"></div>
+        <div class="control-label">Click a word to play from near there (position is estimated).</div>
+      </div>
+    </div>
+
+    <div id="cognateBridge" class="cognate-bridge" hidden></div>
+
+    <div id="hanjaPicker" class="hanja-picker"></div>
+  </div>
+
+  <div id="clozePanel" class="cloze-panel" hidden>
+    <div id="clozeLine" class="cloze-line"></div>
+    <div id="clozeUnavailable" class="warning" hidden>
+      &#9888; Can't quiz this word yet - no usable example line found.
+    </div>
+    <button id="revealBtn">Reveal</button>
+    <div id="clozeAnswer" class="cloze-answer" hidden></div>
+  </div>
+
+  <div class="actions" id="studyActions">
+    <button id="knownBtn">I already know this</button>
+    <button id="suspendBtn">Suspend</button>
     <button id="editMeaningBtn">Edit Meaning</button>
+    <button id="editSpellingBtn">Edit Spelling</button>
     <button id="deleteBtn">Delete Word</button>
     <button id="reloadBtn">Reload</button>
   </div>
 
   <div class="rating-row">
-    <button class="rate-btn" data-rating="again">Again</button>
-    <button class="rate-btn" data-rating="good">Good</button>
-    <button class="rate-btn" data-rating="easy">Easy</button>
+    <button class="rate-btn" data-rating="again"><span class="rate-name">Again</span><span class="rate-interval"></span></button>
+    <button class="rate-btn" data-rating="hard"><span class="rate-name">Hard</span><span class="rate-interval"></span></button>
+    <button class="rate-btn" data-rating="good"><span class="rate-name">Good</span><span class="rate-interval"></span></button>
+    <button class="rate-btn" data-rating="easy"><span class="rate-name">Easy</span><span class="rate-interval"></span></button>
   </div>
+
+  <dialog id="songDialog" class="song-dialog">
+    <input type="search" id="songSearch" placeholder="Search song or group..." autocomplete="off">
+    <div class="song-panes">
+      <div id="songGroups" class="song-groups"></div>
+      <div id="songList" class="song-list"></div>
+    </div>
+    <div class="dialog-actions">
+      <button type="button" id="songDialogClose">Close</button>
+    </div>
+  </dialog>
+
+  <dialog id="pauseEditDialog" class="pause-dialog">
+    <div id="pauseEditSource" class="control-label"></div>
+    <label for="pauseEditInput">Lyric &mdash; <b>&#9662;</b> marks a pause (Ctrl+Space inserts one at the cursor):</label>
+    <textarea id="pauseEditInput" rows="6" spellcheck="false"></textarea>
+    <div class="control-label">Only pauses can change here &mdash; edit wording in the Lyric Editor. Saves to the song's lyrics file and re-times this card at once.</div>
+    <div id="pauseEditError" class="dialog-error" hidden></div>
+    <div class="dialog-actions">
+      <button type="button" id="pauseEditPlay">&#9654; Play line</button>
+      <button type="button" id="pauseEditInsert">Insert pause &#9662;</button>
+      <button type="button" id="pauseEditCancel">Cancel</button>
+      <button type="button" id="pauseEditSave">Save</button>
+    </div>
+  </dialog>
 
   <dialog id="editMeaningDialog">
     <label for="editMeaningInput">Gloss (separate multiple senses with ;):</label>
@@ -65,6 +158,15 @@
     <div class="dialog-actions">
       <button type="button" id="editMeaningCancel">Cancel</button>
       <button type="button" id="editMeaningSave">Save</button>
+    </div>
+  </dialog>
+
+  <dialog id="editSpellingDialog">
+    <label for="editSpellingInput">Displayed spelling (e.g. kanji for a kana word; blank = automatic):</label>
+    <input type="text" id="editSpellingInput">
+    <div class="dialog-actions">
+      <button type="button" id="editSpellingCancel">Cancel</button>
+      <button type="button" id="editSpellingSave">Save</button>
     </div>
   </dialog>
 
@@ -76,6 +178,7 @@
     </div>
   </dialog>
 
+  <script src="karaoke.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

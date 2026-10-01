@@ -81,6 +81,11 @@ class MacronRomajiTests(unittest.TestCase):
         self.assertEqual(kanjiLineToReading("明日への衝動", "romaji"), "ashita e no shōdō")
         self.assertEqual(kanjiLineToReading("明日香", "romaji"), "asuka")
 
+    def test_old_form_kanji_reads_like_modern_form(self):
+        # BTS lyric uses kyuujitai 觸 - unknown to UniDic, it used to romanize as "shoku re ta".
+        self.assertEqual(kanjiLineToReading("觸れた", "romaji"), kanjiLineToReading("触れた", "romaji"))
+        self.assertEqual(kanjiLineToReading("觸れた", "romaji"), "fure ta")
+
     def test_kokoro_suffix_after_a_katakana_loanword_is_not_shin(self):
         # Real bug report: ファイティング心 ("fighting spirit") romanized 心 as "shin" (on'yomi),
         # not the native "gokoro" (kun'yomi, rendaku'd) a hybrid loanword+心 coinage actually

@@ -1,18 +1,34 @@
+# App requirements (Python 3.13). Everything the GUI / lyrics / flashcard features import.
+# Voice-recognition ML (torch etc.) is in requirements-ml.txt; the exe build tool is in
+# requirements-build.txt; hanja needs its own install step - see requirements-hanja.txt.
+#
+#   py -3.13 -m venv venv
+#   venv\Scripts\python -m pip install -r requirements.txt
+#   venv\Scripts\python -m pip install --no-deps -r requirements-hanja.txt
+
+# --- Core / GUI / media ---
 numpy
 opencv-python
-torchaudio
-torch
-pydub
-tqdm
-scikit-learn
-matplotlib
-librosa
 Pillow
-transformers
 pygame
-muq
+matplotlib
+tqdm
+pywebview==6.2.1
+
+# --- Audio (core/audio_processing.py imports librosa at module top level) ---
+librosa
+pydub
+audioop-lts        # Python 3.13 removed stdlib audioop, which pydub imports
+
+# --- Japanese / Korean language tools ---
 fugashi
 unidic-lite
 pykakasi
-kiwipiepy
-pywebview==6.2.1
+# Pinned: kiwipiepy 0.24's model lemmatizes 다른 as "다른" instead of "다르다", which fails
+# core/test_korean_vocab, test_korean_grammar_breakdown and test_cloze. Verified 0.23.2 passes.
+kiwipiepy==0.23.2
+kiwipiepy-model==0.23.0
+pyyaml>=6.0.2      # hanja's own pin (==6.0.1) has no 3.13 wheel; see requirements-hanja.txt
+
+# --- Flashcard scheduling (.claude/FLASHCARD_FSRS_PLAN.md) ---
+fsrs

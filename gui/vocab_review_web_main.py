@@ -27,15 +27,25 @@ def _resourcePath(*parts):
 
 def runStandalone(argv=None):
     indexPath = _resourcePath("gui", "web", "vocab_review", "index.html")
-    webview.create_window(
+    api = VocabReviewApi()
+    window = webview.create_window(
         CHILD_WINDOW_TITLE,
         indexPath,
-        js_api=VocabReviewApi(),
+        js_api=api,
         width=760,
         height=680,
         min_size=(560, 420),
     )
+
+    # Cut the audio the moment the window starts closing (not whenever the process finally exits),
+    # and once more after the event loop returns. Handlers return None so they never cancel a close.
+    def _stopAudio(*_):
+        api.shutdown()
+
+    window.events.closing += _stopAudio
+    window.events.closed += _stopAudio
     webview.start()
+    api.shutdown()
 
 
 if __name__ == "__main__":

@@ -1,0 +1,371 @@
+[
+    {
+        "lyricId": "a3eb3c2a-3766-425c-bf82-c19f511d790a",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 11,
+            "endChunk": 103
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "浮かび上がる君は\nあまりに鮮やかで Oh",
+        "romanization": "ukabiagaru kimi wa\namari ni azayaka de Oh",
+        "english": "You, in my imagination\nAre so vivid",
+        "startChunk": 0,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "7fb61f15-1119-40cb-9d8b-42ca665bce8a",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 305,
+            "endChunk": 398
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "まるでそこにいるかと\n手を伸ばすところで\nふっと消えてしまう",
+        "romanization": "marude soko ni iru ka to\nte o nobasu tokoro de\nfutto kiete shimau",
+        "english": "As if you are right there\nBut I reach out my hand\nAnd you suddenly disappear",
+        "startChunk": 294,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "e76a3cf9-f7db-4f73-bc87-d830756e6ae7",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 601,
+            "endChunk": 734
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "たんたんと降り積もった記憶の中で\n君だけを拾い集めて繫げて",
+        "romanization": "tantan to furitsumotta kioku no naka de\nkimi dake o hiroiatsume te tsunage te",
+        "english": "From all the memories stored in my heart\nI gather up the ones of you and link them together",
+        "startChunk": 590,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "f4aa841d-7c40-485a-9bc0-c18fb688f55e",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 883,
+            "endChunk": 945
+        },
+        "language": "Japanese",
+        "memberName": [
+            "V"
+        ],
+        "korean": "部屋中に映して眺めながら\nこみ上げる痛みで 君を確かめている",
+        "romanization": "heya chū ni utsushi te nagame nagara\nkomiageru itami de kimi o tashikame te iru",
+        "english": "Gazing at them projected across the room\nI feel you with every burst of pain",
+        "startChunk": 872,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "c6220498-e56f-4f08-9fce-47b98bd86955",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 1168,
+            "endChunk": 1217
+        },
+        "language": "English",
+        "memberName": [
+            "Jin",
+            "Jimin",
+            "V",
+            "Jungkook"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Oh-oh\nLa-la-la, la-la-la\nLa-la-la, la-la-la\nLa-la-la, la-la-la",
+        "startChunk": 1157,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "52eef2a9-9031-40df-b2a6-7153a56844b5",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 1462,
+            "endChunk": 1508
+        },
+        "language": "English",
+        "memberName": [
+            "Jin",
+            "Jimin",
+            "V",
+            "Jungkook"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Oh-oh\nLa-la-la, la-la-la\nLa-la-la, la-la-la\nLa-la-la, la-la-la",
+        "startChunk": 1451,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "93def9c4-acda-423d-9ba2-feabb878326e",
+        "linkedLabel": {
+            "member": "RM",
+            "startChunk": 1764,
+            "endChunk": 1802
+        },
+        "language": "Japanese",
+        "memberName": [
+            "RM"
+        ],
+        "korean": "光も水も吸わないくらいに腐敗して\n根も葉も無い誓いで 胸の傷を 塞いで",
+        "romanization": "hikari mo mizu mo suwanai kurai ni fuhai shi te\nne mo ha monai chikai de mune no kizu o fusai de",
+        "english": "Decay too far gone absorbing no light or water\nSealing my wounded heart with a rootless, leafless vow",
+        "startChunk": 1753,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "36fca16b-cd99-4b05-a7a4-9dd5ccb58c26",
+        "linkedLabel": {
+            "member": "RM",
+            "startChunk": 2070,
+            "endChunk": 2108
+        },
+        "language": "Japanese",
+        "memberName": [
+            "RM"
+        ],
+        "korean": "竝ぶ二つのグラス 役割果たす\n事もなくそのままで\n君の觸れたままで",
+        "romanization": "narabu futa tsu no gurasu yakuwari hatasu\nkoto mo naku sono mama de\nkimi no furetta mama de",
+        "english": "2 glasses placed side by side, their role\nNever fulfilled, ah, just as they were\nSince you last touched them",
+        "startChunk": 2059,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "e388c2d3-5d98-4ed8-8f0e-94df7511f83d",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 2358,
+            "endChunk": 2490
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "たんたんと降り積もった記憶の中で\n君だけを拾い集めて繫げて",
+        "romanization": "tantan to furitsumotta kioku no naka de\nkimi dake o hiroiatsume te tsunage te",
+        "english": "From all the memories stored in my heart\nI gather up the ones of you and link them together",
+        "startChunk": 2347,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "54879fd0-c9a9-44f8-9412-578e3614fadc",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 2636,
+            "endChunk": 2742
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "部屋中に映して眺めながら\nこみ上げる痛みで 君を確かめている",
+        "romanization": "heya chū ni utsushi te nagame nagara\nkomiageru itami de kimi o tashikame te iru",
+        "english": "Gazing at them projected across the room\nI feel you with every burst of pain",
+        "startChunk": 2625,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "3024a0e3-7e26-4948-9e82-bec5ea3eb151",
+        "linkedLabel": {
+            "member": "Suga",
+            "startChunk": 2874,
+            "endChunk": 2939
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Suga"
+        ],
+        "korean": "正しくなくていいからさ\n優し過ぎる君のまま\n笑ってて欲しかっただけなのに それなのに",
+        "romanization": "tadashiku naku te ī kara sa\nyasashi sugiru kimi no mama\nwaratte te hoshikatta dake na no ni sore na no ni",
+        "english": "I don’t have to be right\nI just wanted you to stay the way you are\nKind hearted, always smiling, but",
+        "startChunk": 2863,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "bfe41900-73da-47ab-ae81-1b02dfcd98b1",
+        "linkedLabel": {
+            "member": "J-Hope",
+            "startChunk": 3158,
+            "endChunk": 3183
+        },
+        "language": "Japanese",
+        "memberName": [
+            "J-Hope"
+        ],
+        "korean": "涙の量計れるなら\n隨分遲ればせながら\nやっと今君のとなりまで追い付いて",
+        "romanization": "namida no ryō hakareru nara \nzuibun chi re ba se nagara\nyatto ima kun no tonari made oitsui te",
+        "english": "If tears can be measured, \nit took this long but\nI’ve barely made it by your side",
+        "startChunk": 3147,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "f05944c8-4dc2-444d-a19c-cc2158c44b14",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 3450,
+            "endChunk": 3532
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "見付けたのさ",
+        "romanization": "mitsuketa nosa",
+        "english": "and found you",
+        "startChunk": 3439,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "ba8bd006-6a92-4854-9023-24be947d3d7f",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 3528,
+            "endChunk": 3659
+        },
+        "language": "Japanese",
+        "memberName": [
+            "V"
+        ],
+        "korean": "たんたんと降り積もった記憶の中で\n君だけを拾い集めて繫げて",
+        "romanization": "tantan to furitsumotta kioku no naka de\nkimi dake o hiroiatsume te tsunage te",
+        "english": "From all the memories stored in my heart\nI gather up the ones of you and link them together",
+        "startChunk": 3517,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "642e50e7-0761-406b-9a00-f9376bc66c85",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 3806,
+            "endChunk": 3915
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "部屋中に映して眺めながら\n何一つ消えない君を抱きしめて眠る",
+        "romanization": "heya chū ni utsushi te nagame nagara\nnan hitotsu kie nai kimi o dakishime te nemuru",
+        "english": "Gazing at them projected across the room\nI fall asleep with you vivid in my arms",
+        "startChunk": 3795,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "96c05f5d-7556-42a3-9a32-23e45bc6fde8",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 4115,
+            "endChunk": 4181
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "君がささやく言葉がその響きが\n行き場を失くして部屋を彷徨ってる Oh",
+        "romanization": "kimi ga sasayaku kotoba ga sono hibiki ga\nyukiba o nakushi te heya o samayotteru Oh",
+        "english": "The words you whisper, the resonance\nWander aimlessly around the room",
+        "startChunk": 4104,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "85da321e-b545-4624-80ed-5b87b925580f",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 4400,
+            "endChunk": 4474
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "嗅いでしまった香りが觸れた熱が\n殘ってるうちは 殘ってるうちは",
+        "romanization": "kai de shimatta kaori ga shoku re ta netsu ga\nnokotteru uchi wa nokotteru uchi wa",
+        "english": "The fragrance I smell, the warmth I feel\nAs long as it lasts, as long as it lasts",
+        "startChunk": 4389,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "6d3f726e-082f-4608-9ea1-c26d0e6ce46d",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 4697,
+            "endChunk": 4781
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jin",
+            "Jimin"
+        ],
+        "korean": "浮かび上がる君は\nあまりに鮮やかで Oh",
+        "romanization": "ukabiagaru kimi wa\namari ni azayaka de Oh",
+        "english": "You, in my imagination\nAre so vivid",
+        "startChunk": 4686,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "7fc752b9-4f38-43cb-a9f0-14d71ece7599",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 4987,
+            "endChunk": 5077
+        },
+        "language": "Japanese",
+        "memberName": [
+            "V",
+            "Jimin"
+        ],
+        "korean": "まるでそこにいるかと\n手を伸ばすところで\nふっと消えてしまう",
+        "romanization": "marude soko ni iru ka to\nte o nobasu tokoro de\nfutto kiete shimau",
+        "english": "As if you are right there\nBut I reach out my hand\nAnd you suddenly disappear",
+        "startChunk": 4976,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    }
+]

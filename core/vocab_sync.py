@@ -27,6 +27,9 @@ from core.kanji_reference import (
 from core.korean_vocab import analyzeKoreanSelection
 from core import vocab_store_ja, vocab_store_ko, vocab_link
 from core.vocab_db import getConnection
+from core.label_runs import resolveAllSpans
+from core.lyric_text import stripAll
+from core.song_stats import loadRawLabels
 
 _SAVED_LABELS_GLOB = "saved_labels/*/*_lyrics.json"
 
@@ -45,15 +48,18 @@ def _isKoreanLyricEntry(lyricEntry: dict) -> bool:
     return lyricEntry.get("language") == "Korean" or _containsHangul(text)
 
 
-def _resolveChunks(lyricEntry: dict):
+def _resolveChunks(lyricEntry: dict, span: tuple = None):
     """
-    Prefer the precise span from linkedLabel (set when a lyric line is linked to a specific
-    audio-label span - see gui/lyrics_editor.py's linkedLabel snapshot); fall back to the lyric's
-    own startChunk alone (no independent end) when no label is linked.
+    `span` is this lyric's entry from core.label_runs.resolveAllSpans (run once per song over its
+    labels+lyrics): the merged whole-line span for a resolvable hand link, the lead-in-corrected
+    inferred span for a broken or missing link. Falls back to the lyric's own bare startChunk (no
+    independent end) when nothing could be resolved.
+
+    No blanket length cap here: core.label_runs caps only spans with no next-lyric boundary (see
+    MAX_UNBOUNDED_CLIP_CHUNKS). A blanket cap truncated long bounded lines (slow ballads, raps).
     """
-    linked = lyricEntry.get("linkedLabel")
-    if linked:
-        return linked.get("startChunk"), linked.get("endChunk")
+    if span:
+        return span
     return lyricEntry.get("startChunk"), None
 
 
@@ -161,8 +167,20 @@ def _scanOneSong(conn, group: str, song: str) -> dict:
     if lyricEntries is None:
         return result
 
-    for lyricEntry in lyricEntries:
-        text = lyricEntry.get("korean") or ""
+    rawLabels = loadRawLabels(group, song)
+    spans = resolveAllSpans(rawLabels, lyricEntries)
+
+    # Unlinked lyrics have no lyricId, and SQLite treats NULLs as distinct in the tables'
+    # UNIQUE(vocab_id, lyric_id), so addOccurrence's INSERT OR IGNORE never matches them - a rescan
+    # would pile up a second copy of every unlinked occurrence. They're fully derived from the
+    # lyrics file, so drop and regenerate them.
+    for table in ("vocab_occurrence_ja", "vocab_occurrence_ko"):
+        conn.execute(f"DELETE FROM {table} WHERE group_name = ? AND song_title = ? AND lyric_id IS NULL",
+                     (group, song))
+
+    for lyricIndex, lyricEntry in enumerate(lyricEntries):
+        # Analysis and the stored lyric_line see clean text: no "|" colour split, no pause marker.
+        text = stripAll(lyricEntry.get("korean") or "")
         if not text.strip():
             continue
 
@@ -170,7 +188,7 @@ def _scanOneSong(conn, group: str, song: str) -> dict:
         if not isinstance(singerNames, list):
             singerNames = [singerNames] if singerNames else []
         lyricId = lyricEntry.get("lyricId")
-        startChunk, endChunk = _resolveChunks(lyricEntry)
+        startChunk, endChunk = _resolveChunks(lyricEntry, spans.get(lyricIndex))
 
         if _isJapaneseLyricEntry(lyricEntry):
             for wordResult in analyzeSelection(text, 0, len(text)):

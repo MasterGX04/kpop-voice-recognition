@@ -62,7 +62,7 @@ class UpsertVocabTests(unittest.TestCase):
         self.assertEqual(hanjaCount, 0)
         self.assertEqual(meaningState, 0)
 
-    def test_sino_korean_word_defaults_meaning_known(self):
+    def test_sino_korean_word_starts_new(self):
         candidates = [{"hanja": "學校", "gloss": ["school"], "pos": "noun", "pinyin": "xue2 xiao4"}]
         vocabId, _ = vocab_store_ko.upsertVocab(_entry("학교", hanjaCandidates=candidates))
 
@@ -71,7 +71,7 @@ class UpsertVocabTests(unittest.TestCase):
             "SELECT meaning_state FROM srs_card_ko WHERE vocab_ko_id = ?", (vocabId,)
         ).fetchone()[0]
         conn.close()
-        self.assertEqual(meaningState, 1)
+        self.assertEqual(meaningState, 0)  # FSRS New; the old 'known' seeding is gone
 
     def test_re_upsert_replaces_hanja_candidates_rather_than_accumulating(self):
         vocabId1, _ = vocab_store_ko.upsertVocab(_entry("화", hanjaCandidates=[
@@ -110,6 +110,31 @@ class UpsertVocabTests(unittest.TestCase):
         self.assertEqual(vocab_store_ko.getDueCards("reading"), [])
         allWords = vocab_store_ko.listAllVocab()
         self.assertEqual([w["lemma"] for w in allWords], ["학교"])
+
+    def test_rating_writes_fsrs_state_and_log_row_for_korean(self):
+        vocabId, _ = vocab_store_ko.upsertVocab(_entry("학교"))
+        vocab_store_ko.submitReview(vocabId, "cloze", "easy", nowTs=1_800_000_000)
+        conn = getConnection()
+        state = conn.execute("SELECT cloze_state FROM srs_card_ko WHERE vocab_ko_id = ?", (vocabId,)).fetchone()[0]
+        log = conn.execute("SELECT language, track, rating FROM review_log").fetchall()
+        conn.close()
+        self.assertEqual(state, 2)
+        self.assertEqual(log, [("ko", "cloze", "easy")])
+        self.assertEqual(set(vocab_store_ko.previewIntervals(vocabId, "cloze")), {"again", "hard", "good", "easy"})
+
+    def test_new_word_is_immediately_due_for_cloze_too(self):
+        # Milestone 5: cloze is a fully independent SRS track, seeded the same way meaning/reading
+        # already are.
+        vocab_store_ko.upsertVocab(_entry("학교"))
+        due = vocab_store_ko.getDueCards("cloze", limit=10)
+        self.assertEqual([c["lemma"] for c in due], ["학교"])
+
+    def test_submit_cloze_review_moves_card_out_of_due_queue(self):
+        vocabId, _ = vocab_store_ko.upsertVocab(_entry("학교"))
+        vocab_store_ko.submitReview(vocabId, "cloze", "good")
+        self.assertEqual(vocab_store_ko.getDueCards("cloze"), [])
+        self.assertEqual(len(vocab_store_ko.getDueCards("reading")), 1)
+        self.assertEqual(len(vocab_store_ko.getDueCards("meaning")), 1)
 
     def test_update_meaning_overwrites_gloss_and_flips_status_to_found(self):
         vocabId, _ = vocab_store_ko.upsertVocab(_entry("너무", meaning={"status": "not_found"}))
@@ -258,6 +283,51 @@ class UpsertVocabTests(unittest.TestCase):
 
         remaining = vocab_store_ko.listAllVocab()[0]["hanjaCandidates"]
         self.assertEqual(len(remaining), 2)
+
+
+class CoOccurrenceGraphTests(unittest.TestCase):
+    def setUp(self):
+        self._origCwd = os.getcwd()
+        self._tmpDir = tempfile.mkdtemp()
+        os.chdir(self._tmpDir)
+
+    def tearDown(self):
+        os.chdir(self._origCwd)
+        shutil.rmtree(self._tmpDir, ignore_errors=True)
+
+    def test_two_words_sharing_one_song_get_one_edge(self):
+        sigan_id, _ = vocab_store_ko.upsertVocab(_entry("시간"))
+        mul_id, _ = vocab_store_ko.upsertVocab(_entry("물"))
+        vocab_store_ko.addOccurrence(sigan_id, "TWICE", "TestSong", [], "시간이다", "l1", 0, 10)
+        vocab_store_ko.addOccurrence(mul_id, "TWICE", "TestSong", [], "물을 마셔", "l2", 10, 20)
+
+        graph = vocab_store_ko.getCoOccurrenceGraph()
+        self.assertEqual({n["vocabId"] for n in graph["nodes"]}, {sigan_id, mul_id})
+        self.assertEqual(len(graph["edges"]), 1)
+        edge = graph["edges"][0]
+        self.assertEqual({edge["a"], edge["b"]}, {sigan_id, mul_id})
+        self.assertEqual(edge["sharedSongs"], 1)
+        self.assertEqual(edge["songs"], [{"group": "TWICE", "song": "TestSong"}])
+
+    def test_words_that_never_share_a_song_have_no_edge(self):
+        sigan_id, _ = vocab_store_ko.upsertVocab(_entry("시간"))
+        mul_id, _ = vocab_store_ko.upsertVocab(_entry("물"))
+        vocab_store_ko.addOccurrence(sigan_id, "TWICE", "SongA", [], "시간이다", "l1", 0, 10)
+        vocab_store_ko.addOccurrence(mul_id, "TWICE", "SongB", [], "물을 마셔", "l2", 0, 10)
+
+        graph = vocab_store_ko.getCoOccurrenceGraph()
+        self.assertEqual(graph["nodes"], [])
+        self.assertEqual(graph["edges"], [])
+
+    def test_min_shared_songs_filters_out_weak_edges(self):
+        sigan_id, _ = vocab_store_ko.upsertVocab(_entry("시간"))
+        mul_id, _ = vocab_store_ko.upsertVocab(_entry("물"))
+        vocab_store_ko.addOccurrence(sigan_id, "TWICE", "SongA", [], "시간이다", "l1", 0, 10)
+        vocab_store_ko.addOccurrence(mul_id, "TWICE", "SongA", [], "물을 마셔", "l2", 10, 20)
+
+        graph = vocab_store_ko.getCoOccurrenceGraph(min_shared_songs=2)
+        self.assertEqual(graph["nodes"], [])
+        self.assertEqual(graph["edges"], [])
 
 
 if __name__ == "__main__":

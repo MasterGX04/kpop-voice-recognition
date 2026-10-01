@@ -31,10 +31,9 @@ python -m ml.train_kpop_singers `
 
 Run python -m core.kanji_reference to fix kanji sheet for song lyrics
 
-- Current video "continue" is still broken and SHOULD START FROM timestamp where the audio is.
-- Menu while video + playback happens causes serious freeze
 - Use Gemini Flash 2.0 to breakdown grammar in a nice chat in the study tool for pure convenience
-- MenuBar still broken. Do we remove this?
 - Make flashcard app scrollable
-- Seems like video playback lags behind video
-- Must add the durations of "lines" because a lyric and encompass multiple lines along with a line starting in the middle of a line (inconsistent)
+- Add studying for each song's vocab
+- Flashcard audio should cut off when the user closes the window, currently continues playing
+
+Use ▾ for pauses

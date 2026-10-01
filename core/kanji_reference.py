@@ -14,7 +14,8 @@ import os
 import re
 from collections import defaultdict
 
-from core.japanese_utils import getTagger, tokenReading
+from core.japanese_utils import getTagger, normalizeVariantKanji, overrideReading, tokenReading
+from core.lyric_text import stripAll
 
 _DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "jp2t")
 
@@ -207,7 +208,7 @@ def resolveContextReading(fullText: str, startOffset: int, endOffset: int):
     pos = 0
     matchedTokens = []
 
-    for word in tagger(fullText):
+    for word in tagger(normalizeVariantKanji(fullText)):
         # fugashi/MeCab never emits whitespace (spaces, newlines) as a token of its own -
         # it's dropped from `surface` entirely and only reported via the *next* token's
         # `white_space` attribute. Skipping this means `pos` silently drifts out of sync
@@ -229,6 +230,56 @@ def _containsKanji(text: str) -> bool:
     return any(_isKanji(ch) for ch in text)
 
 
+_KATAKANA_RANGE = (0x30A0, 0x30FF)
+
+
+def _isKatakanaOnly(text: str) -> bool:
+    return bool(text) and all(_KATAKANA_RANGE[0] <= ord(ch) <= _KATAKANA_RANGE[1] for ch in text)
+
+
+def _hasJapaneseScript(text: str) -> bool:
+    """True if `text` contains any Kanji, hiragana or katakana. Japanese lyrics are full of English
+    ("How I am gonna find it", "me", "oh") and fugashi tokenizes those as ordinary nouns, so without
+    this check they became junk Japanese flashcards. Digits/Latin/punctuation-only tokens fail."""
+    return any(
+        _isKanji(ch) or 0x3040 <= ord(ch) <= 0x30FF  # hiragana + katakana blocks (incl. ー)
+        for ch in text
+    )
+
+
+# Content/function-word classification for fugashi/UniDic tokens - lives here (not in
+# core/grammar_breakdown.py, which needs the exact same distinction) because that module already
+# imports _containsKanji/lookupJapaneseMeaning FROM this one; putting these here instead of there
+# keeps that a one-way, non-circular dependency.
+_FUNCTION_POS1 = {"助詞", "助動詞"}
+# 空白 (whitespace, e.g. the full-width "　" some lyrics use as a mid-line separator) carries no
+# grammar of its own, same reasoning as punctuation - never a real vocabulary word.
+_SKIP_POS1 = {"補助記号", "記号", "空白"}
+
+# UniDic marks a token as grammaticalized (used as a light verb / auxiliary stem rather than its
+# literal dictionary sense) via pos2, not pos1 - see core/grammar_breakdown.py's own docstring for
+# the real words (しまう/いる/なる/よう) this was found against.
+_GRAMMATICALIZED_POS2 = {"助動詞語幹", "非自立可能"}
+
+
+def _pos2Of(word):
+    return getattr(word.feature, "pos2", None)
+
+
+def isContentWord(word) -> bool:
+    """
+    True for an ordinary content word (noun/verb/adjective/adverb/...) as opposed to punctuation/
+    whitespace, a particle/auxiliary-verb, or a grammaticalized light-verb/auxiliary-stem use of
+    an otherwise-ordinary lemma. Kanji-presence plays no part in this - a kana-only content word
+    (ちょっと, とても) is exactly as much a "content word" as a Kanji-bearing one; see
+    analyzeSelection()'s own comment for why that distinction matters for vocab intake.
+    """
+    pos1 = word.feature.pos1
+    if pos1 in _SKIP_POS1 or pos1 in _FUNCTION_POS1:
+        return False
+    return _pos2Of(word) not in _GRAMMATICALIZED_POS2
+
+
 def _analyzeToken(word) -> dict:
     """
     Build one word-level result from a single fugashi token.
@@ -242,7 +293,7 @@ def _analyzeToken(word) -> dict:
     """
     surface = word.surface
     reading = _katakanaToHiragana(tokenReading(word))
-    lemma = word.feature.lemma
+    lemma = word.feature.lemma or surface  # unidic gives None for some unknown tokens
     lemmaReading = _katakanaToHiragana(getattr(word.feature, "lForm", None) or tokenReading(word))
 
     # unidic-lite bakes a "-<POS category>" disambiguator suffix directly into the lemma for
@@ -262,6 +313,12 @@ def _analyzeToken(word) -> dict:
     # fall back to classifying the surface directly instead of trusting the broken lemma.
     if _containsKanji(surface) and not _containsKanji(lemma):
         lemma, lemmaReading = surface, reading
+
+    # lForm bypasses tokenReading()'s casual-register overrides (明日 -> アス, 私 -> ワタクシ), so
+    # re-apply them here or flashcards show あす/わたくし while the lyric romaji says ashita.
+    casual = overrideReading(lemma)
+    if casual:
+        lemmaReading = _katakanaToHiragana(casual)
 
     category = classifyReading(lemma, lemmaReading)
 
@@ -292,13 +349,24 @@ def _analyzeToken(word) -> dict:
 
 def analyzeSelection(fullText: str, startOffset: int, endOffset: int) -> list:
     """
-    Full Milestone 2+3+6 result for a highlighted span: one entry per Kanji-containing word
-    overlapping the highlighted range (non-Kanji tokens - bare particles, punctuation - are
-    skipped). Highlighting a single word gives a one-item list; highlighting a whole line gives
-    a per-word breakdown of every Kanji word in it.
+    Full Milestone 2+3+6 result for a highlighted span: one entry per real word overlapping the
+    highlighted range - every Kanji-containing word, PLUS every kana-only content word (real gap
+    found via a live-vocab audit: this used to keep Kanji-containing words only, which silently
+    dropped every kana-only content word - ちょっと/とても/これ/etc - from vocab intake entirely,
+    not just particles/punctuation as the exclusion was originally intended to cover). A
+    katakana-only surface is still excluded here (loanwords are out of scope for this filter, not
+    "not a word"), and a real function word (particle/auxiliary-verb/grammaticalized light-verb
+    use) is still excluded via isContentWord() - see its own docstring. Highlighting a single word
+    gives a one-item list; highlighting a whole line gives a per-word breakdown of every eligible
+    word in it. Tokens with no Japanese script at all (English words embedded in a Japanese lyric)
+    are excluded - see _hasJapaneseScript().
     """
     tokens = resolveContextReading(fullText, startOffset, endOffset)
-    return [_analyzeToken(word) for word in tokens if _containsKanji(word.surface)]
+    return [
+        _analyzeToken(word) for word in tokens
+        if _hasJapaneseScript(word.surface)
+        and (_containsKanji(word.surface) or (isContentWord(word) and not _isKatakanaOnly(word.surface)))
+    ]
 
 
 # --- Milestone 3: Chinese-cognate lookup via CC-CEDICT ---
@@ -769,7 +837,7 @@ def scanLyricsForKanjiVocab(labelsGlob: str = _SAVED_LABELS_GLOB) -> dict:
 
         seenLemmasThisSong = set()
         for lyricEntry in lyricEntries:
-            text = lyricEntry.get("korean") or ""
+            text = stripAll(lyricEntry.get("korean") or "")
             if not text.strip():
                 continue
 

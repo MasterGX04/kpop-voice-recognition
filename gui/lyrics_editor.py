@@ -6,6 +6,8 @@ import tkinter as tk
 from tkinter import messagebox
 from gui.lyrics_box import LyricBox, LYRIC_LEAD_CHUNKS
 from core.util_functions import ModalGuard, findLabelIndexBySpan
+from core.lyric_text import (EDITOR_PAUSE_GLYPH, stripAll, stripAllWithSelection,
+                             toEditorText, fromEditorText)
 
 def _truncate(text: str, maxChars: int = 80) -> str:
     text = (text or "").strip().replace("\n", " ")
@@ -469,6 +471,20 @@ class LyricsEditor:
         koreanEntry = tk.Text(koreanFrame, height=4, wrap="word", undo=True, autoseparators=True, maxundo=-1)
         koreanEntry.pack(fill="x", padx=10)
 
+        # The pause marker is an invisible character in storage (core.lyric_text), so the editor shows a
+        # visible stand-in; it is converted on load/save and stripped before any analysis below.
+        def insertPause(event=None):
+            koreanEntry.insert("insert", EDITOR_PAUSE_GLYPH)
+            koreanEntry.focus_set()
+            return "break"
+
+        koreanEntry.bind("<Control-space>", insertPause)
+        pauseRow = tk.Frame(koreanFrame)
+        pauseRow.pack(fill="x", padx=10, pady=(2, 0))
+        tk.Button(pauseRow, text=f"Insert pause {EDITOR_PAUSE_GLYPH}  (Ctrl+Space)", command=insertPause).pack(side="left")
+        tk.Label(pauseRow, text=f"{EDITOR_PAUSE_GLYPH} = the singer pauses here (karaoke timing only; not shown on the lyric card)",
+                 fg="grey").pack(side="left", padx=8)
+
         # Romanization / Reading Field
         romanFrame = tk.Frame(scrollFrame)
         romanFrame.pack(fill="x", pady=5)
@@ -486,7 +502,7 @@ class LyricsEditor:
         def autoFillReading():
             from core.japanese_utils import kanjiTextToReading
 
-            kanjiText = koreanEntry.get("1.0", "end").strip("\n")
+            kanjiText = fromEditorText(koreanEntry.get("1.0", "end")).strip("\n")
             if not kanjiText.strip():
                 messagebox.showwarning(
                     "Nothing to Convert", "Type the Japanese lyric above first.", parent=inputWindow
@@ -527,9 +543,12 @@ class LyricsEditor:
                 # against itself. Without the "or (0,)" fallback, [0] on that None crashes
                 # with "TypeError: 'NoneType' object is not subscriptable" every time the
                 # beginning of the text is highlighted.
-                fullText = koreanEntry.get("1.0", "end-1c")
+                fullText = fromEditorText(koreanEntry.get("1.0", "end-1c"))
                 startOffset = (koreanEntry.count("1.0", selStart, "chars") or (0,))[0]
                 endOffset = (koreanEntry.count("1.0", selEnd, "chars") or (0,))[0]
+                # Analyse (and store as the occurrence's lyric text) the clean line: no pause marker,
+                # no "|" colour split, with the highlighted range re-expressed in the clean text.
+                fullText, startOffset, endOffset = stripAllWithSelection(fullText, startOffset, endOffset)
 
                 results = analyzeSelection(fullText, startOffset, endOffset)
 
@@ -619,6 +638,7 @@ class LyricsEditor:
                 text = fullText[startOffset:endOffset]
             else:
                 text = koreanEntry.get("1.0", "end-1c")
+            text = stripAll(fromEditorText(text))
 
             if not text.strip():
                 messagebox.showwarning(
@@ -680,6 +700,7 @@ class LyricsEditor:
                 text = koreanEntry.get(selStart, selEnd)
             else:
                 text = koreanEntry.get("1.0", "end-1c")
+            text = stripAll(fromEditorText(text))
 
             if not text.strip():
                 messagebox.showwarning(
@@ -746,7 +767,7 @@ class LyricsEditor:
             tk.Label(scrollFrame, text=statusText, fg=statusColor).pack(anchor="w", padx=10, pady=(2, 0))
 
         # Prefill text fields
-        koreanEntry.insert("1.0", prefillKorean)
+        koreanEntry.insert("1.0", toEditorText(prefillKorean))
         romanEntry.insert("1.0", prefillRoman)
         engEntry.insert("1.0", prefillEnglish)
 
@@ -805,7 +826,7 @@ class LyricsEditor:
             adLibVar.set("AdLib" if isAdLib else "Normal")
 
             koreanEntry.delete("1.0", "end")
-            koreanEntry.insert("1.0", selectedLyric.koreanLyric)
+            koreanEntry.insert("1.0", toEditorText(selectedLyric.koreanLyric))
 
             romanEntry.delete("1.0", "end")
             romanEntry.insert("1.0", selectedLyric.romanization)
@@ -834,7 +855,7 @@ class LyricsEditor:
                 return
 
             hasNativeText = langVar.get() in ("Korean", "Japanese")
-            koreanLyric = koreanEntry.get("1.0", "end").strip() if hasNativeText else ""
+            koreanLyric = fromEditorText(koreanEntry.get("1.0", "end")).strip() if hasNativeText else ""
             romanization = romanEntry.get("1.0", "end").strip() if hasNativeText else ""
             englishTrans = engEntry.get("1.0", "end").strip()
 
@@ -1024,7 +1045,7 @@ class LyricsEditor:
                     rowColor = app.getMemberColor(memberNames[0], forLyrics=True) or "#000000"
 
                 # Preview: Korean then English
-                korean = getattr(lyric, "koreanLyric", "") or ""
+                korean = toEditorText(getattr(lyric, "koreanLyric", "") or "")
                 english = getattr(lyric, "englishTrans", "") or ""
                 kPreview = _preview(korean, maxLines=2)
                 ePreview = _preview(english, maxLines=2)

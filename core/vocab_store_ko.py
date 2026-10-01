@@ -5,9 +5,11 @@ core.korean_vocab.analyzeKoreanSelection()'s per-word shape.
 """
 
 import json
+from collections import defaultdict
 
 from core.vocab_db import getConnection
-from core.vocab_store import now, computeNextReview
+from core import vocab_store
+from core.vocab_store import now
 
 
 def upsertVocab(entry: dict, conn=None):
@@ -22,9 +24,8 @@ def upsertVocab(entry: dict, conn=None):
     and meaning_locked (set by those exact functions) are the fix - a rescan just leaves a locked
     word's candidates/meaning alone, still refreshing `surface` (harmless, cosmetic) either way.
 
-    Creates srs_card_ko only on first insert - meaning_state starts "known" (1) when at least one
-    real Hanja candidate was found (Sino-Korean vocabulary), reading_state always starts at 0
-    (Hangul already IS the reading, but the word's active recall still starts unseen).
+    Creates srs_card_ko only on first insert, with all three tracks New (FSRS state 0) and due
+    now - see core/srs_fsrs.py.
 
     Pass an existing `conn` (and commit/close it yourself) when calling this in a loop - e.g.
     core.vocab_sync scanning hundreds of words - so the loop isn't paying for a fresh connection
@@ -69,12 +70,11 @@ def upsertVocab(entry: dict, conn=None):
                 )
 
         if isNew:
-            meaningState = 1 if candidates else 0
             conn.execute(
                 """INSERT INTO srs_card_ko (
-                       vocab_ko_id, meaning_state, reading_state, meaning_due_ts, reading_due_ts
-                   ) VALUES (?, ?, 0, ?, ?)""",
-                (vocabId, meaningState, ts, ts),
+                       vocab_ko_id, meaning_due_ts, reading_due_ts, cloze_due_ts
+                   ) VALUES (?, ?, ?, ?)""",
+                (vocabId, ts, ts, ts),
             )
 
         if ownConn:
@@ -87,7 +87,10 @@ def upsertVocab(entry: dict, conn=None):
 
 def addOccurrence(vocab_id: int, group: str, song: str, singer_names, lyric_line: str,
                    lyric_id, start_chunk, end_chunk, conn=None) -> bool:
-    """Returns True if a new occurrence row was inserted, False if it already existed.
+    """Returns True if a new occurrence row was inserted, False if it already existed (in which
+    case its mutable fields - notably start_chunk/end_chunk - are refreshed in place, so re-running
+    a scan after the label-run resolver (core.label_runs) or the lyric text itself changes actually
+    updates the cached span instead of leaving a stale one behind forever).
 
     Pass an existing `conn` when calling this in a loop - see upsertVocab()'s docstring."""
     ownConn = conn is None
@@ -102,30 +105,40 @@ def addOccurrence(vocab_id: int, group: str, song: str, singer_names, lyric_line
             (vocab_id, group, song, json.dumps(singer_names), lyric_line, lyric_id,
              start_chunk, end_chunk, now()),
         )
+        isNew = cursor.rowcount > 0
+        if not isNew:
+            conn.execute(
+                """UPDATE vocab_occurrence_ko
+                   SET group_name = ?, song_title = ?, singer_names_json = ?, lyric_line = ?,
+                       start_chunk = ?, end_chunk = ?
+                   WHERE vocab_ko_id = ? AND lyric_id = ?""",
+                (group, song, json.dumps(singer_names), lyric_line, start_chunk, end_chunk,
+                 vocab_id, lyric_id),
+            )
         if ownConn:
             conn.commit()
-        return cursor.rowcount > 0
+        return isNew
     finally:
         if ownConn:
             conn.close()
 
 
-def submitReview(vocab_id: int, track: str, rating: str):
+def submitReview(vocab_id: int, track: str, rating: str, nowTs=None, durationMs=None):
+    """track is "meaning" | "reading" | "cloze"; rating is "again" | "hard" | "good" | "easy"."""
     conn = getConnection()
     try:
-        boxCol, easeCol = f"{track}_box", f"{track}_ease"
-        dueCol, lastCol = f"{track}_due_ts", f"{track}_last_reviewed_ts"
-        row = conn.execute(
-            f"SELECT {boxCol}, {easeCol} FROM srs_card_ko WHERE vocab_ko_id = ?", (vocab_id,)
-        ).fetchone()
-        if row is None:
-            return
-        newBox, newEase, dueTs = computeNextReview(row[0], row[1], rating)
-        conn.execute(
-            f"UPDATE srs_card_ko SET {boxCol}=?, {easeCol}=?, {dueCol}=?, {lastCol}=? WHERE vocab_ko_id=?",
-            (newBox, newEase, dueTs, now(), vocab_id),
-        )
+        vocab_store.submitReview(conn, "srs_card_ko", "vocab_ko_id", "ko", vocab_id, track,
+                                 rating, nowTs, durationMs)
         conn.commit()
+    finally:
+        conn.close()
+
+
+def previewIntervals(vocab_id: int, track: str, nowTs=None):
+    """{again, hard, good, easy} -> seconds until due, or None if the word has no card."""
+    conn = getConnection()
+    try:
+        return vocab_store.previewIntervals(conn, "srs_card_ko", "vocab_ko_id", vocab_id, track, nowTs)
     finally:
         conn.close()
 
@@ -145,7 +158,16 @@ def _rowToCard(conn, r) -> dict:
         "vocabId": r[0], "lemma": r[1], "surface": r[2],
         "meaning": json.loads(r[3]) if r[3] else None,
         "hanjaCandidates": _hanjaCandidatesFor(conn, r[0]),
+        "suspended": bool(conn.execute(
+            "SELECT meaning_suspended AND reading_suspended AND cloze_suspended "
+            "FROM srs_card_ko WHERE vocab_ko_id = ?", (r[0],)).fetchone()[0]),
     }
+
+
+def _cardById(conn, vocabId):
+    row = conn.execute(
+        "SELECT id, lemma, surface, meaning_json FROM vocab_ko WHERE id = ?", (vocabId,)).fetchone()
+    return _rowToCard(conn, row) if row else None
 
 
 def getDueCards(track: str, limit: int = 20) -> list:
@@ -159,6 +181,60 @@ def getDueCards(track: str, limit: int = 20) -> list:
             (now(), limit),
         ).fetchall()
         return [_rowToCard(conn, r) for r in rows]
+    finally:
+        conn.close()
+
+
+def getNextCard(track: str, nowTs=None, newLimit=vocab_store.NEW_PER_DAY,
+                learnAheadSecs: int = vocab_store.LEARN_AHEAD_SECS, song=None, shuffleNew=False):
+    """Next card for the study queue (see vocab_store.pickNextCard), with a "queueType" key
+    ("learning" | "review" | "new"), or None when nothing is left. `song` = (group, song_title)
+    limits the queue to that song's words; `shuffleNew` randomizes new-card order."""
+    conn = getConnection()
+    try:
+        onlyIds = vocab_store.songVocabIds(conn, "vocab_occurrence_ko", *song) if song else None
+        picked = vocab_store.pickNextCard(
+            conn, "ko", "srs_card_ko", "vocab_ko_id", "vocab_occurrence_ko", "vocab_ko_id",
+            track, nowTs, newLimit, learnAheadSecs, onlyIds=onlyIds, shuffleNew=shuffleNew,
+        )
+        if picked is None:
+            return None
+        vocabId, queueType = picked
+        row = conn.execute(
+            "SELECT id, lemma, surface, meaning_json FROM vocab_ko WHERE id = ?", (vocabId,)
+        ).fetchone()
+        card = _rowToCard(conn, row)
+        card["queueType"] = queueType
+        return card
+    finally:
+        conn.close()
+
+
+def _mutate(fn, vocab_ids, **kw):
+    conn = getConnection()
+    try:
+        fn(conn, "srs_card_ko", "vocab_ko_id", [vocab_ids] if isinstance(vocab_ids, int) else vocab_ids, **kw)
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def setSuspended(vocab_ids, suspended: bool):
+    """Suspend/unsuspend every track of the given word(s) (an id or a list of ids)."""
+    _mutate(vocab_store.setSuspended, vocab_ids, suspended=suspended)
+
+
+def markKnown(vocab_ids, nowTs=None):
+    """"I already know this" for the given word(s) - see vocab_store.markKnown."""
+    _mutate(vocab_store.markKnown, vocab_ids, nowTs=nowTs)
+
+
+def listTriageCandidates(limit: int = 100) -> list:
+    conn = getConnection()
+    try:
+        return vocab_store.triageCandidates(
+            conn, "srs_card_ko", "vocab_ko_id", "vocab_ko", "vocab_occurrence_ko",
+            "vocab_ko_id", "NULL", limit)
     finally:
         conn.close()
 
@@ -261,18 +337,88 @@ def clearHanjaCandidates(vocab_id: int):
         conn.close()
 
 
-def getOccurrences(vocab_id: int, limit: int = 5) -> list:
+def listSongs() -> list:
+    """[{"group", "song", "wordCount"}] for the Group -> Song picker."""
     conn = getConnection()
     try:
+        return vocab_store.listSongs(conn, "vocab_occurrence_ko")
+    finally:
+        conn.close()
+
+
+def listSongVocab(group: str, song: str) -> list:
+    """Every word in one song as cards, in lyric order - no row cap (unlike listAllVocab)."""
+    conn = getConnection()
+    try:
+        ids = vocab_store.songVocabIds(conn, "vocab_occurrence_ko", group, song)
+        return [c for c in (_cardById(conn, i) for i in ids) if c]
+    finally:
+        conn.close()
+
+
+def getOccurrences(vocab_id: int, limit: int = 5, group=None, song=None) -> list:
+    """`group`/`song` (both) narrow to one song's occurrences, in lyric order."""
+    conn = getConnection()
+    try:
+        where, args, order = "vocab_ko_id = ?", [vocab_id], ""
+        if group is not None and song is not None:
+            where += " AND group_name = ? AND song_title = ?"
+            args += [group, song]
+            order = "ORDER BY start_chunk, id"
         rows = conn.execute(
-            """SELECT group_name, song_title, singer_names_json, lyric_line, start_chunk, end_chunk
-               FROM vocab_occurrence_ko WHERE vocab_ko_id = ? LIMIT ?""",
-            (vocab_id, limit),
+            f"""SELECT group_name, song_title, singer_names_json, lyric_line, start_chunk, end_chunk, lyric_id
+               FROM vocab_occurrence_ko WHERE {where} {order} LIMIT ?""",
+            (*args, limit),
         ).fetchall()
         return [
             {"group": r[0], "song": r[1], "singers": json.loads(r[2]) if r[2] else [],
-             "lyricLine": r[3], "startChunk": r[4], "endChunk": r[5]}
+             "lyricLine": r[3], "startChunk": r[4], "endChunk": r[5], "lyricId": r[6]}
             for r in rows
         ]
+    finally:
+        conn.close()
+
+
+def getCoOccurrenceGraph(min_shared_songs: int = 1) -> dict:
+    """Korean counterpart of core.vocab_store_ja.getCoOccurrenceGraph() - see its docstring for the
+    full design (Milestone 4 of .claude/FLASHCARD_WEB_UPGRADE_PLAN.md). Same shape, same
+    store-layer-only scope, just over vocab_occurrence_ko/vocab_ko instead."""
+    conn = getConnection()
+    try:
+        rows = conn.execute(
+            "SELECT DISTINCT vocab_ko_id, group_name, song_title FROM vocab_occurrence_ko"
+        ).fetchall()
+
+        wordsBySong = defaultdict(set)
+        for vocabId, group, song in rows:
+            wordsBySong[(group, song)].add(vocabId)
+
+        pairSongs = defaultdict(set)
+        for song, words in wordsBySong.items():
+            wordList = sorted(words)
+            for i in range(len(wordList)):
+                for j in range(i + 1, len(wordList)):
+                    pairSongs[(wordList[i], wordList[j])].add(song)
+
+        edges = [
+            {
+                "a": a, "b": b, "sharedSongs": len(songs),
+                "songs": [{"group": g, "song": s} for g, s in sorted(songs)],
+            }
+            for (a, b), songs in pairSongs.items()
+            if len(songs) >= min_shared_songs
+        ]
+
+        nodeIds = {vocabId for edge in edges for vocabId in (edge["a"], edge["b"])}
+        if not nodeIds:
+            return {"nodes": [], "edges": []}
+
+        placeholders = ",".join("?" for _ in nodeIds)
+        lemmaRows = conn.execute(
+            f"SELECT id, lemma FROM vocab_ko WHERE id IN ({placeholders})", tuple(nodeIds)
+        ).fetchall()
+        nodes = [{"vocabId": r[0], "lemma": r[1]} for r in lemmaRows]
+
+        return {"nodes": nodes, "edges": edges}
     finally:
         conn.close()

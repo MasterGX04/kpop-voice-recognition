@@ -163,6 +163,21 @@ class OnyomiRootPlusNativeSuffixBugTests(unittest.TestCase):
             self.assertEqual(match["category"], "kunyomi")
 
 
+class EnglishInJapaneseLyricTests(unittest.TestCase):
+    """Japanese lyrics mix in English; those words must never become vocab entries."""
+
+    def test_english_words_are_not_vocab(self):
+        text = "How I am gonna find it どうやって? Oh let me know"
+        lemmas = [e["lemma"] for e in analyzeSelection(text, 0, len(text))]
+        for lemma in lemmas:
+            self.assertTrue(any(ord(ch) > 0x3000 for ch in lemma), f"non-Japanese lemma {lemma!r}")
+
+    def test_japanese_words_next_to_english_are_still_kept(self):
+        text = "Baby 時間 is running"
+        lemmas = [e["lemma"] for e in analyzeSelection(text, 0, len(text))]
+        self.assertEqual(lemmas, ["時間"])
+
+
 class AnalyzeSelectionCognateGatingTests(unittest.TestCase):
     """
     Chinese-cognate lookup must only run for onyomi/mixed words - never fabricated for a
@@ -604,6 +619,44 @@ class JapaneseMeaningLookupTests(unittest.TestCase):
         self.assertEqual(len(entries), 1)
         self.assertIsNone(entries[0]["chineseCognate"])
         self.assertEqual(entries[0]["japaneseMeaning"]["status"], "found")
+
+
+class KanaOnlyWordIntakeTests(unittest.TestCase):
+    """
+    Real gap found via a live-vocab audit: analyzeSelection() used to keep Kanji-containing words
+    only, which silently dropped every kana-only CONTENT word (ちょっと, とても, これ, ...) from
+    vocab intake - not just particles/punctuation, which was the only exclusion actually intended.
+    Fixed via core.kanji_reference.isContentWord()/_isKatakanaOnly() (Milestone 5 prerequisite,
+    .claude/FLASHCARD_WEB_UPGRADE_PLAN.md).
+    """
+
+    def test_kana_only_adverb_is_now_captured(self):
+        # ちょっと has no Kanji in its surface at all, but is a real, glossable adverb (citation
+        # lemma 一寸) - must no longer be silently dropped.
+        entries = analyzeSelection("ちょっと待って", 0, 4)
+        chotto = next(e for e in entries if e["surface"] == "ちょっと")
+        self.assertEqual(chotto["japaneseMeaning"]["status"], "found")
+
+    def test_katakana_only_loanword_still_excluded(self):
+        # コーヒー ("coffee") is a real content word by POS, but a katakana-only loanword -
+        # deliberately still excluded (see isContentWord()'s docstring: Kanji-presence is
+        # irrelevant to content-word status, but katakana-only surfaces stay out of scope here).
+        entries = analyzeSelection("コーヒーを飲む", 0, 4)
+        self.assertNotIn("コーヒー", [e["surface"] for e in entries])
+
+    def test_particle_still_excluded(self):
+        # は (topic marker) must not suddenly start being captured as "vocab" - the content/
+        # function distinction still excludes real particles exactly as before.
+        entries = analyzeSelection("これは本です", 0, 6)
+        self.assertNotIn("は", [e["surface"] for e in entries])
+
+    def test_kana_only_word_never_fabricates_a_chinese_cognate(self):
+        # A kana-only word must classify as something other than onyomi/mixed (see
+        # classifyReading()'s kanji-required base case) so chineseCognate stays None - never a
+        # spurious "Chinese cognate" pasted together from bare kana.
+        entries = analyzeSelection("とても嬉しい", 0, 3)
+        totemo = next(e for e in entries if e["surface"] == "とても")
+        self.assertIsNone(totemo["chineseCognate"])
 
 
 class MandarinPinyinMnemonicTests(unittest.TestCase):

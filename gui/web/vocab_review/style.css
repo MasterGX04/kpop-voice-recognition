@@ -96,14 +96,96 @@ body {
 
 .occurrence-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   margin-top: 8px;
   color: var(--muted);
 }
 
+.occurrence-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.occurrence-body {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Full lyric, never truncated: keep the stored line breaks, wrap long lines. */
+.occurrence-line {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.7;
+  color: var(--fg);
+  margin: 2px 0;
+}
+
+.occurrence-line .tok {
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.occurrence-line .tok:hover {
+  background: var(--border);
+}
+
+.cognate-bridge {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.cognate-leg {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: var(--card-bg);
+}
+
+.cognate-leg h4 {
+  margin: 0 0 4px;
+  font-size: 0.78em;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+.cognate-leg.empty {
+  color: var(--muted);
+  font-style: italic;
+}
+
 .hanja-picker {
   margin-top: 10px;
+}
+
+.cloze-panel {
+  text-align: center;
+}
+
+.cloze-line {
+  font-size: 22px;
+  line-height: 1.6;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px 16px;
+  margin: 18px 0 12px;
+}
+
+.cloze-answer {
+  margin-top: 12px;
+  font-size: 16px;
+  color: var(--fg);
+}
+
+.cloze-answer div:first-child {
+  font-weight: 600;
+  font-size: 20px;
 }
 
 .hanja-candidate-row {
@@ -151,6 +233,10 @@ dialog::backdrop {
   background: rgba(0, 0, 0, 0.4);
 }
 
+.pause-dialog { max-width: 560px; width: 90vw; }
+.pause-dialog textarea { line-height: 1.6; margin: 6px 0; box-sizing: border-box; }
+.dialog-error { color: #c0392b; margin-top: 8px; white-space: pre-wrap; }
+
 .dialog-actions {
   display: flex;
   justify-content: flex-end;
@@ -162,3 +248,88 @@ textarea {
   width: 100%;
   font: inherit;
 }
+
+.rate-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 72px;
+}
+.rate-interval {
+  font-size: 0.8em;
+  opacity: 0.7;
+}
+
+/* .controls/.filters/.nav set display:flex above, which silently overrides the [hidden]
+   attribute - make hidden always win so Study mode really hides the Browse-only rows. */
+[hidden] {
+  display: none !important;
+}
+
+.triage-list {
+  max-height: 60vh;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+}
+.triage-row {
+  display: grid;
+  grid-template-columns: 28px 120px 120px 1fr 48px;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 10px;
+  border-bottom: 1px solid #eee;
+}
+.triage-row .gloss { opacity: 0.75; }
+.triage-row .count { text-align: right; opacity: 0.6; }
+
+/* ---- Song picker (Group -> Song) ---- */
+.song-pick-btn { min-width: 220px; text-align: left; }
+.song-dialog { max-width: 640px; width: 90vw; }
+.song-dialog input[type="search"] { width: 100%; font: inherit; padding: 6px 8px; box-sizing: border-box; }
+.song-panes {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 8px;
+  margin-top: 10px;
+  height: 50vh;
+}
+.song-groups, .song-list {
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.song-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 10px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+}
+.song-item:hover { background: rgba(127, 127, 127, 0.15); }
+.song-item.active { background: rgba(80, 130, 255, 0.22); font-weight: 600; }
+.song-item .count { opacity: 0.6; font-size: 0.85em; }
+.song-item .sub { opacity: 0.6; font-size: 0.85em; }
+
+/* ---- Word index for the selected song ---- */
+.song-words { margin: 6px 0; }
+.song-words summary { cursor: pointer; }
+.song-words-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-height: 22vh;
+  overflow-y: auto;
+  margin-top: 6px;
+}
+.song-chip {
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 0.95em;
+}
+.song-chip:hover { background: rgba(127, 127, 127, 0.15); }
+.song-chip.current { background: rgba(80, 130, 255, 0.3); border-color: rgba(80, 130, 255, 0.8); }

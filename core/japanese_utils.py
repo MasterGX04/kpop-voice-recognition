@@ -2,6 +2,8 @@
 
 import re
 
+from core.lyric_text import stripAll
+
 _tagger = None
 _kakasi = None
 
@@ -89,6 +91,28 @@ _READING_OVERRIDES = {
     # fused token with a completely different surface, so it's unaffected by this override).
     "明日": "アシタ",
 }
+
+
+# Old-form (kyuujitai) / variant kanji that UniDic doesn't know at all - it tokenizes them as an
+# unknown noun with no reading, which then falls through to kakasi's bare on'yomi guess (e.g. BTS
+# "觸れた" came out "shoku reta" instead of "furetta"). Each maps 1:1 to its modern form, so
+# character offsets are preserved (resolveContextReading depends on that).
+_VARIANT_KANJI = str.maketrans({
+    "觸": "触", "體": "体", "戀": "恋", "將": "将", "來": "来", "當": "当", "變": "変",
+    "戰": "戦", "對": "対", "傳": "伝", "經": "経", "點": "点", "國": "国",
+    "學": "学", "驗": "験", "樂": "楽", "區": "区", "讀": "読", "舊": "旧", "會": "会",
+    "壞": "壊", "寫": "写", "聲": "声", "歸": "帰", "應": "応", "眞": "真", "實": "実",
+})
+
+
+def normalizeVariantKanji(text: str) -> str:
+    """Map old-form kanji to the modern forms UniDic recognizes (1:1, length-preserving)."""
+    return text.translate(_VARIANT_KANJI)
+
+
+def overrideReading(surface: str):
+    """The casual-register katakana reading for a surface in _READING_OVERRIDES, else None."""
+    return _READING_OVERRIDES.get(surface)
 
 
 def _isAllKatakana(text: str) -> bool:
@@ -184,11 +208,11 @@ def kanjiLineToReading(line: str, outputFormat: str = "romaji") -> str:
 
     outputFormat: "hiragana" or "romaji".
 
-    Lyric lines use '|' as a UI-only marker for per-member color splits
-    (see LyricBox._createColorCodedText) - it carries no linguistic meaning,
-    so it's stripped before tokenizing and never appears in the output.
+    Lyric lines use '|' (per-member color split, see LyricBox._createColorCodedText) and the
+    invisible pause marker (see core.lyric_text) as UI/timing-only markers - neither carries
+    linguistic meaning, so both are stripped before tokenizing and never appear in the output.
     """
-    stripped = line.replace("|", "")
+    stripped = normalizeVariantKanji(stripAll(line))
     if not stripped.strip():
         return ""
 

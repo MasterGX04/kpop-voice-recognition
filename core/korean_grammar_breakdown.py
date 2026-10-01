@@ -17,7 +17,14 @@ from core.korean_hanja import lookupHanja
 # numerals actually written in the lyric, as opposed to Hangul) are NOT skipped - real Korean
 # content, just spelled with a different script, so they still go through the ordinary "content"
 # path below.
-_SKIP_TAGS = {"SF", "SP", "SS", "SE", "SO", "SW", "SL"}
+#
+# Real, currently-live bug found via a live-DB audit: this kiwipiepy build never actually emits
+# the plain "SS" tag the Sejong tagset docs describe for quotation marks/brackets - it splits it
+# into "SSO" (opening '"([{) and "SSC" (closing '")]}), confirmed directly via tokenize(). Neither
+# was in this set, so every quote mark and bracket in a lyric fell through to the ordinary
+# "content" role and got stored as if it were a real vocabulary word (e.g. a bare "(" or "'" row
+# in vocab_ko) - not stale data, the current pipeline was still producing these.
+_SKIP_TAGS = {"SF", "SP", "SS", "SSO", "SSC", "SE", "SO", "SW", "SL"}
 
 # A function-word lemma's real gloss depends on its tag, not just its lemma: the exact same
 # lemma string can mean two unrelated things under two different tags - confirmed via the real
@@ -148,6 +155,14 @@ _HADA_COMPOSABLE_SUFFIX_TAGS = {"XSA": "VA", "XSV": "VV"}
 # MAG root-stripping fallback.
 _ADVERB_SUFFIX_CHARS = ("히", "이")
 
+# Hangul syllable-block composition constants (Unicode's algorithmic Hangul Syllables block,
+# U+AC00-U+D7A3 = (initial * 21 + medial) * 28 + final, 19 initials x 21 medials x 28 finals -
+# see _addBieupBatchim()'s docstring for why this is needed at all.
+_HANGUL_BASE = 0xAC00
+_HANGUL_LAST = 0xD7A3
+_V_COUNT, _T_COUNT = 21, 28
+_BIEUP_TAIL_INDEX = 17  # ㅂ's index in the 28-entry final-consonant table (0 = no final)
+
 # Dependent/bound nouns (의존명사) - a small, well-known closed grammatical class in Korean that
 # can never stand alone (수 없다/있다 "can't/can", 것/거 "thing" as a nominalizer, 줄 알다/모르다
 # "to know/not know how to", etc.). Kiwi tags these NNB, a "content" noun tag, but they function
@@ -182,7 +197,56 @@ def _stripAdverbSuffix(lemma):
     return None
 
 
+def _addBieupBatchim(syllable):
+    """
+    Returns `syllable` (a single plain Hangul syllable block with no existing final consonant)
+    with a ㅂ batchim added - e.g. 러 -> 럽, 미 -> 밉, 까 -> 깝 - or None if `syllable` isn't a
+    single batchim-less Hangul syllable. Used only by the ㅂ-irregular reversal in _resolveGloss()
+    (see that call site), where the target syllable is always batchim-less by construction: the
+    ㅂ moved out of it to help form the following "워" syllable in the conjugated form, so putting
+    it back is always adding a batchim, never overwriting one.
+    """
+    if len(syllable) != 1:
+        return None
+    code = ord(syllable)
+    if not (_HANGUL_BASE <= code <= _HANGUL_LAST):
+        return None
+    if (code - _HANGUL_BASE) % _T_COUNT != 0:
+        return None
+    return chr(code + _BIEUP_TAIL_INDEX)
+
+
+def _bieupIrregularAdjective(lemma):
+    """
+    Reverses the ㅂ-irregular "-어하다" derivation (부럽다 "enviable" + 어하다 -> 부러워하다 "to
+    envy", 밉다 + 어하다 -> 미워하다, 안타깝다 + 어하다 -> 안타까워하다) back to its base adjective's
+    citation form, or None if `lemma` doesn't have the right shape to try. This is a categorical,
+    exceptionless Korean sound-change (ㅂ-irregular stem + 어 always surfaces as ...워), not a
+    per-word guess: the syllable immediately before "워" always corresponds to the base adjective's
+    last syllable with a ㅂ batchim added back and the "워" syllable dropped entirely (부러+워 ->
+    부럽, not a character-by-character substitution). Only ever used as a fallback when a direct
+    lookup of the -어하다 verb itself already failed (see _resolveGloss) - the caller still verifies
+    the reconstructed candidate against the real dictionary before accepting it, so a shape that
+    happens to match but isn't a real word (or isn't this derivation at all) is never fabricated
+    into a gloss, just silently rejected downstream.
+    """
+    if not lemma.endswith("워하다") or len(lemma) < 4:
+        return None
+    targetSyllable = lemma[-4]
+    newSyllable = _addBieupBatchim(targetSyllable)
+    if newSyllable is None:
+        return None
+    return lemma[:-4] + newSyllable + "다"
+
+
 def _resolveGloss(token, nextToken):
+    """
+    Returns (resolvedLemma, result) - `result` is the usual {"status", "pos", "gloss"} dict, and
+    `resolvedLemma` is the citation form that dict actually came from: token.lemma itself for a
+    plain direct hit, or the composed/reconstructed form (e.g. "나른하다", "부럽다") whenever one of
+    the fallbacks below is what actually found the entry. Callers store `resolvedLemma`, never
+    token.lemma blindly - see _contentEntry()'s own comment for why that distinction matters.
+    """
     # XR (bound root) - Kiwi's own tag for a root that can't stand alone (confirmed via testing:
     # 조용/나른 are tagged XR, while an ordinary noun that also happens to combine with 하다, like
     # 평온, is tagged NNG instead - Kiwi already draws this line for us). When one is immediately
@@ -194,9 +258,10 @@ def _resolveGloss(token, nextToken):
     # either word.
     if token.tag == "XR" and nextToken is not None and nextToken.lemma == "하" \
             and nextToken.tag in _HADA_COMPOSABLE_SUFFIX_TAGS:
-        composed = lookupKoreanMeaning(token.lemma + "하다", _HADA_COMPOSABLE_SUFFIX_TAGS[nextToken.tag])
+        composedLemma = token.lemma + "하다"
+        composed = lookupKoreanMeaning(composedLemma, _HADA_COMPOSABLE_SUFFIX_TAGS[nextToken.tag])
         if composed["status"] == "found":
-            return composed
+            return composedLemma, composed
 
     # A root followed by the adverbializer XSM (히/이, e.g. 따스+히) instead of -하다 directly -
     # best-effort: still try the root's own -하다 citation form, since Wiktionary documents that
@@ -205,9 +270,10 @@ def _resolveGloss(token, nextToken):
     # (a genuine coverage gap, e.g. 따스 has no recoverable entry anywhere in the index).
     if token.tag == "XR" and nextToken is not None and nextToken.tag == "XSM":
         for composedTag in ("VA", "VV"):
-            composed = lookupKoreanMeaning(token.lemma + "하다", composedTag)
+            composedLemma = token.lemma + "하다"
+            composed = lookupKoreanMeaning(composedLemma, composedTag)
             if composed["status"] == "found":
-                return composed
+                return composedLemma, composed
 
     result = lookupKoreanMeaning(token.lemma, token.tag)
 
@@ -222,9 +288,24 @@ def _resolveGloss(token, nextToken):
         if root:
             rootResult = lookupKoreanMeaning(root, "NNG")
             if rootResult["status"] == "found":
-                return rootResult
+                return root, rootResult
 
-    return result
+    # -어하다 psych-adjective-to-verb derivation (좋다 -> 좋아하다 "to like", 부럽다 -> 부러워하다
+    # "to envy") - a real, productive coverage gap found via a live-DB audit: Kiwi already gives
+    # these their own correct citation-form lemma (e.g. "부러워하다"), but the derived verb form
+    # itself is often absent from the Wiktionary index, which only documents the base adjective.
+    # Only the ㅂ-irregular spelling (...워하다, see _bieupIrregularAdjective) is reconstructed here
+    # - the regular case (아/어하다 stripped straight to 다) is deliberately NOT guessed, since
+    # "다" appended to an arbitrary stripped stem is far more likely to collide with an unrelated
+    # real word than the categorical ㅂ-irregular sound change is.
+    if result["status"] != "found" and token.tag == "VV":
+        baseAdjective = _bieupIrregularAdjective(token.lemma)
+        if baseAdjective:
+            baseResult = lookupKoreanMeaning(baseAdjective, "VA")
+            if baseResult["status"] == "found":
+                return baseAdjective, baseResult
+
+    return token.lemma, result
 
 
 def _resolveHanja(token):
@@ -250,7 +331,7 @@ def _resolveHanja(token):
 
 
 def _contentEntry(token, nextToken=None) -> dict:
-    result = _resolveGloss(token, nextToken)
+    resolvedLemma, result = _resolveGloss(token, nextToken)
     gloss = "; ".join(result["gloss"][:2]) if result["status"] == "found" else None
 
     # Merged in per direct user request: a whole-line grammar breakdown should double as a Hanja
@@ -264,14 +345,22 @@ def _contentEntry(token, nextToken=None) -> dict:
     # fixed) instead of unioning Hanja across every unrelated word sharing the same spelling.
     hanja = _resolveHanja(token)
 
-    return {"surface": token.form, "lemma": token.lemma, "tag": token.tag, "role": "content",
-            "gloss": gloss, "hanja": hanja}
+    # `lemma` is the RESOLVED citation form (token.lemma itself, or a composed/reconstructed form
+    # whenever _resolveGloss's fallbacks are what actually found the entry - e.g. "나른하다" for
+    # bound-root 나른, "부럽다" for the ㅂ-irregular verb 부러워하다) - this is what
+    # core.korean_vocab.analyzeKoreanSelection stores/re-looks-up as the word's real dictionary
+    # key, so it must be the form that actually matched, never the raw uninflected token.lemma a
+    # fallback had to move past. `meaning` carries the already-resolved structured dict forward so
+    # that caller doesn't re-run (and potentially fail to reproduce) the same fallback logic - see
+    # analyzeKoreanSelection's own comment on why it stopped re-deriving from scratch.
+    return {"surface": token.form, "lemma": resolvedLemma, "tag": token.tag, "role": "content",
+            "gloss": gloss, "hanja": hanja, "meaning": result}
 
 
 def _functionEntry(token) -> dict:
     gloss = _FUNCTION_GLOSSES.get(token.tag, {}).get(token.lemma)
     return {"surface": token.form, "lemma": token.lemma, "tag": token.tag, "role": "function",
-            "gloss": gloss, "hanja": None}
+            "gloss": gloss, "hanja": None, "meaning": None}
 
 
 def _mergeGroup(text, group):
@@ -301,13 +390,26 @@ def _mergeGroup(text, group):
     glossParts = [e["gloss"] for e in entries if e["gloss"]]
     hanjaSource = next((e for e in entries if e["role"] == "content"), None)
 
+    # Real bug found via a live-DB audit (223/863 vocab_ko rows, 65% of every "no meaning found"
+    # row): `lemma`/`tag` here are the dictionary lookup key core.korean_vocab.analyzeKoreanSelection
+    # stores a word under. Joining EVERY piece's lemma/tag unconditionally - including the attached
+    # particle/ending's - produced keys like "다르다+ᆫ" or "우리+ᆯ" that can never match a real
+    # headword, even though each underlying token already had its own correct citation-form lemma
+    # (다르다/우리) before merging. A mixed content+function group (the overwhelmingly common case -
+    # a word plus its fused ending) must use only the content token's own lemma/tag as the lookup
+    # key; the joined form stays what `gloss` is built from, so a real breakdown/lyrics-editor
+    # display is unaffected (it never reads `lemma`/`tag` directly - see gui/lyrics_editor.py's
+    # breakDownKoreanGrammar).
+    lemmaSource = [e for e in entries if e["role"] == "content"] if isContent else entries
+
     return {
         "surface": surface,
-        "lemma": "+".join(e["lemma"] for e in entries),
-        "tag": "+".join(e["tag"] for e in entries),
+        "lemma": "+".join(e["lemma"] for e in lemmaSource),
+        "tag": "+".join(e["tag"] for e in lemmaSource),
         "role": "content" if isContent else "function",
         "gloss": " + ".join(glossParts) if glossParts else None,
         "hanja": hanjaSource["hanja"] if hanjaSource else None,
+        "meaning": hanjaSource["meaning"] if hanjaSource else None,
     }
 
 

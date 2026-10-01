@@ -13,6 +13,7 @@ this project), not a __file__-relative absolute path, so tests that chdir into a
 
 import os
 import sqlite3
+import time
 
 _DB_PATH = "data/vocab_srs.db"
 
@@ -45,7 +46,11 @@ CREATE TABLE IF NOT EXISTS srs_card_ja (
     reading_box INTEGER NOT NULL DEFAULT 1,
     reading_ease REAL NOT NULL DEFAULT 2.5,
     reading_due_ts INTEGER NOT NULL,
-    reading_last_reviewed_ts INTEGER
+    reading_last_reviewed_ts INTEGER,
+    cloze_box INTEGER NOT NULL DEFAULT 1,
+    cloze_ease REAL NOT NULL DEFAULT 2.5,
+    cloze_due_ts INTEGER NOT NULL,
+    cloze_last_reviewed_ts INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS vocab_occurrence_ja (
@@ -93,7 +98,11 @@ CREATE TABLE IF NOT EXISTS srs_card_ko (
     reading_box INTEGER NOT NULL DEFAULT 1,
     reading_ease REAL NOT NULL DEFAULT 2.5,
     reading_due_ts INTEGER NOT NULL,
-    reading_last_reviewed_ts INTEGER
+    reading_last_reviewed_ts INTEGER,
+    cloze_box INTEGER NOT NULL DEFAULT 1,
+    cloze_ease REAL NOT NULL DEFAULT 2.5,
+    cloze_due_ts INTEGER NOT NULL,
+    cloze_last_reviewed_ts INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS vocab_occurrence_ko (
@@ -118,6 +127,23 @@ CREATE TABLE IF NOT EXISTS cognate_link (
     UNIQUE(vocab_ja_id, vocab_ko_id)
 );
 
+CREATE TABLE IF NOT EXISTS review_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    language TEXT NOT NULL,
+    vocab_id INTEGER NOT NULL,
+    track TEXT NOT NULL,
+    rating TEXT NOT NULL,
+    state_before INTEGER NOT NULL,
+    stability_before REAL,
+    difficulty_before REAL,
+    due_before_ts INTEGER,
+    reviewed_ts INTEGER NOT NULL,
+    elapsed_days REAL,
+    duration_ms INTEGER
+);
+
+CREATE INDEX IF NOT EXISTS idx_review_log_reviewed ON review_log(reviewed_ts);
+CREATE INDEX IF NOT EXISTS idx_review_log_card ON review_log(language, vocab_id, track);
 CREATE INDEX IF NOT EXISTS idx_srs_ja_meaning_due ON srs_card_ja(meaning_due_ts);
 CREATE INDEX IF NOT EXISTS idx_srs_ja_reading_due ON srs_card_ja(reading_due_ts);
 CREATE INDEX IF NOT EXISTS idx_srs_ko_meaning_due ON srs_card_ko(meaning_due_ts);
@@ -136,16 +162,93 @@ _initializedDbPaths = set()
 # an earlier session, was missing these entirely - _SCHEMA alone would never have added them).
 _ADDED_COLUMNS = [
     ("vocab_ja", "meaning_locked", "INTEGER NOT NULL DEFAULT 0"),
+    # A hand-picked display spelling (e.g. どんな -> 何様 as a Chinese-reader mnemonic); rescans keep it.
+    ("vocab_ja", "surface_locked", "INTEGER NOT NULL DEFAULT 0"),
     ("vocab_ko", "meaning_locked", "INTEGER NOT NULL DEFAULT 0"),
     ("vocab_ko", "hanja_locked", "INTEGER NOT NULL DEFAULT 0"),
+    # Milestone 5 (.claude/FLASHCARD_WEB_UPGRADE_PLAN.md): an independent cloze-drill SRS track,
+    # mirroring the meaning_*/reading_* column groups exactly. cloze_due_ts is NOT NULL with no
+    # static literal default that means "due now" - ALTER TABLE ADD COLUMN only allows a constant
+    # default, so it's added as 0 here and immediately backfilled to a real "due now" timestamp
+    # below, once, only for the table(s) that just got the column added this call (see
+    # _migrateColumns) - never unconditionally, or every process start would reset real cloze
+    # review progress back to "due now" once already migrated.
+    ("srs_card_ja", "cloze_box", "INTEGER NOT NULL DEFAULT 1"),
+    ("srs_card_ja", "cloze_ease", "REAL NOT NULL DEFAULT 2.5"),
+    ("srs_card_ja", "cloze_due_ts", "INTEGER NOT NULL DEFAULT 0"),
+    ("srs_card_ja", "cloze_last_reviewed_ts", "INTEGER"),
+    ("srs_card_ko", "cloze_box", "INTEGER NOT NULL DEFAULT 1"),
+    ("srs_card_ko", "cloze_ease", "REAL NOT NULL DEFAULT 2.5"),
+    ("srs_card_ko", "cloze_due_ts", "INTEGER NOT NULL DEFAULT 0"),
+    ("srs_card_ko", "cloze_last_reviewed_ts", "INTEGER"),
 ]
+
+# FSRS (.claude/FLASHCARD_FSRS_PLAN.md, M1): per track (meaning/reading/cloze) x language. `*_state`
+# is 0 New / 1 Learning / 2 Review / 3 Relearning (see core.srs_fsrs). meaning_state/reading_state
+# already existed as an unused "known" flag (0/1) - the ALTER is skipped for them, and the one-time
+# backfill in _migrateColumns() rewrites their values into the FSRS meaning. The old *_box/*_ease
+# columns stay in place, unused, so a rollback is possible.
+for _table in ("srs_card_ja", "srs_card_ko"):
+    for _track in ("meaning", "reading", "cloze"):
+        _ADDED_COLUMNS += [
+            (_table, f"{_track}_state", "INTEGER NOT NULL DEFAULT 0"),
+            (_table, f"{_track}_step", "INTEGER NOT NULL DEFAULT 0"),
+            (_table, f"{_track}_stability", "REAL"),
+            (_table, f"{_track}_difficulty", "REAL"),
+            (_table, f"{_track}_reps", "INTEGER NOT NULL DEFAULT 0"),
+            (_table, f"{_track}_lapses", "INTEGER NOT NULL DEFAULT 0"),
+            (_table, f"{_track}_suspended", "INTEGER NOT NULL DEFAULT 0"),
+        ]
+
+# The old Leitner ladder, only used to translate an old box into an initial FSRS stability.
+_LEGACY_BOX_TO_DAYS = [1, 3, 7, 14, 30, 90]
+
+
+def _backfillFsrs(conn: sqlite3.Connection, table: str):
+    """Old rows -> FSRS. Never reviewed (last_reviewed_ts NULL) -> New. Reviewed -> Review with
+    stability = the old box interval scaled by ease, difficulty mapped from ease (2.5 -> 5,
+    1.3 -> 9, higher ease easier, clamped 1-10). Approximate on purpose: FSRS self-corrects within
+    a couple of reviews. Runs only in the call that just added the *_stability columns."""
+    boxDays = "CASE MIN(MAX({t}_box, 1), 6) " + " ".join(
+        f"WHEN {i + 1} THEN {d}" for i, d in enumerate(_LEGACY_BOX_TO_DAYS)
+    ) + " END"
+    for track in ("meaning", "reading", "cloze"):
+        days = boxDays.format(t=track)
+        conn.execute(
+            f"""UPDATE {table} SET
+                    {track}_state = CASE WHEN {track}_last_reviewed_ts IS NULL THEN 0 ELSE 2 END,
+                    {track}_stability = CASE WHEN {track}_last_reviewed_ts IS NULL THEN NULL
+                        ELSE MAX(0.1, ({days}) * {track}_ease / 2.5) END,
+                    {track}_difficulty = CASE WHEN {track}_last_reviewed_ts IS NULL THEN NULL
+                        ELSE MIN(10.0, MAX(1.0, 5.0 - ({track}_ease - 2.5) * (4.0 / 1.2))) END,
+                    {track}_reps = CASE WHEN {track}_last_reviewed_ts IS NULL THEN 0 ELSE 1 END"""
+        )
 
 
 def _migrateColumns(conn: sqlite3.Connection):
+    justAddedClozeDue = set()
+    justAddedFsrs = set()
     for table, column, ddlType in _ADDED_COLUMNS:
         existing = {row[1] for row in conn.execute(f"PRAGMA table_info({table})").fetchall()}
         if column not in existing:
             conn.execute(f"ALTER TABLE {table} ADD COLUMN {column} {ddlType}")
+            if column == "cloze_due_ts":
+                justAddedClozeDue.add(table)
+            if column == "meaning_stability":
+                justAddedFsrs.add(table)
+
+    # idx_srs_*_cloze_due can't live in the static _SCHEMA block (that executescript runs BEFORE
+    # this function, so it would fail with "no such column" on a pre-existing DB the ALTER TABLE
+    # loop above hasn't reached yet) - safe here since cloze_due_ts always exists by this point on
+    # both a brand-new DB (created via _SCHEMA) and a migrated one (just ALTER'd above).
+    nowTs = int(time.time())
+    for table in justAddedFsrs:
+        _backfillFsrs(conn, table)
+    for table in ("srs_card_ja", "srs_card_ko"):
+        if table in justAddedClozeDue:
+            conn.execute(f"UPDATE {table} SET cloze_due_ts = ? WHERE cloze_due_ts = 0", (nowTs,))
+        suffix = table.split("_")[-1]
+        conn.execute(f"CREATE INDEX IF NOT EXISTS idx_srs_{suffix}_cloze_due ON {table}(cloze_due_ts)")
 
 
 def getConnection() -> sqlite3.Connection:

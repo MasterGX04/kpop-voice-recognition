@@ -826,8 +826,18 @@ class VoiceDetectionApp:
                 trackItem.timeline = [0.0] * len(self.chunks)
 
         self.initializePositions()
+        # initializePositions() (re)seeds positionTimeline/basePositionTimeline
+        # in BASE (unscaled 1920x1080-ish) space via slotBaseYs/slotHeightBase.
+        # Without converting to screen space here (same as startLayout() and
+        # _applyCanvasResize() do), updateElementPositions() below places each
+        # portrait - already resized down to the actual window scale - at its
+        # full base-space Y coordinate, leaving a gap between members equal to
+        # however much smaller the current window is than the 1920x1080 base.
+        self.slotHeightPx = int(round(self.slotHeightBase * self.scaleY))
+        for t in self.memberImages.values():
+            t.rescalePositionTimeline(self.scaleY)
         self.updateElementPositions()
-    
+
     def refreshVisibleMembersFromLabels(self):
         """
         Keep memberImages in sync with who currently has labels in this song.
@@ -890,8 +900,17 @@ class VoiceDetectionApp:
     def enforceCanvasLayering(self):
         c = self.canvas
 
+        # Single source of truth for the whole canvas's stacking order, bottom
+        # to top: "layer_video" (raw video frames) sits under everything, so a
+        # freshly recreated "lyrics_bg" always stays visually above it instead
+        # of relying on VideoTrack re-lowering itself every frame. "member"
+        # (portraits/progress bars/timer text) stays above "lyrics_bg" so the
+        # same recreate (e.g. countBacking()'s teardown+rebuild) never covers
+        # them either.
         order = [
+            "layer_video",
             "lyrics_bg",
+            "member",
             "lyrics_card_bg",
             "lyrics",
             "time_marker",
@@ -2564,6 +2583,11 @@ class VoiceDetectionApp:
 
             scaledPixelHeight = firstTrack.sourceImages["dark"].height()
             self.slotHeightBase = scaledPixelHeight
+            # slotBaseYs was built from the first-pass (too-tall) height above;
+            # without rebuilding it here, members render at this smaller,
+            # corrected scale but still get placed at the wider first-pass
+            # spacing, leaving gaps between them.
+            self.slotBaseYs = self.buildSlotBaseYs(numMembers, scaledPixelHeight)
 
         # Build all members using dense internal slots
         for denseSlot, memberName in enumerate(groupMembers):
@@ -2597,7 +2621,8 @@ class VoiceDetectionApp:
             imageId = self.canvas.create_image(
                 0, y,
                 image=trackItem.sourceImages["dark"],
-                anchor="nw"
+                anchor="nw",
+                tags="member"
             )
             trackItem.setImageId(imageId)
             trackItem.initializeProgressBar()

@@ -4,8 +4,11 @@ conjugation chain, each piece independently glossed (e.g. 食べたくない -> 
 たく[want to] + ない[not]). Design reference: .claude/GRAMMAR_BREAKDOWN_PLAN.md.
 """
 
-from core.japanese_utils import getTagger, tokenReading
-from core.kanji_reference import lookupJapaneseMeaning, _containsKanji
+from core.japanese_utils import getTagger, normalizeVariantKanji, tokenReading
+from core.kanji_reference import (
+    lookupJapaneseMeaning, _containsKanji, _FUNCTION_POS1, _SKIP_POS1, _GRAMMATICALIZED_POS2,
+    _pos2Of,
+)
 
 _KATAKANA_TO_HIRAGANA = str.maketrans({
     chr(code): chr(code - 0x60) for code in range(0x30A1, 0x30F7)
@@ -14,21 +17,6 @@ _KATAKANA_TO_HIRAGANA = str.maketrans({
 
 def _katakanaToHiragana(text: str) -> str:
     return text.translate(_KATAKANA_TO_HIRAGANA)
-
-
-_FUNCTION_POS1 = {"助詞", "助動詞"}
-# 空白 (whitespace, e.g. the full-width "　" some lyrics use as a mid-line separator) carries no
-# grammar of its own, same reasoning as punctuation - skipped entirely, never shown as a token.
-_SKIP_POS1 = {"補助記号", "記号", "空白"}
-
-# UniDic marks a token as grammaticalized (used as a light verb / auxiliary stem rather than its
-# literal dictionary sense) via pos2, not pos1 - confirmed via testing: しまう/いる/なる/etc.
-# used as light verbs after a て-form (食べてしまう, 食べている) come back pos1=動詞 the same as
-# their literal use, but with pos2=非自立可能 ("capable of non-independent use"); よう before だ
-# (食べられるように) comes back pos1=形状詞 pos2=助動詞語幹. Routing on pos1 alone (the original
-# plan) would misclassify all of these as ordinary content words and gloss their literal meaning
-# (仕舞う "to put away", 様 "manner") instead of their grammatical function.
-_GRAMMATICALIZED_POS2 = {"助動詞語幹", "非自立可能"}
 
 # Seeded from the real corpus frequency scan (every 助詞/助動詞 lemma across every Japanese-
 # detected line in saved_labels/*/*_lyrics.json) recorded in .claude/GRAMMAR_BREAKDOWN_PLAN.md.
@@ -176,10 +164,6 @@ def _lemmaOf(word) -> str:
     return lemma
 
 
-def _pos2Of(word):
-    return getattr(word.feature, "pos2", None)
-
-
 def _isFunctionish(word) -> bool:
     return word.feature.pos1 in _FUNCTION_POS1 or _pos2Of(word) in _GRAMMATICALIZED_POS2
 
@@ -262,7 +246,7 @@ def breakdownLine(text: str) -> list:
     # iterable" the moment an English word was part of the highlighted text. English words have
     # no Japanese grammar to break down, so they're dropped from the output entirely.
     words = [
-        w for w in tagger(text)
+        w for w in tagger(normalizeVariantKanji(text))
         if w.feature.pos1 not in _SKIP_POS1 and w.feature.lemma is not None
     ]
 

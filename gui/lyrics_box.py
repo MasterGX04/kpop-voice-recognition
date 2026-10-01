@@ -1,6 +1,8 @@
 from PIL import Image, ImageTk
 import tkinter as tk
 
+from core.lyric_text import stripForDisplay
+
 LYRIC_ENTRANCE_ANIMATION_CHUNKS = 9   # entrance/push-down animation length, in 40ms chunks
 LYRIC_LEAD_BUFFER_CHUNKS = 2
 LYRIC_LEAD_CHUNKS = LYRIC_ENTRANCE_ANIMATION_CHUNKS + LYRIC_LEAD_BUFFER_CHUNKS  # = 11
@@ -305,7 +307,8 @@ class LyricBox:
         # --- Pick the displayed lyric string ---
         lines = []
 
-        k = (getattr(self, "koreanLyric", "") or "").strip()
+        # koreanLyric stays RAW (it is saved back to JSON, pause markers included); only drawing strips them.
+        k = stripForDisplay(getattr(self, "koreanLyric", "") or "").strip()
         r = (getattr(self, "romanization", "") or "").strip()
         e = (getattr(self, "englishTrans", "") or "").strip()
 
@@ -671,7 +674,7 @@ class LyricBox:
 
         # --- Korean/Japanese + Romanization ---
         if self.language in ("Korean", "Japanese"):
-            for line in (self.koreanLyric or "").split("\n"):
+            for line in stripForDisplay(self.koreanLyric or "").split("\n"):
                 if line.strip():
                     self._createColorCodedText(textX, curY, line, self.boldFont, self.memberColors)
 
@@ -757,7 +760,7 @@ class LyricBox:
         Create multi-colored text where color changes at each '|'.
         All positions are stored as RELATIVE offsets from lyric box origin.
         """
-        parts = text.split("|")  # Split text at '|'
+        parts = stripForDisplay(text).split("|")  # Split text at '|' (the invisible pause marker never draws)
         textX = x
         colorIndex = 0  # Start with the first member's color
 

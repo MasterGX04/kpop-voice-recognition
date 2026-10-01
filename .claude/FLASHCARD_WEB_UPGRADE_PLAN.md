@@ -1,7 +1,7 @@
 # Flashcard Tool Upgrade: PyWebView Rebuild + Bundled Study Features
 
-**Status: Milestones 0-2 DONE (Milestone 2: 2026-09-25). Milestones 3-7 are designed but not yet
-started — scope was deliberately narrowed first per the user's request, revisit after those ship.**
+**Status: Milestones 0-5 DONE (Milestone 5: 2026-09-27). Milestones 6-7 are designed but not yet
+started.**
 
 This doc is the durable version of the Claude Code planning session that designed this upgrade — kept
 here so the reasoning survives, in the same Milestone-numbered build-log style as
@@ -248,13 +248,20 @@ implementing:
   Breakthrough chunk numbers above) and a graceful-failure test for when no audio file resolves - 58
   tests total, all green (`python -m unittest core.test_vocab_db core.test_vocab_store_ja
   core.test_vocab_store_ko core.test_vocab_link core.test_vocab_sync core.test_vocab_review_api -v`).
-- Not yet exercised: an actual click on the new "Play line" button inside the real PyWebView window
-  (only the backend Api method was driven directly) - front-end wiring (`gui/web/vocab_review/
-  {index.html,app.js,style.css}`) was built and reviewed but not click-tested live in the window.
+- **Live-tested (2026-09-25, follow-up):** the actual DOM "Play line" button inside a real PyWebView
+  window, not just the backend Api method. A driver script opened the real `gui/web/vocab_review`
+  front end via `webview.create_window()` (Milestone 1's own in-process smoke-test technique)
+  against the real, already-in-use `data/vocab_srs.db`, pointed the queue at a real word
+  (`vocab_ja_id=137`, "感情"/kanjou "emotion", a real occurrence in TWICE/Breakthrough chunks
+  227-249), clicked `#playAudioBtn` for real, and confirmed via `pygame.mixer.music.get_busy()`
+  polling that real audio played for ~0.99s (expected ~0.88s) with no error banner shown and the
+  correct occurrence line rendered ("From TWICE — Breakthrough: 揺るぎない感情は Dreaming"). Confirms
+  the full path - click listener → `callApi` bridge → `Api.playOccurrenceAudio` → pygame - works
+  end-to-end through the real UI, not just the Python method in isolation.
 
 ---
 
-## Milestone 3 — JA/KO/ZH cognate bridge view (not started)
+## Milestone 3 — JA/KO/ZH cognate bridge view (DONE 2026-09-25)
 
 **Goal:** a three-way comparison (Japanese Kanji / Korean Hanja / Chinese source) for Sino-vocabulary
 words, per the original `Study_tool_ideas.txt` "Tri-Lingual Ideographic Bridge" idea.
@@ -268,9 +275,31 @@ words, per the original `Study_tool_ideas.txt` "Tri-Lingual Ideographic Bridge" 
 **Done when:** a linked JA/KO word pair renders its three-way comparison correctly, and an unlinked
 word degrades gracefully (shows what it has, no fabricated third leg).
 
+**Status: DONE (2026-09-25).**
+- `core/vocab_link.py`: `getCognateBridge(language, vocab_id)` - the "chinese" leg is always
+  sourced from a `vocab_ja` row (either the queried word itself, or its linked cousin reached via
+  `cognate_link`), since `vocab_ja.cognate_status`/`cognate_gloss_json` are the only place a
+  *confirmed* CC-CEDICT status+gloss are persisted - `vocab_ko_hanja` only ever persists pinyin.
+  Returns `{"cognateForm", "japanese", "korean": {..., "candidates": [...]}, "chinese"}`; `korean.
+  candidates` lists every real Hanja candidate (plural when still ambiguous) with a `"linked"` flag
+  marking the one actually bridged.
+- `gui/vocab_review_api.py`: new `getCognateBridge(vocabId, language)` Api method wrapping it.
+- Front end: a `#cognateBridge` three-column panel (`gui/web/vocab_review/{index.html,app.js,
+  style.css}`), fetched and rendered every time `render()` runs, hidden entirely when a word has no
+  `cognateForm`.
+- Tests: `core/test_vocab_link.py` (6 new cases: linked-from-JA, linked-from-KO, unlinked-JA-still-
+  shows-its-own-cognate, native-word-has-no-cognate-at-all, unlinked-KO-shows-candidates-with-no-
+  fabricated-chinese-leg, ambiguous-KO-marks-only-the-linked-candidate) + 1 Api-wrapper test.
+- Verified against real, already-compiled `data/vocab_srs.db` (read-only, no scan re-run): a
+  throwaway script cross-checked every real `cognate_link` row (時間/世界/愛/迷路/運命, etc.) in both
+  directions, then a `webview.create_window()` live-driver test (same technique as Milestone 2's
+  live test) clicked through to the real linked pair ja#7 "時間" <-> ko#5 "시간" and confirmed the
+  actual DOM panel rendered all three legs correctly (時間/じかん, "(concept of) time" shi2 jian1,
+  시간/時間 with the ★-linked marker). Both scripts deleted after use.
+
 ---
 
-## Milestone 4 — Cross-word co-occurrence graph (not started)
+## Milestone 4 — Cross-word co-occurrence graph (DONE 2026-09-25)
 
 **Goal:** per the user's chosen scope, a real graph of which words/songs cluster together — not just
 "everywhere word X appears."
@@ -284,9 +313,29 @@ word degrades gracefully (shows what it has, no fabricated third leg).
 **Done when:** the new store-layer function returns correct co-occurrence groupings against seeded
 test data, independent of any UI.
 
+**Status: DONE (2026-09-25).** Store-layer only, no UI, exactly as scoped above.
+- `core/vocab_store_ja.py` / `core/vocab_store_ko.py`: `getCoOccurrenceGraph(min_shared_songs=1)`.
+  Nodes = every word with at least one co-occurrence edge; edges connect two words sharing
+  `min_shared_songs`+ songs in common, weighted by shared-song count (and which songs). `a < b`
+  (vocabId order) so each pair appears once. A plain edge-list/node-list, not a clustering
+  algorithm - the graph *structure* itself is the Milestone 4 deliverable per the plan's own scope
+  note; clustering/rendering on top of it is future UI work, not built here.
+  Query approach: one pass over `vocab_occurrence_{ja,ko}` grouped into `{(group, song): {vocabIds}}`
+  buckets, then every pairwise combination *within* each song bucket accumulates into a
+  `{(a, b): {songs}}` map - O(occurrences + pairs-per-song), not O(words²).
+- Tests: 5 new cases in `core/test_vocab_store_ja.py` (one edge for a shared song, no edge for
+  disjoint songs, shared-count accumulates across multiple songs, `min_shared_songs` filters weak
+  edges, a full triangle for 3 words sharing 1 song) + 2 in `core/test_vocab_store_ko.py`.
+- Verified against real, already-compiled `data/vocab_srs.db` (read-only): the real JA graph came
+  back as 286 nodes / 9,049 edges, KO as 863 nodes / 46,111 edges. Cross-checked the single
+  strongest real edge ('心' <-> '何', 4 shared songs: BTS/Let Go, BTS/Stay Gold, TWICE/Breakthrough,
+  TWICE/Doughnut) against each word's own `getOccurrences()` independently, confirming every song
+  the graph claims is shared is a real occurrence of *both* words - not a fabricated pairing.
+  Throwaway script deleted after use.
+
 ---
 
-## Milestone 5 — Grammar cloze drills + independent SRS track (not started)
+## Milestone 5 — Grammar cloze drills + independent SRS track (DONE 2026-09-27)
 
 **Goal:** fill-in-the-blank drills over real lyric lines, using the existing grammar tokenizers, with
 their own spaced-repetition schedule (per the user's decision — not feeding the existing meaning/reading
@@ -306,6 +355,58 @@ tracks, and not schema-free either).
 **Done when:** the migration runs cleanly against the live 863-word DB with zero data loss (same bar
 `VOCAB_SRS_PLAN.md` documents for past migrations), and a cloze answer updates only the new `cloze_*`
 columns, never `meaning_*`/`reading_*`.
+
+**Status: DONE (2026-09-27).** Before starting, fixed a real, confirmed Korean vocab-quality bug
+(a lemma-joining bug in `core/korean_grammar_breakdown.py`'s `_mergeGroup` that broke ~40% of
+`vocab_ko` meanings, plus a live `SSO`/`SSC` punctuation-tag bug, plus a ㅂ-irregular `-어하다`
+derived-verb fallback) and migrated the live DB (863→702 rows: 58 garbage rows deleted, 103
+duplicates merged; no-meaning words 341→61) — see that work's own commit/session history, not
+restated here. Built as designed, with real deviations found along the way:
+
+- **The store layer needed zero new SRS functions**, not the `submitClozeReview()`-style function
+  originally planned: `submitReview(vocab_id, track, rating)` and `getDueCards(track, limit)` in
+  both `vocab_store_ja.py`/`vocab_store_ko.py` already build every SQL column name dynamically from
+  the `track` string - `submitReview(id, "cloze", rating)` and `getDueCards("cloze")` work with zero
+  code changes once the columns exist. Same for `gui/vocab_review_api.py`'s existing `rate(...)`/
+  `listQueue(...)` - both already forward `track` generically. The only store-layer change was
+  seeding `cloze_due_ts` in `upsertVocab`'s new-row INSERT (both languages).
+- **A real circular-import constraint** required moving the content/function-word POS classification
+  (`_FUNCTION_POS1`/`_SKIP_POS1`/`_GRAMMATICALIZED_POS2`/`_pos2Of`) from `core/grammar_breakdown.py`
+  into `core/kanji_reference.py` (the base module `grammar_breakdown.py` already depends on) instead
+  of the other way around, plus a new public `core.kanji_reference.isContentWord()`.
+- **Prerequisite kana-only Japanese intake fix**, done first: `core/kanji_reference.py:301`
+  (`analyzeSelection`) only ever kept Kanji-containing surfaces - kana-only content words (ちょっと,
+  とても, これ, ...) were silently dropped from `vocab_ja` entirely, not just particles/punctuation.
+  Fixed via `isContentWord()` + a new `_isKatakanaOnly()` helper (loanwords still excluded). No DB
+  migration needed - nothing existing to backfill, words are just captured going forward; re-running
+  "Compile Vocab for all songs" backfills the historical gap via the existing upsert-by-lemma path.
+  Verified: これ/この-style demonstrative pronouns do get captured as "content" under this POS-based
+  rule - flagged to the user as an expected, accepted side effect, not silently decided.
+- **Blanking is a plain first-occurrence string replace**, not character-offset splicing: neither
+  `breakdownLine()` implementation exposes token offsets externally, and the only failure mode
+  (identical surface text appearing twice in one line) still produces a valid blank of a real
+  occurrence of the same word-form - accepted rather than engineered around.
+- New `core/cloze.py`: `buildClozeCard(language, lemma, lyricLine)` matches by lemma (the stable
+  dictionary key), not the vocab row's own `surface` (just one example form). New Api method
+  `gui/vocab_review_api.py: getClozeCardDetail(vocabId, language, lemma)` tries up to 20 shuffled
+  real occurrences (higher than `getOccurrences()`'s default 5) until one produces a match; returns
+  `_ok(None)` - not an error - when none do (a real "can't quiz this word yet" case).
+- Frontend: a third "Cloze" track radio in `gui/web/vocab_review/index.html`; `app.js`'s `render()`
+  split into `renderStandard()`/`renderCloze()`; reveal-then-rate flow reuses the existing
+  `.rate-btn`/`rate()` wiring completely unchanged (already generic on `state.filters.track`).
+- Tests: `core/test_kanji_reference.py` (kana-only capture, katakana-only still excluded, particle
+  still excluded, no fabricated cognate), `core/test_vocab_db.py` (cloze column migration + backfill
+  + no-reset-on-reconnect regression), `core/test_vocab_store_ja.py`/`test_vocab_store_ko.py`
+  (new-word cloze due-seeding, independent due-queue), `core/test_cloze.py` (new, 5 cases),
+  `core/test_vocab_review_api.py` (3 new cases) - 202 tests total, all green.
+- Live-tested via a throwaway `evaluate_js` driver script (deleted after use, per convention): real
+  `webview.create_window()`, real `VocabReviewApi()` - switching to the Cloze track rendered a real
+  blanked line (＿＿＿＿がない for 時間), hid the rating row until Reveal, Reveal showed the real
+  answer + gloss + "From BTS — Let Go" attribution and revealed the rating row, and rating the card
+  advanced the real `cloze_due_ts` in the DB. All 7 checks passed.
+- Migration applied to the live `data/vocab_srs.db` (backed up first): 286 `srs_card_ja` + 702
+  `srs_card_ko` rows all got `cloze_due_ts` backfilled to "due now", both `idx_srs_{ja,ko}_cloze_due`
+  indexes present, confirmed via direct query.
 
 ---
 

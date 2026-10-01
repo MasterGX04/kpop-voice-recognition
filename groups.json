@@ -284,7 +284,8 @@
                     "Blue & Grey",
                     "Disease",
                     "Telepathy",
-                    "Life Goes On"
+                    "Life Goes On",
+                    "Film out"
                 ]
             },
             "o_rul8_2": {
@@ -351,7 +352,8 @@
             "Normal": "arirang",
             "Please": "arirang",
             "Aliens": "arirang",
-            "Hooligan": "arirang"
+            "Hooligan": "arirang",
+            "Film out": "be"
         },
         "defaultAlbumId": "love_yourself_tear"
     },
@@ -414,7 +416,8 @@
                 "songs": [
                     "Genie Magic",
                     "Starstruck",
-                    "Like A Bubble"
+                    "Like A Bubble",
+                    "Took It Too Far"
                 ]
             }
         },
@@ -428,7 +431,8 @@
             "Wish You Were Here": "too_much_pt__1",
             "Genie Magic": "imperfect_i_mperfect",
             "Starstruck": "imperfect_i_mperfect",
-            "Like A Bubble": "imperfect_i_mperfect"
+            "Like A Bubble": "imperfect_i_mperfect",
+            "Took It Too Far": "imperfect_i_mperfect"
         },
         "defaultAlbumId": "love_tune"
     },

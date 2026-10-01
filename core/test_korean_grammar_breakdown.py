@@ -110,6 +110,17 @@ class BreakdownLineTests(unittest.TestCase):
         self.assertNotIn(",", surfaces)
         self.assertNotIn("?", surfaces)
 
+    def test_quotes_and_brackets_skipped(self):
+        # Real, currently-live bug found via a live-DB audit: this kiwipiepy build tags quote
+        # marks/brackets as SSO (opening)/SSC (closing), not the plain "SS" the Sejong tagset docs
+        # describe - neither was being skipped, so every quote/bracket in a lyric was stored as
+        # its own bogus "vocabulary word" (see core.korean_vocab.analyzeKoreanSelection).
+        entries = breakdownLine("'낮에 (밤에)'")
+        surfaces = [e["surface"] for e in entries]
+        for punct in ("'", "(", ")"):
+            self.assertNotIn(punct, surfaces)
+        self.assertEqual(surfaces, ["낮", "에", "밤", "에"])
+
     def test_mixed_script_line_drops_english_words(self):
         # Real lyrics mix in English fragments (per the corpus frequency scan in the plan doc,
         # SL-tagged tokens like "I"/"that"/"my"). Per direct user feedback, these carry no Korean
@@ -220,6 +231,44 @@ class BreakdownLineTests(unittest.TestCase):
         self.assertEqual(su["tag"], "NNB")
         self.assertEqual(su["hanja"], [])
         self.assertIn("way, means", su["gloss"])
+
+    def test_fused_content_and_ending_lemma_is_not_a_joined_compound(self):
+        # Real bug found via a live-DB audit (223/863 vocab_ko rows, 65% of every "no meaning
+        # found" row): a content word whose ending fuses into its own last written syllable
+        # (다르+ㄴ -> 다른, 우리+를 -> 우릴) used to get its MERGED entry's lemma built by joining
+        # every piece's lemma with "+" (e.g. "다르다+ᆫ"), which can never match a real dictionary
+        # headword even though the content token itself already had the correct citation-form
+        # lemma before merging. The merged entry's lemma must be exactly the content word's own
+        # resolved lemma - see core.korean_vocab.analyzeKoreanSelection, which stores/looks up a
+        # word by this exact field.
+        dareun = next(e for e in breakdownLine("태생부터 다른 사람") if e["surface"] == "다른")
+        self.assertEqual(dareun["lemma"], "다르다")
+        self.assertEqual(dareun["meaning"]["status"], "found")
+
+        urril = next(e for e in breakdownLine("우릴 부러워하네") if e["surface"] == "우릴")
+        self.assertEqual(urril["lemma"], "우리")
+        self.assertEqual(urril["meaning"]["status"], "found")
+
+    def test_bieup_irregular_derived_verb_falls_back_to_base_adjective(self):
+        # Real coverage gap found via the same audit: 부러워하다 ("to envy", -어하다 derived from
+        # the psych-adjective 부럽다 "enviable") is correctly extracted by Kiwi as its own citation
+        # form, but isn't itself in the Wiktionary-derived index - only the base adjective 부럽다
+        # is. This is a categorical ㅂ-irregular sound change (부럽+어 -> 부러워), not a per-word
+        # guess, so it's reconstructed and verified against the real dictionary rather than
+        # fabricated - see _bieupIrregularAdjective()'s own docstring.
+        bureowo = next(e for e in breakdownLine("우릴 부러워하네") if e["surface"] == "부러워하")
+        self.assertEqual(bureowo["lemma"], "부럽다")
+        self.assertEqual(bureowo["meaning"]["status"], "found")
+        self.assertIn("enviable", bureowo["meaning"]["gloss"][0])
+
+    def test_bieup_irregular_fallback_does_not_fire_for_unrelated_words(self):
+        # A VV-tagged word that genuinely ends in "워하다" but isn't this derivation at all (or
+        # whose reconstructed candidate isn't a real dictionary entry) must not have a fabricated
+        # lemma/meaning substituted in - the fallback only ever wins when the reconstructed form
+        # is independently verified against the real index.
+        from core.korean_grammar_breakdown import _bieupIrregularAdjective
+        self.assertIsNone(_bieupIrregularAdjective("하다"))  # too short to have a target syllable
+        self.assertIsNone(_bieupIrregularAdjective("공부하다"))  # doesn't end in 워하다 at all
 
 
 if __name__ == "__main__":

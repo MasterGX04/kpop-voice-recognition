@@ -1,0 +1,8 @@
+# Install with:  python -m pip install --no-deps -r requirements-hanja.txt
+#
+# --no-deps is required on Python 3.13: hanja 0.15.1 declares `pyyaml==6.0.1` (plus pytest and
+# coveralls, which it doesn't need at runtime), and pyyaml 6.0.1 has no 3.13 wheel, so a normal
+# install fails to resolve. Its only real runtime dependency is pyyaml, which requirements.txt
+# already provides at a 3.13-compatible version. Verified: hanja.translate() works this way.
+# `pip check` will then complain about hanja's pyyaml pin and its pytest/coveralls deps - expected.
+hanja==0.15.1

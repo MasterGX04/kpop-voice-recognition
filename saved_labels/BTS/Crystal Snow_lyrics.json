@@ -131,5 +131,633 @@
         "isAdLib": false,
         "adLibDuration": 0,
         "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "b8d35ce3-55ee-499e-a17e-c3dcc3699490",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 1870,
+            "endChunk": 1931
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "Ah　どこまでも舞い上がる Crystal",
+        "romanization": "Ah doko made mo maiagaru Crystal",
+        "english": "Ah, crystal flies high wherever it goes",
+        "startChunk": 1859,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "ce23e9f3-27a0-400d-a26d-defbd1321b1b",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 2056,
+            "endChunk": 2079
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "ねぇ何もいらないから\nもう少しだけ 感じてたい\nCan I touch your heart？",
+        "romanization": "nē nan mo ira nai kara\nmō sukoshi dake kanji te tai\nCan I touch your heart？",
+        "english": "Hey, there’s nothing else I want\nI just want to feel a little more\nCan I touch your heart？",
+        "startChunk": 2045,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "2ee711d7-d4fd-45ac-9d7b-b359d500d6c2",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 2291,
+            "endChunk": 2448
+        },
+        "language": "Japanese",
+        "memberName": [
+            "V"
+        ],
+        "korean": "触れたくてもすり抜けていく\nOh Someday… Someday…",
+        "romanization": "fure taku te mo surinuke te iku\nOh Someday… Someday…",
+        "english": "I want to touch it but it keeps slipping through my \nfingers,\nSomeday, Someday",
+        "startChunk": 2280,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "fddc4597-c8fd-489b-86b5-b0b8ba627231",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 2752,
+            "endChunk": 2814
+        },
+        "language": "Japanese",
+        "memberName": [
+            "V"
+        ],
+        "korean": "小さな笑顔がなぜか苦しい",
+        "romanization": "chīsana egao ga naze ka kurushī",
+        "english": "Your little smile somehow hurts me",
+        "startChunk": 2741,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "946b577d-41f0-466b-8c41-0ac3cd4032cb",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 2877,
+            "endChunk": 2923
+        },
+        "language": "English",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "How can I be closer ooh",
+        "startChunk": 2866,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "31244426-4075-4fc2-a8fc-ab23297214f6",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 2966,
+            "endChunk": 3023
+        },
+        "language": "Japanese",
+        "memberName": [
+            "V"
+        ],
+        "korean": "この想いは何故答えが出ない",
+        "romanization": "kono omoi wa naze kotae ga denai",
+        "english": "Why can’t I find an answer for this love?",
+        "startChunk": 2955,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "f6bbe777-0cff-4de3-a82f-9222326d4260",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 3072,
+            "endChunk": 3105
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook",
+            "Suga"
+        ],
+        "korean": "How I am gonna find it？ どうやって？\nOh let me know",
+        "romanization": "How I am gonna find it？ dō yatte？\nOh let me know",
+        "english": "How am I gonna find it? How?\nOh, let me know",
+        "startChunk": 3061,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "bf91ad20-08a7-4dee-b5bd-2c5d2e08c1cf",
+        "linkedLabel": {
+            "member": "Suga",
+            "startChunk": 3166,
+            "endChunk": 3197
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Suga"
+        ],
+        "korean": "曖昧な形ばかり Crystal Snow\n報われない Story なんてもうムリ\nEh この手で変えてみせるのに",
+        "romanization": "aimai na katachi bakari Crystal Snow\nmukuwa re nai Story nante mō muri\nEh kono te de kae te miseru no ni",
+        "english": "Crystal snow only holds an ambiguous shape\nI can't bear my story of unrequited love\nEh I’ll manage to change it on my own",
+        "startChunk": 3155,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "3473c59b-3998-481a-b736-987e04af6433",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 3414,
+            "endChunk": 3443
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "Surely 誓えるのに",
+        "romanization": "Surely chikaeru no ni",
+        "english": "Surely, I can promise you",
+        "startChunk": 3403,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "47d5e3a3-f8b3-4eb7-b557-0d6c40640d33",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 3533,
+            "endChunk": 3552
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "君を守りたくて\n涙に変わる前にもう一度",
+        "romanization": "kimi o mamori taku te\nnamida ni kawaru mae ni mō ichi do",
+        "english": "I want to protect you one more time \nBefore tears run down your face",
+        "startChunk": 3522,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "00b21aa4-1cb7-4a3e-8263-b7cb1378039d",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 3765,
+            "endChunk": 3825
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "願う程に届かない Crystal",
+        "romanization": "negau hodo ni todokanai Crystal",
+        "english": "But the crystal gets further from reach, \nthe more I wish for it",
+        "startChunk": 3754,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "272e50ef-85db-46d0-91d9-09e1149bd169",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 3949,
+            "endChunk": 3973
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "100年先になっても\n次の一歩は君とがいい\nCan I be your one？",
+        "romanization": "hyakunen saki ni natte mo\ntsugi no ichi ho wa kimi to gaī\nCan I be your one？",
+        "english": "Even after hundred years, \nI want to live with you\nCan I be your one?",
+        "startChunk": 3938,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "01824da1-f492-4ddb-a20d-5c9d4215e29a",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 4187,
+            "endChunk": 4352
+        },
+        "language": "Japanese",
+        "memberName": [
+            "V"
+        ],
+        "korean": "星一つない雪の夜空\nOh Someday… Someday…",
+        "romanization": "hoshi hito tsunai yuki no yozora\nOh Someday… Someday…",
+        "english": "There is not a single star in this snowy sky\nOh, someday, someday",
+        "startChunk": 4176,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "d9bd0db1-adc9-4dfc-b625-701d7372a870",
+        "linkedLabel": {
+            "member": "RM",
+            "startChunk": 4423,
+            "endChunk": 4431
+        },
+        "language": "Japanese",
+        "memberName": [
+            "RM"
+        ],
+        "korean": "もう二人は遥か遠い\n一つのはずなのに\n今では僕らを\n彩る絵の具など",
+        "romanization": "mō futari wa haruka tōi\nhitotsu no hazu na no ni\nima de wa boku ra o\nirodoru enogu nado",
+        "english": "The two of us are already far apart\nEven though we are meant to be together\nNow we can't choose \nthe paint that colors us",
+        "startChunk": 4412,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "a67818cf-5ef0-4373-8c73-c2c68541f30e",
+        "linkedLabel": {
+            "member": "RM",
+            "startChunk": 4594,
+            "endChunk": 4750
+        },
+        "language": "Japanese",
+        "memberName": [
+            "RM"
+        ],
+        "korean": "選べやしない黒い息も\n深い君の白い霧も\nI feel, I feel, I feel, I feel",
+        "romanization": "erabe ya shinai kuroi iki mo\nfukai kimi no shiroi kiri mo\nI feel, I feel, I feel, I feel",
+        "english": "Even the black breath\nEven your thick white fog\nI feel, I feel, I feel, I feel",
+        "startChunk": 4621,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "3695e40d-c9a7-4c25-b82f-8091ca7e5544",
+        "linkedLabel": {
+            "member": "RM",
+            "startChunk": 4791,
+            "endChunk": 4871
+        },
+        "language": "Japanese",
+        "memberName": [
+            "RM"
+        ],
+        "korean": "Oh crystal snow, crystal snow\n真っ白なその中で\n君が僕を通り過ぎ\n水になろうと胸でまだ流れてる",
+        "romanization": "Oh crystal snow, crystal snow\nmasshiro na sono naka de\nkimi ga boku o tōrisugi\nmizu ni narō to mune de mada nagare teru",
+        "english": "Oh yeah, oh, crystal snow, crystal snow\nInside the white fog\nEven though you pass through me and turn to water\nYou are still in my heart",
+        "startChunk": 4832,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "4414e2b8-58ac-4838-b675-ee2b6ce06ba6",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 5055,
+            "endChunk": 5082
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "奏でてる",
+        "romanization": "kanadeteru",
+        "english": "You are in my heart",
+        "startChunk": 5044,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "6b3d8e3d-6c95-41ef-a191-864f592c2b09",
+        "linkedLabel": {
+            "member": "RM",
+            "startChunk": 5081,
+            "endChunk": 5276
+        },
+        "language": "Japanese",
+        "memberName": [
+            "RM"
+        ],
+        "korean": "輝くもの全てに映る\n光る君を見つめてる\n待ってるさまたどこでも\n会いたい嘘でも握ってこの手を",
+        "romanization": "kagayaku mono subete ni utsuru\nhikaru kimi o mitsume teru\nmatteru sa mata doko de mo\naitai uso de mo nigitte kono te o",
+        "english": "I watch you shining and reflecting \nOn every single sparkling thing\nI’ll wait for you no matter where\nI want to see you, even if you're pretending, please hold \nmy hand",
+        "startChunk": 5070,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "338381f3-de34-4875-a2b7-7e5e7f9eb068",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 5266,
+            "endChunk": 5286
+        },
+        "language": "Japanese",
+        "memberName": [
+            "V"
+        ],
+        "korean": "愛する温度が溶け出すメロディ",
+        "romanization": "aisuru ondo ga tokedasu merodi",
+        "english": "The warmth of love started melting",
+        "startChunk": 5255,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "89df7556-6375-41c1-9632-df1d3f5d9fe6",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 5475,
+            "endChunk": 5497
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "確かな温もりよ永遠(とわ)に続け",
+        "romanization": "tashika na nukumori yo towa ni tsuzuke",
+        "english": "This genuine warmth, please stay forever",
+        "startChunk": 5464,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "f73dd15a-1692-4c03-9308-2663a2d5515a",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 5744,
+            "endChunk": 5762
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "君を抱き締めたい\n消えてしまう前にもう一度",
+        "romanization": "kimi o dakishime tai\nkie te shimau mae ni mō ichi do",
+        "english": "I want to hold you one more time \nbefore you disappear",
+        "startChunk": 5733,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "8752f0e0-aac3-4ecb-ae38-ff14c2f2ce06",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 5975,
+            "endChunk": 6039
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "叶えるため舞い上がる Crystal",
+        "romanization": "kanaeru tame maiagaru Crystal",
+        "english": "The crystal flies high to reach you",
+        "startChunk": 5964,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "7592d600-1427-4853-b63c-c962676c6dc4",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 6157,
+            "endChunk": 6184
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "ねぇ言葉足りないけど\nありのままでも伝えるから\nCan I touch your heart？",
+        "romanization": "nē kotoba tari nai kedo\narinomama de mo tsutaeru kara\nCan I touch your heart？",
+        "english": "Hey, words aren't enough to express my feelings \nBut I will tell you as it is\nCan I touch your heart?",
+        "startChunk": 6146,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "4e2a24c3-0b8d-4616-9437-87fee2bde2e9",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 6394,
+            "endChunk": 6565
+        },
+        "language": "Japanese",
+        "memberName": [
+            "V"
+        ],
+        "korean": "信じて欲しい迎えに行くよ\nSomeday… Someday…",
+        "romanization": "shinji te hoshī mukae ni iku yo\nSomeday… Someday…",
+        "english": "I want you to believe me, I’ll come get you\nSomeday, someday",
+        "startChunk": 6383,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "74fcfbfe-9b35-41fa-854d-1435ee9a3527",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 6646,
+            "endChunk": 6681
+        },
+        "language": "English",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "It’s always you, It’s always you, crystal snow",
+        "startChunk": 6635,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "2ef6914b-5672-4a45-b7a0-9040f428a9d1",
+        "linkedLabel": {
+            "member": "V",
+            "startChunk": 6785,
+            "endChunk": 6829
+        },
+        "language": "English",
+        "memberName": [
+            "V"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Let me see your smile, oh baby, eh",
+        "startChunk": 6705,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "3f923bd5-45f7-4beb-beee-9eb21a33527a",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 6858,
+            "endChunk": 6892
+        },
+        "language": "English",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "It’s always you, It’s always you, crystal snow",
+        "startChunk": 6847,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "e33a592f-5ade-4220-8c8e-76a95e60531a",
+        "linkedLabel": {
+            "member": "Jimin",
+            "startChunk": 6915,
+            "endChunk": 7018
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jimin"
+        ],
+        "korean": "Let me feel your love\nそうどこまでも Hoo",
+        "romanization": "Let me feel your love\nsō doko made mo Hoo",
+        "english": "Let me feel your love\nWherever it takes us, Hoo",
+        "startChunk": 6904,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "334986e7-e874-4d3d-9219-44d7ad1f5443",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 7069,
+            "endChunk": 7097
+        },
+        "language": "English",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "It’s always you, It’s always you, crystal snow",
+        "startChunk": 7058,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "21ebd6f2-9cfe-4cea-9f8b-f4a3e2247bad",
+        "linkedLabel": {
+            "member": "Jin",
+            "startChunk": 7252,
+            "endChunk": 7291
+        },
+        "language": "English",
+        "memberName": [
+            "Jin"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Let me feel your love, our crystal snow yeah",
+        "startChunk": 7241,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "b6d0de8f-16c1-4d98-9be8-cdfad025ef8c",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 7278,
+            "endChunk": 7312
+        },
+        "language": "English",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "It’s always you, It’s always you, crystal snow",
+        "startChunk": 7267,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "4fd94164-d0e8-4d00-989d-c763286b713c",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 7421,
+            "endChunk": 7446
+        },
+        "language": "English",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "",
+        "romanization": "",
+        "english": "Oh yeah Crystal snow, oh…",
+        "startChunk": 7410,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
+    },
+    {
+        "lyricId": "dde641a4-695a-4f18-8a71-0c430ceca613",
+        "linkedLabel": {
+            "member": "Jungkook",
+            "startChunk": 7756,
+            "endChunk": 7809
+        },
+        "language": "Japanese",
+        "memberName": [
+            "Jungkook"
+        ],
+        "korean": "どこまでも Baby crystal snow",
+        "romanization": "doko made mo Baby crystal snow",
+        "english": "Whatever it takes Baby, Crystal Snow",
+        "startChunk": 7745,
+        "isAdLib": false,
+        "adLibDuration": 0,
+        "anchorMode": "startChunk"
     }
 ]

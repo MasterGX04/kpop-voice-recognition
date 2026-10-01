@@ -417,7 +417,8 @@ class TrackItem:
             text=timerText,
             font=self.font,
             fill="white",
-            anchor="ne"  # Anchor the text to the right (east)
+            anchor="ne",  # Anchor the text to the right (east)
+            tags="member"
         )
     
     def updateProgressBarGeometry(self):
@@ -526,9 +527,9 @@ class TrackItem:
         )
         
         self.progressBarCanvasImage = self.parent.canvas.create_image(
-            0, self.getProgressBarY(), anchor="nw", image=self.progressBarImage
+            0, self.getProgressBarY(), anchor="nw", image=self.progressBarImage, tags="member"
         )
-        
+
         self.parent.canvas.tag_lower(self.progressBarCanvasImage, self.imageId)
     
     def _shadeHex(self, hexColor: str, amount: float) -> str:

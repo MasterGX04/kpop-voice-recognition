@@ -1,0 +1,21 @@
+# Voice-recognition / training stack. NOT needed to run the GUI, lyrics or flashcard features:
+# torch is only imported lazily (gui/audio_tester.py, when you run a prediction).
+# Install on top of requirements.txt:  python -m pip install -r requirements-ml.txt
+#
+# NOT verified on Python 3.13 (only torch/torchaudio/scipy/numba/scikit-learn were confirmed to
+# publish 3.13 wheels). muq, speechbrain, transformers, pytorch-metric-learning etc. are untested.
+# The previous Python 3.9 environment (pyannote-env) had torch 2.7.1+cu126 - for a CUDA build use
+#   --extra-index-url https://download.pytorch.org/whl/cu126
+
+torch
+torchaudio
+transformers
+speechbrain
+muq
+scikit-learn
+scipy
+soundfile
+umap-learn
+pytorch-metric-learning
+pyloudnorm
+datasets
