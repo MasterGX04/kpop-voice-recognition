@@ -22,14 +22,24 @@ def chunkToMs(chunk: int) -> int:
 # never so late that less than MIN_TAIL_MS of the clip remains.
 WORD_LEAD_MS = 300
 MIN_TAIL_MS = 600
+# Karaoke highlight offset: how many ms LATE the lit word should trail the audio it sings along with (positive =
+# highlight later). Audio output buffering + the JS bridge make the page's clock run slightly ahead of what is
+# heard; tune this one number if the highlight is consistently early/late. 0 until measured by ear.
+KARAOKE_LATENCY_MS = 0
+# Typical human reaction lag when tapping along (core.karaoke_timing.calibrateLag measures the real one per take from
+# row-start words; this is only the fallback for a take with fewer than two of them). An unmeasured typical value.
+TAP_LAG_MS = 150
+# Nobody taps sooner than this after hearing a beat; a tap earlier than this after a row start belongs to the row before.
+MIN_REACTION_MS = 120
 
 
-def clipStartOffsetMs(durationMs: int, fraction: float) -> int:
+def clipStartOffsetMs(durationMs: int, fraction: float, leadMs: int = WORD_LEAD_MS) -> int:
     """Offset (ms from the clip start) to begin playback for a word estimated to start `fraction`
-    (0..1) of the way through a clip `durationMs` long."""
+    (0..1) of the way through a clip `durationMs` long. `leadMs` is how far before that to start; pass 0
+    when `fraction` already includes a lead-in (core.karaoke_timing's `playFraction`)."""
     fraction = min(1.0, max(0.0, float(fraction or 0)))
     latest = max(0, durationMs - MIN_TAIL_MS)
-    return int(min(latest, max(0, fraction * durationMs - WORD_LEAD_MS)))
+    return int(min(latest, max(0, fraction * durationMs - leadMs)))
 
 def hexToRgb01(hexColor: str):
     hexColor = hexColor.strip().lstrip("#")
@@ -352,6 +362,35 @@ def ensureAudioForPlayback(path: str, cacheDir: str = "cache_audio", targetSr: i
     # optional: force mono for smaller file + consistent timing
     audio.export(outPath, format="mp3")
     return outPath, True
+
+def atempoFilter(rate: float) -> str:
+    """ffmpeg audio filter that plays at `rate` (0.25..1) with the pitch kept. A single atempo only goes down to 0.5,
+    so slower speeds chain two."""
+    if not 0.25 <= rate <= 1.0:
+        raise ValueError(f"slow-down rate must be between 0.25 and 1, got {rate}")
+    if rate >= 0.5:
+        return f"atempo={rate:g}"
+    return f"atempo=0.5,atempo={rate / 0.5:g}"
+
+
+def makeSlowClip(playbackPath: str, startSec: float, durationSec: float, rate: float, cacheDir: str = "cache_audio") -> str:
+    """A pitch-preserving slowed-down WAV of [startSec, startSec + durationSec) of `playbackPath`, cut by ffmpeg from
+    the decoded audio (so, unlike seeking into an MP3 at play time, the start is exactly where it says). Cached by
+    (file, window, rate). Plays for durationSec / rate."""
+    os.makedirs(cacheDir, exist_ok=True)
+    key = hashlib.sha1(f"{cacheKeyForPath(playbackPath)}|{startSec:.3f}|{durationSec:.3f}|{rate:g}".encode()).hexdigest()
+    outPath = os.path.join(cacheDir, f"slow_{key}.wav")
+    if os.path.exists(outPath):
+        return outPath
+    cmd = [resourcePath("ffmpeg.exe"), "-y", "-ss", f"{startSec:.3f}", "-t", f"{durationSec:.3f}", "-i", playbackPath,
+           "-filter:a", atempoFilter(rate), "-vn", outPath + ".tmp.wav"]
+    flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
+    done = subprocess.run(cmd, capture_output=True, creationflags=flags)
+    if done.returncode != 0 or not os.path.exists(outPath + ".tmp.wav"):
+        raise RuntimeError("ffmpeg could not make the slowed clip: " + done.stderr.decode("utf-8", "replace")[-300:])
+    os.replace(outPath + ".tmp.wav", outPath)
+    return outPath
+
 
 def findLabelIndexBySpan(labels, startChunk, endChunk, member=None, excludeIndices=None):
     """

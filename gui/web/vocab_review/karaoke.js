@@ -47,7 +47,66 @@
     return pieces;
   }
 
-  const api = { cleanLine, weightOf, segmentLine };
+  // --- Playback clock (K1). The audio plays in the Python process, so the page keeps its own clock: `play` is
+  // what playOccurrenceAudio returned ({clipStartChunk, offsetMs, playMs, chunkMs, latencyMs}) and `elapsedMs`
+  // is the time since that call came back. On a slowed clip (`rate` < 1) song time advances `rate` x real time. Returns the absolute chunk now being sung (fractional), or null once
+  // the clip is over.
+  function chunkAt(play, elapsedMs) {
+    if (!play || !(play.chunkMs > 0)) return null;
+    const into = elapsedMs - (play.latencyMs || 0);
+    if (elapsedMs >= play.playMs) return null;
+    return play.clipStartChunk + (play.offsetMs + Math.max(0, into) * (play.rate || 1)) / play.chunkMs;
+  }
+
+  // --- Highlight (K2): a word is lit once the clock reaches its start and stays lit until the clip ends. A word
+  // with no startChunk (the plain-estimate fallback) is never lit - no precise-looking guess.
+  function isLit(startChunk, chunk) {
+    return chunk !== null && typeof startChunk === "number" && chunk >= startChunk;
+  }
+
+  // --- Tap-along take (Part 5): one tap per word, in order. A tap records the clock chunk for the next word, skip
+  // leaves it estimated, undo steps back one entry. No DOM, so it is unit-tested under node.
+  function newTake(count) {
+    const log = [];                                   // {index, chunk|null}
+    return {
+      count,
+      get next() { return log.length; },
+      get done() { return log.length >= count; },
+      tap(chunk) {
+        if (this.done || chunk === null || chunk === undefined) return false;
+        log.push({ index: log.length, chunk });
+        return true;
+      },
+      skip() {
+        if (this.done) return false;
+        log.push({ index: log.length, chunk: null });
+        return true;
+      },
+      undo() { return log.pop() || null; },
+      taps() {
+        const out = {};
+        for (const e of log) if (e.chunk !== null) out[e.index] = e.chunk;
+        return out;
+      },
+      tappedCount() { return log.filter((e) => e.chunk !== null).length; },
+      entries() { return log.slice(); },
+    };
+  }
+
+  // The start chunk of every tap unit in tap order, from a getLineTiming / previewTaps result - the same walk the tap
+  // dialog uses to lay out its chips: a syllable each (syllable mode), a kana part each (split kanji), else a word.
+  function unitStarts(timing) {
+    const out = [];
+    for (const p of timing.pieces || []) {
+      if (!p.isWord) continue;
+      if (timing.unit === "syllable" && p.syllables) for (const s of p.syllables) out.push(s.startChunk);
+      else if (p.parts && p.parts.length > 1) for (const part of p.parts) out.push(part.startChunk);
+      else out.push(p.startChunk);
+    }
+    return out;
+  }
+
+  const api = { cleanLine, weightOf, segmentLine, chunkAt, isLit, newTake, unitStarts };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   root.Karaoke = api;
 })(typeof window !== "undefined" ? window : globalThis);

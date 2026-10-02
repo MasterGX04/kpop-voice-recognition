@@ -69,6 +69,13 @@ def tokenReading(word, prevWord=None) -> str:
     return _tokenKatakanaReading(word, prevWord)
 
 
+def rawTokenReading(word, prevWord=None) -> str:
+    """Public accessor for a token's katakana reading with any real chouonpu ("ー") left as ー (tokenReading()
+    expands it into a vowel kana). Same number of beats either way; karaoke_timing uses this so a held ー is shown
+    and tapped as ー, not as the vowel it stands for."""
+    return _rawTokenReading(word, prevWord)
+
+
 def _getKakasi():
     global _kakasi
     if _kakasi is None:

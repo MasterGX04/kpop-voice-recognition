@@ -9,6 +9,7 @@ core/test_vocab_store_ja.py / core/test_vocab_store_ko.py. Run with:
 import os
 import shutil
 import tempfile
+import time
 import unittest
 
 from core import vocab_store_ja, vocab_store_ko, vocab_link
@@ -360,6 +361,249 @@ class VocabReviewApiTests(unittest.TestCase):
         self.assertEqual(words[0]["fraction"], 0.0)
         self.assertEqual(words[1]["startChunk"], 2886)          # first word after the pause starts at the next row
 
+    def test_play_occurrence_audio_returns_what_the_page_clock_needs(self):
+        from unittest import mock
+        from core.util_functions import clipStartOffsetMs, KARAOKE_LATENCY_MS
+
+        class FakeTimer:
+            def __init__(self, interval, fn): self.daemon = False
+            def start(self): pass
+            def cancel(self): pass
+
+        start, end = 649, 754
+        clipMs = chunkToMs(end) - chunkToMs(start)
+        with mock.patch("gui.vocab_review_api.pickBestAudioForStem", return_value="x.mp3"), \
+                mock.patch("gui.vocab_review_api.ensureAudioForPlayback", return_value=("x.wav", None)), \
+                mock.patch("gui.vocab_review_api.threading.Timer", FakeTimer), \
+                mock.patch("gui.vocab_review_api.pygame.mixer.music"), \
+                mock.patch.object(self.api, "_ensureMixer"):
+            before = time.time() * 1000
+            data = self.api.playOccurrenceAudio("TWICE", "Doughnut", start, end, 0.5, True)["data"]
+            after = time.time() * 1000
+        self.assertTrue(before <= data.pop("startedAtMs") <= after)     # stamped when play() ran, for the page clock
+        offsetMs = clipStartOffsetMs(clipMs, 0.5, 0)
+        self.assertEqual(data, {"clipStartChunk": start, "offsetMs": offsetMs, "clipMs": clipMs,
+                                "playMs": clipMs - offsetMs, "chunkMs": 40, "latencyMs": KARAOKE_LATENCY_MS,
+                                "rate": 1.0})
+
+    def test_playback_position_is_none_when_idle_and_pygames_clock_when_playing(self):
+        from unittest import mock
+        self.assertEqual(self.api.getPlaybackPositionMs(), {"ok": True, "data": None})   # mixer never started
+        self.api._mixerReady = True
+        with mock.patch("gui.vocab_review_api.pygame.mixer.music") as music:
+            music.get_busy.return_value = False
+            self.assertIsNone(self.api.getPlaybackPositionMs()["data"])
+            music.get_busy.return_value = True
+            music.get_pos.return_value = 1234
+            self.assertEqual(self.api.getPlaybackPositionMs()["data"], 1234)
+            music.get_pos.return_value = -1
+            self.assertIsNone(self.api.getPlaybackPositionMs()["data"])
+
+    def test_get_member_color_uses_the_first_singer_from_groups_json(self):
+        from unittest import mock
+        groups = {"TWICE": {"members": [{"name": "Nayeon", "color": "#ff0000"}, {"name": "Sana", "color": "#00ff00"}]}}
+        with mock.patch("gui.vocab_review_api._groupRegistry") as registry:
+            registry.groups = groups
+            self.assertEqual(self.api.getMemberColor("TWICE", ["Sana", "Nayeon"])["data"], "#00ff00")
+            self.assertIsNone(self.api.getMemberColor("TWICE", ["Nobody"])["data"])
+            self.assertIsNone(self.api.getMemberColor("TWICE", [])["data"])
+            self.assertIsNone(self.api.getMemberColor("Other", ["Sana"])["data"])
+
+    def _tapCard(self, korean=None):
+        """A real-shaped Sana card (split 恋, two rows) with the lyric file and labels mocked."""
+        from unittest import mock
+        from core.lyric_text import READING_OPEN as RO, READING_CLOSE as RC, PAUSE_MARK as M
+        rows = [["Sana", 922, 936, False, False], ["Sana", 941, 1045, False, False]]
+        raw = korean or ("恋" + RO + "こ" + M + "い" + RC + "をしてから")
+        entries = [{"lyricId": "L1", "korean": raw}]
+        patches = [mock.patch("gui.vocab_review_api.loadRawLabels", return_value=rows),
+                   mock.patch("core.vocab_sync._readLyricEntries", return_value=entries)]
+        for p in patches:
+            p.start()
+            self.addCleanup(p.stop)
+        return lambda **kw: self.api.getLineTiming("TWICE", "Doughnut", 922, 1045, "恋をしてから", ["Sana"],
+                                                   "Japanese", kw.get("lyricId", "L1"), kw.get("unit"))
+
+    def _save(self, taps, lyricId="L1"):
+        return self.api.saveTaps("TWICE", "Doughnut", 922, 1045, "恋をしてから", ["Sana"], "Japanese", lyricId, taps)
+
+    @staticmethod
+    def _starts(res):
+        return [w["startChunk"] for w in res["data"]["pieces"] if w["isWord"]]
+
+    def test_a_saved_take_is_applied_to_the_line_timing_with_the_measured_lag_removed(self):
+        timing = self._tapCard()
+        before = timing()["data"]
+        self.assertEqual((before["tapStatus"], before["words"]), ("none", ["恋(こ)", "恋(い)", "を", "してから"]))
+        self.assertEqual(before["rowStarts"], {0: 922, 1: 941})
+
+        # taps on both row starts were 10 chunks late -> lag 10; the tap on してから (index 3) is corrected by it
+        saved = self._save({0: 932, 1: 951, 3: 1010})
+        self.assertTrue(saved["ok"], saved)
+        self.assertEqual((saved["data"]["lag"], saved["data"]["measured"], saved["data"]["spread"]), (10, True, 0))
+
+        after = timing()["data"]
+        self.assertEqual((after["tapStatus"], after["tapLag"]), ("ok", 10))
+        starts = {w["text"]: w["startChunk"] for w in after["pieces"] if w["isWord"]}
+        self.assertEqual(starts["してから"], 1000)
+        self.assertEqual(starts["恋"], 922)                       # row start stays exact
+        self.assertTrue(os.path.exists(os.path.join("saved_labels", "TWICE", "taps", "Doughnut_taps.json")))
+
+    def test_without_two_row_start_taps_the_default_lag_is_used_and_reported_as_not_measured(self):
+        self._tapCard()
+        saved = self._save({3: 1000})
+        self.assertFalse(saved["data"]["measured"])
+        self.assertEqual(saved["data"]["lag"], 3.75)              # TAP_LAG_MS 150 / 40 ms per chunk
+        self.assertEqual(saved["data"]["timing"]["pieces"][-1]["startChunk"], 996.2)
+
+    def test_a_take_goes_stale_when_the_lyric_words_change_and_clearing_removes_it(self):
+        from unittest import mock
+        timing = self._tapCard()
+        self._save({0: 932, 1: 951, 3: 1010})
+        with mock.patch("core.vocab_sync._readLyricEntries", return_value=[{"lyricId": "L1", "korean": "恋をしてから"}]):
+            stale = timing()["data"]
+        self.assertEqual(stale["tapStatus"], "stale")              # the split-kanji annotation was removed
+        self.assertNotEqual(stale["pieces"][-1]["startChunk"], 1000)
+        self.assertEqual(self._save({})["data"]["timing"]["tapStatus"], "none")
+
+    def test_a_card_with_no_lyric_id_finds_its_take_through_the_matched_lyric(self):
+        timing = self._tapCard()
+        self._save({0: 932, 1: 951, 3: 1010}, lyricId=None)        # the page had no id; the file lookup supplies L1
+        self.assertEqual(timing(lyricId=None)["data"]["tapStatus"], "ok")
+
+    def test_a_slowed_clip_is_cut_by_ffmpeg_played_from_its_start_and_reports_the_rate(self):
+        from unittest import mock
+        timers = []
+
+        class FakeTimer:
+            def __init__(self, interval, fn):
+                self.interval = interval
+                self.daemon = False
+                timers.append(self)
+            def start(self): pass
+            def cancel(self): pass
+
+        start, end = 649, 754
+        clipMs = chunkToMs(end) - chunkToMs(start)
+        with mock.patch("gui.vocab_review_api.pickBestAudioForStem", return_value="x.mp3"),                 mock.patch("gui.vocab_review_api.ensureAudioForPlayback", return_value=("x.mp3", None)),                 mock.patch("gui.vocab_review_api.makeSlowClip", return_value="slow.wav") as slow,                 mock.patch("gui.vocab_review_api.threading.Timer", FakeTimer),                 mock.patch("gui.vocab_review_api.pygame.mixer.music") as music,                 mock.patch.object(self.api, "_ensureMixer"):
+            data = self.api.playOccurrenceAudio("TWICE", "Doughnut", start, end, 0, True, 0.5)["data"]
+        slow.assert_called_once_with("x.mp3", chunkToMs(start) / 1000, clipMs / 1000, 0.5)
+        music.load.assert_called_once_with("slow.wav")
+        music.play.assert_called_once_with()                       # from the slice's own start: no MP3 seek
+        self.assertEqual((data["rate"], data["playMs"]), (0.5, clipMs / 0.5))
+        self.assertAlmostEqual(timers[-1].interval, clipMs / 1000 / 0.5)
+
+    def test_atempo_filter_chains_below_half_speed(self):
+        from core.util_functions import atempoFilter
+        self.assertEqual(atempoFilter(0.75), "atempo=0.75")
+        self.assertEqual(atempoFilter(0.5), "atempo=0.5")
+        self.assertEqual(atempoFilter(0.35), "atempo=0.5,atempo=0.7")
+        for bad in (0.1, 1.5):
+            with self.assertRaises(ValueError):
+                atempoFilter(bad)
+
+    def test_syllable_takes_are_separate_from_word_takes_and_auto_prefers_syllables(self):
+        timing = self._tapCard()
+        word = self._save({0: 932, 1: 951, 3: 1010})                           # a word take (unit "word")
+        self.assertEqual(timing()["data"]["tapUnit"], "word")
+        syl = self.api.saveTaps("TWICE", "Doughnut", 922, 1045, "恋をしてから", ["Sana"], "Japanese", "L1",
+                                {0: 932, 1: 951, 4: 1010}, "syllable", 1.0)
+        self.assertTrue(syl["ok"], syl)
+        self.assertEqual(syl["data"]["timing"]["words"][:3], ["こ", "い", "お"])
+        auto = timing()["data"]
+        self.assertEqual((auto["tapUnit"], auto["tapStatus"], auto["unit"]), ("syllable", "ok", "syllable"))
+        only = timing(unit="word")["data"]                                       # the word view still has its take
+        self.assertEqual((only["tapUnit"], only["unit"]), ("word", "word"))
+        # clearing the syllable take falls back to the word take
+        self.api.saveTaps("TWICE", "Doughnut", 922, 1045, "恋をしてから", ["Sana"], "Japanese", "L1", {}, "syllable")
+        self.assertEqual(timing()["data"]["tapUnit"], "word")
+        self.assertEqual(word["data"]["timing"]["tapStatus"], "ok")
+
+    def test_the_default_lag_is_real_time_so_a_slowed_take_assumes_less_song_time(self):
+        self._tapCard()
+        res = self.api.saveTaps("TWICE", "Doughnut", 922, 1045, "恋をしてから", ["Sana"], "Japanese", "L1",
+                                {3: 1000}, "word", 0.5)
+        self.assertEqual(res["data"]["lag"], 1.88)                               # 150 ms * 0.5 / 40 ms, rounded
+
+    def _nudge(self, anchors, index, delta, unit="word"):
+        return self.api.nudgeTake("TWICE", "Doughnut", 922, 1045, "恋をしてから", ["Sana"], "Japanese", "L1",
+                                  anchors, unit, index, delta)
+
+    def test_a_saved_take_also_keeps_the_raw_taps_and_speed(self):
+        timing = self._tapCard()
+        self._save({0: 932, 1: 951, 3: 1010})
+        applied = timing()["data"]
+        self.assertEqual(applied["anchors"], {0: 922, 1: 941, 3: 1000})          # lag 10 removed
+        self.assertEqual(applied["raw"], {0: 932, 1: 951, 3: 1010})
+        self.assertEqual(applied["tapRate"], 1.0)
+
+    def test_preview_returns_the_corrected_anchors_a_nudge_starts_from(self):
+        self._tapCard()
+        res = self.api.previewTaps("TWICE", "Doughnut", 922, 1045, "恋をしてから", ["Sana"], "Japanese", "L1",
+                                   {0: 932, 1: 951, 3: 1010}, "word", 1.0)
+        self.assertEqual(res["data"]["anchors"], {0: 922, 1: 941, 3: 1000})
+
+    def test_nudge_moves_one_beat_without_saving_or_removing_any_lag(self):
+        self._tapCard()
+        res = self._nudge({0: 922, 1: 941, 3: 1000}, 3, 2)
+        self.assertEqual((res["data"]["status"], res["data"]["anchors"][3], res["data"]["beatStart"]), ("moved", 1002, 1002))
+        self.assertFalse(os.path.exists(os.path.join("saved_labels", "TWICE", "taps", "Doughnut_taps.json")))
+        locked = self._nudge({0: 922, 1: 941, 3: 1000}, 1, 2)                     # い starts the second row
+        self.assertEqual((locked["data"]["status"], locked["data"]["anchors"][1]), ("locked", 941))
+        reset = self._nudge({0: 922, 1: 941, 3: 1000}, 3, None)
+        self.assertEqual((reset["data"]["status"], 3 in reset["data"]["anchors"]), ("reset", False))
+
+    def test_saving_a_corrected_take_writes_the_chunks_as_given_and_keeps_raw_taps(self):
+        timing = self._tapCard()
+        self._save({0: 932, 1: 951, 3: 1010})                                    # lag 10 measured and removed once
+        saved = self.api.saveCorrectedTake("TWICE", "Doughnut", 922, 1045, "恋をしてから", ["Sana"], "Japanese", "L1",
+                                           {0: 922, 1: 941, 3: 1004})
+        self.assertTrue(saved["ok"], saved)
+        applied = timing()["data"]
+        self.assertEqual(applied["anchors"], {0: 922, 1: 941, 3: 1004})          # NOT 994: lag is not taken off twice
+        self.assertEqual(applied["raw"], {0: 932, 1: 951, 3: 1010})              # raw taps survive the nudge
+        self.assertEqual(applied["tapLag"], 10)
+
+    def test_a_fresh_take_saved_corrected_stores_its_own_raw_taps_lag_and_rate(self):
+        timing = self._tapCard()
+        saved = self.api.saveCorrectedTake("TWICE", "Doughnut", 922, 1045, "恋をしてから", ["Sana"], "Japanese", "L1",
+                                           {0: 922, 3: 1004}, "word", 0.5, {0: 927, 3: 1009}, 5.0)
+        self.assertTrue(saved["ok"], saved)
+        applied = timing()["data"]
+        self.assertEqual((applied["anchors"], applied["raw"], applied["tapRate"], applied["tapLag"]),
+                         ({0: 922, 3: 1004}, {0: 927, 3: 1009}, 0.5, 5.0))
+
+    def test_preview_taps_times_a_take_without_saving_it(self):
+        timing = self._tapCard()
+        res = self.api.previewTaps("TWICE", "Doughnut", 922, 1045, "恋をしてから", ["Sana"], "Japanese", "L1",
+                                   {0: 932, 1: 951, 3: 1010}, "word", 1.0)
+        self.assertTrue(res["ok"], res)
+        data = res["data"]
+        self.assertEqual((data["lag"], data["measured"]), (10, True))
+        starts = {w["text"]: w["startChunk"] for w in data["timing"]["pieces"] if w["isWord"]}
+        estimate = {w["text"]: w["startChunk"] for w in data["estimate"]["pieces"] if w["isWord"]}
+        self.assertEqual(starts["してから"], 1000)                      # tapped 1010 minus the 10 chunk lag
+        self.assertNotEqual(estimate["してから"], 1000)                 # the untouched estimate differs
+        self.assertFalse(os.path.exists(os.path.join("saved_labels", "TWICE", "taps")))   # nothing written
+        self.assertEqual(timing()["data"]["tapStatus"], "none")
+
+    def test_get_kanji_reading_is_hiragana_without_spaces(self):
+        self.assertEqual(self.api.getKanjiReading("恋")["data"], "こい")
+        self.assertEqual(self.api.getKanjiReading("手を振って")["data"], "ておふって")   # sung pronunciation
+
+    def test_get_line_timing_reads_a_split_kanji_from_the_lyrics_file(self):
+        from unittest import mock
+        from core.lyric_text import READING_OPEN as RO, READING_CLOSE as RC, PAUSE_MARK as M
+        rows = [["Sana", 922, 936, False, False], ["Sana", 941, 1045, False, False]]
+        raw = "恋" + RO + "こ" + M + "い" + RC + "をしてから"
+        entries = [{"lyricId": "L1", "korean": raw}]
+        with mock.patch("gui.vocab_review_api.loadRawLabels", return_value=rows), \
+                mock.patch("core.vocab_sync._readLyricEntries", return_value=entries):
+            res = self.api.getLineTiming("TWICE", "Doughnut", 922, 1045, "恋をしてから", ["Sana"], "Japanese", "L1")
+        koi = [p for p in res["data"]["pieces"] if p["isWord"]][0]
+        self.assertEqual([p["startChunk"] for p in koi["parts"]], [922, 941])
+        self.assertEqual("".join(p["text"] for p in res["data"]["pieces"]), "恋をしてから")
+
     def test_shutdown_stops_the_clip_cancels_the_timer_and_releases_the_mixer(self):
         from unittest import mock
 
@@ -379,6 +623,56 @@ class VocabReviewApiTests(unittest.TestCase):
 
     def test_shutdown_is_safe_when_nothing_ever_played(self):
         self.assertEqual(self.api.shutdown(), {"ok": True, "data": None})
+
+    def test_clip_start_offset_lead_is_configurable(self):
+        from core.util_functions import clipStartOffsetMs, WORD_LEAD_MS, MIN_TAIL_MS
+        d = 12000
+        self.assertEqual(clipStartOffsetMs(d, 0.5, 0), 6000)                       # no lead: exactly the word
+        self.assertEqual(clipStartOffsetMs(d, 0.5), 6000 - WORD_LEAD_MS)           # default unchanged
+        self.assertEqual(clipStartOffsetMs(d, 1.0, 0), d - MIN_TAIL_MS)            # tail guard still applies
+
+    def test_exact_play_from_here_adds_no_further_lead(self):
+        from unittest import mock
+        from core.util_functions import clipStartOffsetMs, WORD_LEAD_MS
+
+        class FakeTimer:
+            def __init__(self, interval, fn): self.interval = interval; self.daemon = False
+            def start(self): pass
+            def cancel(self): pass
+
+        # Doughnut/Nayeon line 2 starts at row start 649 of the span 631-903: its playFraction is already the
+        # row start itself, so playback must begin exactly there (not 300 ms earlier, inside line 1).
+        start, end = 631, 903
+        clipMs = chunkToMs(end) - chunkToMs(start)
+        fraction = (649 - start) / (end - start)
+        with mock.patch("gui.vocab_review_api.pickBestAudioForStem", return_value="x.mp3"), \
+                mock.patch("gui.vocab_review_api.ensureAudioForPlayback", return_value=("x.wav", None)), \
+                mock.patch("gui.vocab_review_api.threading.Timer", FakeTimer), \
+                mock.patch("gui.vocab_review_api.pygame.mixer.music") as music, \
+                mock.patch.object(self.api, "_ensureMixer"):
+            self.assertTrue(self.api.playOccurrenceAudio("TWICE", "Doughnut", start, end, fraction, True)["ok"])
+            exactStart = music.play.call_args.kwargs["start"]
+            self.api.playOccurrenceAudio("TWICE", "Doughnut", start, end, fraction)          # default: with lead
+            leadStart = music.play.call_args.kwargs["start"]
+        self.assertAlmostEqual(exactStart, chunkToMs(649) / 1000, delta=0.002)
+        self.assertAlmostEqual(exactStart - leadStart, WORD_LEAD_MS / 1000, delta=0.002)
+
+    def test_preview_pause_edit_reports_words_per_row_for_unsaved_text(self):
+        from unittest import mock
+        from core.lyric_text import EDITOR_PAUSE_GLYPH as G
+        rows = [["Tzuyu", 2456, 2473, False, False], ["Tzuyu", 2478, 2579, False, False],
+                ["Tzuyu", 2605, 2828, False, False]]
+        text = "そ" + G + "ばにいなくても" + G + "\n切れずにリンクしてるね\nMemory の余韻に浸っていたい"
+        with mock.patch("gui.vocab_review_api.loadRawLabels", return_value=rows):
+            res = self.api.previewPauseEdit("TWICE", "Doughnut", 2456, 2828, ["Tzuyu"], "Japanese", text)
+        self.assertTrue(res["ok"], res)
+        data = res["data"]
+        self.assertEqual((data["rowCount"], data["markers"]), (3, 2))        # every pause marked: rows - 1
+        self.assertEqual([r["words"] for r in data["rows"]][:2], ["そ", "ばに いなくても"])
+        self.assertEqual(data["rows"][0]["seconds"], 0.7)                      # 17 chunks * 40 ms
+
+    def test_preview_pause_edit_without_a_span_returns_none(self):
+        self.assertEqual(self.api.previewPauseEdit("G", "S", 5, None, [], "Japanese", "x"), {"ok": True, "data": None})
 
     def _inTempLyricsDir(self, entries):
         """Put saved_labels/BTS/Stay Gold_lyrics.json in this test's own tempdir (setUp already chdir'd into

@@ -11,6 +11,7 @@ user never sees) - see FLASHCARD_WEB_UPGRADE_PLAN.md's "Error surfacing" note.
 """
 
 import threading
+import time
 import traceback
 
 import pygame
@@ -18,12 +19,14 @@ import pygame
 from core import vocab_store_ja, vocab_store_ko, vocab_link
 from core.cloze import buildClozeCard, orderOccurrencesForCloze
 from core.group_registry import GroupRegistry
-from core.karaoke_timing import timeLine
+from core.karaoke_timing import timeLine, calibrateLag, rowCheck, nudgeAnchor
+from core import tap_store
 from core import lyric_file
 from core.lyric_text import findRawLyricText, stripAll, toEditorText, fromEditorText
 from core.song_stats import loadRawLabels
 from core.srs_fsrs import formatInterval
-from core.util_functions import pickBestAudioForStem, ensureAudioForPlayback, chunkToMs, clipStartOffsetMs
+from core.util_functions import (makeSlowClip, pickBestAudioForStem, ensureAudioForPlayback, chunkToMs, clipStartOffsetMs,
+                                 WORD_LEAD_MS, CHUNK_DURATION_MS, KARAOKE_LATENCY_MS, TAP_LAG_MS, MIN_REACTION_MS)
 
 # Higher than getOccurrences()'s own default of 5 - that default was tuned for "show a couple of
 # example sentences" in the occurrence row, not for maximizing the odds a cloze card can be built
@@ -262,7 +265,7 @@ class VocabReviewApi:
         except Exception as exc:
             return _err(exc)
 
-    def playOccurrenceAudio(self, group, song, startChunk, endChunk, startFraction=0):
+    def playOccurrenceAudio(self, group, song, startChunk, endChunk, startFraction=0, exact=False, rate=1.0):
         """Plays the song audio for one occurrence's [startChunk, endChunk) window - the flashcard
         audio-clip prompt (Milestone 2). Reuses the same file-resolution/caching path
         gui/voice_recognition_gui.py's selectSong() uses (getGroupMediaDir + pickBestAudioForStem +
@@ -273,7 +276,11 @@ class VocabReviewApi:
         `startFraction` (0..1, default 0 = whole clip): begin partway through the clip, for "play
         from this word" - the front end estimates a word's onset as a fraction of the line (see
         gui/web/vocab_review/karaoke.js), and core.util_functions.clipStartOffsetMs turns that into
-        a safe offset (small lead-in, never leaving less than a short tail)."""
+        a safe offset (small lead-in, never leaving less than a short tail).
+
+        `rate` < 1 plays a pitch-preserving slowed-down copy (core.util_functions.makeSlowClip) for the tap tool: the
+        clip is cut from the decoded audio and played from its own start, so no MP3 seeking is involved. The page
+        clock then advances `rate` song-seconds per real second (see the returned `rate`)."""
         try:
             songDir = _groupRegistry.getGroupMediaDir(group)
             audioPath = pickBestAudioForStem(songDir, song)
@@ -289,21 +296,135 @@ class VocabReviewApi:
 
             self._ensureMixer()
             clipMs = max(0, chunkToMs(endChunk) - chunkToMs(startChunk))
-            offsetMs = clipStartOffsetMs(clipMs, startFraction)
+            # exact=True: `startFraction` is already a lead-adjusted start (core.karaoke_timing playFraction)
+            offsetMs = clipStartOffsetMs(clipMs, startFraction, 0 if exact else WORD_LEAD_MS)
             startSec = (chunkToMs(startChunk) + offsetMs) / 1000
             durationSec = (clipMs - offsetMs) / 1000
 
-            pygame.mixer.music.load(cachedPath)
-            pygame.mixer.music.play(start=startSec)
+            rate = float(rate or 1.0)
+            if rate < 1.0:
+                pygame.mixer.music.load(makeSlowClip(cachedPath, startSec, durationSec, rate))
+                pygame.mixer.music.play()
+                durationSec = durationSec / rate
+            else:
+                rate = 1.0
+                pygame.mixer.music.load(cachedPath)
+                pygame.mixer.music.play(start=startSec)
 
+            startedAtMs = time.time() * 1000           # the moment play() returned: audio is running from here
             self._stopTimer = threading.Timer(durationSec, pygame.mixer.music.stop)
             self._stopTimer.daemon = True
             self._stopTimer.start()
+            # What the page needs to run its own karaoke clock (the audio lives in this process, JS cannot read
+            # its position): the clip's absolute start chunk, how far into the clip playback actually began, and
+            # the clip length. chunk now = clipStartChunk + (offsetMs + (elapsed ms - latencyMs) * rate) / CHUNK_MS.
+            return _ok({"clipStartChunk": startChunk, "offsetMs": offsetMs, "clipMs": clipMs, "rate": rate,
+                        "playMs": (clipMs - offsetMs) / rate, "chunkMs": CHUNK_DURATION_MS,
+                        "latencyMs": KARAOKE_LATENCY_MS, "startedAtMs": startedAtMs})
+        except Exception as exc:
+            return _err(exc)
+
+    def prepareSlowClip(self, group, song, startChunk, endChunk, rate):
+        """Builds (and caches) the slowed-down copy of a whole occurrence clip ahead of time, so the tap tool's
+        count-in is not followed by a pause while ffmpeg runs. No-op for rate 1."""
+        try:
+            if float(rate or 1.0) < 1.0:
+                audioPath = pickBestAudioForStem(_groupRegistry.getGroupMediaDir(group), song)
+                if not audioPath:
+                    raise FileNotFoundError(f"No audio file found for {group}/{song}")
+                cachedPath, _ = ensureAudioForPlayback(audioPath)
+                clipMs = max(0, chunkToMs(endChunk) - chunkToMs(startChunk))
+                makeSlowClip(cachedPath, chunkToMs(startChunk) / 1000, clipMs / 1000, float(rate))
             return _ok()
         except Exception as exc:
             return _err(exc)
 
-    def getLineTiming(self, group, song, startChunk, endChunk, lyricLine, singers, language, lyricId=None):
+    def getPlaybackPositionMs(self):
+        """How long the current clip has been playing, in ms (pygame's own clock, not counting the seek offset), or
+        None when nothing is playing. The page polls this now and then to correct drift in its own clock."""
+        try:
+            if not self._mixerReady or not pygame.mixer.music.get_busy():
+                return _ok(None)
+            pos = pygame.mixer.music.get_pos()
+            return _ok(None if pos < 0 else pos)
+        except Exception as exc:
+            return _err(exc)
+
+    def getMemberColor(self, group, singers):
+        """Colour (groups.json: group name -> members -> color) of the card's first singer, or None. Only the first
+        singer for now; duets/backing/ad-libs are not handled yet."""
+        try:
+            first = (singers or [None])[0]
+            for member in (_groupRegistry.groups.get(group) or {}).get("members", []):
+                if member.get("name") == first and member.get("color"):
+                    return _ok(member["color"])
+            return _ok(None)
+        except Exception as exc:
+            return _err(exc)
+
+    def getKanjiReading(self, text):
+        """Hiragana reading of a (kanji) word, for the pause editor's "split kanji" button. None if it has no
+        kana reading or is not Japanese script."""
+        try:
+            from core.japanese_utils import kanjiLineToReading
+            reading = kanjiLineToReading(stripAll(text), "hiragana").replace(" ", "")
+            return _ok(reading or None)
+        except Exception as exc:
+            return _err(exc)
+
+    def _timingText(self, group, song, lyricLine, lyricId):
+        """(text for timeLine, lyricId): the raw lyric (pause markers and split-kanji readings kept, "|" dropped)
+        recovered from the song's lyrics file by `lyricId`, else by matching the clean line; the clean line itself
+        when no match. The resolved id is what taps are stored under, so a card without one still finds its take."""
+        from core.vocab_sync import _readLyricEntries, _lyricsPath
+        from core.lyric_text import findRawLyricEntry
+
+        text = stripAll(lyricLine)
+        entry = findRawLyricEntry(_readLyricEntries(_lyricsPath(group, song)), lyricId, text)
+        if entry is None:
+            return text, lyricId
+        return (entry.get("korean") or "").replace("|", ""), entry.get("lyricId") or lyricId
+
+    @staticmethod
+    def _tapKey(lyricId, unit):
+        """Takes are kept per unit: word takes under the lyric id itself (as first saved), syllable takes beside it."""
+        return lyricId if unit == "word" else f"{lyricId}#{unit}"
+
+    def _timed(self, group, song, startChunk, endChunk, timingText, lyricId, rows, singers, language, unit):
+        """The card's timing with its saved take applied. `unit` None = automatic: a syllable take if one applies,
+        else a word take, else the plain estimate (word units). Adds tapStatus ("none" | "ok" | "stale"), tapLag,
+        tapUnit (which take is applied) and the resolved lyricId."""
+        def run(u, anchors=None):
+            return timeLine(timingText, language, startChunk, endChunk, rows, singers, anchors=anchors, unit=u)
+
+        stale = False
+        for u in ([unit] if unit else ["syllable", "word"]):
+            result = run(u)
+            take = tap_store.getTake(group, song, self._tapKey(lyricId, u), result["words"])
+            if take["status"] == "ok" and take["anchors"]:
+                result = run(u, take["anchors"])
+                result.update(tapStatus="ok", tapLag=take["lag"], tapUnit=u, lyricId=lyricId, anchors=take["anchors"],
+                              raw=take["raw"], tapRate=take["rate"])
+                return result
+            stale = stale or take["status"] == "stale"
+        shown = run(unit or "word")
+        shown.update(tapStatus="stale" if stale else "none", tapLag=None, tapUnit=None, lyricId=lyricId)
+        return shown
+
+    def _timingText(self, group, song, lyricLine, lyricId):
+        """(text for timeLine, lyricId): the raw lyric (pause markers and split-kanji readings kept, "|" dropped)
+        recovered from the song's lyrics file by `lyricId`, else by matching the clean line; the clean line itself
+        when no match. The resolved id is what taps are stored under, so a card without one still finds its take."""
+        from core.vocab_sync import _readLyricEntries, _lyricsPath
+        from core.lyric_text import findRawLyricEntry
+
+        text = stripAll(lyricLine)
+        entry = findRawLyricEntry(_readLyricEntries(_lyricsPath(group, song)), lyricId, text)
+        if entry is None:
+            return text, lyricId
+        return (entry.get("korean") or "").replace("|", ""), entry.get("lyricId") or lyricId
+
+    def getLineTiming(self, group, song, startChunk, endChunk, lyricLine, singers, language, lyricId=None, unit=None):
         """Word-by-word position estimates for one occurrence's lyric card, so the front end can
         make each word clickable ("play from here") at a sensible spot. Splits the line at the
         pauses marked in the song's label rows and weights words by their reading - see
@@ -314,17 +435,143 @@ class VocabReviewApi:
 
         The stored occurrence line is clean, so the author's pause markers (core.lyric_text) are
         recovered from the song's lyrics file: by `lyricId` when the occurrence has one, else by
-        matching the clean text. No match just means timing without markers."""
+        matching the clean text. No match just means timing without markers.
+
+        A saved tap-along take (core.tap_store) is applied automatically, so the highlight and click-to-play both
+        use it at once. `unit` ("word" | "syllable") asks for one tap unit's view (the tap dialog); None picks the
+        best saved take. Extra keys: `tapStatus` ("none" | "ok" | "stale": taps exist but the words changed since),
+        `tapLag` (chunks removed from the taps), `tapUnit`, `lyricId` (resolved), plus the timeLine `words` /
+        `rowStarts` / `pace`."""
         try:
             if startChunk is None or endChunk is None or endChunk <= startChunk:
                 return _ok(None)
-            from core.vocab_sync import _readLyricEntries, _lyricsPath
+            timingText, resolvedId = self._timingText(group, song, lyricLine, lyricId)
+            return _ok(self._timed(group, song, startChunk, endChunk, timingText, resolvedId,
+                                   loadRawLabels(group, song), singers, language, unit))
+        except Exception as exc:
+            return _err(exc)
 
-            text = stripAll(lyricLine)
-            raw = findRawLyricText(_readLyricEntries(_lyricsPath(group, song)), lyricId, text)
-            # Keep the pause markers (the raw text has them); drop only the colour-split "|".
-            timingText = (text if raw is None else raw).replace("|", "")
-            return _ok(timeLine(timingText, language, startChunk, endChunk, loadRawLabels(group, song), singers))
+    def _prepareTaps(self, group, song, startChunk, endChunk, lyricLine, singers, language, lyricId, taps, unit, rate):
+        """Shared by saveTaps / previewTaps: the base (estimate-only) timing for `unit`, the taps with the human lag
+        removed, and the lag itself. See saveTaps for the lag rules."""
+        if startChunk is None or endChunk is None or endChunk <= startChunk:
+            raise ValueError("This card has no audio span to tap along to.")
+        timingText, resolvedId = self._timingText(group, song, lyricLine, lyricId)
+        rows = loadRawLabels(group, song)
+        base = timeLine(timingText, language, startChunk, endChunk, rows, singers, unit=unit)
+        raw = {int(i): float(chunk) for i, chunk in (taps or {}).items() if 0 <= int(i) < len(base["words"])}
+        lag, spread = calibrateLag(raw, base["rowStarts"], base["stretchStarts"],
+                                   minLag=MIN_REACTION_MS * float(rate or 1.0) / CHUNK_DURATION_MS)
+        measured = lag is not None
+        if not measured:
+            lag = TAP_LAG_MS * float(rate or 1.0) / CHUNK_DURATION_MS
+        corrected = {i: max(float(startChunk), chunk - lag) for i, chunk in raw.items()}
+        return {"text": timingText, "id": resolvedId, "rows": rows, "base": base, "corrected": corrected, "raw": raw,
+                "lag": lag, "spread": spread, "measured": measured}
+
+    def saveTaps(self, group, song, startChunk, endChunk, lyricLine, singers, language, lyricId, taps,
+                 unit="word", rate=1.0):
+        """Save one tap-along take. `taps` is {unitIndex: chunk} exactly as the page clock read it (index = position
+        in getLineTiming's `words` for that `unit`). The human lag is measured here from the taps on exact
+        row-start units (core.karaoke_timing.calibrateLag; when fewer than two, TAP_LAG_MS in real time, which is
+        TAP_LAG_MS * `rate` of song time on a slowed clip) and removed from every tap before saving, so the file holds
+        corrected chunks. An empty `taps` clears that unit's take.
+        Returns {lag, spread, measured, timing}: `timing` is the card re-timed with the saved take."""
+        try:
+            t = self._prepareTaps(group, song, startChunk, endChunk, lyricLine, singers, language, lyricId, taps,
+                                  unit, rate)
+            tap_store.saveTake(group, song, self._tapKey(t["id"], unit), t["base"]["words"], t["corrected"],
+                               lag=round(t["lag"], 2), raw=t["raw"], rate=float(rate or 1.0))
+            timing = self._timed(group, song, startChunk, endChunk, t["text"], t["id"], t["rows"], singers, language, unit)
+            return _ok({"lag": round(t["lag"], 2), "spread": t["spread"], "measured": t["measured"], "timing": timing,
+                        "rowCheck": rowCheck(t["corrected"], t["base"]["stretchStarts"])})
+        except tap_store.TapStoreError as exc:
+            return {"ok": False, "error": str(exc)}
+        except Exception as exc:
+            return _err(exc)
+
+    def previewTaps(self, group, song, startChunk, endChunk, lyricLine, singers, language, lyricId, taps,
+                    unit="word", rate=1.0):
+        """What a take WOULD do, without saving it (the tap dialog's replay): {lag, spread, measured, timing,
+        estimate}: `timing` is the card timed with these taps (lag removed), `estimate` the same card with no taps,
+        so the page can show how far each tapped unit moved."""
+        try:
+            t = self._prepareTaps(group, song, startChunk, endChunk, lyricLine, singers, language, lyricId, taps,
+                                  unit, rate)
+            timing = timeLine(t["text"], language, startChunk, endChunk, t["rows"], singers,
+                              anchors=t["corrected"], unit=unit)
+            return _ok({"lag": round(t["lag"], 2), "spread": t["spread"], "measured": t["measured"],
+                        "timing": timing, "estimate": t["base"], "anchors": t["corrected"],
+                        "rowCheck": rowCheck(t["corrected"], t["base"]["stretchStarts"])})
+        except Exception as exc:
+            return _err(exc)
+
+    def nudgeTake(self, group, song, startChunk, endChunk, lyricLine, singers, language, lyricId, anchors, unit,
+                  index, deltaChunks):
+        """Fine-tune pass: move beat `index` of a take by `deltaChunks` (None = back to the estimate) and re-time the
+        card. `anchors` are the take's CURRENT lag-corrected chunks ({unitIndex: chunk}); nothing is saved and no lag
+        is subtracted. Returns {status, anchors, timing, beatStart}: status per core.karaoke_timing.nudgeAnchor
+        ("moved" | "reset" | "edge" | "locked"), `anchors` the new set, `timing` the card timed with them."""
+        try:
+            if startChunk is None or endChunk is None or endChunk <= startChunk:
+                raise ValueError("This card has no audio span to tap along to.")
+            text, _ = self._timingText(group, song, lyricLine, lyricId)
+            rows = loadRawLabels(group, song)
+            current = {int(i): float(chunk) for i, chunk in (anchors or {}).items()}
+            timing = timeLine(text, language, startChunk, endChunk, rows, singers, anchors=current, unit=unit)
+            moved, status = nudgeAnchor(timing, current, int(index), deltaChunks)
+            if status in ("moved", "reset"):
+                timing = timeLine(text, language, startChunk, endChunk, rows, singers, anchors=moved, unit=unit)
+            return _ok({"status": status, "anchors": moved, "timing": timing,
+                        "beatStart": timing["slots"][int(index)]["startChunk"]})
+        except Exception as exc:
+            return _err(exc)
+
+    def saveCorrectedTake(self, group, song, startChunk, endChunk, lyricLine, singers, language, lyricId, anchors,
+                          unit="word", rate=None, raw=None, lag=None):
+        """Save a take whose chunks are ALREADY corrected (a fine-tuned take): written as given, no lag measured or
+        removed - saveTaps would subtract it a second time. `raw` / `rate` / `lag` (the uncorrected taps this take
+        came from, their playback speed, the lag that was removed) are kept beside it; None keeps what the lyric's
+        saved take already has. Returns {timing}."""
+        try:
+            if startChunk is None or endChunk is None or endChunk <= startChunk:
+                raise ValueError("This card has no audio span to tap along to.")
+            text, resolvedId = self._timingText(group, song, lyricLine, lyricId)
+            rows = loadRawLabels(group, song)
+            base = timeLine(text, language, startChunk, endChunk, rows, singers, unit=unit)
+            count = len(base["words"])
+            corrected = {int(i): float(chunk) for i, chunk in (anchors or {}).items() if 0 <= int(i) < count}
+            key = self._tapKey(resolvedId, unit)
+            old = tap_store.getTake(group, song, key, base["words"])
+            if raw is None:
+                raw = old["raw"]
+            else:
+                raw = {int(i): float(chunk) for i, chunk in raw.items() if 0 <= int(i) < count}
+            if lag is None and old["status"] == "ok":
+                lag = old["lag"]
+            if rate is None and old["status"] == "ok":
+                rate = old["rate"]
+            tap_store.saveTake(group, song, key, base["words"], corrected, lag=lag, raw=raw,
+                               rate=None if rate is None else float(rate))
+            return _ok({"timing": self._timed(group, song, startChunk, endChunk, text, resolvedId, rows, singers,
+                                              language, unit)})
+        except tap_store.TapStoreError as exc:
+            return {"ok": False, "error": str(exc)}
+        except Exception as exc:
+            return _err(exc)
+
+    def previewPauseEdit(self, group, song, startChunk, endChunk, singers, language, editorText):
+        """Live preview for the pause editor: for the text AS EDITED (not saved), which words land in which of the
+        card's label rows. Lets the author see a wrong guess (a word in the wrong row, an empty row) and add a
+        marker where the singer pauses, instead of saving and listening. Returns None when there is no span."""
+        try:
+            if startChunk is None or endChunk is None or endChunk <= startChunk:
+                return _ok(None)
+            text = fromEditorText(editorText).replace("|", "")
+            result = timeLine(text, language, startChunk, endChunk, loadRawLabels(group, song), singers)
+            rows = [{"start": a, "end": b, "seconds": round((b - a) * CHUNK_DURATION_MS / 1000, 1), "words": " ".join(words)}
+                    for a, b, words in result["rows"]]
+            return _ok({"rows": rows, "markers": result["markers"], "rowCount": result["stretches"]})
         except Exception as exc:
             return _err(exc)
 

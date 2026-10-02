@@ -35,5 +35,11 @@ Run python -m core.kanji_reference to fix kanji sheet for song lyrics
 - Make flashcard app scrollable
 - Add studying for each song's vocab
 - Flashcard audio should cut off when the user closes the window, currently continues playing
+- Slight bug regarding a line getting cut off (Tonight▾　二人の▾時間の重要性
+分かってないのね) gets cut off by "tik tok tik tok"
+- Flashcard window should scroll, timer should popup not at the bottom in case the line is very long.
+- Consider vowels being held out and add a new toggle (toggled on by default). Also tapping for n/tsu should be disabled by default.
+- Question why 寂し is being automatically romanized as "sabishi“ instead of "sumishi". Lyrics in k/j-pop say "sumishi"
+- Add a cancel button for the tap in case you mess up and you want to try again instantly instead of resorting to "close" button
 
 Use ▾ for pauses

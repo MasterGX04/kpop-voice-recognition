@@ -4,7 +4,7 @@
         "memberName": [
             "Momo"
         ],
-        "korean": "Moon night \nあなたがくれた　曖昧なこの感情は",
+        "korean": "Moon night ⁣\nあなた⁣がくれた　曖昧なこの感情は",
         "romanization": "Moon night \nanata ga kureta aimai na kono kanjou wa",
         "english": "Moon night \nThis ambiguous feeling you gave me",
         "startChunk": 260,
@@ -36,7 +36,7 @@
         "memberName": [
             "Sana"
         ],
-        "korean": "Tonight　二人の時間の重要性\n分かってないのね",
+        "korean": "Tonight⁣　二人の⁣時間の重要性\n分かってないのね",
         "romanization": "Tonight futari no jikan no juuyousei\nwakattenai no ne",
         "english": "Tonight the time we spend together is important\nYou don't seem to understand",
         "startChunk": 518,
@@ -361,19 +361,19 @@
         "linkedLabel": null
     },
     {
+        "lyricId": "65795b13-c7f1-4c7c-8302-9eded4431751",
+        "linkedLabel": null,
         "language": "Japanese",
         "memberName": [
             "Sana"
         ],
-        "korean": "My funny funny valentine　愛をいま\nFunny funny valentine　証明して",
+        "korean": "My funny funny valentine　愛を今\nFunny funny valentine　証明して",
         "romanization": "My funny funny valentine　ai wo ima\nFunny funny valentine　shoumei shite",
         "english": "My funny, funny valentine, prove to me\nFunny, funny valentine, your love right now",
         "startChunk": 2703,
         "isAdLib": false,
         "adLibDuration": 0,
-        "anchorMode": "startChunk",
-        "lyricId": "65795b13-c7f1-4c7c-8302-9eded4431751",
-        "linkedLabel": null
+        "anchorMode": "startChunk"
     },
     {
         "language": "English",

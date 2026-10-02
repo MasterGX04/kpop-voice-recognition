@@ -35,6 +35,9 @@ def runStandalone(argv=None):
         width=760,
         height=680,
         min_size=(560, 420),
+        # pywebview defaults to text_select=False, which injects "user-select: none" over the whole page and
+        # makes the card unselectable/uncopyable. Buttons stay non-selectable via style.css.
+        text_select=True,
     )
 
     # Cut the audio the moment the window starts closing (not whenever the process finally exits),

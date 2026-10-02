@@ -5,7 +5,7 @@ Run with: python -m unittest core.test_lyric_text -v
 
 import unittest
 
-from core.lyric_text import (PAUSE_MARK, EDITOR_PAUSE_GLYPH, hasPauseMarks, stripForDisplay, stripAll,
+from core.lyric_text import (READING_OPEN as RO, READING_CLOSE as RC, PAUSE_MARK, EDITOR_PAUSE_GLYPH, hasPauseMarks, stripForDisplay, stripAll,
                              stripAllWithSelection, toEditorText, fromEditorText, findRawLyricText)
 
 M = PAUSE_MARK
@@ -104,6 +104,26 @@ class ReadersIgnoreTheMarkerTests(unittest.TestCase):
         clean, start, end = stripAllWithSelection(raw, 3, 6)
         self.assertEqual([r["surface"] for r in analyzeSelection(clean, start, end)],
                          [r["surface"] for r in analyzeSelection("君を優しく", 2, 5)])
+
+
+class ReadingAnnotationTests(unittest.TestCase):
+    RAW = "恋" + RO + "こ" + M + "い" + RC + "を|歌う"
+
+    def test_every_strip_removes_the_whole_annotation_but_keeps_the_kanji(self):
+        self.assertEqual(stripAll(self.RAW), "恋を歌う")
+        self.assertEqual(stripForDisplay(self.RAW), "恋を|歌う")
+
+    def test_stray_brackets_are_dropped(self):
+        self.assertEqual(stripAll("恋" + RO + "こい"), "恋こい")
+
+    def test_editor_round_trip(self):
+        shown = toEditorText(self.RAW)
+        self.assertEqual(shown, "恋《こ▾い》を|歌う")
+        self.assertEqual(fromEditorText(shown), self.RAW)
+
+    def test_selection_is_remapped_past_the_annotation(self):
+        clean, start, end = stripAllWithSelection(self.RAW, self.RAW.index("歌"), len(self.RAW))
+        self.assertEqual(clean[start:end], "歌う")
 
 
 if __name__ == "__main__":

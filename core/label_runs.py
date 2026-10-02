@@ -193,6 +193,23 @@ def _insideSameMemberRow(labels, chunk, members):
     )
 
 
+def _adLibSpans(labels, lyrics):
+    """(start, end) of everything the author marked as an ad-lib: ad-lib label rows and ad-lib lyric cards
+    that state a duration."""
+    spans = [(row[1], row[2]) for row in labels if _isAdLibRow(row)]
+    spans += [(l["startChunk"], l["startChunk"] + min(l["adLibDuration"], MAX_CLIP_CHUNKS))
+              for l in lyrics if l.get("isAdLib") and l.get("startChunk") is not None and (l.get("adLibDuration") or 0) > 0]
+    return spans
+
+
+def _gapIsInterrupted(adLibs, gapStart, gapEnd) -> bool:
+    """True when one ad-lib covers the whole silence between `gapStart` and `gapEnd`: the singer did not
+    pause, someone ad-libbed over the gap (Funny Valentine: Mina's "tick tock" card 655-705 sits between Sana's
+    640-671 and 698-754 rows). Only ad-libs count - trading lines and gang vocals between rows are real
+    breaks, and that is what the _MAX_MERGE_GAP_CHUNKS limit is for."""
+    return any(start <= gapStart and end >= gapEnd for start, end in adLibs)
+
+
 def _carriesOn(member, nextLyric) -> bool:
     """Does `nextLyric` (the card that follows) include `member` among its singers? Unknown or "All"
     singers count as yes (the safe, old behaviour: stop where the next card starts)."""
@@ -282,6 +299,7 @@ def inferLyricSpans(labels: list, lyrics: list, fillUnresolved: bool = False) ->
     """
     lead = _detectLead(labels, lyrics)
     spans, anchors = _inferAnchors(labels, lyrics, lead)
+    adLibs = _adLibSpans(labels, lyrics)
 
 
     for i, (sungStart, idx, member, rowIndex) in enumerate(anchors):
@@ -292,7 +310,7 @@ def inferLyricSpans(labels: list, lyrics: list, fillUnresolved: bool = False) ->
         for row in labels[rowIndex + 1:]:
             if nextStart is not None and row[1] >= nextStart:
                 break
-            if row[1] - end > _MAX_MERGE_GAP_CHUNKS:
+            if row[1] - end > _MAX_MERGE_GAP_CHUNKS and not _gapIsInterrupted(adLibs, end, row[1]):
                 break  # a real break in the singing, not a mid-line breath
             if not _isAdLibRow(row) and row[0] == member:
                 end = max(end, row[2])

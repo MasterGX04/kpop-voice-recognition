@@ -88,11 +88,13 @@
       <div class="occurrence-controls">
         <button id="playAudioBtn">&#9654; Play line</button>
         <button id="playLastWordBtn" title="Play from the last word (estimated position)">&#9654; Last word</button>
+        <button id="tapAlongBtn" title="Tap a key as each word is sung to time this line exactly">&#129345; Tap along</button>
         <button id="editPausesBtn" title="Add or remove pauses in this lyric - saved straight to the song's lyrics file">&#9998; Edit pauses</button>
       </div>
       <div class="occurrence-body">
         <div id="occurrenceSource" class="control-label"></div>
         <div id="occurrenceLine" class="occurrence-line"></div>
+        <div id="karaokeDebug" class="control-label" hidden></div>
         <div class="control-label">Click a word to play from near there (position is estimated).</div>
       </div>
     </div>
@@ -142,13 +144,62 @@
     <div id="pauseEditSource" class="control-label"></div>
     <label for="pauseEditInput">Lyric &mdash; <b>&#9662;</b> marks a pause (Ctrl+Space inserts one at the cursor):</label>
     <textarea id="pauseEditInput" rows="6" spellcheck="false"></textarea>
+    <div class="control-label">A pause <i>inside</i> a kanji word (&#24651; sung &#12371; &hellip; &#12356;): select the kanji, press <b>Split kanji &rarr; hiragana</b>, then put a &#9662; between the kana: &#24651;&#12298;&#12371;&#9662;&#12356;&#12299;. The &#12298;&#12299; part is for timing only; the lyric stays &#24651;.</div>
     <div class="control-label">Only pauses can change here &mdash; edit wording in the Lyric Editor. Saves to the song's lyrics file and re-times this card at once.</div>
+    <div id="pausePreviewSummary" class="pause-summary"></div>
+    <ol id="pausePreview" class="pause-preview"></ol>
     <div id="pauseEditError" class="dialog-error" hidden></div>
     <div class="dialog-actions">
       <button type="button" id="pauseEditPlay">&#9654; Play line</button>
+      <button type="button" id="pauseEditSplitKanji" title="Adds the kana reading after the selected kanji so a pause can go inside the word">Split kanji &rarr; hiragana</button>
       <button type="button" id="pauseEditInsert">Insert pause &#9662;</button>
       <button type="button" id="pauseEditCancel">Cancel</button>
       <button type="button" id="pauseEditSave">Save</button>
+    </div>
+  </dialog>
+
+  <dialog id="tapDialog" class="tap-dialog" tabindex="-1">
+    <div id="tapSource" class="control-label"></div>
+    <div class="control-label">Press <b>Start take</b>, then hit <b>Space</b> the instant each highlighted word is sung.
+      <b>Backspace</b> undoes, <b>Tab</b> skips a word, <b>R</b> restarts.</div>
+    <div class="tap-options">
+      <span class="control-label">Tap each:</span>
+      <label><input type="radio" name="tapUnit" value="syllable" checked> syllable</label>
+      <label><input type="radio" name="tapUnit" value="word"> word</label>
+      <label title="Off = skip っ and ん automatically (sung folded into the syllable before, like 'futte' or 'dan'); they keep their estimated time"><input type="checkbox" id="tapHolds"> tap っ ん</label>
+      <label title="On = a held vowel (ー, the う of じょう / じゅう, the い of せい) is not tapped: it is sung as the syllable before, so 感情 is か·じょ (ん is skipped too) instead of four taps. Off = tap them."><input type="checkbox" id="tapHeld" checked> held vowels count as one</label>
+      <span class="control-label">&nbsp; Speed:</span>
+      <label><input type="radio" name="tapRate" value="1" checked> 1&times;</label>
+      <label><input type="radio" name="tapRate" value="0.75"> 0.75&times;</label>
+      <label><input type="radio" name="tapRate" value="0.5"> 0.5&times;</label>
+      <label><input type="radio" name="tapRate" value="0.35"> 0.35&times;</label>
+      <label title="A click on each count-in beat; the clip starts on the fourth"><input type="checkbox" id="tapClicks" checked> count-in clicks</label>
+    </div>
+    <div id="tapPace" class="control-label"></div>
+    <div id="tapLegend" class="control-label"></div>
+    <div id="tapLine" class="tap-line"></div>
+    <div id="tapProgress" class="control-label"></div>
+    <div id="tapNudgeHint" class="control-label" hidden>Fine-tune: click a beat, then <b>&larr; &rarr;</b> move it 40 ms (<b>Shift</b> = 200 ms) and you hear the line from just before it. <b>Backspace</b> = back to the estimate, <b>Space</b> = hear it again, <b>Esc</b> = deselect. The first beat of each label row is locked to your label.</div>
+    <div id="tapNudge" class="tap-nudge" hidden>
+      <span id="tapNudgeBeat"></span>
+      <button type="button" data-nudge="-5" title="200 ms earlier">&laquo;</button>
+      <button type="button" data-nudge="-1" title="40 ms earlier">&lsaquo;</button>
+      <button type="button" data-nudge="1" title="40 ms later">&rsaquo;</button>
+      <button type="button" data-nudge="5" title="200 ms later">&raquo;</button>
+      <button type="button" id="tapNudgeReset">Reset beat</button>
+      <span id="tapNudgeInfo"></span>
+    </div>
+    <div class="control-label">Red/grey +/- numbers under a beat = how far it moved from the <i>estimate</i> (which can be badly off if your &#9662; markers disagree with the label rows). They are not an error.</div>
+    <div id="tapCount" class="tap-count" aria-live="polite"></div>
+    <div id="tapStatus" class="pause-summary"></div>
+    <div id="tapResult" class="pause-summary"></div>
+    <div id="tapError" class="dialog-error" hidden></div>
+    <div class="dialog-actions">
+      <button type="button" id="tapClear" hidden>Clear saved take</button>
+      <button type="button" id="tapStart">Start take</button>
+      <button type="button" id="tapReplay" hidden>&#9654; Replay take</button>
+      <button type="button" id="tapSave" hidden>Keep &amp; save take</button>
+      <button type="button" id="tapClose">Close</button>
     </div>
   </dialog>
 

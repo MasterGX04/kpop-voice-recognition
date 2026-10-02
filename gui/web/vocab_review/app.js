@@ -185,7 +185,7 @@ function stopAudioIfCardChanged(card) {
   const key = card ? `${state.filters.language}:${card.vocabId}` : null;
   if (key !== lastRenderedCardKey) {
     lastRenderedCardKey = key;
-    window.pywebview.api.stopAudio();
+    stopPlayback();
   }
 }
 
@@ -380,12 +380,20 @@ function renderOccurrenceRow(detail) {
     if (timing && timing.pieces && requested === lastShownOccurrence) drawLyricLine(timing.pieces);
   }).catch(() => { /* keep the estimate drawn above; callApi already surfaced the error */ });
   lastShownOccurrence = occ;
+
+  // Lit words take the first singer's colour from groups.json (the CSS default blue when unknown).
+  el("occurrenceLine").style.removeProperty("--singer-color");
+  callApi("getMemberColor", occ.group, occ.singers || []).then((color) => {
+    if (color && requested === lastShownOccurrence) el("occurrenceLine").style.setProperty("--singer-color", color);
+  }).catch(() => {});
 }
 
 function drawLyricLine(pieces) {
   const line = el("occurrenceLine");
   line.textContent = "";
+  karaokeWords = [];
   let lastFraction = 0;
+  let lastExact = false;
   for (const seg of pieces) {
     if (!seg.isWord) {
       line.appendChild(document.createTextNode(seg.text));
@@ -395,17 +403,140 @@ function drawLyricLine(pieces) {
     span.className = "tok";
     span.textContent = seg.text;
     span.title = "Play from here (estimated position)";
-    span.addEventListener("click", () => playOccurrenceAudio(seg.fraction));
+    // playFraction (pause-aware timing) already includes a lead-in that never reaches back into the
+    // previous line; the plain-estimate fallback has none, so it gets the default lead.
+    const exact = seg.playFraction !== undefined;
+    const from = exact ? seg.playFraction : seg.fraction;
+    span.addEventListener("click", () => {
+      if (String(window.getSelection()).length) return;   // the user is selecting text to copy, not asking to play
+      playOccurrenceAudio(from, exact);
+    });
     line.appendChild(span);
-    lastFraction = seg.fraction;
+    // Only words with real chunk info (core/karaoke_timing) can light up; the plain-estimate fallback has none.
+    karaokeWords.push({ span, startChunk: seg.startChunk, lit: false });
+    lastFraction = from;
+    lastExact = exact;
   }
   el("playLastWordBtn").dataset.fraction = String(lastFraction);
+  el("playLastWordBtn").dataset.exact = lastExact ? "1" : "";
+  if (karaokePlay) paintKaraoke(currentKaraokeChunk());   // a redraw mid-clip (timing arrived late) keeps the lit state
+}
+
+// Karaoke highlight (K1 + K2, .claude/KARAOKE_PLAN.md). The audio plays in the Python process, so the page runs its
+// own clock from what playOccurrenceAudio returns (Karaoke.chunkAt). Each word lights when the clock reaches its
+// start chunk and stays lit until the clip ends. Row starts are exact (hand-timed labels); a word inside a row is
+// an even-tempo estimate - that is what the "Edit pauses" route is for. `?debug` shows the live chunk readout.
+const KARAOKE_DEBUG = /[?&]debug\b/.test(location.search);
+let karaokeWords = [];         // [{span, startChunk, lit}] for the line on screen
+let karaokePlay = null;        // {play, startedAt} while a clip is running
+let karaokeFrame = 0;
+let karaokeOnFrame = null;     // called with the clock's chunk (null when stopped/over) on every repaint
+let karaokeOnEnd = null;       // called once when a clip ends on its own (never when it is stopped)
+
+function currentKaraokeChunk() {
+  return karaokePlay ? Karaoke.chunkAt(karaokePlay.play, performance.now() - karaokePlay.startedAt) : null;
+}
+
+function paintKaraoke(chunk) {
+  for (const w of karaokeWords) {
+    const lit = Karaoke.isLit(w.startChunk, chunk);
+    if (lit !== w.lit) {                      // toggle only on a state change
+      w.lit = lit;
+      w.span.classList.toggle("lit", lit);
+    }
+  }
+  if (karaokeOnFrame) karaokeOnFrame(chunk);
+  el("occurrenceLine").classList.toggle("playing", chunk !== null);   // unsung words dim only while a clip runs
+  const readout = el("karaokeDebug");
+  if (readout && KARAOKE_DEBUG) {
+    readout.hidden = false;
+    readout.textContent = chunk === null ? "chunk -" : `chunk ${chunk.toFixed(1)}`;
+  }
+}
+
+function karaokeTick() {
+  const chunk = currentKaraokeChunk();
+  paintKaraoke(chunk);
+  if (chunk === null) {                       // clip over
+    karaokePlay = null;
+    karaokeFrame = 0;
+    const done = karaokeOnEnd;                // the clip ran out by itself (not stopped): tell the tap tool
+    karaokeOnEnd = null;
+    if (done) done();
+    return;
+  }
+  karaokeFrame = requestAnimationFrame(karaokeTick);
+}
+
+function startKaraoke(play, roundTripMs) {
+  stopKaraoke();
+  // When did the audio really start? The server stamped the moment play() ran (same machine, same epoch as
+  // Date.now()), so the clock starts exactly there. Without a stamp, assume half the bridge round trip ago.
+  const sinceStart = play.startedAtMs ? Math.max(0, Date.now() - play.startedAtMs) : roundTripMs / 2;
+  karaokePlay = { play, startedAt: performance.now() - sinceStart };
+  karaokeFrame = requestAnimationFrame(karaokeTick);
+}
+
+function stopKaraoke() {
+  karaokeOnEnd = null;
+  if (karaokeFrame) cancelAnimationFrame(karaokeFrame);
+  karaokeFrame = 0;
+  karaokePlay = null;
+  paintKaraoke(null);
+}
+
+// Every way a clip can end early (new card, rating, dialog) goes through here.
+function stopPlayback() {
+  stopKaraoke();
+  window.pywebview.api.stopAudio();
 }
 
 // Pause editor: add/remove the author's pause markers on the lyric being shown, saved straight to that
 // song's lyrics file (core/lyric_file.py) - works for any song, not only the one the Tk app has open. The
 // visible stand-in below must match core.lyric_text.EDITOR_PAUSE_GLYPH (the stored marker is invisible).
 const PAUSE_GLYPH = String.fromCharCode(0x25BE);
+
+// Live preview: which words land in which label row for the text as currently edited (not saved). A wrong
+// guess shows up at once - a word in the wrong row, an empty row - and a ▾ where the singer pauses fixes it.
+let pausePreviewTimer = null;
+
+function schedulePausePreview() {
+  clearTimeout(pausePreviewTimer);
+  pausePreviewTimer = setTimeout(refreshPausePreview, 250);
+}
+
+async function refreshPausePreview() {
+  const occ = lastShownOccurrence;
+  const summary = el("pausePreviewSummary");
+  const list = el("pausePreview");
+  if (!occ) return;
+  const res = await window.pywebview.api.previewPauseEdit(
+    occ.group, occ.song, occ.startChunk, occ.endChunk, occ.singers || [], state.filters.language,
+    el("pauseEditInput").value);
+  list.textContent = "";
+  if (!res.ok || !res.data) {
+    summary.textContent = "";
+    return;
+  }
+  const { rows, markers, rowCount } = res.data;
+  const needed = rowCount - 1;
+  const complete = markers === needed;
+  summary.className = "pause-summary " + (complete ? "ok" : "guess");
+  summary.textContent = complete
+    ? `${rowCount} label rows · ${markers} pauses marked - every pause is marked, so these rows are exact.`
+    : `${rowCount} label rows · ${markers} of ${needed} pauses marked - unmarked pauses are GUESSED. `
+      + "Add a ▾ wherever the singer pauses (or a row boundary the guess missed).";
+  rows.forEach((row, i) => {
+    const li = document.createElement("li");
+    const when = document.createElement("span");
+    when.className = "when";
+    when.textContent = `${row.start}–${row.end} (${row.seconds}s)  `;
+    li.appendChild(when);
+    li.appendChild(document.createTextNode(row.words || "(no words in this row)"));
+    if (!row.words) li.className = "empty";
+    list.appendChild(li);
+  });
+}
 
 function showPauseEditError(message) {
   const box = el("pauseEditError");
@@ -423,17 +554,620 @@ async function openPauseEditor() {
     showError(res.error);
     return;
   }
+  stopPlayback();
   el("pauseEditSource").textContent = `${occ.group} — ${occ.song}`;
   el("pauseEditInput").value = res.data.text;
   showPauseEditError("");
   el("pauseEditDialog").showModal();
   el("pauseEditInput").focus();
+  refreshPausePreview();
 }
 
 function insertPauseGlyph() {
   const box = el("pauseEditInput");
   box.setRangeText(PAUSE_GLYPH, box.selectionStart, box.selectionEnd, "end");
   box.focus();
+  schedulePausePreview();
+}
+
+// Tap along (.claude/KARAOKE_PLAN.md Part 5): hit Space as each word is sung. A tap reads the same page clock the
+// highlight uses (currentKaraokeChunk), so any constant clock-vs-audio offset cancels out here; the server measures
+// and removes the human reaction lag (saveTaps) from the taps on exact row-start words.
+const tap = { timing: null, take: null, chips: [], phase: "idle", countTimer: 0, token: 0, unit: "syllable", rate: 1,
+              preview: null, replayStarts: null, edit: null };
+const LATIN_UNIT = /^[A-Za-z]+$/;
+const HELD_BEAT = /^ー$/;
+
+// With "tap ー っ ん" off, those beats are never asked for: the take steps over them (they keep their estimate).
+// Beats the take steps over by itself: っ ん unless "tap っ ん" is ticked, and held vowels (ー, the う of じょう, the い of
+// せい) while "held vowels" is ticked - they are sung as the syllable before, not tapped again.
+function tapHolds() { return tapEl("tapHolds").checked; }
+function foldHeld() { return tapEl("tapHeld").checked; }
+function isHoldChip(i) {
+  const chip = tap.chips[i];
+  return chip !== undefined && ((chip.classList.contains("hold") && !tapHolds()) || (chip.classList.contains("held") && foldHeld()));
+}
+function autoSkipHolds() {
+  while (tap.take && !tap.take.done && isHoldChip(tap.take.next)) tap.take.skip();
+}
+
+function tapEl(id) { return el(id); }
+
+function setTapError(message) {
+  const box = tapEl("tapError");
+  box.textContent = message || "";
+  box.hidden = !message;
+}
+
+// One chip per tap index, laid out like the lyric (line breaks kept). A split kanji gets a chip per kana part.
+function renderTapChips(timing) {
+  const line = tapEl("tapLine");
+  line.textContent = "";
+  tap.chips = [];
+  for (const seg of timing.pieces) {
+    if (!seg.isWord) {
+      line.appendChild(document.createTextNode(seg.text));
+      continue;
+    }
+    if (timing.unit === "syllable" && seg.syllables) {
+      // One chip per sung beat (ー and っ count like ひ・と・つ). The written word sits small above its kana when it
+      // differs (恋 over こ い); an English word stays ONE wide pill.
+      const group = document.createElement("span");
+      group.className = "tap-word";
+      const joined = seg.syllables.map((x) => x.label).join("");
+      if (seg.text && seg.text !== joined) {
+        const caption = document.createElement("span");
+        caption.className = "tap-kanji";
+        caption.textContent = seg.text;
+        group.appendChild(caption);
+      }
+      for (const syl of seg.syllables) {
+        const chip = document.createElement("span");
+        chip.className = "tap-chip" + (LATIN_UNIT.test(syl.label) ? " word-chip" : "") + (syl.hold || syl.held ? (HELD_BEAT.test(syl.label) || syl.held ? " held" : " hold") : "");
+        chip.textContent = syl.label;
+        group.appendChild(chip);
+        tap.chips.push(chip);
+      }
+      line.appendChild(group);
+      continue;
+    }
+    const parts = seg.parts && seg.parts.length > 1 ? seg.parts : [null];
+    parts.forEach((part, k) => {
+      const chip = document.createElement("span");
+      chip.className = "tap-chip" + (k > 0 ? " sub" : "");
+      chip.textContent = k === 0 ? seg.text : `(${part.reading})`;
+      line.appendChild(chip);
+      tap.chips.push(chip);
+    });
+  }
+}
+
+function paintTapChips() {
+  const entries = tap.take ? tap.take.entries() : [];
+  tapEl("tapProgress").textContent = tap.take && tap.phase !== "idle"
+    ? `${tap.take.tappedCount()} tapped of ${tap.chips.length}` : `${tap.chips.length} taps in this line`;
+  tap.chips.forEach((chip, i) => {
+    const entry = entries[i];
+    chip.classList.toggle("tapped", !!entry && entry.chunk !== null);
+    chip.classList.toggle("skipped", !!entry && entry.chunk === null);
+    chip.classList.toggle("next", tap.phase === "record" && i === entries.length);
+    const slot = editSlots() ? tap.edit.timing.slots[i] : null;       // the fine-tune view: where each beat comes from
+    if (slot) chip.dataset.source = slot.source;
+    else chip.removeAttribute("data-source");
+    chip.classList.toggle("editable", !!slot);
+    chip.classList.toggle("selected", !!slot && tap.edit.selected === i);
+  });
+}
+
+function setTapPhase(phase) {
+  tap.phase = phase;
+  const recording = phase === "count" || phase === "record";
+  tapEl("tapStart").hidden = recording;
+  tapEl("tapStart").textContent = phase === "idle" ? "Start take" : "Retake";
+  tapEl("tapReplay").hidden = recording || !tap.edit;
+  tapEl("tapClear").hidden = !(tap.timing && tap.timing.tapStatus === "ok" && tap.timing.tapUnit === tap.unit) || recording;
+  document.querySelectorAll("#tapDialog input[type=radio], #tapDialog input[type=checkbox]").forEach((box) => { box.disabled = recording; });
+  if (recording) tapEl("tapDialog").focus();      // so Space taps instead of clicking a button
+  updateTapButtons();
+  updateNudgeBar();
+  paintTapChips();
+}
+
+function tapRecording() { return tap.phase === "count" || tap.phase === "record"; }
+
+// The fine-tune pass works on `tap.edit` while a take is finished or a saved take is showing; never while recording.
+function editSlots() {
+  return tap.edit && !tapRecording() && tap.edit.timing.slots && tap.edit.timing.slots.length === tap.chips.length;
+}
+
+function updateTapButtons() {
+  tapEl("tapSave").hidden = tapRecording() || !(tap.phase === "done" || (tap.edit && tap.edit.dirty));
+  tapEl("tapSave").textContent = tap.phase === "done" ? "Keep & save take" : "Save nudges";
+}
+
+// A saved take as an editable state: its corrected anchors, with the raw taps it came from (null for takes saved
+// before raw taps were kept). Null when no saved take applies to the unit being viewed.
+function savedTakeEdit(timing) {
+  if (!timing || timing.tapStatus !== "ok" || timing.tapUnit !== tap.unit || timing.unit !== tap.unit || !timing.anchors) return null;
+  return { anchors: { ...timing.anchors }, timing, raw: timing.raw || null, dirty: false, selected: null, start0: 0 };
+}
+
+function updateNudgeBar() {
+  const show = !!editSlots();
+  tapEl("tapNudgeHint").hidden = !show;
+  const picked = show && tap.edit.selected !== null;
+  tapEl("tapNudge").hidden = !picked;
+  if (!picked) return;
+  const slot = tap.edit.timing.slots[tap.edit.selected];
+  const occ = lastShownOccurrence;
+  const locked = slot.source === "row";
+  tapEl("tapNudgeBeat").textContent = slot.label;
+  tapEl("tapNudge").querySelectorAll("button[data-nudge]").forEach((b) => { b.disabled = locked; });
+  tapEl("tapNudgeReset").disabled = slot.source !== "tapped";
+  const secs = ((slot.startChunk - occ.startChunk) * 40 / 1000).toFixed(2);
+  tapEl("tapNudgeInfo").textContent = locked
+    ? `locked to the label row start (${secs} s into the clip) - your labels are exact`
+    : `${slot.source === "tapped" ? "tapped" : "estimated"}, ${secs} s into the clip`;
+}
+
+function describeSavedTake(timing) {
+  if (timing.tapStatus === "ok") {
+    const other = timing.tapUnit !== tap.unit ? ` (it is a ${timing.tapUnit} take; you are viewing ${tap.unit}s)` : "";
+    return `A saved ${timing.tapUnit} take is applied to this card${other} - ${Math.round(timing.tapLag * 40)} ms of tap lag was removed.`;
+  }
+  if (timing.tapStatus === "stale") return "A saved take exists but the words changed since (pause or kanji split edited), so it is NOT applied. Tap again to replace it.";
+  return "No saved take: word times inside a row are an even-tempo estimate.";
+}
+
+// (Re)load the card's timing for the chosen tap unit and redraw the chips, pace hint and legend.
+async function loadTapTiming() {
+  const occ = lastShownOccurrence;
+  const res = await window.pywebview.api.getLineTiming(occ.group, occ.song, occ.startChunk, occ.endChunk,
+    occ.lyricLine, occ.singers || [], state.filters.language, occ.lyricId || null, tap.unit);
+  if (!res.ok || !res.data) {
+    showError(res.ok ? "This card has no audio span to tap along to." : res.error);
+    return false;
+  }
+  tap.timing = res.data;
+  tap.take = null;
+  tap.preview = null;
+  tap.edit = savedTakeEdit(res.data);
+  renderTapChips(res.data);
+  const { fastest, suggestedRate } = res.data.pace;
+  tapEl("tapPace").textContent = `Busiest stretch: about ${fastest} taps per second at normal speed (an average - real bursts are faster).`
+    + (suggestedRate < 1 ? ` Suggested speed: ${suggestedRate}x.` : " Normal speed should be fine.");
+  tapEl("tapLegend").textContent = res.data.unit === "syllable"
+    ? "Round chips = one syllable each. Small chips are held vowels (ー, the う of じょう) and っ / ん: they are skipped for you unless you tick 'tap っ ん' / untick 'held vowels count as one'. A wide dashed pill = a whole English word, ONE tap."
+    : "One tap per word (a kana part of a split kanji counts as its own).";
+  tapEl("tapCount").textContent = "";
+  tapEl("tapStatus").textContent = describeSavedTake(res.data);
+  tapEl("tapResult").textContent = "";
+  setTapError("");
+  setTapPhase("idle");
+  return true;
+}
+
+async function openTapAlong() {
+  const occ = lastShownOccurrence;
+  if (!occ) return;
+  stopPlayback();
+  tap.rate = 1;
+  document.querySelector('#tapDialog input[name=tapRate][value="1"]').checked = true;
+  document.querySelector(`#tapDialog input[name=tapUnit][value="${tap.unit}"]`).checked = true;
+  tapEl("tapSource").textContent = `${occ.group} — ${occ.song}`;
+  tapEl("tapDialog").style.setProperty("--singer-color", el("occurrenceLine").style.getPropertyValue("--singer-color") || "#2e86de");
+  if (await loadTapTiming()) tapEl("tapDialog").showModal();
+}
+
+function cancelTapTimers() {
+  tap.token += 1;                                  // invalidates a pending count-in
+  clearTimeout(tap.countTimer);
+  clearTimeout(auditionTimer);
+  endReplay();
+}
+
+// Replay: the chips light syllable by syllable at the NEW times (the take with your lag removed), while the clip
+// plays at the speed you tapped at. Chips that were tapped show how far they moved from the old estimate.
+function endReplay() {
+  tap.replayStarts = null;
+  karaokeOnFrame = null;
+  tap.chips.forEach((chip) => chip.classList.remove("replay-lit"));
+}
+
+function showTapShifts() {
+  tap.chips.forEach((chip) => { chip.removeAttribute("data-delta"); chip.classList.remove("big-shift"); });
+  if (!tap.preview || !tap.edit || !tap.edit.timing.slots) return;
+  const now = Karaoke.unitStarts(tap.edit.timing);
+  const before = Karaoke.unitStarts(tap.preview.estimate);
+  tap.edit.timing.slots.forEach((slot, i) => {
+    if (slot.source !== "tapped" || now[i] === undefined || !tap.chips[i]) return;   // a row start is exact; an estimate is unchanged
+    const ms = Math.round((now[i] - before[i]) * 40);
+    if (Math.abs(ms) < 5) return;                   // a tap that agrees with the estimate
+    tap.chips[i].dataset.delta = (ms > 0 ? "+" : "") + ms;
+    tap.chips[i].classList.toggle("big-shift", Math.abs(ms) >= 200);
+  });
+}
+
+// Plays the line with the chips lighting at the take's CURRENT times (nudges included), from `fraction` of the clip.
+async function playTapView(fraction = 0) {
+  if (!tap.edit || tapRecording()) return;
+  endReplay();
+  const token = tap.token;
+  tap.replayStarts = Karaoke.unitStarts(tap.edit.timing);
+  karaokeOnFrame = (chunk) => {
+    tap.chips.forEach((chip, i) => chip.classList.toggle("replay-lit", chunk !== null && Karaoke.isLit(tap.replayStarts[i], chunk)));
+  };
+  try {
+    await playOccurrenceAudio(fraction, fraction > 0, tap.rate);
+  } catch (e) {
+    endReplay();
+    return;
+  }
+  if (token !== tap.token) endReplay();
+}
+
+function replayTake() { return playTapView(0); }
+
+// ---- Fine-tune pass (T6): click a beat, nudge it by 40 ms steps, hear it. Nudges edit the lag-CORRECTED chunks, so
+// saving them goes through saveCorrectedTake (no second lag subtraction).
+const NUDGE_STEP_CHUNKS = 1;                          // 40 ms
+const NUDGE_BIG_CHUNKS = 5;                           // 200 ms
+const AUDITION_LEAD_MS = 300;                         // real time before the beat that the audition starts
+const AUDITION_DELAY_MS = 300;                        // a held arrow key auditions once, when it settles
+let auditionTimer = 0;
+
+function selectBeat(i) {
+  if (!editSlots() || i === null || i === undefined || i < 0) return;
+  const edit = tap.edit;
+  edit.selected = edit.selected === i ? null : i;
+  edit.start0 = edit.timing.slots[i].startChunk;
+  updateNudgeBar();
+  paintTapChips();
+  tapEl("tapDialog").focus();                         // keys go to the dialog, never to a button
+  if (edit.selected !== null) scheduleAudition(i);
+}
+
+function scheduleAudition(index) {
+  clearTimeout(auditionTimer);
+  auditionTimer = setTimeout(() => auditionBeat(index), AUDITION_DELAY_MS);
+}
+
+function auditionBeat(index) {
+  const edit = tap.edit;
+  const occ = lastShownOccurrence;
+  if (!edit || !occ || !editSlots() || !edit.timing.slots[index]) return Promise.resolve();
+  const spanLength = Math.max(1, occ.endChunk - occ.startChunk);
+  const leadChunks = (AUDITION_LEAD_MS * tap.rate) / 40;
+  const fraction = Math.min(1, Math.max(0, (edit.timing.slots[index].startChunk - leadChunks - occ.startChunk) / spanLength));
+  return playTapView(fraction);
+}
+
+// One nudge at a time, in order: a held arrow key queues them instead of racing the server.
+function nudgeSelected(deltaChunks) {
+  const edit = tap.edit;
+  if (!edit || edit.selected === null) return Promise.resolve();
+  const index = edit.selected;
+  edit.chain = (edit.chain || Promise.resolve()).then(() => applyNudge(edit, index, deltaChunks)).catch((e) => setTapError(String(e)));
+  return edit.chain;
+}
+
+function showNudgeNote(text) {
+  tapEl("tapNudgeInfo").textContent = text;
+}
+
+async function applyNudge(edit, index, deltaChunks) {
+  const occ = lastShownOccurrence;
+  if (tap.edit !== edit || !occ) return;
+  const res = await window.pywebview.api.nudgeTake(occ.group, occ.song, occ.startChunk, occ.endChunk, occ.lyricLine,
+    occ.singers || [], state.filters.language, occ.lyricId || null, edit.anchors, tap.unit, index, deltaChunks);
+  if (tap.edit !== edit) return;
+  if (!res.ok) {
+    setTapError(res.error);
+    return;
+  }
+  setTapError("");
+  const { status, anchors, timing } = res.data;
+  if (status === "moved" || status === "reset") {
+    edit.anchors = anchors;
+    edit.timing = timing;
+    edit.dirty = true;
+    showTapShifts();
+    updateTapButtons();
+    updateNudgeBar();
+    paintTapChips();
+    const slot = timing.slots[index];
+    const moved = Math.round((slot.startChunk - edit.start0) * 40);
+    showNudgeNote(status === "reset" ? "back to the estimate"
+      : `${moved > 0 ? "+" : ""}${moved} ms from where it was when you picked it, ${((slot.startChunk - occ.startChunk) * 40 / 1000).toFixed(2)} s into the clip`);
+    scheduleAudition(index);
+  } else if (status === "locked") {
+    showNudgeNote("locked to the label row start - your labels are exact, so this beat does not move");
+  } else {
+    showNudgeNote(deltaChunks === null ? "nothing to reset - this beat is already the estimate"
+      : "at its limit: a beat stays inside its own label row and never passes the tapped beat next to it");
+  }
+}
+
+// Keys for the fine-tune pass. Returns true when the key was used.
+function handleNudgeKey(event) {
+  const edit = tap.edit;
+  if (!edit || edit.selected === null || !editSlots()) return false;
+  const big = event.shiftKey ? NUDGE_BIG_CHUNKS : NUDGE_STEP_CHUNKS;
+  if (event.code === "ArrowLeft") nudgeSelected(-big);
+  else if (event.code === "ArrowRight") nudgeSelected(big);
+  else if (event.code === "Backspace" || event.code === "Delete") nudgeSelected(null);
+  else if (event.code === "Space") auditionBeat(edit.selected);
+  else if (event.code === "Escape") selectBeat(edit.selected);
+  else return false;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  return true;
+}
+
+// Count-in metronome: 3 low clicks, then a higher one on GO, which is when the clip starts. Scheduled on the audio
+// clock up front (a setTimeout per click would wobble by tens of ms); the popup numbers follow on setTimeout.
+const COUNT_BEAT_MS = 650;
+let clickAudio = null;
+
+function scheduleCountInClicks() {
+  if (!tapEl("tapClicks").checked) return;
+  try {
+    clickAudio = clickAudio || new AudioContext();
+    if (clickAudio.state === "suspended") clickAudio.resume();
+    const t0 = clickAudio.currentTime + 0.05;
+    [880, 880, 880, 1320].forEach((freq, k) => {
+      const osc = clickAudio.createOscillator();
+      const gain = clickAudio.createGain();
+      const at = t0 + (k * COUNT_BEAT_MS) / 1000;
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.0001, at);
+      gain.gain.exponentialRampToValueAtTime(0.6, at + 0.005);
+      gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.09);
+      osc.connect(gain).connect(clickAudio.destination);
+      osc.start(at);
+      osc.stop(at + 0.1);
+    });
+  } catch (e) {
+    // No audio device or the browser refused: the visual count-in still works.
+  }
+}
+
+function showCountBeat(text) {
+  const box = tapEl("tapCount");
+  box.textContent = text;
+  box.classList.remove("beat");
+  void box.offsetWidth;                            // restart the pop animation
+  box.classList.add("beat");
+}
+
+async function beginTake() {
+  cancelTapTimers();
+  stopPlayback();
+  const token = tap.token;
+  tap.take = Karaoke.newTake(tap.chips.length);
+  tap.preview = null;
+  tap.edit = null;                                   // a new take replaces whatever was being fine-tuned
+  showTapShifts();                                   // clears the last take's shift marks
+  autoSkipHolds();
+  tapEl("tapResult").textContent = "";
+  setTapError("");
+  setTapPhase("count");
+  if (tap.rate < 1) {                                // build the slowed clip now, not after the count-in
+    const occ = lastShownOccurrence;
+    tapEl("tapCount").textContent = "…";
+    const prepared = await window.pywebview.api.prepareSlowClip(occ.group, occ.song, occ.startChunk, occ.endChunk, tap.rate);
+    if (token !== tap.token) return;
+    if (!prepared.ok) {
+      setTapError(prepared.error);
+      setTapPhase("idle");
+      tapEl("tapCount").textContent = "";
+      return;
+    }
+  }
+  scheduleCountInClicks();
+  for (const n of [3, 2, 1]) {
+    showCountBeat(String(n));
+    await new Promise((resolve) => { tap.countTimer = setTimeout(resolve, COUNT_BEAT_MS); });
+    if (token !== tap.token) return;               // restarted or closed during the count-in
+  }
+  showCountBeat("GO");
+  setTapPhase("record");
+  try {
+    await playOccurrenceAudio(0, false, tap.rate);
+  } catch (e) {
+    setTapPhase("idle");
+    return;
+  }
+  if (token !== tap.token) return;
+  karaokeOnEnd = () => finishTake();               // the clip ran out: whatever was not tapped stays estimated
+  setTimeout(() => { if (token === tap.token && tap.phase === "record") tapEl("tapCount").textContent = ""; }, 500);
+}
+
+// Does the take agree with the label rows? Each row's first beat should land on the row start (gap ~0 once your
+// reaction lag is removed). The red +/- numbers on the chips are something else: how far a beat moved from the ESTIMATE.
+function describeRowCheck(gaps) {
+  if (!gaps || gaps.length < 2) return "";
+  const worstMs = Math.round(Math.max(...gaps.map((g) => Math.abs(g))) * 40);
+  const list = gaps.map((g) => `${Math.round(g * 40)}`).join(", ");
+  return `Row check: your taps agree with the labelled row starts to within ${worstMs} ms (per row: ${list} ms).`
+    + (worstMs > 400 ? " That is more than a reaction time - the taps and the labels disagree." : "");
+}
+
+async function finishTake() {
+  if (tap.phase !== "record") return;
+  cancelTapTimers();
+  stopPlayback();
+  tapEl("tapCount").textContent = "";
+  const tapped = tap.take.tappedCount();
+  tap.preview = null;
+  tapEl("tapResult").textContent = `${tapped} of ${tap.chips.length} tapped.` +
+    (tapped ? " Replaying it now - keep it, or Retake." : " Nothing was tapped - Retake.");
+  setTapPhase(tapped ? "done" : "idle");
+  tapEl("tapStart").textContent = "Retake";
+  if (!tapped) return;
+  const occ = lastShownOccurrence;
+  const token = tap.token;
+  const res = await window.pywebview.api.previewTaps(occ.group, occ.song, occ.startChunk, occ.endChunk,
+    occ.lyricLine, occ.singers || [], state.filters.language, occ.lyricId || null, tap.take.taps(), tap.unit, tap.rate);
+  if (token !== tap.token || tap.phase !== "done") return;      // retaken or closed meanwhile
+  if (!res.ok) {
+    setTapError(res.error);
+    return;
+  }
+  tap.preview = res.data;
+  tap.edit = { anchors: res.data.anchors, timing: res.data.timing, raw: tap.take.taps(), lag: res.data.lag, dirty: false,
+               selected: null, start0: 0 };
+  setTapPhase("done");
+  tapEl("tapResult").textContent += " " + describeRowCheck(res.data.rowCheck);
+  const moved = res.data.timing.reassigned;
+  if (moved) tapEl("tapResult").textContent += ` Your taps put ${moved} beat${moved === 1 ? "" : "s"} in a different label row than your ▾ markers say - the taps win.`;
+  showTapShifts();
+  replayTake();
+}
+
+function onTapKey(event) {
+  if (tapEl("tapDialog").open && !tapRecording() && handleNudgeKey(event)) return;
+  if (!tapEl("tapDialog").open || (tap.phase !== "record" && tap.phase !== "count")) return;
+  if (event.code === "Escape") return;             // the dialog's own close
+  event.preventDefault();
+  if (event.repeat || tap.phase !== "record") return;
+  if (event.code === "Space") {
+    if (tap.take.tap(currentKaraokeChunk())) {
+      autoSkipHolds();
+      paintTapChips();
+      if (tap.take.done) finishTake();
+    }
+  } else if (event.code === "Tab") {
+    if (tap.take.skip()) {
+      autoSkipHolds();
+      paintTapChips();
+      if (tap.take.done) finishTake();
+    }
+  } else if (event.code === "Backspace") {
+    let popped = tap.take.undo();
+    // Beats skipped for you are not something to undo: keep stepping back until a real tap is removed.
+    while (popped && popped.chunk === null && isHoldChip(popped.index)) popped = tap.take.undo();
+    paintTapChips();
+  } else if (event.code === "KeyR") {
+    beginTake();
+  }
+}
+
+async function saveNudgedTake() {
+  const occ = lastShownOccurrence;
+  const edit = tap.edit;
+  const fresh = tap.phase === "done" && tap.take && tap.preview;     // a new take keeps ITS raw taps; a saved one keeps its own
+  const res = await window.pywebview.api.saveCorrectedTake(occ.group, occ.song, occ.startChunk, occ.endChunk,
+    occ.lyricLine, occ.singers || [], state.filters.language, occ.lyricId || null, edit.anchors, tap.unit,
+    fresh ? tap.rate : null, fresh ? tap.take.taps() : null, fresh ? tap.preview.lag : null);
+  if (!res.ok) {
+    setTapError(res.error);
+    return;
+  }
+  setTapError("");
+  tap.timing = res.data.timing;
+  tap.edit = savedTakeEdit(res.data.timing);
+  tapEl("tapStatus").textContent = describeSavedTake(res.data.timing);
+  tapEl("tapResult").textContent = "Saved your fine-tuned take (the raw taps are kept beside it).";
+  setTapPhase("idle");
+  tapEl("tapStart").textContent = "Retake";
+  showTapShifts();
+  const card = currentCard();
+  renderOccurrenceRow(card ? await getDetail(card) : null);
+}
+
+async function saveTapTake() {
+  const occ = lastShownOccurrence;
+  if (!occ) return;
+  if (tap.edit && tap.edit.dirty) return saveNudgedTake();
+  if (!tap.take) return;
+  const res = await window.pywebview.api.saveTaps(occ.group, occ.song, occ.startChunk, occ.endChunk,
+    occ.lyricLine, occ.singers || [], state.filters.language, occ.lyricId || null, tap.take.taps(), tap.unit, tap.rate);
+  if (!res.ok) {
+    setTapError(res.error);
+    return;
+  }
+  const { lag, spread, measured, timing } = res.data;
+  const lagMs = Math.round(lag * 40 / tap.rate);      // real reaction time: song-time lag / playback speed
+  const rowStartTaps = Object.keys(tap.timing.rowStarts || {}).filter((i) => tap.take.taps()[i] !== undefined).length;
+  tapEl("tapResult").textContent = measured
+    ? `Saved. Your tap lag was ${lagMs} ms (measured on ${rowStartTaps} row-start words, steady to within ${Math.round(spread * 40)} ms) and has been removed.`
+    : `Saved. Fewer than two row-start words were tapped, so a typical ${lagMs} ms lag was assumed - tap the first word of every row to measure yours.`;
+  tap.timing = timing;
+  tap.edit = savedTakeEdit(timing);
+  tapEl("tapStatus").textContent = describeSavedTake(timing);
+  setTapPhase("idle");
+  showTapShifts();
+  tapEl("tapSave").hidden = true;
+  tapEl("tapStart").textContent = "Retake";
+  const card = currentCard();
+  const detail = card ? await getDetail(card) : null;
+  renderOccurrenceRow(detail);                     // the card behind now highlights from the saved take
+}
+
+async function clearTapTake() {
+  const occ = lastShownOccurrence;
+  if (!occ) return;
+  const res = await window.pywebview.api.saveTaps(occ.group, occ.song, occ.startChunk, occ.endChunk,
+    occ.lyricLine, occ.singers || [], state.filters.language, occ.lyricId || null, {}, tap.unit, tap.rate);
+  if (!res.ok) {
+    setTapError(res.error);
+    return;
+  }
+  tap.timing = res.data.timing;
+  tap.edit = savedTakeEdit(tap.timing);
+  tapEl("tapStatus").textContent = describeSavedTake(tap.timing);
+  tapEl("tapResult").textContent = "Saved take cleared.";
+  setTapPhase("idle");
+  const card = currentCard();
+  const detail = card ? await getDetail(card) : null;
+  renderOccurrenceRow(detail);
+}
+
+// "Split kanji to hiragana": a pause can fall INSIDE a kanji word (Doughnut: Sana sings 恋 as こ ... い across two
+// label rows). Select the kanji (or put the cursor in/next to it) and press the button: it appends the kana
+// reading as 《こい》 right after the kanji - the lyric text stays 恋, the 《》 part is timing-only (core/lyric_text).
+// Then put the cursor between こ and い and insert a pause: 恋《こ▾い》. Saved with the lyric, so it travels with it.
+const KANJI_CHARS = "\\u4e00-\\u9fff\\u3005\\u3006\\u30f6";
+const KANJI_RUN = new RegExp(`[${KANJI_CHARS}]+`, "g");
+const KANJI_ONLY = new RegExp(`^[${KANJI_CHARS}]+$`);
+const READING_OPEN_GLYPH = String.fromCharCode(0x300A);
+const READING_CLOSE_GLYPH = String.fromCharCode(0x300B);
+
+function kanjiRunToSplit(box) {
+  const { selectionStart: a, selectionEnd: b, value } = box;
+  if (a === b) {                                   // no selection: the kanji run touching the cursor
+    for (const m of value.matchAll(KANJI_RUN)) {
+      if (m.index <= a && a <= m.index + m[0].length) return [m.index, m.index + m[0].length];
+    }
+    return null;
+  }
+  return KANJI_ONLY.test(value.slice(a, b)) ? [a, b] : null;
+}
+
+async function splitKanjiAtCursor() {
+  const box = el("pauseEditInput");
+  const span = kanjiRunToSplit(box);
+  if (!span) {
+    showPauseEditError("Select a kanji word (or put the cursor on it) first.");
+    return;
+  }
+  const [a, b] = span;
+  if (box.value[b] === READING_OPEN_GLYPH) {
+    showPauseEditError("That kanji already has a reading - edit the " + READING_OPEN_GLYPH + "..." + READING_CLOSE_GLYPH + " part directly.");
+    return;
+  }
+  const res = await window.pywebview.api.getKanjiReading(box.value.slice(a, b));
+  if (!res.ok || !res.data) {
+    showPauseEditError(res.ok ? "No kana reading found for that word." : res.error);
+    return;
+  }
+  showPauseEditError("");
+  box.setRangeText(READING_OPEN_GLYPH + res.data + READING_CLOSE_GLYPH, b, b, "end");
+  // Park the cursor after the first kana so one Ctrl+Space puts the pause there.
+  box.setSelectionRange(b + 2, b + 2);
+  box.focus();
+  schedulePausePreview();
 }
 
 async function savePauseEditor() {
@@ -451,14 +1185,17 @@ async function savePauseEditor() {
   renderOccurrenceRow(detail);           // re-fetches the timing, which now sees the new markers
 }
 
-async function playOccurrenceAudio(startFraction = 0) {
+async function playOccurrenceAudio(startFraction = 0, exact = false, rate = 1) {
   const card = currentCard();
   if (!card) return;
   const detail = await getDetail(card);
   const occ = detail && detail.occurrence;
   if (!occ) return;
-  await callApi("playOccurrenceAudio", occ.group, occ.song, occ.startChunk, occ.endChunk,
-    startFraction);
+  stopKaraoke();
+  const sent = performance.now();
+  const play = await callApi("playOccurrenceAudio", occ.group, occ.song, occ.startChunk, occ.endChunk,
+    startFraction, exact, rate);
+  if (play) startKaraoke(play, performance.now() - sent);
 }
 
 async function loadNextStudyCard() {
@@ -724,7 +1461,7 @@ function goRandom() {
 async function rate(rating) {
   const card = currentCard();
   if (!card) return;
-  window.pywebview.api.stopAudio();  // even if the same card comes straight back (Again)
+  stopPlayback();  // even if the same card comes straight back (Again)
   await callApi("rate", card.vocabId, state.filters.language, state.filters.track, rating);
   if (state.mode === "study") await loadNextStudyCard();
   else goNext();
@@ -868,6 +1605,7 @@ function wireControls() {
   document.addEventListener("keydown", (e) => {
     const tag = e.target.tagName;
     if (tag === "TEXTAREA" || tag === "INPUT") return;
+    if (document.querySelector("dialog[open]")) return;         // arrows inside a dialog must not change the card behind it
     if (e.key === "ArrowLeft") goPrev();
     if (e.key === "ArrowRight") goNext();
   });
@@ -891,10 +1629,40 @@ function wireControls() {
 
   el("playAudioBtn").addEventListener("click", () => playOccurrenceAudio(0));
   el("editPausesBtn").addEventListener("click", openPauseEditor);
+  el("tapAlongBtn").addEventListener("click", openTapAlong);
+  el("tapStart").addEventListener("click", beginTake);
+  el("tapSave").addEventListener("click", saveTapTake);
+  el("tapReplay").addEventListener("click", replayTake);
+  el("tapClear").addEventListener("click", clearTapTake);
+  el("tapClose").addEventListener("click", () => el("tapDialog").close());
+  el("tapLine").addEventListener("click", (event) => {
+    const chip = event.target.closest(".tap-chip");
+    if (chip) selectBeat(tap.chips.indexOf(chip));
+  });
+  el("tapNudge").querySelectorAll("button[data-nudge]").forEach((btn) =>
+    btn.addEventListener("click", () => { nudgeSelected(Number(btn.dataset.nudge)); el("tapDialog").focus(); }));
+  el("tapNudgeReset").addEventListener("click", () => { nudgeSelected(null); el("tapDialog").focus(); });
+  el("tapDialog").addEventListener("cancel", (event) => {     // Esc deselects a picked beat before it closes the dialog
+    if (tap.edit && tap.edit.selected !== null) {
+      event.preventDefault();
+      selectBeat(tap.edit.selected);
+    }
+  });
+  document.querySelectorAll('#tapDialog input[name="tapUnit"]').forEach((box) => box.addEventListener("change", () => {
+    tap.unit = box.value;
+    loadTapTiming();
+  }));
+  document.querySelectorAll('#tapDialog input[name="tapRate"]').forEach((box) => box.addEventListener("change", () => {
+    tap.rate = Number(box.value);
+  }));
+  el("tapDialog").addEventListener("close", () => { cancelTapTimers(); stopPlayback(); tap.phase = "idle"; });
+  document.addEventListener("keydown", onTapKey, true);
   el("pauseEditInsert").addEventListener("click", insertPauseGlyph);
+  el("pauseEditSplitKanji").addEventListener("click", splitKanjiAtCursor);
   el("pauseEditPlay").addEventListener("click", () => playOccurrenceAudio(0));
   el("pauseEditCancel").addEventListener("click", () => el("pauseEditDialog").close());
   el("pauseEditSave").addEventListener("click", savePauseEditor);
+  el("pauseEditInput").addEventListener("input", schedulePausePreview);
   el("pauseEditInput").addEventListener("keydown", (event) => {
     if (event.ctrlKey && event.code === "Space") {   // same hotkey as the Tk Lyric Editor
       event.preventDefault();
@@ -902,7 +1670,8 @@ function wireControls() {
     }
   });
   el("playLastWordBtn").addEventListener("click",
-    () => playOccurrenceAudio(Number(el("playLastWordBtn").dataset.fraction || 0)));
+    () => playOccurrenceAudio(Number(el("playLastWordBtn").dataset.fraction || 0),
+                              !!el("playLastWordBtn").dataset.exact));
 
   el("knownBtn").addEventListener("click", markCurrentKnown);
   el("suspendBtn").addEventListener("click", toggleSuspendCurrent);

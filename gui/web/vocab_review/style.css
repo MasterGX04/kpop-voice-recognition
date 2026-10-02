@@ -128,6 +128,11 @@ body {
   border-radius: 3px;
 }
 
+/* Karaoke: a word is dim until it is sung, then lit for the rest of the clip. */
+.occurrence-line .tok { transition: color 0.08s; }
+.occurrence-line.playing .tok:not(.lit) { opacity: 0.5; }
+.occurrence-line .tok.lit { color: var(--singer-color, #2e86de); font-weight: 600; text-shadow: 0 0 1px rgba(0, 0, 0, 0.55); }
+
 .occurrence-line .tok:hover {
   background: var(--border);
 }
@@ -197,6 +202,7 @@ body {
 }
 
 button {
+  user-select: none;
   font: inherit;
   padding: 6px 14px;
   border-radius: 6px;
@@ -235,6 +241,58 @@ dialog::backdrop {
 
 .pause-dialog { max-width: 560px; width: 90vw; }
 .pause-dialog textarea { line-height: 1.6; margin: 6px 0; box-sizing: border-box; }
+.pause-summary { margin-top: 8px; font-size: 0.9em; }
+.pause-summary.ok { color: #1e8449; }
+.pause-summary.guess { color: #b9770e; }
+.pause-preview { margin: 4px 0 0; padding-left: 22px; font-size: 0.9em; line-height: 1.5; max-height: 30vh; overflow: auto; }
+.pause-preview li.empty { color: #c0392b; }
+.pause-preview .when { color: var(--muted); }
+
+/* Tap-along: the next word pulses, a tapped word pops into the singer's colour. */
+.tap-dialog { max-width: 640px; width: 92vw; max-height: 94vh; overflow-y: auto; }
+/* The buttons stay in view however long the line is; the chips scroll under them. */
+.tap-dialog .dialog-actions { position: sticky; bottom: -16px; background: var(--card-bg); padding: 8px 0 4px; }
+.tap-line { font-size: 1.5em; line-height: 2.1; white-space: pre-wrap; margin: 10px 0; user-select: none; }
+.tap-chip { display: inline-block; padding: 0 7px; margin: 2px 1px; border: 2px solid transparent; border-radius: 9px; opacity: 0.45; }
+.tap-chip.sub { font-size: 0.6em; vertical-align: middle; }
+/* An English word is ONE tap: a wide dashed pill, so it never reads as a syllable (round chips). */
+.tap-chip.word-chip { border-style: dashed; border-color: var(--muted); border-radius: 999px; padding: 0 14px; }
+.tap-chip.next.word-chip { border-style: solid; border-color: currentColor; }
+/* ー, っ and ん: a beat to count, but nothing new starts on it - drawn smaller. */
+.tap-chip.hold, .tap-chip.held { font-size: 0.7em; vertical-align: middle; }
+.tap-chip.hold.skipped, .tap-chip.held.skipped { text-decoration: none; opacity: 0.55; }
+.tap-word { display: inline-block; text-align: center; margin: 0 4px; vertical-align: top; }
+.tap-word .tap-kanji { display: block; font-size: 0.45em; line-height: 1; color: var(--muted); }
+.tap-options { margin: 8px 0 2px; }
+.tap-options label { margin-right: 8px; white-space: nowrap; }
+.tap-options input:disabled + * { opacity: 0.5; }
+.tap-chip.next { opacity: 1; border-color: currentColor; animation: tap-pulse 0.55s ease-in-out infinite alternate; }
+.tap-chip.tapped { opacity: 1; color: var(--singer-color, #2e86de); font-weight: 700; text-shadow: 0 0 1px rgba(0, 0, 0, 0.55); animation: tap-pop 0.18s ease-out; }
+.tap-chip.replay-lit { opacity: 1; color: var(--singer-color, #2e86de); font-weight: 700; }
+/* After a take: how far each tapped beat moved from the old estimate, in ms (+ later, - earlier). */
+.tap-chip[data-delta]::after { content: attr(data-delta); display: block; font-size: 0.35em; line-height: 1.2; color: var(--muted); text-align: center; font-weight: 400; }
+.tap-chip.big-shift[data-delta]::after { color: #c0392b; font-weight: 700; }
+.tap-chip.skipped { opacity: 0.3; text-decoration: line-through; }
+/* Fine-tune pass: after a take (or on a saved one) a beat can be clicked and nudged. */
+.tap-chip.editable { cursor: pointer; }
+.tap-chip.editable:hover { border-color: var(--muted); }
+.tap-chip[data-source="tapped"] { opacity: 1; color: var(--singer-color, #2e86de); font-weight: 700; }
+.tap-chip[data-source="row"] { opacity: 0.85; border-bottom-color: var(--muted); }      /* locked to a label row start */
+.tap-chip.selected { opacity: 1; border-color: currentColor; background: rgba(46, 134, 222, 0.14); }
+.tap-nudge { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
+.tap-nudge button { min-width: 2.2em; }
+#tapNudgeBeat { font-weight: 700; margin-right: 6px; }
+#tapNudgeInfo { color: var(--muted); font-size: 0.9em; }
+/* The count-in is a popup over the middle of the window, not a line under the chips: a long verse pushes anything
+   below it out of view. It never takes clicks or focus (Space must keep tapping). */
+.tap-count { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; pointer-events: none;
+  min-width: 2.2em; padding: 0.15em 0.4em; text-align: center; font-size: 6em; font-weight: 700; line-height: 1.2;
+  color: #fff; background: rgba(20, 20, 30, 0.82); border-radius: 0.3em; box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45); }
+.tap-count:empty { display: none; }
+.tap-count.beat { animation: tap-beat 0.35s ease-out; }
+@keyframes tap-beat { from { transform: translate(-50%, -50%) scale(1.35); } to { transform: translate(-50%, -50%) scale(1); } }
+@keyframes tap-pulse { from { transform: scale(1); } to { transform: scale(1.12); } }
+@keyframes tap-pop { 0% { transform: scale(1.5); } 100% { transform: scale(1); } }
 .dialog-error { color: #c0392b; margin-top: 8px; white-space: pre-wrap; }
 
 .dialog-actions {

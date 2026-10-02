@@ -409,5 +409,35 @@ class ResolveAllSpansTests(unittest.TestCase):
         self.assertEqual(resolveAllSpans(labels, lyrics), {0: (100, 150), 1: (300, 400)})
 
 
+
+class AdLibInterruptionTests(unittest.TestCase):
+    # TWICE "Funny Valentine", Sana ~chunk 518: her last phrase (698-754) comes after Mina's "tick tock" ad-lib,
+    # 27 chunks past her 640-671 row - just over the merge gap limit - and was cut off.
+    LABELS = [
+        ["Sana", 529, 584, False, False], ["Sana", 586, 613, False, False], ["Sana", 615, 638, False, False],
+        ["Sana", 640, 671, False, False], ["Mina", 666, 698, False, False], ["Sana", 698, 754, False, False],
+        ["Mina", 748, 840, False, False],
+    ]
+
+    def _lyrics(self, adLib):
+        lyrics = [
+            {"startChunk": 518, "memberName": ["Sana"], "isAdLib": False},
+            {"startChunk": 655, "memberName": ["Mina"], "isAdLib": True, "adLibDuration": 50 if adLib else 0},
+            {"startChunk": 737, "memberName": ["Mina"], "isAdLib": False},
+        ]
+        return lyrics
+
+    def test_line_continues_past_an_adlib_that_covers_the_gap(self):
+        self.assertEqual(inferLyricSpans(self.LABELS, self._lyrics(True))[0], (529, 754))
+
+    def test_same_gap_without_an_adlib_is_still_a_break(self):
+        self.assertEqual(inferLyricSpans(self.LABELS, self._lyrics(False))[0], (529, 671))
+
+    def test_adlib_that_does_not_cover_the_gap_does_not_bridge_it(self):
+        lyrics = self._lyrics(True)
+        lyrics[1]["adLibDuration"] = 30          # 655-685 stops short of the next Sana row at 698
+        self.assertEqual(inferLyricSpans(self.LABELS, lyrics)[0], (529, 671))
+
+
 if __name__ == "__main__":
     unittest.main()
